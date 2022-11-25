@@ -1,0 +1,30 @@
+{
+  "seo": {
+    "title": "OpenPanda",
+    "description": "OpenPanda"
+  },
+  "og": {
+    "site_name": "OpenPanda",
+    "url": "",
+    "type": "website",
+    "image": "/open-graph-image.jpg"
+  },
+  "navigation": {
+    "header": [
+      {
+        "type": "nuxt-link",
+        "href": "/",
+        "label": "Home"
+      }
+    ],
+    "footer": [
+      {
+        "type": "nuxt-link",
+        "href": "/",
+        "label": "Home"
+      }
+    ]
+  },
+  "footer": {},
+  "404_error_message": "404 Not Found"
+}

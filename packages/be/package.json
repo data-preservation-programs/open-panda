@@ -1,0 +1,57 @@
+{
+  "name": "be",
+  "version": "1.0.0",
+  "description": "Backend",
+  "main": "app.js",
+  "scripts": {
+    "dev": "../../node_modules/.bin/nodemon --exec 'npm run lint:staged && node app.js'",
+    "lint:staged": "../../node_modules/.bin/eslint -c .eslintrc.js $(git diff HEAD --name-only --relative --diff-filter=ACMRTUXB | grep  -E \"(.js$|.ts$)\")",
+    "lint:full": "../../node_modules/.bin/eslint ./ --ext .js --ext .ts",
+    "reload:production": "pm2 reload fp-be",
+    "reload:stable": "pm2 reload fp-ST-be"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "node_modules/*",
+      "cache/*",
+      "tmp/*",
+      "public/*"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^8.23.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.2.5",
+    "eslint-plugin-promise": "^6.0.1",
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "archiver": "^5.3.1",
+    "axios": "^0.27.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "connect-mongo": "^4.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "filesize": "^8.0.7",
+    "fs-extra": "^10.1.0",
+    "helmet": "^5.0.2",
+    "lodash": "^4.17.20",
+    "mime": "^3.0.0",
+    "minimist": "^1.2.5",
+    "module-alias": "^2.2.2",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.33",
+    "mongoose": "^6.3.2",
+    "mongoose-slug-updater": "^3.2.3",
+    "papaparse": "^5.3.2",
+    "pg": "^8.7.3",
+    "socket.io": "^4.5.2",
+    "socket.io-client": "^4.5.2",
+    "uuid": "^8.3.1",
+    "uuid-apikey": "^1.5.1"
+  }
+}

@@ -1,1 +1,1 @@
-# open-panda
+# OpenPanda

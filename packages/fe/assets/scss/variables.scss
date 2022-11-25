@@ -1,0 +1,248 @@
+////////////////////////////////////////////////////////////////////// Variables
+// -----------------------------------------------------------------------------
+@use 'sass:math';
+
+// --------------------------------------------------------------------- General
+$containerWidth: 61.25rem;
+$standardGutter: 0.75rem;
+
+$siteHeaderHeight: 8.5rem;
+$siteHeaderHeightMini: 5rem;
+
+// --------------------------------------------------------------------- Colours
+$gray50: #FAFAFA;
+$gray100: #F5F5F5;
+$gray200: #EEEEEE;
+$gray300: #E0E0E0;
+$gray400: #BDBDBD;
+$gray500: #9E9E9E;
+$gray600: #757575;
+$gray700: #616161;
+$gray800: #424242;
+$gray900: #212121;
+
+// ----------------------------------------------------------------- Breakpoints
+$breakpoint_Tiny: 25.9375rem; // 415px
+$breakpoint_Mini: 40rem; // 640px
+$breakpoint_Small: 53.125rem; // 850px
+$breakpoint_Medium: 64rem; // 1024px
+$breakpoint_Large: 75rem; // 1200px
+$breakpoint_Xlarge: 90rem; // 1440px
+$breakpoint_UltraLarge: 140.625rem; // 2250px
+
+// ////////////////////////////////////////////////////////////////////// Mixins
+// =============================================================================
+// --------------------------------------------------------------------- Styling
+@mixin subtitle {
+	font-size: 0.75rem;
+	line-height: 0.75rem;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+@mixin centerImage {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+@mixin shadow1 {
+	box-shadow: 0.125rem 0px 1rem 0.3125rem rgb(black, 0.7);
+}
+
+@mixin shadow2 {
+  box-shadow: 0.125rem 0px 0.3125rem 0.25rem rgb(black, 0.4);
+}
+
+@mixin highlight {
+  color: darkorange;
+  font-weight: 600;
+}
+
+@mixin focusBoxShadow {
+  box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+@mixin focusBoxShadowSmall {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+@mixin focusBoxShadowLink {
+  box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.5);
+  border-radius: 0.125rem;
+}
+
+@mixin tooltipMobilePosition {
+  &:hover {
+    &:before,
+    &:after {
+      transform: translate(0, 0);
+    }
+  }
+  &:before,
+  &:after {
+    transform: translate(0, 0.5rem);
+  }
+  &:before {
+    left: 1rem;
+  }
+  &:after {
+    left: 0.5rem;
+  }
+  &[data-tooltip-mobile-position="right"] {
+    &:before,
+    &:after {
+      left: auto;
+    }
+    &:before {
+      right: 1rem;
+    }
+    &:after {
+      right: 0.5rem;
+    }
+  }
+}
+
+@mixin selection-dark {
+  ::-moz-selection { background: teal; color: tomato; }
+  ::selection { background: teal; color: tomato; }
+}
+
+@mixin selection-light {
+  ::-moz-selection { background: tomato; color: teal; }
+  ::selection { background: tomato; color: teal; }
+}
+
+// --------------------------------------------------------------------- General
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+          transform: $transforms;
+}
+
+@mixin transformOrigin($transformOrigin) {
+	   -moz-transform-origin: $transformOrigin;
+	     -o-transform-origin: $transformOrigin;
+	    -ms-transform-origin: $transformOrigin;
+	-webkit-transform-origin: $transformOrigin;
+          transform-origin: $transformOrigin;
+}
+
+@mixin optional-at-root($sel) { @at-root #{if(not &, $sel, selector-append(&, $sel))} { @content; } }
+@mixin placeholder {
+  @include optional-at-root('::-webkit-input-placeholder') { @content; }
+  @include optional-at-root(':-moz-placeholder') { @content; }
+  @include optional-at-root('::-moz-placeholder') { @content; }
+	@include optional-at-root(':-ms-input-placeholder') { @content; }
+	@include optional-at-root('::-ms-input-placeholder') { @content; }
+  @include optional-at-root('::placeholder') { @content; }
+}
+
+@mixin inputRange ($element) {
+  @if ($element == 'thumb') {
+    @include optional-at-root('::-webkit-slider-thumb') { @content; }
+    @include optional-at-root('::-moz-range-thumb') { @content; }
+  	@include optional-at-root('::-ms-thumb') { @content; }
+  } @else if ($element == 'track') {
+    @include optional-at-root('::-webkit-slider-runnable-track') { @content; }
+    @include optional-at-root('::-moz-range-track') { @content; }
+  	@include optional-at-root('::-ms-track') { @content; }
+  }
+}
+
+// --------------------------------------------------------------- Media Queries
+@mixin tiny { @media screen and (max-width: 25.9375rem) { @content; } }
+@mixin mini { @media screen and (max-width: 40rem) { @content; } }
+@mixin small { @media screen and (max-width: 53.125rem) { @content; } }
+@mixin medium { @media screen and (max-width: 64rem) { @content; } }
+@mixin large { @media screen and (max-width: 75rem) { @content; } }
+@mixin xlarge { @media screen and (max-width: 90rem) { @content; } }
+@mixin ultraLarge { @media screen and (max-width: 140.625rem) { @content; } }
+
+@mixin containerMaxMQ { @media screen and (max-width: 75rem) { @content; } }
+@mixin containerMinMQ { @media screen and (max-width: 75.0625rem) { @content; } }
+@mixin customMaxMQ($width) { @media screen and (max-width: $width) { @content; } }
+@mixin customMinMQ($width) { @media screen and (min-width: $width) { @content; } }
+
+@mixin FireFox {
+  @-moz-document url-prefix() { @content; }
+}
+
+@mixin Edge {
+  @supports (-ms-ime-align:auto) { @content; }
+}
+
+@mixin Safari9 {
+  @supports (overflow:-webkit-marquee) and (justify-content:inherit) { @content; }
+}
+
+@mixin Safari7Plus($item) {
+  _::-webkit-full-page-media, _:future, :root #{$item} { @content; }
+}
+
+@mixin Safari9Plus($item) {
+  _:default:not(:root:root), #{$item} { @content; }
+}
+
+@mixin IE10and11 {
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) { @content; }
+}
+
+@mixin iOSonly {
+  @supports (-webkit-overflow-scrolling: touch) { @content; }
+}
+
+@mixin everythingExceptIOS {
+  @supports not (-webkit-overflow-scrolling: touch) { @content; }
+}
+
+// ------------------------------------------------------------------- Animation
+@mixin animation($animate...) {
+  $max: length($animate);
+  $animations: '';
+  @for $i from 1 through $max {
+    $animations: #{$animations + nth($animate, $i)};
+    @if $i < $max { $animations: #{$animations + ", "}; }
+  }
+  -webkit-animation: $animations;
+  -moz-animation:    $animations;
+  -o-animation:      $animations;
+  animation:         $animations;
+}
+
+@mixin animationName($animationName) { -webkit-animation-name: $animationName; animation-name: $animationName; } // string
+@mixin animationDuration($animationDuration) { -webkit-animation-duration: $animationDuration; animation-duration: $animationDuration; } // num in ms or s
+@mixin animationDirection($animationDirection) { -webkit-animation-direction: $animationDirection; animation-direction: $animationDirection; } // 'normal', 'reverse', 'alternate', 'alternate-reverse'
+@mixin animationDelay($animationDelay) { -webkit-animation-delay: $animationDelay; animation-delay: $animationDelay; }
+@mixin animationIterationCount($animationIterationCount) { -webkit-animation-iteration-count: $animationIterationCount; animation-iteration-count: $animationIterationCount; } // num or 'infinite'
+@mixin animationTimingFunction($animationTimingFunction) { -webkit-animation-timing-function: $animationTimingFunction; animation-timing-function: $animationTimingFunction; } // bezier curve or 'linear'
+@mixin animationFillMode($animationFillMode) { -webkit-animation-fill-mode: $animationFillMode; animation-fill-mode: $animationFillMode; } // forwards or backwards or both
+
+@mixin keyframes($animationName) {
+  @-webkit-keyframes #{$animationName} { @content; }
+  @-moz-keyframes #{$animationName} { @content; }
+  @-o-keyframes #{$animationName} { @content; }
+  @keyframes #{$animationName} { @content; }
+}
+
+@include keyframes(buttonBounce) {
+	0% { transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  4.7% { transform: matrix3d(1.45, 0, 0, 0, 0, 1.45, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  9.41% { transform: matrix3d(1.883, 0, 0, 0, 0, 1.883, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  14.11% { transform: matrix3d(2.141, 0, 0, 0, 0, 2.141, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  18.72% { transform: matrix3d(2.212, 0, 0, 0, 0, 2.212, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  24.32% { transform: matrix3d(2.151, 0, 0, 0, 0, 2.151, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  29.93% { transform: matrix3d(2.048, 0, 0, 0, 0, 2.048, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  35.54% { transform: matrix3d(1.979, 0, 0, 0, 0, 1.979, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  41.04% { transform: matrix3d(1.961, 0, 0, 0, 0, 1.961, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  52.15% { transform: matrix3d(1.991, 0, 0, 0, 0, 1.991, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  63.26% { transform: matrix3d(2.007, 0, 0, 0, 0, 2.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  85.49% { transform: matrix3d(1.999, 0, 0, 0, 0, 1.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+  100% { transform: matrix3d(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+}
+
+// ///////////////////////////////////////////////////////////////////// Imports
+// =============================================================================
+@import 'typography';

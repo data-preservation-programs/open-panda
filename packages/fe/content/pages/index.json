@@ -1,0 +1,13 @@
+{
+  "seo": {
+    "title": "OpenPanda",
+    "description": "OpenPanda"
+  },
+  "og": {
+    "site_name": "OpenPanda",
+    "url": "",
+    "type": "website",
+    "image": "/open-graph-image.jpg"
+  },
+  "page_content": {}
+}
