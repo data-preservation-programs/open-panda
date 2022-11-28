@@ -1,58 +1,46 @@
-// ///////////////////////////////////////////////////////////////////// Imports
+// ////////////////////////////////////////////////// Imports, Variables & Setup
 // -----------------------------------------------------------------------------
 const Path = require('path')
+
+const env = process.env.SERVER_ENV
+
+const baseUrls = {
+  development: 'https://localhost',
+  stable: '',
+  production: ''
+}
+
+const frontendPort = (function () {
+  if (env === 'development') { return 13010 }
+  return env === 'stable' ? 13020 : 13030
+}())
+
+const backendPort = (function () {
+  if (env === 'development') { return 13040 }
+  return env === 'stable' ? 13050 : 13060
+}())
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 module.exports = {
-  // ================================================= Server Config & Variables
-  port: (function () {
-    const env = process.env.SERVER_ENV
-    let port = 14000 // development
-    switch (env) {
-      case 'stable': port = 14001; break
-      case 'production': port = 14002; break
-    } return port
-  }()),
+  // ===================================================================== Paths
   packageRoot: __dirname,
   repoRoot: Path.resolve(__dirname, '../../'),
   staticRoot: Path.resolve(__dirname, 'static'),
   publicRoot: Path.resolve(__dirname, 'public'),
   tmpRoot: Path.resolve(__dirname, 'tmp'),
-  serverRoot: (function () {
-    const env = process.env.SERVER_ENV
-    let path = Path.resolve(__dirname, '../../../') // development
-    switch (env) {
-      case 'production': path = Path.resolve(__dirname, '../../../../'); break
-    } return path
-  }()),
-  frontendUrl: (function () {
-    const env = process.env.SERVER_ENV
-    let uri = 'https://localhost:11000'
-    switch (env) {
-      case 'stable': uri = ''; break
-      case 'production': uri = ''; break
-    } return uri
-  }()),
-  backendUrl: (function () {
-    const env = process.env.SERVER_ENV
-    let uri = 'https://localhost:14000'
-    switch (env) {
-      case 'stable': uri = '/api'; break
-      case 'production': uri = '/api'; break
-    } return uri
-  }()),
-  websocketUrl: (function () {
-    const env = process.env.SERVER_ENV
-    let uri = 'https://localhost:14000'
-    switch (env) {
-      case 'stable': uri = ''; break
-      case 'production': uri = ''; break
-    } return uri
-  }()),
+  serverRoot: Path.resolve(
+    __dirname,
+    env === 'development' ? '../../../' : '../../../../'
+  ),
+  // ============================================================= Server Config
+  port: backendPort,
+  frontendUrl: env === 'development' ? `${baseUrls[env]}:${frontendPort}` : baseUrls[env],
+  backendUrl: env === 'development' ? `${baseUrls[env]}:${backendPort}` : `${baseUrls[env]}/api`,
+  websocketUrl: env === 'development' ? `${baseUrls[env]}:${backendPort}` : baseUrls[env],
   // ==================================================================== Server
   server: false,
-  environment: process.env.SERVER_ENV,
+  environment: env,
   autocreateEntities: [
     { type: 'dir', path: 'static' },
     { type: 'dir', path: 'cache' },
@@ -100,7 +88,7 @@ module.exports = {
   // ====================================================================== CORS
   cors: {
     origin: [
-      'https://localhost:11000'
+      `${baseUrls.development}:${frontendPort}`
     ],
     methods: 'OPTIONS,GET,POST',
     allowedHeaders: 'Origin,Accept,Authorization,X-Requested-With,Content-Type,Cache-Control',

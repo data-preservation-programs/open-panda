@@ -1,3 +1,23 @@
+// /////////////////////////////////////////////////////////// Variables & Setup
+// -----------------------------------------------------------------------------
+const env = process.env.SERVER_ENV
+
+const baseUrls = {
+  development: 'https://localhost',
+  stable: '',
+  production: ''
+}
+
+const frontendPort = (function () {
+  if (env === 'development') { return 13010 }
+  return env === 'stable' ? 13020 : 13030
+}())
+
+const backendPort = (function () {
+  if (env === 'development') { return 13040 }
+  return env === 'stable' ? 13050 : 13060
+}())
+
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default {
@@ -5,24 +25,10 @@ export default {
   // ---------------------------------------------------------------------------
   // ---------------------------------------------------------- [Runtime] Public
   publicRuntimeConfig: {
-    backendUrl: (function () {
-      const env = process.env.SERVER_ENV
-      let uri = 'https://localhost:14000' // development
-      switch (env) {
-        case 'stable': uri = ''; break
-        case 'production': uri = ''; break
-      } return uri
-    }()),
-    frontendUrl: (function () {
-      const env = process.env.SERVER_ENV
-      let uri = 'https://localhost:11000' // development
-      switch (env) {
-        case 'stable': uri = ''; break
-        case 'production': uri = ''; break
-      } return uri
-    }()),
+    frontendUrl: env === 'development' ? `${baseUrls[env]}:${frontendPort}` : baseUrls[env],
+    backendUrl: env === 'development' ? `${baseUrls[env]}:${backendPort}` : `${baseUrls[env]}/api`,
     githubOAuthLink: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_ID}&scope=user:email`,
-    serverFlag: process.env.SERVER_ENV,
+    serverFlag: env,
     seo: {
       siteName: 'OpenPanda'
     },
@@ -35,14 +41,7 @@ export default {
   // /////////////////////////////////////////////////////////// Server & Render
   // ---------------------------------------------------------------------------
   server: {
-    port: (function () {
-      const env = process.env.SERVER_ENV
-      let port = 11000 // development
-      switch (env) {
-        case 'stable': port = 11001; break
-        case 'production': port = 11002; break
-      } return port
-    }()),
+    port: frontendPort,
     host: process.env.NODE_ENV !== 'development' ? '0.0.0.0' : 'localhost'
   },
   render: {
@@ -148,14 +147,7 @@ export default {
   // ---------------------------------- Doc: https://nuxt-socket-io.netlify.app/
   io: {
     sockets: [{
-      url: (function () {
-        const env = process.env.SERVER_ENV
-        let uri = 'https://localhost:14000' // development
-        switch (env) {
-          case 'stable': uri = ''; break
-          case 'production': uri = ''; break
-        } return uri
-      }())
+      url: env === 'development' ? `${baseUrls[env]}:${backendPort}` : baseUrls[env]
     }]
   },
   // ////////////////////////////////////////////////////////// [Plugin] Toaster
