@@ -16,12 +16,16 @@ $letterSpacing_Regular: 0.02em;
 $letterSpacing_Large: 0.03em;
 
 // ------------------------------------------------------ Typography | Font Size
-@mixin fontSize_14 { font-size: 0.875rem; } // fontSize_14 | 14px
-@mixin fontSize_16 { font-size: 1rem; } // fontSize_16 | 16px
-@mixin fontSize_20 { font-size: 1.25rem; } // fontSize_20 | 20px
-@mixin fontSize_24 { font-size: 1.5rem; } // fontSize_24 | 24px
-@mixin fontSize_28 { font-size: 1.75rem; } // fontSize_28 | 28px
-@mixin fontSize_32 { font-size: 2rem; } // fontSize_32 | 32px
+@mixin fontSize_10 { font-size: toRem(10) }
+@mixin fontSize_14 { font-size: toRem(14) }
+@mixin fontSize_16 { font-size: toRem(16) }
+@mixin fontSize_20 { font-size: toRem(20) }
+@mixin fontSize_24 { font-size: toRem(24) }
+@mixin fontSize_28 { font-size: toRem(28) }
+@mixin fontSize_32 { font-size: toRem(32) }
+@mixin fontSize_45 { font-size: toRem(45) }
+@mixin fontSize_55 { font-size: toRem(55) }
+@mixin fontSize_65 { font-size: toRem(65) }
 
 
 // ---------------------------------------------------- Typography | Font Weight
@@ -33,79 +37,111 @@ $letterSpacing_Large: 0.03em;
 
 // --------------------------------------------------------- Typography | Groups
 @mixin h1 {
-  @include fontSize_32;
   @include fontWeight_Bold;
   font-family: $font_Primary;
-  line-height: leading(48, 32);
+  @include fontSize_65;
+  line-height: leading(75, 65);
+  @include medium {
+    @include fontSize_32;
+    line-height: leading(48, 32);
+  }
 }
 
 @mixin h2 {
-  @include fontSize_28;
   @include fontWeight_Semibold;
   font-family: $font_Secondary;
-  line-height: leading(48, 28);
+  @include fontSize_55;
+  line-height: leading(75, 55);
+  @include medium {
+    @include fontSize_28;
+    line-height: leading(48, 28);
+  }
 }
 
 @mixin h3 {
-  @include fontSize_24;
   @include fontWeight_Medium;
   font-family: $font_Primary;
-  line-height: leading(42, 24);
+  @include fontSize_45;
+  line-height: leading(56, 45);
+  @include medium {
+    @include fontSize_24;
+    line-height: leading(42, 24);
+  }
 }
 
 @mixin h4 {
-  @include fontSize_20;
   @include fontWeight_Medium;
   font-family: $font_Primary;
-  line-height: leading(30, 20);
+  @include fontSize_28;
+  line-height: leading(56, 28);
+  @include medium {
+    @include fontSize_20;
+    line-height: leading(30, 20);
+  }
 }
 
 @mixin h5 {
-  @include fontSize_16;
   @include fontWeight_Medium;
   font-family: $font_Primary;
-  line-height: leading(24, 16);
+  @include fontSize_24;
+  line-height: leading(35, 24);
+  @include medium {
+    @include fontSize_16;
+    line-height: leading(24, 16);
+  }
 }
 
 @mixin h6 {
-  @include fontSize_14;
   @include fontWeight_Medium;
   font-family: $font_Primary;
-  line-height: leading(21, 14);
+  @include fontSize_20;
+  line-height: leading(29, 20);
+  @include medium {
+    @include fontSize_14;
+    line-height: leading(21, 14);
+  }
 }
 
 @mixin p1 {
-  @include fontSize_20;
   @include fontWeight_Regular;
   font-family: $font_Primary;
+  @include fontSize_20;
   line-height: leading(30, 20);
-}
-
-@mixin p1Link {
-  @include fontSize_16;
-  @include fontWeight_Medium;
-  font-family: $font_Primary;
-  line-height: leading(30, 20);
-  color: $color_Primary;
+  @include medium {
+    @include fontSize_20;
+    line-height: leading(30, 20);
+  }
 }
 
 @mixin p2 {
-  @include fontSize_14;
   @include fontWeight_Regular;
   font-family: $font_Primary;
-  line-height: leading(24, 14);
+  @include fontSize_16;
+  line-height: leading(26, 16);
+  @include medium {
+    @include fontSize_14;
+    line-height: leading(24, 14);
+  }
 }
 
 @mixin p2Link{
-  @include fontSize_14;
   @include fontWeight_Medium;
   font-family: $font_Primary;
-  line-height: leading(20, 14);
+  
+  @include medium {
+    @include fontSize_14;
+    line-height: leading(20, 14);
+  }
 }
 
 @mixin caption {
-  @include fontSize_16;
   @include fontWeight_Bold;
   font-family: $font_Primary;
-  line-height: leading(30, 16);
+  @include fontSize_14;
+  line-height: leading(30, 14);
+  @include medium {
+    @include fontSize_16;
+    line-height: leading(30, 16);
+
+  }
 }

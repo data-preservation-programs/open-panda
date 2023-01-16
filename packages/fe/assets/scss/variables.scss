@@ -106,13 +106,13 @@ $duration: 300ms;
 }
 
 @mixin selection-dark {
-  ::-moz-selection { background: teal; color: tomato; }
-  ::selection { background: teal; color: tomato; }
+  ::-moz-selection { background: white; color: $rangoonGreen; }
+  ::selection { background: white; color: $rangoonGreen; }
 }
 
 @mixin selection-light {
-  ::-moz-selection { background: tomato; color: teal; }
-  ::selection { background: tomato; color: teal; }
+  ::-moz-selection { background: $rangoonGreen; color: white; }
+  ::selection { background: $rangoonGreen; color: white; }
 }
 
 // --------------------------------------------------------------------- General
