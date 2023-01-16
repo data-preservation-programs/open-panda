@@ -3,11 +3,7 @@
 @use 'sass:math';
 
 // --------------------------------------------------------------------- General
-$containerWidth: 61.25rem;
-$standardGutter: 0.75rem;
-
-$siteHeaderHeight: 8.5rem;
-$siteHeaderHeightMini: 5rem;
+$containerWidth: 85rem; // 1360px
 
 // --------------------------------------------------------------------- Colours
 $gray50: #FAFAFA;
@@ -21,25 +17,31 @@ $gray700: #616161;
 $gray800: #424242;
 $gray900: #212121;
 
+$gin: #EEF5F1;
+$rangoonGreen: #1B1F12;
+$emperor: #4F4F4F;
+$grayNurse: #F1F3EF;
+
 // ----------------------------------------------------------------- Breakpoints
 $breakpoint_Tiny: 25.9375rem; // 415px
 $breakpoint_Mini: 40rem; // 640px
 $breakpoint_Small: 53.125rem; // 850px
 $breakpoint_Medium: 64rem; // 1024px
-$breakpoint_Large: 75rem; // 1200px
+$breakpoint_Large: 85rem; // 1360px
 $breakpoint_Xlarge: 90rem; // 1440px
 $breakpoint_UltraLarge: 140.625rem; // 2250px
+
+// --------------------------------------------------------------------- Borders
+$borderRadius_Small: 0.125rem;
+$borderRadius_Medium: 0.25rem;
+$borderRadius_Large: 0.625rem;
+$borderRadius_ExtraLarge: 0.875rem;
+
+$duration: 300ms;
 
 // ////////////////////////////////////////////////////////////////////// Mixins
 // =============================================================================
 // --------------------------------------------------------------------- Styling
-@mixin subtitle {
-	font-size: 0.75rem;
-	line-height: 0.75rem;
-	text-transform: uppercase;
-	font-weight: 700;
-}
-
 @mixin centerImage {
   background-position: center;
   background-size: cover;
@@ -104,13 +106,13 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 }
 
 @mixin selection-dark {
-  ::-moz-selection { background: teal; color: tomato; }
-  ::selection { background: teal; color: tomato; }
+  ::-moz-selection { background: white; color: $rangoonGreen; }
+  ::selection { background: white; color: $rangoonGreen; }
 }
 
 @mixin selection-light {
-  ::-moz-selection { background: tomato; color: teal; }
-  ::selection { background: tomato; color: teal; }
+  ::-moz-selection { background: $rangoonGreen; color: white; }
+  ::selection { background: $rangoonGreen; color: white; }
 }
 
 // --------------------------------------------------------------------- General
@@ -153,16 +155,16 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 }
 
 // --------------------------------------------------------------- Media Queries
-@mixin tiny { @media screen and (max-width: 25.9375rem) { @content; } }
-@mixin mini { @media screen and (max-width: 40rem) { @content; } }
-@mixin small { @media screen and (max-width: 53.125rem) { @content; } }
-@mixin medium { @media screen and (max-width: 64rem) { @content; } }
-@mixin large { @media screen and (max-width: 75rem) { @content; } }
-@mixin xlarge { @media screen and (max-width: 90rem) { @content; } }
-@mixin ultraLarge { @media screen and (max-width: 140.625rem) { @content; } }
+@mixin tiny { @media screen and (max-width: $breakpoint_Tiny) { @content; } }
+@mixin mini { @media screen and (max-width: $breakpoint_Mini) { @content; } }
+@mixin small { @media screen and (max-width: $breakpoint_Small) { @content; } }
+@mixin medium { @media screen and (max-width: $breakpoint_Medium) { @content; } }
+@mixin large { @media screen and (max-width: $breakpoint_Large) { @content; } }
+@mixin xlarge { @media screen and (max-width: $breakpoint_Xlarge) { @content; } }
+@mixin ultraLarge { @media screen and (max-width: $breakpoint_UltraLarge) { @content; } }
 
-@mixin containerMaxMQ { @media screen and (max-width: 75rem) { @content; } }
-@mixin containerMinMQ { @media screen and (max-width: 75.0625rem) { @content; } }
+@mixin containerMaxMQ { @media screen and (max-width: $containerWidth) { @content; } }
+@mixin containerMinMQ { @media screen and (max-width: $containerWidthPlusOnePixel) { @content; } }
 @mixin customMaxMQ($width) { @media screen and (max-width: $width) { @content; } }
 @mixin customMinMQ($width) { @media screen and (min-width: $width) { @content; } }
 
@@ -196,6 +198,11 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 
 @mixin everythingExceptIOS {
   @supports not (-webkit-overflow-scrolling: touch) { @content; }
+}
+
+@function toRem($value) {
+  $remValue: math.div($value, 16) + rem;
+  @return $remValue;
 }
 
 // ------------------------------------------------------------------- Animation

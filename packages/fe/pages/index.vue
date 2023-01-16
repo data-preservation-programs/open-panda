@@ -1,8 +1,11 @@
 <template>
-  <div :class="`page page-${tag} container`">
+  <div :class="`page page-${tag} grid`">
+    <div class="col-5">
 
-    INDEX PAGE
-
+    </div>
+    <div class="col-7">
+      <h1>Explore the world's largest open datasets</h1>
+    </div>
   </div>
 </template>
 

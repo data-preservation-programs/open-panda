@@ -27,6 +27,6 @@ export default {
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
 .svg-icon {
-  display: block;
+display: block;
 }
 </style>

@@ -12,19 +12,60 @@
   "navigation": {
     "header": [
       {
-        "type": "nuxt-link",
-        "href": "/",
-        "label": "Home"
+        "href": "/how-to-download",
+        "label": "How to Download"
+      },
+      {
+        "href": "/about",
+        "label": "About"
+      },
+      {
+        "href": "/about#faq",
+        "label": "FAQ"
+      },
+      {
+        "href": "/add",
+        "label": "Add a Dataset"
+      },
+      {
+        "href": "",
+        "label": "Login"
       }
     ],
     "footer": [
       {
-        "type": "nuxt-link",
+        "href": "/add",
+        "label": "Add a Dataset"
+      },
+      {
         "href": "/",
-        "label": "Home"
+        "label": "How to Download"
+      },
+      {
+        "href": "/about#faq",
+        "label": "FAQs"
+      },
+      {
+        "href": "/about",
+        "label": "About"
+      },
+      {
+        "href": "https://slack.com",
+        "label": "Slack"
+      },
+      {
+        "href": "https://github.com",
+        "label": "Github"
+      },
+      {
+        "href": "/terms",
+        "label": "Terms"
+      },
+      {
+        "href": "/privacy",
+        "label": "Privacy"
       }
     ]
   },
-  "footer": {},
   "404_error_message": "404 Not Found"
 }

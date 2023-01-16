@@ -22,7 +22,7 @@ const registerStore = (store, next) => {
 }
 
 // /////////////////////////////////////////////////////////////////////// field
-const field = (store) => (fieldID) => {
+const field = store => (fieldID) => {
   return store.getters['form/fields'].find(obj => obj.id.includes(fieldID))
 }
 

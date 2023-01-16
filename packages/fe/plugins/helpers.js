@@ -397,6 +397,14 @@ const ConnectWebsocket = config => (instance, next) => {
   })
 }
 
+const GetTagBasedOnUrl = (url) => {
+  return url ? url.includes('http') || url.includes('mailto') || url.includes('tel') ? 'a' : 'nuxt-link' : 'button'
+}
+
+const GetTargetBasedOnUrl = (url) => {
+  return url ? url.includes('http') ? '_blank' : '' : false
+}
+
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default ({ $config, app }, inject) => {
@@ -425,4 +433,6 @@ export default ({ $config, app }, inject) => {
   inject('delay', Delay)
   inject('awaitServerReconnect', AwaitServerReconnect($config, app))
   inject('connectWebsocket', ConnectWebsocket($config))
+  inject('GetTagBasedOnUrl', GetTagBasedOnUrl)
+  inject('GetTargetBasedOnUrl', GetTargetBasedOnUrl)
 }

@@ -84,12 +84,14 @@ export default {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/moment-module#readme
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    // https://google-fonts.nuxtjs.org/setup
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/style-resources' // Doc: https://github.com/nuxt-community/style-resources-module/
   ],
   // /////////////////////////////////////////////////////////// Nuxt.js Modules
   // ---------------------------------------------------------------------------
   modules: [
-    '@nuxtjs/style-resources', // Doc: https://github.com/nuxt-community/style-resources-module/
     '@nuxtjs/axios', // Doc: https://axios.nuxtjs.org/usage
     'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
     '~/modules/https',
@@ -116,6 +118,15 @@ export default {
   moment: {
     timezone: true,
     defaultTimezone: 'UTC'
+  },
+  // ////////////////////////////////////////////////////// [Module] GoogleFonts
+  googleFonts: {
+    families: {
+      Heebo: [400, 500, 700],
+      Manrope: [600, 700],
+      'Space Mono': [400]
+    },
+    preconnect: true
   },
   // ///////////////////////////////////////////////////////////// [Module] Auth
   // ---------------------------------------------------------------------------

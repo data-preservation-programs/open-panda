@@ -8,7 +8,8 @@
     "start": "../../node_modules/.bin/nuxt start",
     "build": "../../node_modules/.bin/nuxt build",
     "launch": "../../node_modules/.bin/nuxt build && pm2 restart fp-fe",
-    "launch-stable": "../../node_modules/.bin/nuxt build && pm2 restart fp-ST-fe"
+    "launch-stable": "../../node_modules/.bin/nuxt build && pm2 restart fp-ST-fe",
+    "lint": "eslint . --ext .js,.vue"
   },
   "dependencies": {
     "@babel/core": "^7.17.3",
@@ -35,5 +36,8 @@
     "tiptap-extensions": "^1.33.2",
     "vue-uuid": "^2.1.0",
     "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/google-fonts": "^2.0.0"
   }
 }

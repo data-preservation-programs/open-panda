@@ -1,7 +1,31 @@
 <template>
-  <footer id="site-footer">
+  <footer>
 
-    FOOTER
+    <div class="grid-bottom-noGutter">
+      <div class="col-5">
+        <nuxt-link to="/" class="logo-link">
+          <SiteLogo />
+        </nuxt-link>
+      </div>
+  
+      <div class="col-7 right">
+        Access humanity's most important data
+        <nav>
+          <Button
+            v-for="(link, index) in links"
+            :key="index"
+            :button="{
+              text: link.label,
+              type: isRouteCurrent(link.href) ? 'solid' : 'default',
+              url: link.href
+            }" />
+        </nav>
+      </div>
+    </div>
+
+    <div class="grid-bottom-noGutter">
+      Lorem ipsum 2021
+    </div>
 
   </footer>
 </template>
@@ -10,14 +34,16 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
-// import ButtonA from '@/components/buttons/button-a'
+import Button from '@/components/buttons/button'
+import SiteLogo from '@/components/icons/logo'
 
 // ====================================================================== Export
 export default {
   name: 'SiteFooter',
 
   components: {
-    // ButtonD
+    SiteLogo,
+    Button
   },
 
   computed: {
@@ -26,9 +52,6 @@ export default {
     }),
     links () {
       return this.siteContent.general.navigation.footer
-    },
-    footerContent () {
-      return this.siteContent.general.footer
     }
   },
 
@@ -43,21 +66,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// General
-#site-footer {
-  position: relative;
-  padding: 3.5rem 0;
-  margin-top: 5rem;
-  border-top: 0.25rem solid tomato;
+footer {
+  padding: toRem(50) 0 toRem(10) 0;
 }
-
-// ///////////////////////////////////////////////////////////////////////// Nav
-#footer-nav {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-end;
-  height: 100%;
-  margin-bottom: 0.75rem;
+.right {
+  background-color: $rangoonGreen;
+  color: $grayNurse;
+  padding: toRem(80) toRem(150);
+  border-radius: 50px;
 }
 </style>

@@ -22,7 +22,7 @@ const registerStore = (store, next) => {
 }
 
 // ////////////////////////////////////////////////////////////////////// slider
-const slider = (store) => (sliderId) => {
+const slider = store => (sliderId) => {
   const slider = store.getters['slider/sliders'].find(obj => obj.id.includes(sliderId))
   return {
     fetch () {
