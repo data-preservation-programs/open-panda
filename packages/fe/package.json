@@ -8,7 +8,8 @@
     "start": "../../node_modules/.bin/nuxt start",
     "build": "../../node_modules/.bin/nuxt build",
     "launch": "../../node_modules/.bin/nuxt build && pm2 restart fp-fe",
-    "launch-stable": "../../node_modules/.bin/nuxt build && pm2 restart fp-ST-fe"
+    "launch-stable": "../../node_modules/.bin/nuxt build && pm2 restart fp-ST-fe",
+    "lint": "eslint . --ext .js,.vue"
   },
   "dependencies": {
     "@babel/core": "^7.17.3",

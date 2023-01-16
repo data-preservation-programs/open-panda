@@ -6,10 +6,10 @@
 
 // ///////////////////////////////////////////////////////// Imports & Variables
 // -----------------------------------------------------------------------------
+import NuxtMiddleware from '../middleware'
 import Store from '@/modules/auth/store'
 
 // This resolves to .nuxt/middleware.js
-import NuxtMiddleware from '../middleware'
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------

@@ -86,12 +86,12 @@ export default {
     // Doc: https://github.com/nuxt-community/moment-module#readme
     '@nuxtjs/moment',
     // https://google-fonts.nuxtjs.org/setup
-    '@nuxtjs/google-fonts'
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/style-resources' // Doc: https://github.com/nuxt-community/style-resources-module/
   ],
   // /////////////////////////////////////////////////////////// Nuxt.js Modules
   // ---------------------------------------------------------------------------
   modules: [
-    '@nuxtjs/style-resources', // Doc: https://github.com/nuxt-community/style-resources-module/
     '@nuxtjs/axios', // Doc: https://axios.nuxtjs.org/usage
     'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
     '~/modules/https',

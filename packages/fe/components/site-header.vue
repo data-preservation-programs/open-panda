@@ -1,33 +1,25 @@
 <template>
-  <header
-    v-if="links"
-    id="site-header"
-    ref="header"
-    :class="{ mini }">
+  <header class="grid-noGutter">
+    <div class="col">
 
-    <div class="grid-noGutter">
-      <div class="col">
-        <div class="inner-container">
+      <Searchbar />
 
-          <nuxt-link to="/" class="logo-link">
-            <SiteLogo />
-          </nuxt-link>
+      <nuxt-link to="/" class="logo-link">
+        <SiteLogo />
+      </nuxt-link>
 
-          <nav id="site-nav">
-            <ButtonA
-              v-for="(link, index) in links"
-              :key="index"
-              :to="link.href"
-              :text="link.label"
-              :selected="isRouteCurrent(link.href)"
-              tag="nuxt-link"
-              class="site-nav-link" />
-          </nav>
+      <nav>
+        <Button
+          v-for="(link, index) in links"
+          :key="index"
+          :button="{
+            text: link.label,
+            type: isRouteCurrent(link.href) ? 'solid' : 'default',
+            url: link.href
+          }" />
+      </nav>
 
-        </div>
-      </div>
     </div>
-
   </header>
 </template>
 
@@ -35,23 +27,18 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
-import ButtonA from '@/components/buttons/button-a'
+import Button from '@/components/buttons/button'
 import SiteLogo from '@/components/icons/logo'
+import Searchbar from '@/components/searchbar'
 
 // ====================================================================== Export
 export default {
   name: 'SiteHeader',
 
   components: {
-    ButtonA,
-    SiteLogo
-  },
-
-  data () {
-    return {
-      mini: false,
-      scroll: false
-    }
+    Button,
+    SiteLogo,
+    Searchbar
   },
 
   computed: {
@@ -62,24 +49,6 @@ export default {
       const siteContent = this.siteContent
       return siteContent.general ? siteContent.general.navigation.header : false
     }
-  },
-
-  mounted () {
-    const scrollHandler = () => {
-      const y = window.pageYOffset || document.documentElement.scrollTop
-      const mini = this.mini
-      if (y > 0) {
-        if (!mini) { this.mini = true }
-      } else {
-        if (mini) { this.mini = false }
-      }
-    }; scrollHandler()
-    this.scroll = this.$throttle(scrollHandler, 1)
-    window.addEventListener('scroll', this.scroll)
-  },
-
-  beforeDestroy () {
-    if (this.scroll) { window.removeEventListener('scroll', this.scroll) }
   },
 
   methods: {
