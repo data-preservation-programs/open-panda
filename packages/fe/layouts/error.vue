@@ -15,8 +15,6 @@
       </div>
     </section>
 
-    <img class="image" src="~assets/images/star-warp.jpg" />
-
   </div>
 </template>
 

@@ -9,9 +9,9 @@
       <div class="col">
         <div class="inner-container">
 
-          <!-- <nuxt-link to="/" class="logo-link">
-            <img class="logo" src="~assets/images/logo-horizontal.png" />
-          </nuxt-link> -->
+          <nuxt-link to="/" class="logo-link">
+            <SiteLogo />
+          </nuxt-link>
 
           <nav id="site-nav">
             <ButtonA
@@ -36,13 +36,15 @@
 import { mapGetters } from 'vuex'
 
 import ButtonA from '@/components/buttons/button-a'
+import SiteLogo from '@/components/icons/logo'
 
 // ====================================================================== Export
 export default {
   name: 'SiteHeader',
 
   components: {
-    ButtonA
+    ButtonA,
+    SiteLogo
   },
 
   data () {
@@ -91,78 +93,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// General
-#site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: $siteHeaderHeight;
-  z-index: 1000;
-  transition: background-color 150ms ease-out, height 150ms ease-out;
-  &.mini {
-    transition: background-color 150ms ease-in, height 150ms ease-in;
-    height: $siteHeaderHeightMini;
-    @include mini {
-      height: $siteHeaderHeight;
-    }
-    .logo-link {
-      transform: scale(0.85);
-      @include mini {
-        transform: scale(1);
-      }
-    }
-  }
-}
 
-[class~="grid"],
-[class*="grid-"],
-[class*="grid_"] {
-  height: 100%;
-}
-
-.inner-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  @include small {
-    flex-wrap: wrap;
-    padding: 1rem 0;
-  }
-}
-
-#site-nav {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  @include small {
-    display: none;
-  }
-}
-
-// /////////////////////////////////////////////////////////////////////// Links
-.site-nav-link {
-  &:not(:last-child) {
-    margin-right: 3rem;
-  }
-}
-
-.logo-link {
-  display: block;
-}
-
-.logo {
-  height: 2.5rem;
-  transition: 150ms ease-out;
-  @include small {
-    height: 2rem;
-  }
-  &:hover {
-    transition: 150ms ease-in;
-    transform: scale(1.05);
-  }
-}
 </style>

@@ -3,88 +3,6 @@
 @import 'normalize';
 @import 'grid/gridlex-2.7.1';
 
-$fontAssetPath: '~assets/fonts';
-
-// -------------------------------------------------------- Suisse International
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-Light.otf') format('opentype');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-RegularItalic.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: bold;
-}
-
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-MediumItalic.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-SemiBold.otf') format('opentype');
-  font-weight: 600;
-  font-style: bold;
-}
-
-@font-face {
-  font-family: 'SuisseIntl';
-  src: url('#{$fontAssetPath}/suisse-intl/SuisseIntl-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: bold;
-}
-
-// --------------------------------------------------- Suisse International Mono
-@font-face {
-  font-family: 'SuisseIntlMono';
-  src: url('#{$fontAssetPath}/suisse-intl-mono/SuisseIntlMono-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-// -------------------------------------------------------------- Helvetica Neue
-@font-face {
-  font-family: 'HelveticaNeue';
-  src: url('#{$fontAssetPath}/helvetica-neue/HelveticaNeue-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'HelveticaNeue';
-  src: url('#{$fontAssetPath}/helvetica-neue/HelveticaNeue-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-// ----------------------------------------------------------------- Inconsolata
-@font-face {
-  font-family: 'Inconsolata';
-  src: url('#{$fontAssetPath}/inconsolata/Inconsolata-Variable.ttf') format('truetype');
-  font-weight: 200 900;
-}
-
 //////////////////////////////////////////////////////////////////////// General
 //------------------------------------------------------------------------------
 html {
@@ -101,8 +19,9 @@ body {
   padding: 0;
   margin: 0;
   height: auto;
-  color: tomato;
-  font-family: $fontSuisseIntl;
+  background-color: $gin;
+  color: $rangoonGreen;
+  font-family: $font_Secondary;
   font-size: 16px;
   line-height: 1.2;
   letter-spacing: 0px;
@@ -281,20 +200,8 @@ span.error {
   cursor: pointer;
 }
 
-////////////////////////////////////////////////////////////////////////// Fonts
-//------------------------------------------------------------------------------
-// Font Sizing
-// 10px = 0.625rem
-// 12px = 0.75rem
-// 14px = 0.875rem
-// 16px = 1rem (base)
-// 18px = 1.125rem
-// 19px = 1.1875rem
-// 20px = 1.25rem
-// 24px = 1.5rem
-// 30px = 1.875rem
-// 32px = 2rem
-
+// ////////////////////////////////////////////////////////////////// Typography
+// -----------------------------------------------------------------------------
 h1, .h1,
 h2, .h2,
 h3, .h3,
@@ -328,30 +235,35 @@ h6, .h6 {
 }
 
 h1, .h1 {
-  font-size: 3rem;
-  @include small {
-    font-size: 2rem;
-  }
+  @include h1;
 }
 
 h2, .h2 {
-  font-size: 1.8rem;
+  @include h2;
 }
 
 h3, .h3 {
-  font-size: 1.6rem;
+  @include h3;
 }
 
 h4, .h4 {
-  font-size: 1rem;
+  @include h4;
 }
 
 h5, .h5 {
-  font-size: 0.9rem;
+  @include h5;
 }
 
 h6, .h6 {
-  font-size: 0.8rem;
+  @include h6;
+}
+
+p, .p1 {
+  @include p1;
+}
+
+.p2 {
+  @include p2;
 }
 
 //////////////////////////////////////////////////////////////////////// General
@@ -533,7 +445,7 @@ h6, .h6 {
   }
   pre,
   code {
-    font-family: $fontSuisseIntlMono;
+    font-family: $font_Code;
     background-color: tomato;
     color: teal;
     padding: 0.3125rem 0.625rem;

@@ -35,5 +35,8 @@
     "tiptap-extensions": "^1.33.2",
     "vue-uuid": "^2.1.0",
     "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/google-fonts": "^2.0.0"
   }
 }
