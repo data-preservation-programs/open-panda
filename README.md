@@ -17,7 +17,7 @@ MONGODB_CLIENT_PEM=/Users/<nasik>/.ssh/dpp-mongodb-client.pem
 
 1) Add .env file to `/packages/be`
 2) Add .env file to `/packages/be`
-3) Run `open ~/.ssh` and add certs - dpp-ca.crt and dpp-mongodb-client.pem there
+3) Run `open ~/.ssh` and add certs - dpp-ca.crt and dpp-mongodb-client.pem here
 4) Add Self-signed certificate (see instructions below)
 
 
