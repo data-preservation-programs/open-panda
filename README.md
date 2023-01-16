@@ -1,24 +1,26 @@
 # OpenPanda
 
-## Get files from dev lead (Nauras or Orun)
-
-- dpp-mongodb-client.pem
-- .env (for frontend)
-- .env (for backend)
-- dpp-ca.crt
-
-Make sure to change <nasik> to your own computer user name
-
-DPP_CA_PATH=/Users/<nasik>/.ssh/dpp-ca.crt
-MONGODB_CLIENT_PEM=/Users/<nasik>/.ssh/dpp-mongodb-client.pem
-
+Monorepo with FE and BE.
+Home and single pages are SSR with data coming from BE thru endpoints.
 
 ## Setup
 
-1) Add .env file to `/packages/be`
-2) Add .env file to `/packages/be`
-3) Run `open ~/.ssh` and add certs - dpp-ca.crt and dpp-mongodb-client.pem here
-4) Add Self-signed certificate (see instructions below)
+1) Get env and crt files from dev lead (Nauras or Orun)
+
+- dpp-mongodb-client.pem
+- dpp-ca.crt
+- .env (for frontend)
+- .env (for backend)
+
+For .env file, make sure to change <username> to your own computer user name
+
+DPP_CA_PATH=/Users/<username>/.ssh/dpp-ca.crt
+MONGODB_CLIENT_PEM=/Users/<username>/.ssh/dpp-mongodb-client.pem
+
+2) Add .env file to `/packages/fe`
+3) Add .env file to `/packages/be`
+4) Run `open ~/.ssh` and add certs (dpp-ca.crt and dpp-mongodb-client.pem)
+5) Add Self-signed certificate (see instructions below)
 
 
 ## Build commands
