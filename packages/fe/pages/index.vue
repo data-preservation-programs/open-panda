@@ -1,34 +1,11 @@
 <template>
-  <div :class="`page page-${tag} container`">
+  <div :class="`page page-${tag} grid`">
+    <div class="col-5">
 
-    <h1>Heading 1</h1>
-    <h2>Heading 2</h2>
-    <h3>Heading 3</h3>
-    <h4>Heading 4</h4>
-    <h5>Heading 5</h5>
-    <h6>Heading 6</h6>
-
-    <p>Paragraph Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ante justo, malesuada in est ac, ornare aliquet leo. Pellentesque at dignissim ante. Praesent vitae felis vitae leo tincidunt imperdiet. Cras elementum ullamcorper quam, non iaculis elit accumsan in. Ut ultrices purus vitae iaculis viverra. Proin eleifend rhoncus velit, at bibendum leo venenatis a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In sem justo, varius non tortor et, varius vulputate lorem. Curabitur non massa scelerisque, mattis dui nec, vulputate ex.</p>
-
-    <p class="p2">
-      Paragraph 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ante justo, malesuada in est ac, ornare aliquet leo. Pellentesque at dignissim ante. Praesent vitae felis vitae leo tincidunt imperdiet. Cras elementum ullamcorper quam, non iaculis elit accumsan in. Ut ultrices purus vitae iaculis viverra. Proin eleifend rhoncus velit, at bibendum leo venenatis a. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In sem justo, varius non tortor et, varius vulputate lorem. Curabitur non massa scelerisque, mattis dui nec, vulputate ex.</p>
-
-    <caption>Caption</caption>
-
-    <h5>An Unordered HTML List</h5>
-    <ul>
-      <li>Coffee</li>
-      <li>Tea</li>
-      <li>Milk</li>
-    </ul>
-
-    <h5>An Ordered HTML List</h5>
-    <ol>
-      <li>Coffee</li>
-      <li>Tea</li>
-      <li>Milk</li>
-    </ol>
-
+    </div>
+    <div class="col-7">
+      <h1>Explore the world's largest open datasets</h1>
+    </div>
   </div>
 </template>
 

@@ -1,25 +1,21 @@
 <template>
-  <header class="grid-noGutter">
-    <div class="col">
+  <header class="grid-spaceBetween-noGutter">
+    <Searchbar />
 
-      <Searchbar />
+    <nuxt-link to="/" class="logo-link">
+      <SiteLogo />
+    </nuxt-link>
 
-      <nuxt-link to="/" class="logo-link">
-        <SiteLogo />
-      </nuxt-link>
-
-      <nav>
-        <Button
-          v-for="(link, index) in links"
-          :key="index"
-          :button="{
-            text: link.label,
-            type: isRouteCurrent(link.href) ? 'solid' : 'default',
-            url: link.href
-          }" />
-      </nav>
-
-    </div>
+    <nav>
+      <Button
+        v-for="(link, index) in links"
+        :key="index"
+        :button="{
+          text: link.label,
+          type: isRouteCurrent(link.href) ? 'solid' : 'default',
+          url: link.href
+        }" />
+    </nav>
   </header>
 </template>
 
@@ -62,5 +58,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+header {
+  padding-top: toRem(50);
+  padding-bottom: toRem(70);
+}
 </style>
