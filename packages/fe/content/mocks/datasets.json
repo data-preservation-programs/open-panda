@@ -6,9 +6,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -29,9 +29,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml", "json"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml", "json"],
       "locations": []
     },
     {
@@ -40,9 +40,9 @@
       "cid": 0,
       "replication": 0,
       "size": 143254216451,
-      "total_data": 0,
-      "storage_provider": 0,
-      "file_types": ["csv"],
+      "total": 0,
+      "storage": 0,
+      "filetypes": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -55,14 +55,14 @@
       }]
     },
     {
-      "title": "AVSpeech: Large-scale Audio-Visual Speech Dataset",
+      "title": "AVSpeech: Large-scale Audio-Visual Speech Dataset Audio-Visual Audio-Visual Audio-Visual Audio-Visual",
       "id": "av",
       "cid": 280240,
       "replication": 5.12,
       "size": 563452416451,
-      "total_data": 3333432,
-      "storage_provider": 24,
-      "file_types": ["pdf"],
+      "total": 3333432,
+      "storage": 24,
+      "filetypes": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -77,9 +77,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 987,
-      "total_data": 124685412,
-      "storage_provider": 552,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 552,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"
@@ -109,9 +109,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -132,9 +132,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml", "json"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml", "json"],
       "locations": []
     },
     {
@@ -143,9 +143,9 @@
       "cid": 0,
       "replication": 0,
       "size": 143254216451,
-      "total_data": 0,
-      "storage_provider": 0,
-      "file_types": ["csv"],
+      "total": 0,
+      "storage": 0,
+      "filetypes": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -163,9 +163,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 563452416451,
-      "total_data": 3333432,
-      "storage_provider": 24,
-      "file_types": ["pdf"],
+      "total": 3333432,
+      "storage": 24,
+      "filetypes": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -180,9 +180,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 987,
-      "total_data": 124685412,
-      "storage_provider": 552,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 552,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"
@@ -212,9 +212,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -235,9 +235,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml", "json"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml", "json"],
       "locations": []
     },
     {
@@ -246,9 +246,9 @@
       "cid": 0,
       "replication": 0,
       "size": 143254216451,
-      "total_data": 0,
-      "storage_provider": 0,
-      "file_types": ["csv"],
+      "total": 0,
+      "storage": 0,
+      "filetypes": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -266,9 +266,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 563452416451,
-      "total_data": 3333432,
-      "storage_provider": 24,
-      "file_types": ["pdf"],
+      "total": 3333432,
+      "storage": 24,
+      "filetypes": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -283,9 +283,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 987,
-      "total_data": 124685412,
-      "storage_provider": 552,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 552,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"
@@ -315,9 +315,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -338,9 +338,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 143254216451,
-      "total_data": 124685412,
-      "storage_provider": 86,
-      "file_types": ["xml", "json"],
+      "total": 124685412,
+      "storage": 86,
+      "filetypes": ["xml", "json"],
       "locations": []
     },
     {
@@ -349,9 +349,9 @@
       "cid": 0,
       "replication": 0,
       "size": 143254216451,
-      "total_data": 0,
-      "storage_provider": 0,
-      "file_types": ["csv"],
+      "total": 0,
+      "storage": 0,
+      "filetypes": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -369,9 +369,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 563452416451,
-      "total_data": 3333432,
-      "storage_provider": 24,
-      "file_types": ["pdf"],
+      "total": 3333432,
+      "storage": 24,
+      "filetypes": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -386,9 +386,9 @@
       "cid": 280240,
       "replication": 5.12,
       "size": 987,
-      "total_data": 124685412,
-      "storage_provider": 552,
-      "file_types": ["xml"],
+      "total": 124685412,
+      "storage": 552,
+      "filetypes": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"

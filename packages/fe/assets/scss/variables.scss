@@ -22,6 +22,7 @@ $gin: #EEF5F1;
 $rangoonGreen: #1B1F12;
 $emperor: #4F4F4F;
 $grayNurse: #F1F3EF;
+$lavenderGray: #C6C1DF;
 
 // ----------------------------------------------------------------- Breakpoints
 $breakpoint_Tiny: 25.9375rem; // 415px
@@ -49,8 +50,8 @@ $duration: 300ms;
 	box-shadow: 0px 4px 24px rgba(81, 130, 95, 0.15);
 }
 
-@mixin shadow2 {
-  box-shadow: 0.125rem 0px 0.3125rem 0.25rem rgb(black, 0.4);
+@mixin shadow2 { // cards
+  box-shadow: 0px 4px 34px rgba(86, 106, 96, 0.25);
 }
 
 @mixin highlight {

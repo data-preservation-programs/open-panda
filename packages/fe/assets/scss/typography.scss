@@ -125,7 +125,7 @@ $letterSpacing_Large: 0.03em;
   }
 }
 
-@mixin p2Link{
+@mixin p2Link {
   @include fontWeight_Medium;
   font-family: $font_Primary;
   
@@ -145,4 +145,10 @@ $letterSpacing_Large: 0.03em;
     line-height: leading(30, 16);
 
   }
+}
+
+@mixin title {
+  font-family: $font_Secondary;
+  @include fontWeight_Semibold;
+  @include fontSize_17;
 }

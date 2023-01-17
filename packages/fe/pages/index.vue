@@ -2,11 +2,11 @@
   <div :class="`page page-${tag}`">
     <BlockBuilder :sections="sections" />
 
-    <div class="grid-4">
+    <div class="grid-4-equalHeight_md-2_sm-1">
       <Card
         v-for="(data, index) in dataset.data"
         :key="`dataset-${index}`"
-        v-bind="data" />
+        :data="data" />
     </div>
   </div>
 </template>
