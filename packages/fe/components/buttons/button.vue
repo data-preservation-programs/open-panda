@@ -54,6 +54,20 @@ export default {
   cursor: pointer;
 }
 
+.type__default {
+  font-family: $font_Secondary;
+  @include fontWeight_Bold;
+  @include fontSize_24;
+  line-height: leading(30, 24);
+  @include medium {
+    @include fontSize_14;
+    line-height: leading(21, 14);
+  }
+  &:hover {
+    transform: scale(1.03);
+  }
+}
+
 .type__solid {
   transition: background-color $duration ease;
   background-color: $rangoonGreen;

@@ -9,5 +9,15 @@
     "type": "website",
     "image": "/open-graph-image.jpg"
   },
-  "page_content": {}
+  "page_content": {
+    "hero": {
+      "title": "Explore the world’s largest open datasets",
+      "subtitle": "Interact with tamper-proof open datasets on the decentralized web",
+      "cta": {
+        "type": "solid",
+        "text": "About OpenPanda",
+        "url": "/about"
+      }
+    }
+  }
 }

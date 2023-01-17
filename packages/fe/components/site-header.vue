@@ -8,7 +8,7 @@
 
     <nav>
       <Button
-        v-for="(link, index) in links"
+        v-for="(link, index) in headerData.nav"
         :key="index"
         :button="{
           text: link.label,
@@ -41,9 +41,8 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent'
     }),
-    links () {
-      const siteContent = this.siteContent
-      return siteContent.general ? siteContent.general.navigation.header : false
+    headerData () {
+      return this.siteContent.general ? this.siteContent.general.header : false
     }
   },
 

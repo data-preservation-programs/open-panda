@@ -65,7 +65,7 @@ $letterSpacing_Large: 0.03em;
   line-height: leading(56, 45);
   @include medium {
     @include fontSize_24;
-    line-height: leading(42, 24);
+    line-height: leading(35, 24);
   }
 }
 
