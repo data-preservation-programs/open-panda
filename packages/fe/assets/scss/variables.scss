@@ -32,12 +32,8 @@ $breakpoint_Large: 85rem; // 1360px
 $breakpoint_Xlarge: 90rem; // 1440px
 $breakpoint_UltraLarge: 140.625rem; // 2250px
 
-// --------------------------------------------------------------------- Borders
-$borderRadius_Small: 0.125rem;
-$borderRadius_Medium: 0.25rem;
-$borderRadius_Large: 0.625rem;
-$borderRadius_ExtraLarge: 0.875rem;
-
+// ------------------------------------------------------------------------ Misc
+$borderRadius: 1.25rem;
 $duration: 300ms;
 
 // ////////////////////////////////////////////////////////////////////// Mixins

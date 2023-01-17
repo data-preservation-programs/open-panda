@@ -19,7 +19,7 @@ export default {
     button: {
       /**
        * text
-       * type: solid, underline, pill
+       * type: solid, nav, solid-tear, default, outline
        * disabled: Bool
        */
       type: Object,
@@ -112,15 +112,24 @@ export default {
 .type__solid {
   transition: background-color $duration ease;
   background-color: $rangoonGreen;
-  padding: 0 toRem(15);
-  color: white;
-  border-radius: $borderRadius_Medium;
+  padding: toRem(7) toRem(20);
+  border-radius: $borderRadius;
+  font-family: $font_Primary;
+  @include fontWeight_Medium;
+  @include fontSize_16;
+  line-height: leading(24, 16);
+  color: $grayNurse;
   &:hover {
     transition: background-color $duration ease;
   }
   &[disabled] {
     background-color: gray;
   }
+}
+
+.type__solid-tear {
+  @extend .type__solid;
+  border-radius: toRem(2) toRem(30) toRem(30) toRem(30);
 }
 
 .type__outline {

@@ -45,7 +45,7 @@
                 "heading": "Explore the world’s largest open datasets",
                 "description": "Interact with tamper-proof open datasets on the decentralized web",
                 "ctas": [{
-                  "type": "solid",
+                  "type": "solid-tear",
                   "text": "About OpenPanda",
                   "url": "/about"
                 }]
