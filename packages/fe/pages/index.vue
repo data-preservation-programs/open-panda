@@ -1,6 +1,13 @@
 <template>
   <div :class="`page page-${tag}`">
     <BlockBuilder :sections="sections" />
+
+    <div class="grid-4">
+      <Card
+        v-for="(data, index) in dataset.data"
+        :key="`dataset-${index}`"
+        v-bind="data" />
+    </div>
   </div>
 </template>
 
@@ -8,20 +15,26 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
+// mock data
+import dataset from '@/content/mocks/datasets.json'
+
 import IndexPageData from '@/content/pages/index.json'
 import BlockBuilder from '@/components/blocks/block-builder'
+import Card from '@/components/card'
 
 // ====================================================================== Export
 export default {
   name: 'PageIndex',
 
   components: {
-    BlockBuilder
+    BlockBuilder,
+    Card
   },
 
   data () {
     return {
-      tag: 'index'
+      tag: 'index',
+      dataset
     }
   },
 
