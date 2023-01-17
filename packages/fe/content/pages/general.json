@@ -242,27 +242,27 @@
     ],
     "location": [
       {
-        "id": "canada",
+        "id": "ca",
         "name": "Canada"
       },
       {
-        "id": "india",
+        "id": "in",
         "name": "India"
       },
       {
-        "id": "usa",
+        "id": "us",
         "name": "United States"
       },
       {
-        "id": "russia",
+        "id": "ru",
         "name": "Russia"
       },
       {
-        "id": "uk",
+        "id": "gb",
         "name": "United Kingdom"
       },
       {
-        "id": "azerbaijan",
+        "id": "az",
         "name": "Azerbaijan"
       },
       {
@@ -298,7 +298,7 @@
         "name": "Iran"
       },
       {
-        "id": "bl",
+        "id": "by",
         "name": "Belarus"
       },
       {
@@ -306,15 +306,15 @@
         "name": "Philippines"
       },
       {
-        "id": "ma",
+        "id": "my",
         "name": "Malaysia"
       },
       {
-        "id": "ko",
+        "id": "kr",
         "name": "Korea"
       },
       {
-        "id": "dn",
+        "id": "dk",
         "name": "Denmark"
       },
       {
