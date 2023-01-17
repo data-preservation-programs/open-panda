@@ -49,8 +49,8 @@ $duration: 300ms;
   background-repeat: no-repeat;
 }
 
-@mixin shadow1 {
-	box-shadow: 0.125rem 0px 1rem 0.3125rem rgb(black, 0.7);
+@mixin shadow1 { // nav
+	box-shadow: 0px 4px 24px rgba(81, 130, 95, 0.15);
 }
 
 @mixin shadow2 {
