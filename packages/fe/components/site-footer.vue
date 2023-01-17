@@ -3,27 +3,27 @@
 
     <div class="grid-bottom">
       <div class="col-5">
-        <nuxt-link to="/" class="logo-link">
-          <SiteLogo />
-        </nuxt-link>
+        <img src="/images/footer.png">
       </div>
   
-      <div class="col-7 right">
-        Access humanity's most important data
-        <nav>
-          <Button
-            v-for="(link, index) in links"
-            :key="index"
-            :button="{
-              text: link.label,
-              type: isRouteCurrent(link.href) ? 'solid' : 'default',
-              url: link.href
-            }" />
-        </nav>
+      <div class="col-7">
+        <div class="right">
+          <h3>Access humanity's most important data</h3>
+          <nav>
+            <Button
+              v-for="(link, index) in links"
+              :key="index"
+              :button="{
+                text: link.label,
+                type: isRouteCurrent(link.href) ? 'solid' : 'default',
+                url: link.href
+              }" />
+          </nav>
+        </div>
       </div>
     </div>
 
-    <div class="grid">
+    <div class="grid-right">
       Lorem ipsum 2021
     </div>
 
@@ -33,16 +33,13 @@
 <script>
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
-
 import Button from '@/components/buttons/button'
-import SiteLogo from '@/components/icons/logo'
 
 // ====================================================================== Export
 export default {
   name: 'SiteFooter',
 
   components: {
-    SiteLogo,
     Button
   },
 
