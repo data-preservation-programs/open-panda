@@ -1,11 +1,6 @@
 <template>
-  <div :class="`page page-${tag} grid`">
-    <div class="col-5">
-
-    </div>
-    <div class="col-7">
-      <h1>Explore the world's largest open datasets</h1>
-    </div>
+  <div :class="`page page-${tag}`">
+    <BlockBuilder :sections="sections" />
   </div>
 </template>
 
@@ -14,10 +9,15 @@
 import { mapGetters } from 'vuex'
 
 import IndexPageData from '@/content/pages/index.json'
+import BlockBuilder from '@/components/blocks/block-builder'
 
 // ====================================================================== Export
 export default {
-  name: 'IndexPage',
+  name: 'PageIndex',
+
+  components: {
+    BlockBuilder
+  },
 
   data () {
     return {
@@ -38,7 +38,10 @@ export default {
       siteContent: 'general/siteContent'
     }),
     pageData () {
-      return this.siteContent.index.page_content
+      return this.siteContent[this.tag]
+    },
+    sections () {
+      return this.pageData.page_content
     }
   }
 }

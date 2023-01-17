@@ -1,0 +1,59 @@
+[
+    {
+      "title": "Genome in a bottle",
+      "cid": 280240,
+      "replication": 5.12,
+      "size": 143254216451,
+      "total_data": 124685412,
+      "storage_provider": 86,
+      "file_types": ["xml"],
+      "locations": [{
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }, {
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }, {
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }]
+    },
+    {
+      "title": "TAO",
+      "cid": 280240,
+      "replication": 5.12,
+      "size": 143254216451,
+      "total_data": 124685412,
+      "storage_provider": 86,
+      "file_types": ["xml"],
+      "locations": [{
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }, {
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }, {
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }]
+    },
+    {
+      "title": "Fly Brain Anatomy",
+      "cid": 280240,
+      "replication": 5.12,
+      "size": 143254216451,
+      "total_data": 124685412,
+      "storage_provider": 86,
+      "file_types": ["xml"],
+      "locations": [{
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }, {
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }, {
+        "full": "Norway, Oslo",
+        "country_code": "NO"
+      }]
+    }
+]

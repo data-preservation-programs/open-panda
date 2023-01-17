@@ -1,0 +1,58 @@
+[
+    {
+      "id": "healthcare",
+      "name": "Healthcare"
+    },
+    {
+      "id": "genetics",
+      "name": "Genetics"
+    },
+    {
+      "id": "tech",
+      "name": "Tech"
+    },
+    {
+      "id": "satellite",
+      "name": "Satellite"
+    },
+    {
+      "id": "blockchain",
+      "name": "Blockchain"
+    },
+    {
+      "id": "anthropology",
+      "name": "Anthropology"
+    },
+    {
+      "id": "astronomy",
+      "name": "Astronomy"
+    },
+    {
+      "id": "geology",
+      "name": "Geology"
+    },
+    {
+      "id": "literature",
+      "name": "Literature"
+    },
+    {
+      "id": "multimedia",
+      "name": "Multimedia"
+    },
+    {
+      "id": "auditory",
+      "name": "Auditory"
+    },
+    {
+      "id": "natural",
+      "name": "Natural Language"
+    },
+    {
+      "id": "civil",
+      "name": "Civil Engineering"
+    },
+    {
+      "id": "popular",
+      "name": "Popular Culture"
+    }
+]

@@ -397,6 +397,13 @@ const ConnectWebsocket = config => (instance, next) => {
   })
 }
 
+// //////////////////////////////////////////////////////// getPrettyNameFromUrl
+// replace '-' to ' '
+// remove extension
+const GetPrettyNameFromUrl = (url) => {
+  return url ? url.split('/').pop().replaceAll('-', ' ').replace(/\.[^/.]+$/, '') : ''
+}
+
 const GetTagBasedOnUrl = (url) => {
   return url ? url.includes('http') || url.includes('mailto') || url.includes('tel') ? 'a' : 'nuxt-link' : 'button'
 }
@@ -435,4 +442,5 @@ export default ({ $config, app }, inject) => {
   inject('connectWebsocket', ConnectWebsocket($config))
   inject('GetTagBasedOnUrl', GetTagBasedOnUrl)
   inject('GetTargetBasedOnUrl', GetTargetBasedOnUrl)
+  inject('GetPrettyNameFromUrl', GetPrettyNameFromUrl)
 }
