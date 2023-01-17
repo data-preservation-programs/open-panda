@@ -1,7 +1,7 @@
 <template>
   <footer>
 
-    <div class="grid-bottom-noGutter">
+    <div class="grid-bottom">
       <div class="col-5">
         <nuxt-link to="/" class="logo-link">
           <SiteLogo />
@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <div class="grid-bottom-noGutter">
+    <div class="grid">
       Lorem ipsum 2021
     </div>
 
@@ -73,6 +73,6 @@ footer {
   background-color: $rangoonGreen;
   color: $grayNurse;
   padding: toRem(80) toRem(150);
-  border-radius: 50px;
+  border-radius: toRem(50);
 }
 </style>

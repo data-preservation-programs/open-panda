@@ -288,8 +288,8 @@ p, .p1 {
 [class*="grid_"] {
   width: $containerWidth;
   margin: 0 auto;
-  @include containerMaxMQ {
-    padding: 0 4.1665%;
+  @include customMaxMQ ($containerWidth + 4rem) {
+    padding: 0 6%;
     width: 100%;
   }
   [class~="grid"],
