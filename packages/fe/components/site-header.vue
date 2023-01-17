@@ -1,5 +1,5 @@
 <template>
-  <header class="grid-spaceBetween-noGutter">
+  <header class="grid-middle-center-spaceBetween-noGutter">
     <Searchbar />
 
     <nuxt-link to="/" class="logo-link">

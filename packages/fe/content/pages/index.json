@@ -11,6 +11,7 @@
   },
   "page_content": {
     "hero": {
+      "id": "home-hero",
       "grid": [],
       "col_1": {
         "type": "image_block",
@@ -22,18 +23,35 @@
         }
       },
       "col_2": {
-        "type": "text_block",
-        "heading": "Explore the world’s largest open datasets",
-        "description": "Interact with tamper-proof open datasets on the decentralized web",
-        "ctas": [{
-          "type": "solid",
-          "text": "About OpenPanda",
-          "url": "/about"
-        }],
+        "type": "custom",
         "cols": {
-          "num": "col-6_md-12",
+          "num": "col-7_md-12",
           "push_left": "",
           "push_right": ""
+        },
+        "customizations": {
+          "image": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/index-hero-right.png"
+              }
+            }
+          },
+          "heading": {
+            "name": "TextBlock",
+            "props": {
+              "block": {
+                "heading": "Explore the world’s largest open datasets",
+                "description": "Interact with tamper-proof open datasets on the decentralized web",
+                "ctas": [{
+                  "type": "solid",
+                  "text": "About OpenPanda",
+                  "url": "/about"
+                }]
+              }
+            }
+          }
         }
       }
     }

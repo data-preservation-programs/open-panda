@@ -7,7 +7,7 @@
       <span>{{ block.label }}</span>
     </h5>
 
-    <h2 v-if="block.heading" class="heading" v-html="block.heading"></h2>
+    <h1 v-if="block.heading" class="heading" v-html="block.heading"></h1>
 
     <div class="text-wrapper">
       <div v-if="block.description" class="description">

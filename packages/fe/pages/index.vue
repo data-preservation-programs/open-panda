@@ -48,5 +48,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// General
+:deep(.home-hero) {
+  [data-block-id="col_2"] {
+    .text-block {
+      margin-left: $singleColumn;
+      margin-top: toRem(90);
+      @include medium {
+        margin-left: 0;
+      }
+    }
+  }
+}
 </style>
