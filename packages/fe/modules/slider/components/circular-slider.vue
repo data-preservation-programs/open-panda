@@ -105,7 +105,7 @@ const matchBreakpointDisplayAmount = (instance) => {
 
 // ====================================================================== Export
 export default {
-  name: 'Slider',
+  name: 'CircularSlider',
 
   props: {
     sliderId: {

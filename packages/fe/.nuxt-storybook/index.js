@@ -20,7 +20,10 @@ import nuxt_plugin_helpers_16d71a4f from 'nuxt_plugin_helpers_16d71a4f' // Sourc
 import nuxt_plugin_directives_d0867c0c from 'nuxt_plugin_directives_d0867c0c' // Source: ../plugins/directives (mode: 'all')
 import nuxt_plugin_seo_5e466527 from 'nuxt_plugin_seo_5e466527' // Source: ../plugins/seo (mode: 'all')
 import nuxt_plugin_scrollto_ee90aa76 from 'nuxt_plugin_scrollto_ee90aa76' // Source: ../plugins/scroll-to (mode: 'all')
+import nuxt_plugin_uuid_6a876431 from 'nuxt_plugin_uuid_6a876431' // Source: ../plugins/uuid (mode: 'all')
+import nuxt_plugin_nuxthammer_12eeb8cc from 'nuxt_plugin_nuxthammer_12eeb8cc' // Source: ../plugins/nuxt-hammer (mode: 'all')
 import nuxt_plugin_plugintoaster_fa3bf746 from 'nuxt_plugin_plugintoaster_fa3bf746' // Source: ./toaster/plugin-toaster.js (mode: 'all')
+import nuxt_plugin_pluginindex_08f51ed4 from 'nuxt_plugin_pluginindex_08f51ed4' // Source: ./slider/plugin-index.js (mode: 'all')
 import nuxt_plugin_pluginindex_09d53bb9 from 'nuxt_plugin_pluginindex_09d53bb9' // Source: ./form/plugin-index.js (mode: 'all')
 import nuxt_plugin_pluginhelpers_27071826 from 'nuxt_plugin_pluginhelpers_27071826' // Source: ./form/plugin-helpers.js (mode: 'all')
 import nuxt_plugin_pluginindex_90ab4632 from 'nuxt_plugin_pluginindex_90ab4632' // Source: ./button/plugin-index.js (mode: 'all')
@@ -245,8 +248,20 @@ async function createApp(ssrContext, config = {}) {
     await nuxt_plugin_scrollto_ee90aa76(app.context, inject)
   }
 
+  if (typeof nuxt_plugin_uuid_6a876431 === 'function') {
+    await nuxt_plugin_uuid_6a876431(app.context, inject)
+  }
+
+  if (typeof nuxt_plugin_nuxthammer_12eeb8cc === 'function') {
+    await nuxt_plugin_nuxthammer_12eeb8cc(app.context, inject)
+  }
+
   if (typeof nuxt_plugin_plugintoaster_fa3bf746 === 'function') {
     await nuxt_plugin_plugintoaster_fa3bf746(app.context, inject)
+  }
+
+  if (typeof nuxt_plugin_pluginindex_08f51ed4 === 'function') {
+    await nuxt_plugin_pluginindex_08f51ed4(app.context, inject)
   }
 
   if (typeof nuxt_plugin_pluginindex_09d53bb9 === 'function') {
