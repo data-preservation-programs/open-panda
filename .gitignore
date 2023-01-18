@@ -105,4 +105,4 @@ sw.*
 *.swp
 
 # Storybook
-# .nuxt-storybook
+.nuxt-storybook
