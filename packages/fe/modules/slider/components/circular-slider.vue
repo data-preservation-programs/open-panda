@@ -1,5 +1,5 @@
 <template>
-  <div class="slider" :style="{ '--slider-min-height': `${height}px` }">
+  <div class="circular-slider" :style="{ '--slider-min-height': `${height}px` }">
     <div :class="`grid-noGutter${reverseGrid ? '-reverse' : ''}`">
 
       <div
@@ -211,7 +211,8 @@ export default {
       id: this.id,
       sliderId: this.sliderId,
       panelPositions: [...Array(panelCount).keys()].map(el => (el + startPanelIndex + panelCount - 1) % panelCount),
-      panelCount: this.panelCount
+      panelCount: panelCount,
+      refreshHeight: handleSliderResize(this)
     })
     handleSliderResize(this)
     this.resize = () => { handleSliderResize(this) }
@@ -220,6 +221,7 @@ export default {
 
   beforeDestroy () {
     this.deregisterSlider(this.id)
+    if (this.resize) { window.removeEventListener('resize', this.resize) }
   },
 
   methods: {
@@ -273,7 +275,7 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.slider {
+.circular-slider {
   --slider-min-height: 100px;
   .panel-before,
   .panel-after {
