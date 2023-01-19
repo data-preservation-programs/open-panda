@@ -56,7 +56,7 @@ cat localhost_cert.pem > localhost_fullchain.pem
 cat "$(mkcert -CAROOT)/rootCA.pem" >> localhost_fullchain.pem
 ```
 
-Now, navigate to your project directory, wherever the repo was cloned to, for example `cd ~/Sites/fishbowl/website` and copy the `pem` files into the repo root. These keys are `.gitignored` by default.
+Now, navigate to your project directory, wherever the repo was cloned to, for example `cd ~/Sites/work/website` and copy the `pem` files into the repo root. These keys are `.gitignored` by default.
 
 ```zsh
 cp -v ~/.ssh/localhost_cert.pem ~/.ssh/localhost_key.pem .
