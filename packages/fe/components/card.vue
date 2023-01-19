@@ -1,39 +1,40 @@
 <template>
   <div class="col">
     <div class="card">
-      <img class="card-img" :src="`/images/datasets/${data.id}.jpg`" />
+      <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
 
       <div class="card-heading grid-noGutter">
         <div class="col-12 title">
-          {{ data.title }}
+          {{ data.name }}
         </div>
       </div>
 
       <div class="card-details">
         <div
-          v-for="(label, key) in data1"
+          v-for="(label, key) in labels1"
           :key="key"
-          class="grid-noGutter">
-          <div class="col-6">
+          class="grid-noGutter card-details-row">
+          <div class="caption col-6" data-push-right="off-1">
             {{ label }}
           </div>
-          <div class="col-6">
-            {{ data[key] }}
+          <div class="card-data col-5">
+            {{ data[key] || '-' }}
           </div>
         </div>
       </div>
 
-      <div class="card-details">
+      <div v-if="labels2" class="card-details">
         <div
-          v-for="(label, key) in data2"
+          v-for="(label, key) in labels2"
           :key="key"
-          class="grid-noGutter">
-          <div class="col-6">
+          class="grid-noGutter card-details-row">
+          <div class="caption col-6">
             {{ label }}
           </div>
           <div
             v-if="key === 'locations'"
             class="col-6">
+            <span v-if="!data[key]" class="card-data">-</span>
             <span
               v-for="(item, index) in data[key]"
               :key="index">
@@ -41,8 +42,9 @@
             </span>
           </div>
           <div
-            v-if="key === 'filetypes'"
+            v-if="key === 'file_extensions'"
             class="col-6">
+            <span v-if="!data[key]" class="card-data">-</span>
             <span
               v-for="(item, index) in data[key]"
               :key="index">
@@ -66,20 +68,6 @@
 // ===================================================================== Imports
 import Button from '@/components/buttons/button'
 
-// data key should match keys from here
-const data1 = {
-  cid: 'CIDs',
-  replication: 'Replication Factor',
-  size: 'Dataset Size',
-  total: 'Total Data on Network',
-  storage: 'Storage Providers'
-}
-
-const data2 = {
-  filetypes: 'File Types',
-  locations: 'Locations'
-}
-
 // ====================================================================== Export
 export default {
   name: 'Card',
@@ -92,13 +80,15 @@ export default {
     data: {
       type: Object,
       required: true
-    }
-  },
-
-  data () {
-    return {
-      data1,
-      data2
+    },
+    labels1: {
+      type: Object,
+      required: true
+    },
+    labels2: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   }
 }
@@ -113,6 +103,7 @@ export default {
   @include shadow2;
 }
 .card-img {
+  background-color: $rangoonGreen;
   height: toRem(125);
   object-fit: cover;
   border-top-right-radius: toRem(10);
@@ -133,5 +124,12 @@ export default {
 }
 .card-details {
   border-top: 1px solid $lavenderGray;
+  .card-details-row {
+    margin-bottom: toRem(12);
+  }
+  .card-data {
+    @include caption;
+    @include fontWeight_Bold;
+  }
 }
 </style>

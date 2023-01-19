@@ -12,6 +12,10 @@
 </template>
 
 <script>
+/**
+ * use this button component for simple buttons
+ * ie. buttons that leads to another page or nav
+ */
 export default {
   name: 'Button',
 

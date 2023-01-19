@@ -144,7 +144,7 @@ export default {
 
   async fetch ({ store, route }) {
     await store.dispatch('general/getBaseData', 'general')
-    await store.dispatch('datasets/getDatasetList', route)
+    await store.dispatch('datasets/getDatasetList', { route })
   },
 
   // head () {
@@ -157,7 +157,7 @@ export default {
       datasetList: 'datasets/datasetList'
     }),
     dataset () {
-      return this.datasetList[0]
+      return this.datasetList[0] ? this.datasetList[0] : {}
     },
     headerImage () {
       return {
@@ -184,7 +184,7 @@ export default {
     },
     stats () {
       const stats = []
-      if  (this.datasetSize) {
+      if (this.datasetSize) {
         stats.push({ icon: 'bar-graph', data: this.$formatBytes(this.datasetSize), label: 'Dataset Size' })
       }
       if (this.totalData) {
@@ -199,14 +199,16 @@ export default {
       return [this.dataset.documentation_url]
     },
     infoItems () {
+      const claimant = this.dataset.claimant ? this.dataset.claimant.firstName : ''
+      const extensions = Array.isArray(this.dataset.file_extensions) ? this.dataset.file_extensions : ''
       return [
-        { label: 'Author', value: this.dataset.claimant.firstName },
+        { label: 'Author', value: claimant },
         { label: 'Date Created', value: this.$moment(this.dataset.createdAt, 'YYYY') },
         { label: 'Funder', value: '' },
-        { label: 'File Types', value: this.dataset.file_extensions.split(',').map(ext => ext.replaceAll(' ', '')) },
+        { label: 'File Types', value: extensions.split(',').map(ext => ext.replaceAll(' ', '')) },
         { label: 'Data Stored', value: false },
         { label: 'Storage Providers', value: this.storageProviders },
-        { label: 'Locations', value: this.dataset.region },
+        { label: 'Locations', value: this.dataset.region }
       ]
     }
   }

@@ -1,13 +1,13 @@
 <template>
   <Button
     v-bind="$props"
-    :class="['button-a', `format__${format}`]"
+    :class="['button-filters']"
     v-on="$listeners">
     <div slot-scope="{ loading }" class="inner-content">
 
-      <LoaderTripleDot :class="{ show: loading }" />
+      <LoaderTripleDot :class="{ show: loadingForced || loading }" />
 
-      <div :class="['button-content', { hide: loading }]">
+      <div :class="['button-content', { hide: loadingForced || loading }]">
         <slot />
       </div>
 
@@ -22,7 +22,7 @@ import LoaderTripleDot from '@/components/spinners/triple-dot'
 
 // ====================================================================== Export
 export default {
-  name: 'ButtonA',
+  name: 'ButtonFilters',
 
   components: {
     Button,
@@ -50,6 +50,11 @@ export default {
       required: false,
       default: false
     },
+    loadingForced: { // overrides 'loader' prop
+      type: Boolean,
+      required: false,
+      default: false
+    },
     disabled: {
       type: Boolean,
       required: false,
@@ -59,11 +64,6 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    },
-    format: { // 'mini', 'regular'
-      type: String,
-      required: false,
-      default: 'regular'
     }
   }
 }
@@ -74,14 +74,15 @@ export default {
 .button {
   position: relative;
   padding: 0.25rem 1rem;
-  border: 2px solid darkorange;
+  border: 1px solid $rangoonGreen;
   border-radius: 2rem;
   white-space: nowrap;
   cursor: pointer;
   &:not([disabled]) {
     &:hover,
     &.selected {
-      background-color: darkorange;
+      background-color: $rangoonGreen;
+      color: red;
     }
     &:focus-visible {
       @include focusBoxShadow;
@@ -92,6 +93,10 @@ export default {
     cursor: no-drop;
     opacity: 0.5;
   }
+  &.selected {
+    background-color: $rangoonGreen;
+    color: red;
+  }
 }
 
 .triple-dot-loader,
@@ -100,13 +105,16 @@ export default {
   height: 100%;
 }
 
-.triple-dot-loader {
+::v-deep .triple-dot-loader {
   position: absolute;
   top: 0;
   left: 0;
   opacity: 0;
   &.show {
     opacity: 1;
+  }
+  .dot {
+    transition: background-color 150 ease-in-out;
   }
 }
 
@@ -119,11 +127,5 @@ export default {
   &.hide {
     opacity: 0;
   }
-}
-
-// ///////////////////////////////////////////////////////////////////// Formats
-.format__mini {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.75rem;
 }
 </style>
