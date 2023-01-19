@@ -1,1 +1,0 @@
-# OpenPanda Frontend
