@@ -1,8 +1,8 @@
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import md from '!raw-loader!./init.md'
+import md from '!raw-loader!../../README.md'
 
 export default {
-  title: 'Test',
+  title: 'Readme/Repo Readme',
   parameters: {
     previewTabs: {
       canvas: {
@@ -16,4 +16,4 @@ export default {
   }
 }
 
-export const INIT = args => ({})
+export const RepoReadme = args => ({})

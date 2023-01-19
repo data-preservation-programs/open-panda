@@ -99,7 +99,7 @@ export default {
     '~/modules/slider',
     // '~/modules/alert',
     // '~/modules/auth',
-    // '~/modules/search',
+    '~/modules/search',
     '~/modules/form',
     '~/modules/button'
   ],
@@ -189,6 +189,12 @@ export default {
         test: /\.md$/,
         use: 'raw-loader'
       })
+    }
+  },
+  storybook: {
+    port: 4008,
+    parameters: {
+      layout: 'fullscreen'
     }
   }
 }

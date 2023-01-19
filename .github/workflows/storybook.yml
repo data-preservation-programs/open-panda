@@ -17,7 +17,7 @@ jobs:
       - name: Install and Build 🔧
         run: | # Install npm packages and build the Storybook files
           npm ci
-          npm run storybook-build
+          npm run storybook-build -w packages/fe
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@3.6.2
         with:
