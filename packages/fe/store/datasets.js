@@ -30,10 +30,8 @@ const state = () => ({
   loading: {
     editorNav: false,
     explorerNav: false,
-    dashboardNav: false,
     editorData: false,
-    explorerData: false,
-    dashboardData: false
+    explorerData: false
   },
   basicStats: false,
   filters: false

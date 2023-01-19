@@ -18,7 +18,7 @@
             {{ label }}
           </div>
           <div class="card-data col-5">
-            {{ data[key] }}
+            {{ data[key] || '-' }}
           </div>
         </div>
       </div>
@@ -34,6 +34,7 @@
           <div
             v-if="key === 'locations'"
             class="col-6">
+            <span v-if="!data[key]" class="card-data">-</span>
             <span
               v-for="(item, index) in data[key]"
               :key="index">
@@ -41,8 +42,9 @@
             </span>
           </div>
           <div
-            v-if="key === 'filetypes'"
+            v-if="key === 'file_extensions'"
             class="col-6">
+            <span v-if="!data[key]" class="card-data">-</span>
             <span
               v-for="(item, index) in data[key]"
               :key="index">
@@ -101,6 +103,7 @@ export default {
   @include shadow2;
 }
 .card-img {
+  background-color: $rangoonGreen;
   height: toRem(125);
   object-fit: cover;
   border-top-right-radius: toRem(10);

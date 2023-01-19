@@ -91,13 +91,13 @@ export default {
 
   computed: {
     ...mapGetters({
-      filters: 'modify/filters'
+      filters: 'datasets/filters'
     })
   },
 
   methods: {
     ...mapActions({
-      setPage: 'modify/setPage'
+      setPage: 'datasets/setPage'
     }),
     clearPage () {
       this.setPage({ page: 1, tag: 'explorer' })

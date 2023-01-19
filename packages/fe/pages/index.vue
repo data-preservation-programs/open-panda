@@ -15,7 +15,7 @@
       </div>
       
       <Filters />
-  
+
       <div v-if="noResults">
         <h3>There are no projects matching this search, please try again.</h3>
       </div>
@@ -46,7 +46,7 @@
           :page="page"
           :total-pages="totalPages"
           :loading="dataLoading"
-          store-key="modify" />
+          store-key="datasets" />
       </div>
       <div class="col-6">
         results per page
@@ -88,9 +88,9 @@ export default {
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
-    await store.dispatch('modify/setLoadingStatus', { tag: 'explorerNav', status: true })
-    await store.dispatch('modify/getFilters')
-    await store.dispatch('modify/getDatasetList', {
+    await store.dispatch('datasets/setLoadingStatus', { tag: 'explorerNav', status: true })
+    await store.dispatch('datasets/getFilters')
+    await store.dispatch('datasets/getDatasetList', {
       tag: 'explorer',
       route
     })
@@ -104,9 +104,9 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'search/filters',
-      loading: 'modify/loading',
-      metadata: 'modify/metadata',
-      basicStats: 'modify/basicStats',
+      loading: 'datasets/loading',
+      metadata: 'datasets/metadata',
+      basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
       searchValue: 'search/searchValue'
     }),
@@ -117,7 +117,7 @@ export default {
       return this.pageData.page_content
     },
     datasetList () {
-      return this.$store.getters['modify/datasetList'][this.subtag]
+      return this.$store.getters['datasets/datasetList'][this.subtag]
     },
     filteredDatasetList () {
       return this.datasetList.filter(obj => !obj.new)
@@ -168,9 +168,9 @@ export default {
 
   methods: {
     ...mapActions({
-      resetStore: 'modify/resetStore',
-      setLoadingStatus: 'modify/setLoadingStatus',
-      getDatasetList: 'modify/getDatasetList',
+      resetStore: 'datasets/resetStore',
+      setLoadingStatus: 'datasets/setLoadingStatus',
+      getDatasetList: 'datasets/getDatasetList',
       removeLoader: 'button/removeLoader'
     }),
     stopLoading () {
