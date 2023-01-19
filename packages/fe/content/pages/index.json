@@ -54,6 +54,37 @@
           }
         }
       }
+    },
+    "slider": {
+      "id": "home-slider",
+      "grid": [],
+      "col_1": {
+        "type": "slider_block",
+        "slider_type": "circular",
+        "collection": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f"
+        ],
+        "sliderGrid": {
+          "before": {
+            "num": "col-12"
+          },
+          "after": {
+            "num": "col-10",
+            "push_left": "off-1",
+            "push_right": "off-1"
+          }
+        },
+        "cols": {
+          "num": "col-12",
+          "push_left": "",
+          "push_right": ""
+        }
+      }
     }
   }
 }
