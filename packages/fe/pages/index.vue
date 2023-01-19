@@ -52,6 +52,7 @@
         results per page
       </div>
     </div>
+
   </div>
 </template>
 
