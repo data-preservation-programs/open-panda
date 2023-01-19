@@ -190,5 +190,11 @@ export default {
         use: 'raw-loader'
       })
     }
+  },
+  storybook: {
+    port: 4008,
+    parameters: {
+      layout: 'fullscreen'
+    }
   }
 }
