@@ -13,7 +13,7 @@
       <div class="col-4 results-count">
         {{ resultCount }}
       </div>
-      
+
       <Filters />
 
       <div v-if="noResults">
@@ -80,20 +80,14 @@ export default {
 
   data () {
     return {
-      tag: 'index',
-      // TODO: need to remove references to explorer and subtag once we get real endpoint
-      subtag: 'explorer'
+      tag: 'index'
     }
   },
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
-    await store.dispatch('datasets/setLoadingStatus', { tag: 'explorerNav', status: true })
     await store.dispatch('datasets/getFilters')
-    await store.dispatch('datasets/getDatasetList', {
-      tag: 'explorer',
-      route
-    })
+    await store.dispatch('datasets/getDatasetList', { route })
   },
 
   head () {
@@ -117,16 +111,16 @@ export default {
       return this.pageData.page_content
     },
     datasetList () {
-      return this.$store.getters['datasets/datasetList'][this.subtag]
+      return this.$store.getters['datasets/datasetList']
     },
     filteredDatasetList () {
       return this.datasetList.filter(obj => !obj.new)
     },
     dataLoading () {
-      return this.loading.explorerData
+      return this.loading.indexData
     },
     count () {
-      return this.metadata[this.subtag].count
+      return this.metadata.count
     },
     resultCount () {
       const count = this.count
@@ -135,10 +129,10 @@ export default {
       return `${count} results`
     },
     page () {
-      return this.metadata[this.subtag].page
+      return this.metadata.page
     },
     totalPages () {
-      return this.metadata[this.subtag].totalPages
+      return this.metadata.totalPages
     },
     noResults () {
       return !this.count
@@ -148,7 +142,7 @@ export default {
   watch: {
     '$route' (route) {
       this.getDatasetList({
-        tag: 'explorer',
+        tag: 'index',
         route
       })
     },
@@ -176,8 +170,7 @@ export default {
     stopLoading () {
       this.$nextTick(() => {
         if (typeof this.datasetList !== 'boolean') {
-          this.setLoadingStatus({ tag: 'explorerNav', status: false })
-          this.setLoadingStatus({ tag: 'explorerData', status: false })
+          this.setLoadingStatus({ status: false })
         }
       })
     }

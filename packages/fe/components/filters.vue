@@ -100,7 +100,7 @@ export default {
       setPage: 'datasets/setPage'
     }),
     clearPage () {
-      this.setPage({ page: 1, tag: 'explorer' })
+      this.setPage({ page: 1, tag: 'index' })
     }
   }
 }

@@ -9,30 +9,14 @@ const API_BASEURL = 'https://slingshot.filecoin.io/api'
 // /////////////////////////////////////////////////////////////////////// State
 // -----------------------------------------------------------------------------
 const state = () => ({
-  datasetList: {
-    editor: false,
-    explorer: false
-  },
+  datasetList: false,
   metadata: {
-    editor: {
-      page: 1,
-      totalPages: 1,
-      count: false,
-      limit: 10
-    },
-    explorer: {
-      page: 1,
-      totalPages: 1,
-      count: false,
-      limit: 20
-    }
+    page: 1,
+    totalPages: 1,
+    count: false,
+    limit: 20
   },
-  loading: {
-    editorNav: false,
-    explorerNav: false,
-    editorData: false,
-    explorerData: false
-  },
+  loading: false,
   basicStats: false,
   filters: false
 })
@@ -51,29 +35,22 @@ const getters = {
 // -----------------------------------------------------------------------------
 const actions = {
   // //////////////////////////////////////////////////////////////// resetStore
-  resetStore ({ commit, getters, dispatch }, tag) {
-    if (tag === 'editor') {
-      dispatch('setLimit', { limit: 10, tag })
-      dispatch('setPage', { page: 1, tag })
-      commit('SET_DATASET_LIST', { tag, datasetList: false, totalPages: 1 })
-    } else if (tag === 'explorer') {
-      dispatch('setLimit', { limit: 20, tag })
-      dispatch('setPage', { page: 1, tag })
-      commit('SET_DATASET_LIST', { tag, datasetList: false, totalPages: 1 })
-      commit('SET_FILTERS', false)
-    }
+  resetStore ({ commit, getters, dispatch }) {
+    dispatch('setLimit', { limit: 20 })
+    dispatch('setPage', { page: 1 })
+    commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
+    commit('SET_FILTERS', false)
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
-    const tag = metadata.tag
     try {
       const route = metadata.route
-      const page = getters.metadata[tag].page
-      const limit = getters.metadata[tag].limit
+      const page = getters.metadata.page
+      const limit = getters.metadata.limit
       const query = route.query
       const search = query.search
       const filters = {}
-      dispatch('setLoadingStatus', { tag: `${tag}Data`, status: true })
+      dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
           filters[filter] = query[filter]
@@ -97,14 +74,13 @@ const actions = {
       })
       dispatch('setDatasetList', {
         datasetList,
-        tag,
         metadata: payload.metadata
       })
       return payload.results
     } catch (e) {
       console.log('===================== [Store Action: modify/getDatasetList]')
       console.log(e)
-      dispatch('setLoadingStatus', { tag: `${tag}Data`, status: false })
+      dispatch('setLoadingStatus', { status: false })
       return false
     }
   },
@@ -133,9 +109,8 @@ const actions = {
   },
   // ///////////////////////////////////////////////////////////// incrementPage
   incrementPage ({ commit, dispatch }, payload) {
-    const tag = payload.route.name.split('-').pop()
-    dispatch('setPage', { page: payload.page, tag })
-    dispatch('getDatasetList', { route: payload.route, tag })
+    dispatch('setPage', { page: payload.page })
+    dispatch('getDatasetList', { route: payload.route })
   },
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
@@ -172,10 +147,10 @@ const actions = {
 const mutations = {
   SET_DATASET_LIST (state, payload) {
     const metadata = payload.metadata
-    state.datasetList[payload.tag] = payload.datasetList
+    state.datasetList = payload.datasetList
     if (metadata) {
-      state.metadata[payload.tag].totalPages = metadata.totalPages
-      state.metadata[payload.tag].count = metadata.count
+      state.metadata.totalPages = metadata.totalPages
+      state.metadata.count = metadata.count
     }
   },
   UPDATE_DATASET (state, payload) {
@@ -185,13 +160,13 @@ const mutations = {
     state.datasetList.editor.splice(payload.index, 0, payload.dataset)
   },
   SET_PAGE (state, payload) {
-    state.metadata[payload.tag].page = payload.page
+    state.metadata.page = payload.page
   },
   SET_LIMIT (state, payload) {
-    state.metadata[payload.tag].limit = payload.limit
+    state.metadata.limit = payload.limit
   },
   SET_LOADING_STATUS (state, payload) {
-    state.loading[`${payload.tag}`] = payload.status
+    state.loading = payload.status
   },
   SET_BASIC_STATS (state, stats) {
     state.basicStats = stats
