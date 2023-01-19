@@ -9,5 +9,51 @@
     "type": "website",
     "image": "/open-graph-image.jpg"
   },
-  "page_content": {}
+  "page_content": {
+    "hero": {
+      "id": "home-hero",
+      "grid": [],
+      "col_1": {
+        "type": "image_block",
+        "src": "/images/index-hero-left.png",
+        "cols": {
+          "num": "col-5_md-12",
+          "push_left": "",
+          "push_right": ""
+        }
+      },
+      "col_2": {
+        "type": "custom",
+        "cols": {
+          "num": "col-7_md-12",
+          "push_left": "",
+          "push_right": ""
+        },
+        "customizations": {
+          "image": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/index-hero-right.png"
+              }
+            }
+          },
+          "heading": {
+            "name": "TextBlock",
+            "props": {
+              "block": {
+                "heading": "Explore the world’s largest open datasets",
+                "description": "Interact with tamper-proof open datasets on the decentralized web",
+                "ctas": [{
+                  "type": "solid-tear",
+                  "text": "About OpenPanda",
+                  "url": "/about"
+                }]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

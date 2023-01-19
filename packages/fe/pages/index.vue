@@ -1,11 +1,12 @@
 <template>
-  <div :class="`page page-${tag} grid`">
+  <div :class="`page page-${tag}`">
+    <BlockBuilder :sections="sections" />
 
-    <div class="col-5">
-    </div>
-
-    <div class="col-7">
-      <h1>Explore the world's largest open datasets</h1>
+    <div class="grid-4-equalHeight_md-2_sm-1">
+      <Card
+        v-for="(data, index) in dataset.data"
+        :key="`dataset-${index}`"
+        :data="data" />
     </div>
 
   </div>
@@ -15,15 +16,26 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
+// mock data
+import dataset from '@/content/mocks/datasets.json'
+
 import IndexPageData from '@/content/pages/index.json'
+import BlockBuilder from '@/components/blocks/block-builder'
+import Card from '@/components/card'
 
 // ====================================================================== Export
 export default {
-  name: 'IndexPage',
+  name: 'PageIndex',
+
+  components: {
+    BlockBuilder,
+    Card
+  },
 
   data () {
     return {
-      tag: 'index'
+      tag: 'index',
+      dataset
     }
   },
 
@@ -40,12 +52,25 @@ export default {
       siteContent: 'general/siteContent'
     }),
     pageData () {
-      return this.siteContent.index.page_content
+      return this.siteContent[this.tag]
+    },
+    sections () {
+      return this.pageData.page_content
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// General
+:deep(.home-hero) {
+  [data-block-id="col_2"] {
+    .text-block {
+      margin-left: $singleColumn;
+      margin-top: toRem(90);
+      @include medium {
+        margin-left: 0;
+      }
+    }
+  }
+}
 </style>
