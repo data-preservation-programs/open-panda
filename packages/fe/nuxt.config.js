@@ -96,7 +96,7 @@ export default {
     'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
     '~/modules/https',
     '~/modules/toaster',
-    // '~/modules/slider',
+    '~/modules/slider',
     // '~/modules/alert',
     // '~/modules/auth',
     // '~/modules/search',
@@ -109,9 +109,10 @@ export default {
     '~/plugins/helpers',
     '~/plugins/directives',
     '~/plugins/seo',
-    '~/plugins/scroll-to'
+    '~/plugins/scroll-to',
     // '~/plugins/in-viewport',
-    // '~/plugins/uuid'
+    '~/plugins/uuid',
+    '~/plugins/nuxt-hammer'
   ],
   // ///////////////////////////////////////////////////////// [Module] MomentJS
   // ---------------------- Doc: https://github.com/nuxt-community/moment-module

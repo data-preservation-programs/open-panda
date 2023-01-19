@@ -31,8 +31,8 @@ const slider = store => (sliderId) => {
     getPanelCount () {
       return slider ? slider.panelCount : 0
     },
-    getCurrentPanel () {
-      return slider ? slider.currentPanel : 0
+    getPanelPositions () {
+      return slider ? slider.panelPositions : []
     },
     refreshHeight () {
       slider.refreshHeight()
