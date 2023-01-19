@@ -224,7 +224,7 @@ export default {
 }
 
 .theme__standalone {
-  background-color: teal;
+  background-color: white;
   border: 1px solid blue;
   border-radius: 0.5rem;
   .input {

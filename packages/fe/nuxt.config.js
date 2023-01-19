@@ -99,7 +99,7 @@ export default {
     // '~/modules/slider',
     // '~/modules/alert',
     // '~/modules/auth',
-    // '~/modules/search',
+    '~/modules/search',
     '~/modules/form',
     '~/modules/button'
   ],

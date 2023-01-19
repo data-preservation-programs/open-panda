@@ -1,11 +1,11 @@
 <template>
   <div class="col">
     <div class="card">
-      <img class="card-img" :src="`/images/datasets/${data.id}.jpg`" />
+      <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
 
       <div class="card-heading grid-noGutter">
         <div class="col-12 title">
-          {{ data.title }}
+          {{ data.name }}
         </div>
       </div>
 
@@ -70,13 +70,13 @@ import Button from '@/components/buttons/button'
 const data1 = {
   cid: 'CIDs',
   replication: 'Replication Factor',
-  size: 'Dataset Size',
+  data_size: 'Dataset Size',
   total: 'Total Data on Network',
   storage: 'Storage Providers'
 }
 
 const data2 = {
-  filetypes: 'File Types',
+  file_extensions: 'File Types',
   locations: 'Locations'
 }
 
