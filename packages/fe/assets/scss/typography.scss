@@ -19,6 +19,7 @@ $letterSpacing_Large: 0.03em;
 @mixin fontSize_10 { font-size: toRem(10) }
 @mixin fontSize_14 { font-size: toRem(14) }
 @mixin fontSize_16 { font-size: toRem(16) }
+@mixin fontSize_17 { font-size: toRem(17) }
 @mixin fontSize_20 { font-size: toRem(20) }
 @mixin fontSize_24 { font-size: toRem(24) }
 @mixin fontSize_28 { font-size: toRem(28) }
@@ -65,7 +66,7 @@ $letterSpacing_Large: 0.03em;
   line-height: leading(56, 45);
   @include medium {
     @include fontSize_24;
-    line-height: leading(42, 24);
+    line-height: leading(35, 24);
   }
 }
 
@@ -124,7 +125,7 @@ $letterSpacing_Large: 0.03em;
   }
 }
 
-@mixin p2Link{
+@mixin p2Link {
   @include fontWeight_Medium;
   font-family: $font_Primary;
   
@@ -144,4 +145,10 @@ $letterSpacing_Large: 0.03em;
     line-height: leading(30, 16);
 
   }
+}
+
+@mixin title {
+  font-family: $font_Secondary;
+  @include fontWeight_Semibold;
+  @include fontSize_17;
 }
