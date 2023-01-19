@@ -11,24 +11,24 @@
 
       <div class="card-details">
         <div
-          v-for="(label, key) in data1"
+          v-for="(label, key) in labels1"
           :key="key"
-          class="grid-noGutter">
-          <div class="col-6">
+          class="grid-noGutter card-details-row">
+          <div class="caption col-6" data-push-right="off-1">
             {{ label }}
           </div>
-          <div class="col-6">
+          <div class="card-data col-5">
             {{ data[key] }}
           </div>
         </div>
       </div>
 
-      <div class="card-details">
+      <div v-if="labels2" class="card-details">
         <div
-          v-for="(label, key) in data2"
+          v-for="(label, key) in labels2"
           :key="key"
-          class="grid-noGutter">
-          <div class="col-6">
+          class="grid-noGutter card-details-row">
+          <div class="caption col-6">
             {{ label }}
           </div>
           <div
@@ -66,20 +66,6 @@
 // ===================================================================== Imports
 import Button from '@/components/buttons/button'
 
-// data key should match keys from here
-const data1 = {
-  cid: 'CIDs',
-  replication: 'Replication Factor',
-  data_size: 'Dataset Size',
-  total: 'Total Data on Network',
-  storage: 'Storage Providers'
-}
-
-const data2 = {
-  file_extensions: 'File Types',
-  locations: 'Locations'
-}
-
 // ====================================================================== Export
 export default {
   name: 'Card',
@@ -92,13 +78,15 @@ export default {
     data: {
       type: Object,
       required: true
-    }
-  },
-
-  data () {
-    return {
-      data1,
-      data2
+    },
+    labels1: {
+      type: Object,
+      required: true
+    },
+    labels2: {
+      type: Object,
+      required: false,
+      default: () => {}
     }
   }
 }
@@ -133,5 +121,12 @@ export default {
 }
 .card-details {
   border-top: 1px solid $lavenderGray;
+  .card-details-row {
+    margin-bottom: toRem(12);
+  }
+  .card-data {
+    @include caption;
+    @include fontWeight_Bold;
+  }
 }
 </style>

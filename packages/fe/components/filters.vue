@@ -14,26 +14,23 @@
 
         <div class="filters-label">
           <span>Preparation Progress</span>
-          <ButtonB
+          <ButtonFilters
             v-if="!empty"
-            format="tiny"
             class="clear-button"
             @clicked="clearFilters">
             <IconClose />
             <span>Clear</span>
-          </ButtonB>
+          </ButtonFilters>
         </div>
 
-        <ButtonB
+        <ButtonFilters
           v-for="(item, index) in filters.preparation_progress"
           :key="`preparation-progress-${index}`"
           :selected="isSelected(item.value)"
-          format="mini"
-          theme="picklewoodblue"
           class="filter-button"
           @clicked="applyFilter(item.value)">
           {{ item.label }}
-        </ButtonB>
+        </ButtonFilters>
 
       </div>
     </Filterer>
@@ -49,26 +46,23 @@
 
         <div class="filters-label">
           <span>Region</span>
-          <ButtonB
+          <ButtonFilters
             v-if="!empty"
-            format="tiny"
             class="clear-button"
             @clicked="clearFilters">
             <IconClose />
             <span>Clear</span>
-          </ButtonB>
+          </ButtonFilters>
         </div>
 
-        <ButtonB
+        <ButtonFilters
           v-for="(item, index) in filters.region"
           :key="`region-${index}`"
           :selected="isSelected(item.value)"
-          format="mini"
-          theme="picklewoodblue"
           class="filter-button"
           @clicked="applyFilter(index)">
           {{ item.label }}
-        </ButtonB>
+        </ButtonFilters>
 
       </div>
     </Filterer>
@@ -81,7 +75,7 @@
 import { mapGetters, mapActions } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
-import ButtonB from '@/components/buttons/button-b'
+import ButtonFilters from '@/components/buttons/button-filters'
 
 import IconClose from '@/components/icons/close-thick'
 
@@ -91,7 +85,7 @@ export default {
 
   components: {
     Filterer,
-    ButtonB,
+    ButtonFilters,
     IconClose
   },
 

@@ -4,7 +4,7 @@
 
     <div class="grid">
       <Searchbar
-        placeholder="Search by dataset ID, name, slug or description..."
+        :placeholder="`Search ${count} datasets`"
         :loading="dataLoading"
         theme="standalone"
         format="mini"
@@ -25,7 +25,32 @@
       <Card
         v-for="(data, index) in filteredDatasetList"
         :key="`dataset-${index}`"
-        :data="data" />
+        :data="data"
+        :labels1="{
+          cid: 'CIDs',
+          replication: 'Replication Factor',
+          data_size: 'Dataset Size',
+          total: 'Total Data on Network',
+          storage: 'Storage Providers'
+        }"
+        :labels2="{
+          file_extensions: 'File Types',
+          locations: 'Locations'
+        }" />
+    </div>
+
+    <div class="grid-center-middle">
+      <div class="col-6">
+        <PaginationControls
+          v-if="totalPages > 1"
+          :page="page"
+          :total-pages="totalPages"
+          :loading="dataLoading"
+          store-key="modify" />
+      </div>
+      <div class="col-6">
+        results per page
+      </div>
     </div>
   </div>
 </template>
@@ -39,6 +64,7 @@ import BlockBuilder from '@/components/blocks/block-builder'
 import Card from '@/components/card'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
+import PaginationControls from '@/components/pagination-controls'
 
 // ====================================================================== Export
 export default {
@@ -48,12 +74,14 @@ export default {
     BlockBuilder,
     Card,
     Filters,
-    Searchbar
+    Searchbar,
+    PaginationControls
   },
 
   data () {
     return {
       tag: 'index',
+      // TODO: need to remove references to explorer and subtag once we get real endpoint
       subtag: 'explorer'
     }
   },
@@ -143,8 +171,7 @@ export default {
       resetStore: 'modify/resetStore',
       setLoadingStatus: 'modify/setLoadingStatus',
       getDatasetList: 'modify/getDatasetList',
-      removeLoader: 'button/removeLoader',
-      setClipboard: 'general/setClipboard'
+      removeLoader: 'button/removeLoader'
     }),
     stopLoading () {
       this.$nextTick(() => {

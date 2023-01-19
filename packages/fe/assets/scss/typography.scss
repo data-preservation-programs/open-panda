@@ -136,10 +136,10 @@ $letterSpacing_Large: 0.03em;
 }
 
 @mixin caption {
-  @include fontWeight_Bold;
+  @include fontWeight_Regular;
   font-family: $font_Primary;
   @include fontSize_14;
-  line-height: leading(30, 14);
+  line-height: leading(21, 14);
   @include medium {
     @include fontSize_16;
     line-height: leading(30, 16);
@@ -147,8 +147,9 @@ $letterSpacing_Large: 0.03em;
   }
 }
 
-@mixin title {
+@mixin cardTitle {
   font-family: $font_Secondary;
   @include fontWeight_Semibold;
   @include fontSize_17;
 }
+

@@ -22,14 +22,14 @@
           @focus="focused = true"
           @blur="focused = false">
 
-        <ButtonA
+        <ButtonFilters
           v-if="!empty"
           format="tiny"
           class="clear-button"
           @clicked="clearSearch">
           <IconClose />
           <span>Clear</span>
-        </ButtonA>
+        </ButtonFilters>
 
         <button
           :class="['search-button', { loading }]"
@@ -48,7 +48,7 @@
 // ===================================================================== Imports
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
-import ButtonA from '@/components/buttons/button-a'
+import ButtonFilters from '@/components/buttons/button-filters'
 
 import IconSearch from '@/components/icons/search'
 import IconClose from '@/components/icons/close-thick'
@@ -60,7 +60,7 @@ export default {
   components: {
     Searcher,
     Spinner,
-    ButtonA,
+    ButtonFilters,
     IconSearch,
     IconClose
   },

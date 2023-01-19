@@ -2,6 +2,8 @@
 // -----------------------------------------------------------------------------
 import CloneDeep from 'lodash/cloneDeep'
 
+const API_BASEURL = 'https://slingshot.filecoin.io/api'
+
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////////////////// State
@@ -53,9 +55,6 @@ const actions = {
   // //////////////////////////////////////////////////////////////// resetStore
   resetStore ({ commit, getters, dispatch }, tag) {
     if (tag === 'editor') {
-      getters.datasetList.editor.forEach((dataset) => {
-        this.dispatch('form/deregisterFormModel', `modify|${dataset._id}`)
-      })
       dispatch('setLimit', { limit: 10, tag })
       dispatch('setPage', { page: 1, tag })
       commit('SET_DATASET_LIST', { tag, datasetList: false, totalPages: 1 })
@@ -82,7 +81,7 @@ const actions = {
           filters[filter] = query[filter]
         }
       })
-      const response = await this.$axios.get('https://slingshot.filecoin.io/api/modify/get-dataset-list', {
+      const response = await this.$axios.get(API_BASEURL + '/modify/get-dataset-list', {
         params: {
           page,
           ...(search && { search }),
@@ -114,7 +113,7 @@ const actions = {
   // //////////////////////////////////////////////////////////////// getFilters
   async getFilters ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axios.get('https://slingshot.filecoin.io/api/modify/get-filters')
+      const response = await this.$axios.get(API_BASEURL + '/modify/get-filters')
       commit('SET_FILTERS', response.data.payload)
     } catch (e) {
       console.log('========================= [Store Action: modify/getFilters]')
@@ -160,7 +159,7 @@ const actions = {
   // ///////////////////////////////////////////////////////////// getBasicStats
   async getBasicStats ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axios.get('https://slingshot.filecoin.io/api/modify/get-basic-stats')
+      const response = await this.$axios.get(API_BASEURL + '/modify/get-basic-stats')
       commit('SET_BASIC_STATS', response.data.payload)
     } catch (e) {
       console.log('====================== [Store Action: modify/getBasicStats]')
