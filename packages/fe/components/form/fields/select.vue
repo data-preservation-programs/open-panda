@@ -179,7 +179,7 @@ $height: 2.5rem;
   }
   .dropdown {
     max-height: $height * 5.5;
-    background-color: blue;
+    background-color: $gin;
   }
 }
 

@@ -17,7 +17,7 @@ export default {
       required: true
     },
     filters: {
-      type: [Array, Boolean],
+      type: Array,
       required: true
     },
     multiple: { // search by multiple filters or just 1 at a time
@@ -75,10 +75,8 @@ export default {
       return query ? query.split(',') : []
     },
     applyFilter (index) {
-      // TODO JO: fix this for boolean
       const action = this.action
-      const value = typeof this.filters === 'boolean' ? index : this.filters[index].value
-
+      const value = `${this.filters[index].value}`
       this.$filter.toggleTerm({
         instance: this,
         action,

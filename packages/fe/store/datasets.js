@@ -87,7 +87,10 @@ const actions = {
       const response = await this.$axios.get(API_BASEURL + '/modify/get-filters')
       // TODO TEMP: remove later
       const tempResponse = response.data.payload
-      tempResponse.new = false
+      tempResponse.new = [{
+        label: 'Show only fully stored datasets',
+        value: true
+      }]
       tempResponse.sorts = [
         {
           label: 'No. of storage providers up',

@@ -23,7 +23,7 @@
               label: 'Show only fully stored datasets',
               model_key: 'fullyStored'
             }"
-            @updateValue="applyFilter(getSelectedValue('fullyStored'))" />
+            @updateValue="applyFilter(0)" />
         </div>
       </Filterer>
 
@@ -249,9 +249,8 @@ export default {
       })
     },
     getSelectedValue (modelKey) {
-      console.log('modelKey', modelKey)
-      console.log(JSON.stringify(this.formList))
       const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
+      console.log('getSelectedValue', this.formList[idx].value)
       return this.formList[idx].value
     }
   }
