@@ -153,12 +153,12 @@ $height: 2.5rem;
   }
   &.caution {
     ::v-deep .select {
-      border-color: $pizazz;
+      border-color: red;
     }
   }
   &.error {
     ::v-deep .select {
-      border-color: $redOrange;
+      border-color: $rangoonGreen;
     }
   }
 }

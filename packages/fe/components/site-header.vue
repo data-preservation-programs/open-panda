@@ -1,6 +1,8 @@
 <template>
   <header class="grid-middle-center-spaceBetween-noGutter">
-    <Searchbar />
+    <Searchbar
+      placeholder="Search datasets"
+      theme="solid" />
 
     <nuxt-link to="/" class="logo-link">
       <SiteLogo />

@@ -18,7 +18,8 @@ const state = () => ({
   },
   loading: false,
   basicStats: false,
-  filters: false
+  filters: false,
+  sorts: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -50,6 +51,7 @@ const actions = {
       const query = route.query
       const search = query.search
       const filters = {}
+      const sorts = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
@@ -61,17 +63,12 @@ const actions = {
           page,
           ...(search && { search }),
           ...(limit && { limit }),
-          ...(filters && { filter: filters })
+          ...(filters && { filter: filters }),
+          ...(sorts && { sort: sorts })
         }
       })
       const payload = response.data.payload
       const datasetList = payload.results
-      datasetList.forEach((dataset) => {
-        this.dispatch('form/registerFormModel', Object.assign(CloneDeep(dataset), {
-          formId: `modify|${dataset._id}`,
-          state: dataset.new ? 'new' : 'valid'
-        }))
-      })
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata
@@ -88,7 +85,29 @@ const actions = {
   async getFilters ({ commit, getters, dispatch }) {
     try {
       const response = await this.$axios.get(API_BASEURL + '/modify/get-filters')
-      commit('SET_FILTERS', response.data.payload)
+      // TODO TEMP: remove later
+      const tempResponse = response.data.payload
+      tempResponse.new = false
+      tempResponse.sorts = [
+        {
+          label: 'No. of storage providers up',
+          value: 'provider-up'
+        },
+        {
+          label: 'No. of storage providers down',
+          value: 'provider-down'
+        },
+        {
+          label: 'A-Z',
+          value: 'az'
+        },
+        {
+          label: 'Z-A',
+          value: 'za'
+        }
+      ]
+      // TODO TEMP: remove later
+      commit('SET_FILTERS', tempResponse)
     } catch (e) {
       console.log('========================= [Store Action: modify/getFilters]')
       console.log(e)
@@ -152,12 +171,6 @@ const mutations = {
       state.metadata.totalPages = metadata.totalPages
       state.metadata.count = metadata.count
     }
-  },
-  UPDATE_DATASET (state, payload) {
-    state.datasetList.editor.splice(payload.index, 1, payload.dataset)
-  },
-  ADD_DATASET (state, payload) {
-    state.datasetList.editor.splice(payload.index, 0, payload.dataset)
   },
   SET_PAGE (state, payload) {
     state.metadata.page = payload.page

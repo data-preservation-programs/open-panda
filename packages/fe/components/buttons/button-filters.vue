@@ -73,21 +73,11 @@ export default {
 // ///////////////////////////////////////////////////////////////////// General
 .button {
   position: relative;
-  padding: 0.25rem 1rem;
+  padding: toRem(7) toRem(15);
   border: 1px solid $rangoonGreen;
-  border-radius: 2rem;
+  border-radius: toRem(20);
   white-space: nowrap;
   cursor: pointer;
-  &:not([disabled]) {
-    &:hover,
-    &.selected {
-      background-color: $rangoonGreen;
-      color: red;
-    }
-    &:focus-visible {
-      @include focusBoxShadow;
-    }
-  }
   &[disabled] {
     box-shadow: none;
     cursor: no-drop;
@@ -95,7 +85,11 @@ export default {
   }
   &.selected {
     background-color: $rangoonGreen;
-    color: red;
+    color: white;
+  }
+  &:hover {
+    background-color: $athensGray;
+    color: $rangoonGreen;
   }
 }
 
@@ -123,7 +117,10 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-weight: 500;
+  font-family: $font_Primary;
+  @include fontWeight_Medium;
+  @include fontSize_16;
+  line-height: leading(24, 16);
   &.hide {
     opacity: 0;
   }

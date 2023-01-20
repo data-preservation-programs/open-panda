@@ -8,7 +8,7 @@
     v-on="$listeners">
     <div
       slot-scope="{ value, updateValue, empty, clearSearch }"
-      :class="['searchbar', `theme__${theme}`, `format__${format}`, { focused, empty, loading }]">
+      :class="['searchbar', `theme__${theme}`, { focused, empty, loading }]">
 
       <div class="input-wrapper">
 
@@ -24,7 +24,6 @@
 
         <ButtonFilters
           v-if="!empty"
-          format="tiny"
           class="clear-button"
           @clicked="clearSearch">
           <IconClose />
@@ -97,14 +96,9 @@ export default {
       default: 'general/setSearchValue'
     },
     theme: {
-      type: String, // 'contained', 'line' or 'standalone'
+      type: String, // 'line' or 'solid'
       required: false,
       default: 'line'
-    },
-    format: {
-      type: String, // 'regular' or 'mini'
-      required: false,
-      default: 'regular'
     }
   },
 
@@ -143,7 +137,9 @@ export default {
   padding: 0.75rem;
   font-weight: 500;
   transition: 150ms ease-out;
+  color: $fuscousGray;
   @include placeholder {
+    color: $fuscousGray;
     opacity: 1;
   }
 }
@@ -154,8 +150,8 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 0.625rem;
-  margin-right: -0.625rem;
+  margin-right: toRem(20);
+  margin-left: toRem(10);
   cursor: pointer;
   &.loading {
     .spinner {
@@ -201,48 +197,24 @@ export default {
 }
 
 // ////////////////////////////////////////////////////////////////////// Themes
-.theme__contained {
-  border-radius: 1rem;
-  border: 2px solid tomato;
-  &:hover {
-    background-color: rgba(8, 16, 17, 0.5);
-  }
-  &.focused {
-    background-color: teal;
-  }
-}
-
 .theme__line {
-  border-bottom: 3px solid tomato;
+  border: 2px solid $tasman;
+  border-radius: toRem(30);
   .input {
-    padding: 0.5rem;
-    padding-left: 0;
+    padding: toRem(15) toRem(30);
   }
   .icon-container {
     align-items: flex-end;
   }
 }
 
-.theme__standalone {
+.theme__solid {
   background-color: white;
-  border: 1px solid blue;
-  border-radius: 0.5rem;
+  border-radius: toRem(30) toRem(30) toRem(30) toRem(2);
+  @include shadow3;
   .input {
-    padding-right: 0;
-  }
-  .search-button {
-    margin-right: 0;
+    padding: toRem(15) toRem(15) toRem(15) toRem(22);
   }
 }
 
-// ///////////////////////////////////////////////////////////////////// Formats
-.format__mini {
-  .input {
-    font-size: 0.875rem;
-    padding: 0.5rem 0 0.5rem 0.75rem;
-  }
-  .search-button {
-    padding: 0.5rem;
-  }
-}
 </style>

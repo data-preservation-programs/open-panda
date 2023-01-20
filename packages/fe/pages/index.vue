@@ -2,14 +2,70 @@
   <div :class="`page page-${tag}`">
     <BlockBuilder :sections="sections" />
 
-    <div class="grid">
+    <div class="grid-noGutter-middle-spaceBetween">
       <Searchbar
-        :placeholder="`Search ${count} datasets`"
+        :placeholder="`Search ${count || '...'} datasets`"
         :loading="dataLoading"
-        theme="standalone"
-        format="mini"
+        theme="line"
         class="dataset-searchbar col-4" />
 
+      <Filterer
+        filter-key="new"
+        :filters="filters.new">
+        <div
+          slot-scope="{ applyFilter }"
+          class="col-2">
+          <FieldContainer
+            :form-id="formId"
+            :scaffold="{
+              type: 'checkbox',
+              required: false,
+              label: 'Show only fully stored datasets',
+              model_key: 'fullyStored'
+            }"
+            @updateValue="applyFilter(getSelectedValue('fullyStored'))" />
+        </div>
+      </Filterer>
+
+      <!-- TODO JO: fix the api call to add to "sort" and not "filter" -->
+      <Filterer
+        filter-key="sorts"
+        :filters="filters.sorts">
+        <div
+          slot-scope="{ applyFilter }"
+          class="col-3">
+          <FieldContainer
+            :form-id="formId"
+            :scaffold="{
+              type: 'select',
+              required: false,
+              label: 'Sort by',
+              model_key: 'sort',
+              options: [
+                {
+                  label: 'No. of storage providers up'
+                },
+                {
+                  label: 'No. of storage providers down'
+                },
+                {
+                  label: 'A-Z'
+                },
+                {
+                  label: 'Z-A'
+                }
+              ]
+            }"
+            @updateValue="applyFilter(getSelectedValue('sort'))" />
+        </div>
+      </Filterer>
+
+      <div class="col">
+        <button>filters</button>
+      </div>
+    </div>
+
+    <div class="grid-noGutter-middle-spaceBetween">
       <div class="col-4 results-count">
         {{ resultCount }}
       </div>
@@ -59,6 +115,7 @@
 <script>
 // ===================================================================== Imports
 import { mapGetters, mapActions } from 'vuex'
+import { findIndex } from 'lodash'
 
 import IndexPageData from '@/content/pages/index.json'
 import BlockBuilder from '@/components/blocks/block-builder'
@@ -66,6 +123,10 @@ import Card from '@/components/card'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
+import FieldContainer from '@/components/form/field-container'
+import Filterer from '@/modules/search/components/filterer'
+
+const formId = 'datasets|sorts'
 
 // ====================================================================== Export
 export default {
@@ -76,12 +137,15 @@ export default {
     Card,
     Filters,
     Searchbar,
-    PaginationControls
+    PaginationControls,
+    FieldContainer,
+    Filterer
   },
 
   data () {
     return {
-      tag: 'index'
+      tag: 'index',
+      formId
     }
   },
 
@@ -89,6 +153,10 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFilters')
     await store.dispatch('datasets/getDatasetList', { route })
+    await store.dispatch('form/registerFormModel', {
+      formId,
+      state: 'valid'
+    })
   },
 
   head () {
@@ -98,12 +166,13 @@ export default {
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent',
-      filters: 'search/filters',
+      filters: 'datasets/filters',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue'
+      searchValue: 'search/searchValue',
+      formModels: 'form/models'
     }),
     pageData () {
       return this.siteContent[this.tag]
@@ -137,18 +206,22 @@ export default {
     },
     noResults () {
       return !this.count
+    },
+    // checkbox and dropdowns
+    formList () {
+      return this.$store.getters['form/fields']
     }
   },
 
   watch: {
     '$route' (route) {
-      this.getDatasetList({
-        tag: 'index',
-        route
-      })
+      this.getDatasetList({ route })
     },
     datasetList () {
       this.stopLoading()
+    },
+    formList () {
+      console.log(JSON.stringify(this.formList))
     }
   },
 
@@ -174,6 +247,12 @@ export default {
           this.setLoadingStatus({ status: false })
         }
       })
+    },
+    getSelectedValue (modelKey) {
+      console.log('modelKey', modelKey)
+      console.log(JSON.stringify(this.formList))
+      const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
+      return this.formList[idx].value
     }
   }
 
