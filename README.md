@@ -61,3 +61,4 @@ Now, navigate to your project directory, wherever the repo was cloned to, for ex
 ```zsh
 cp -v ~/.ssh/localhost_cert.pem ~/.ssh/localhost_key.pem .
 ```
+
