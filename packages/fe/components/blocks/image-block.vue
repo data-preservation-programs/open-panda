@@ -3,7 +3,8 @@
 
     <img
       :src="block.src"
-      :alt="block.alt ? block.alt : $GetPrettyNameFromUrl(block.src)" />
+      :alt="block.alt ? block.alt : $GetPrettyNameFromUrl(block.src)"
+      class="image" />
 
     <caption v-if="block.caption">
       {{ block.caption }}
