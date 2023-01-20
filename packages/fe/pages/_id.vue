@@ -5,14 +5,28 @@
     <section id="section-header">
       <div class="grid">
 
-        <div class="col-3" data-push-left="off-1">
-          <ImageBlock :block="headerImage" />
+        <div
+          class="col-3"
+          data-push-left="off-1_ti-0"
+          data-push-right="off-0_ti-9">
+          <div class="image-wrapper">
+            <div class="header-image">
+              <div
+                class="background-image"
+                :style="headerImage">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="col-6" data-push-right="off-2">
+        <div class="col-6_ti-12" data-push-right="off-2_ti-0">
           <div class="header-matter">
 
-            <div class="message-banner" v-html="progressMessage"></div>
+            <div
+              v-if="progressMessage"
+              class="message-banner"
+              v-html="progressMessage">
+            </div>
 
             <h1 class="heading">
               {{ heading }}
@@ -35,85 +49,103 @@
 
     <!-- ============================================================= INTRO -->
     <section id="section-intro">
-      <div class="grid">
+      <Accordion
+        v-slot="{ active }">
+        <AccordionSection
+          :active="active">
 
-        <div class="col-6" data-push-left="off-1">
-
-          <TextBlock :block="descriptionBlock" />
-
-          <div class="stats-card-list">
-            <CardCutout
-              v-for="(stat, i) in stats"
-              :key="stat.label"
-              :top-tab="i === 0"
-              :bottom-tab="i === stats.length - 1"
-              class="stat-card">
-              <div class="stat-inner-wrapper">
-                <div :class="['icon', stat.icon]"></div>
-                <div>
-                  <h3 class="heading">
-                    {{ stat.data }}
-                  </h3>
-                  <div class="label">
-                    {{ stat.label }}
-                  </div>
-                </div>
+          <AccordionHeader>
+            <div class="grid">
+              <div class="col">
+                About this dataset
               </div>
-            </CardCutout>
-          </div>
+            </div>
+          </AccordionHeader>
 
-        </div>
+          <AccordionContent>
+            <div class="grid">
 
-        <div class="col-4" data-push-left="off-1">
-          <div class="dataset-info-card">
-            <CardCutout>
-              <div class="info-card">
+              <div class="col-6" data-push-left="off-1">
 
-                <div class="resources">
-                  <h6 class="heading">
-                    Resources
-                  </h6>
-                  <div class="links">
-                    <a
-                      v-for="(link, i) in resources"
-                      :key="`resource-${i}`"
-                      :href="link"
-                      class="link">
-                      {{ link }}
-                    </a>
-                  </div>
-                </div>
+                <TextBlock :block="descriptionBlock" />
 
-                <div class="information">
-                  <h6 class="heading">
-                    Information
-                  </h6>
-                  <div class="info-items">
-                    <div
-                      v-for="(item, i) in infoItems"
-                      :key="`info-${i}`"
-                      class="row">
-                      <div class="label">
-                        {{ item.label }}
-                      </div>
-                      <div v-if="Array.isArray(item.value)" :class="['value', 'list', $slugify(item.label)]">
-                        <div v-for="value in item.value" :key="value" class="list-item">
-                          {{ value }}
+                <div class="stats-card-list">
+                  <CardCutout
+                    v-for="(stat, i) in stats"
+                    :key="stat.label"
+                    :top-tab="i === 0"
+                    :bottom-tab="i === stats.length - 1"
+                    class="stat-card">
+                    <div class="stat-inner-wrapper">
+                      <div :class="['icon', stat.icon]"></div>
+                      <div>
+                        <h3 class="heading">
+                          {{ stat.data }}
+                        </h3>
+                        <div class="label">
+                          {{ stat.label }}
                         </div>
                       </div>
-                      <div v-else :class="['value', $slugify(item.label)]">
-                        {{ item.value }}
-                      </div>
                     </div>
-                  </div>
+                  </CardCutout>
                 </div>
 
               </div>
-            </CardCutout>
-          </div>
-        </div>
 
-      </div>
+              <div class="col-4" data-push-left="off-1">
+                <div class="dataset-info-card">
+                  <CardCutout>
+                    <div class="info-card">
+
+                      <div class="resources">
+                        <h6 class="heading">
+                          Resources
+                        </h6>
+                        <div class="links">
+                          <a
+                            v-for="(link, i) in resources"
+                            :key="`resource-${i}`"
+                            :href="link"
+                            class="link">
+                            {{ link }}
+                          </a>
+                        </div>
+                      </div>
+
+                      <div class="information">
+                        <h6 class="heading">
+                          Information
+                        </h6>
+                        <div class="info-items">
+                          <div
+                            v-for="(item, i) in infoItems"
+                            :key="`info-${i}`"
+                            class="row">
+                            <div class="label">
+                              {{ item.label }}
+                            </div>
+                            <div v-if="Array.isArray(item.value)" :class="['value', 'list', $slugify(item.label)]">
+                              <div v-for="value in item.value" :key="value" class="list-item">
+                                {{ value }}
+                              </div>
+                            </div>
+                            <div v-else :class="['value', $slugify(item.label)]">
+                              {{ item.value }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </CardCutout>
+                </div>
+              </div>
+
+            </div>
+          </AccordionContent>
+
+        </AccordionSection>
+      </Accordion>
     </section>
 
     <!-- ======================================================= SP EXPLORER -->
@@ -131,18 +163,24 @@
 // ====================================================================== Import
 import { mapGetters } from 'vuex'
 
-import ImageBlock from '@/components/blocks/image-block'
 import TextBlock from '@/components/blocks/text-block'
 import CardCutout from '@/components/card-cutout'
+import Accordion from '@/components/accordion/accordion'
+import AccordionSection from '@/components/accordion/accordion-section'
+import AccordionHeader from '@/components/accordion/accordion-header'
+import AccordionContent from '@/components/accordion/accordion-content'
 
 // ====================================================================== Export
 export default {
   name: 'SingularPage',
 
   components: {
-    ImageBlock,
     TextBlock,
-    CardCutout
+    CardCutout,
+    Accordion,
+    AccordionSection,
+    AccordionHeader,
+    AccordionContent
   },
 
   data () {
@@ -167,16 +205,18 @@ export default {
       datasetList: 'datasets/datasetList'
     }),
     dataset () {
-      return this.datasetList[0] ? this.datasetList[0] : {}
+      const dataset = this.datasetList.find(dataset => dataset.slug === this.id)
+      return dataset
+    },
+    slug () {
+      return this.dataset.slug
     },
     progressMessage () {
       return '<b>In progress -</b> This dataset is currently being onboarded to the network and is only partially available. All data will be fully available soon.'
     },
     headerImage () {
-      return {
-        src: '/images/singular-page/genome-in-a-bottle.png',
-        alt: ''
-      }
+      const slug = this.dataset.slug
+      return { 'background-image': `url('/images/datasets/${slug}.jpg')` }
     },
     heading () {
       return this.dataset.name
@@ -227,6 +267,10 @@ export default {
         { label: 'Locations', value: this.dataset.region }
       ]
     }
+  },
+
+  mounted () {
+    // console.log(this.datasetList)
   }
 }
 </script>
@@ -240,12 +284,42 @@ export default {
   margin-bottom: toRem(42);
 }
 
-:deep(.image-block) {
-  display: flex;
+.image-wrapper {
   height: 100%;
-  margin-right: toRem(44);
-  .image {
-    margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.header-image {
+  position: relative;
+  width: calc(100% - 3.25rem);
+  max-width: toRem(270);
+  @include small {
+    width: 100%;
+  }
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  border-radius: 50%;
+  border-bottom-right-radius: 0.125rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  @include tiny {
+    border-bottom-left-radius: 0.125rem;
+    border-bottom-right-radius: 50%;
   }
 }
 
@@ -257,17 +331,28 @@ export default {
   .heading {
     @include h2;
     padding: 1.4375rem 0;
+    @include small {
+      padding-top: 0;
+      padding-bottom: 0.5625rem;
+    }
   }
 }
 
 .message-banner {
-  @include caption;
+  @include fontWeight_Regular;
+  font-family: $font_Primary;
+  @include fontSize_14;
+  line-height: leading(21, 14);
   color: white;
   padding: 0.6875rem 2rem;
   margin-right: toRem(72);
   border-radius: toRem(40);
   border-bottom-left-radius: 0.125rem;
   background-color: $gray900;
+  @include mini {
+    margin-right: 0;
+    margin-bottom: 0.5625rem;
+  }
 }
 
 .tag-list {
