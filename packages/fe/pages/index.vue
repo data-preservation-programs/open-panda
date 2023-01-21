@@ -11,9 +11,10 @@
 
       <Filterer
         filter-key="new"
-        :filters="filters.new">
+        :filters="filters.new"
+        :is-single-option="true">
         <div
-          slot-scope="{ applyFilter }"
+          slot-scope="{ applyFilter, isSelected }"
           class="col-2">
           <FieldContainer
             :form-id="formId"
@@ -23,6 +24,7 @@
               label: 'Show only fully stored datasets',
               model_key: 'fullyStored'
             }"
+            :value="isSelected('new')"
             @updateValue="applyFilter(0)" />
         </div>
       </Filterer>
@@ -61,7 +63,7 @@
       </Filterer>
 
       <div class="col">
-        <button>filters</button>
+        <button>filter button</button>
       </div>
     </div>
 
@@ -171,8 +173,7 @@ export default {
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue',
-      formModels: 'form/models'
+      searchValue: 'search/searchValue'
     }),
     pageData () {
       return this.siteContent[this.tag]
@@ -221,7 +222,7 @@ export default {
       this.stopLoading()
     },
     formList () {
-      console.log(JSON.stringify(this.formList))
+      // console.log(JSON.stringify(this.formList))
     }
   },
 
@@ -250,8 +251,7 @@ export default {
     },
     getSelectedValue (modelKey) {
       const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
-      console.log('getSelectedValue', this.formList[idx].value)
-      return this.formList[idx].value
+      return this.formList[idx] ? this.formList[idx].value : false
     }
   }
 

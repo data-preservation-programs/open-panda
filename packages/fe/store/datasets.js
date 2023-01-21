@@ -51,7 +51,7 @@ const actions = {
       const query = route.query
       const search = query.search
       const filters = {}
-      const sorts = {}
+      const sort = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
@@ -64,7 +64,7 @@ const actions = {
           ...(search && { search }),
           ...(limit && { limit }),
           ...(filters && { filter: filters }),
-          ...(sorts && { sort: sorts })
+          ...(sort && { sort })
         }
       })
       const payload = response.data.payload

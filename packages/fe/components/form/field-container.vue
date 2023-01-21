@@ -32,6 +32,13 @@ import FieldCheckbox from '@/components/form/fields/checkbox'
 import FieldSelect from '@/components/form/fields/select'
 
 // ====================================================================== Export
+
+/**
+ * props:
+ *
+ * @updateValue - triggers when field has changed
+ * :value - is the value of the input
+ */
 export default {
   name: 'FieldContainer',
 
