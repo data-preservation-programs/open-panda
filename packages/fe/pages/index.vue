@@ -32,7 +32,7 @@
       <!-- TODO JO: fix the api call to add to "sort" and not "filter" -->
       <Filterer
         filter-key="sorts"
-        :filters="filters.sorts">
+        :filters="sort.sort">
         <div
           slot-scope="{ applyFilter }"
           class="col-3">
@@ -43,20 +43,7 @@
               required: false,
               label: 'Sort by',
               model_key: 'sort',
-              options: [
-                {
-                  label: 'No. of storage providers up'
-                },
-                {
-                  label: 'No. of storage providers down'
-                },
-                {
-                  label: 'A-Z'
-                },
-                {
-                  label: 'Z-A'
-                }
-              ]
+              options: sort.sort
             }"
             @updateValue="applyFilter(getSelectedValue('sort'))" />
         </div>
@@ -128,7 +115,7 @@ import PaginationControls from '@/components/pagination-controls'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 
-const formId = 'datasets|sorts'
+const formId = 'datasets|form'
 
 // ====================================================================== Export
 export default {
@@ -154,6 +141,7 @@ export default {
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFilters')
+    await store.dispatch('datasets/getSort')
     await store.dispatch('datasets/getDatasetList', { route })
     await store.dispatch('form/registerFormModel', {
       formId,
@@ -169,6 +157,7 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
+      sort: 'datasets/sort',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',

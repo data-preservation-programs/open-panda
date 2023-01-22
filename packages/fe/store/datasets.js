@@ -19,7 +19,7 @@ const state = () => ({
   loading: false,
   basicStats: false,
   filters: false,
-  sorts: false
+  sort: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -29,7 +29,8 @@ const getters = {
   metadata: state => state.metadata,
   loading: state => state.loading,
   basicStats: state => state.basicStats,
-  filters: state => state.filters
+  filters: state => state.filters,
+  sort: state => state.sort
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -41,6 +42,7 @@ const actions = {
     dispatch('setPage', { page: 1 })
     commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
     commit('SET_FILTERS', false)
+    commit('SET_SORT', false)
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
@@ -50,8 +52,8 @@ const actions = {
       const limit = getters.metadata.limit
       const query = route.query
       const search = query.search
+      const sort = query.sort
       const filters = {}
-      const sort = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
@@ -81,9 +83,21 @@ const actions = {
       return false
     }
   },
+  // /////////////////////////////////////////////////////////////////// getSort
+  async getSort ({ commit, getters, dispatch }) {
+    try {
+      const response = await this.$axios.get('https://mocki.io/v1/637930d8-a3b7-4b26-b2c3-6a9ca416af51')
+      commit('SET_SORT', response.data.payload)
+    } catch (e) {
+      console.log('========================= [Store Action: modify/getSort]')
+      console.log(e)
+      return false
+    }
+  },
   // //////////////////////////////////////////////////////////////// getFilters
   async getFilters ({ commit, getters, dispatch }) {
     try {
+      // https://mocki.io/v1/fa232847-680e-4ed1-9372-d631c4d86c35
       const response = await this.$axios.get(API_BASEURL + '/modify/get-filters')
       // TODO TEMP: remove later
       const tempResponse = response.data.payload
@@ -91,24 +105,6 @@ const actions = {
         label: 'Show only fully stored datasets',
         value: true
       }]
-      tempResponse.sorts = [
-        {
-          label: 'No. of storage providers up',
-          value: 'provider-up'
-        },
-        {
-          label: 'No. of storage providers down',
-          value: 'provider-down'
-        },
-        {
-          label: 'A-Z',
-          value: 'az'
-        },
-        {
-          label: 'Z-A',
-          value: 'za'
-        }
-      ]
       // TODO TEMP: remove later
       commit('SET_FILTERS', tempResponse)
     } catch (e) {
@@ -189,6 +185,9 @@ const mutations = {
   },
   SET_FILTERS (state, filters) {
     state.filters = filters
+  },
+  SET_SORT (state, sort) {
+    state.sort = sort
   }
 }
 
