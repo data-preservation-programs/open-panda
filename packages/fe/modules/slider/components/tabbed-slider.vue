@@ -6,6 +6,9 @@
         :class="gridCols.tabs.num"
         :data-push-left="gridCols.tabs.push_left"
         :data-push-right="gridCols.tabs.push_right">
+
+        <slot name="before-tabs"></slot>
+
         <div
           ref="selector"
           class="tab-list">
@@ -27,6 +30,9 @@
         :class="gridCols.slide.num"
         :data-push-left="gridCols.slide.push_left"
         :data-push-right="gridCols.slide.push_right">
+
+        <slot name="before-slides"></slot>
+
         <div
           class="slide-wrapper">
           <div
