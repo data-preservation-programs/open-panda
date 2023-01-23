@@ -1,5 +1,5 @@
 <template>
-  <div class="accordion-content" :style="{ height }">
+  <div class="accordion-content" :style="styles">
 
     <slot />
 
@@ -14,11 +14,25 @@ import Throttle from 'lodash/throttle'
 export default {
   name: 'AccordionContent',
 
+  props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+
   data () {
     return {
       content: false,
       height: '0px',
       resize: false
+    }
+  },
+
+  computed: {
+    styles () {
+      return this.disabled ? { height: 'auto' } : { height: this.height }
     }
   },
 

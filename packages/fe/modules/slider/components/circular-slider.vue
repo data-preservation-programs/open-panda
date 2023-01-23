@@ -211,7 +211,7 @@ export default {
       id: this.id,
       sliderId: this.sliderId,
       panelPositions: [...Array(panelCount).keys()].map(el => (el + startPanelIndex + panelCount - 1) % panelCount),
-      panelCount: panelCount,
+      panelCount,
       refreshHeight: handleSliderResize(this)
     })
     handleSliderResize(this)
