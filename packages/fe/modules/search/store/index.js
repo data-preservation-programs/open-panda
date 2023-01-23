@@ -16,6 +16,7 @@ const state = {
 // -----------------------------------------------------------------------------
 const getters = {
   searchValue: state => state.searchValue,
+  sortValue: state => state.sortValue,
   filters: state => state.filters
 }
 
@@ -25,6 +26,10 @@ const actions = {
   // ///////////////////////////////////////////////////////// recordSearchValue
   recordSearchValue ({ commit }, value) {
     commit('RECORD_SEARCH_VALUE', value)
+  },
+  // ///////////////////////////////////////////////////////// recordSearchValue
+  recordSortValue ({ commit }, value) {
+    commit('RECORD_SORT_VALUE', value)
   },
   // ////////////////////////////////////////////////////////////// recordFilter
   recordFilter ({ commit, getters }, filterKey) {
@@ -43,6 +48,9 @@ const actions = {
 const mutations = {
   RECORD_SEARCH_VALUE (state, value) {
     state.searchValue = value
+  },
+  RECORD_SORT_VALUE (state, value) {
+    state.sortValue = value
   },
   RECORD_FILTER (state, filterKey) {
     state.filters.push(filterKey)

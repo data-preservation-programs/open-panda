@@ -13,6 +13,7 @@ import Path from 'path'
 const IndexPlugin = Path.resolve(__dirname, 'plugins/index.js')
 const SearchPlugin = Path.resolve(__dirname, 'plugins/search.js')
 const FilterPlugin = Path.resolve(__dirname, 'plugins/filter.js')
+const SortPlugin = Path.resolve(__dirname, 'plugins/sort.js')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
@@ -22,7 +23,8 @@ const registerPlugin = (instance, next) => {
     const plugins = [
       { src: IndexPlugin, fileName: 'search/plugin-index.js' },
       { src: SearchPlugin, fileName: 'search/plugin-search.js' },
-      { src: FilterPlugin, fileName: 'search/plugin-filter.js' }
+      { src: FilterPlugin, fileName: 'search/plugin-filter.js' },
+      { src: SortPlugin, fileName: 'search/plugin-sort.js' }
     ]
     plugins.forEach((plugin) => {
       const dst = instance.addTemplate({ src: plugin.src, fileName: plugin.fileName }).dst

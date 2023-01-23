@@ -29,12 +29,10 @@
         </div>
       </Filterer>
 
-      <!-- TODO JO: fix the api call to add to "sort" and not "filter" -->
-      <Filterer
-        filter-key="sorts"
-        :filters="sort.sort">
+      <Sorter
+        :sort="sort.sort">
         <div
-          slot-scope="{ applyFilter }"
+          slot-scope="{ value, applySort }"
           class="col-3">
           <FieldContainer
             :form-id="formId"
@@ -45,9 +43,10 @@
               model_key: 'sort',
               options: sort.sort
             }"
-            @updateValue="applyFilter(getSelectedValue('sort'))" />
+            :value="value"
+            @updateValue="applySort(getSelectedValue('sort'))" />
         </div>
-      </Filterer>
+      </Sorter>
 
       <div class="col">
         <button>filter button</button>
@@ -114,6 +113,7 @@ import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
+import Sorter from '@/modules/search/components/sorter'
 
 const formId = 'datasets|form'
 
@@ -128,7 +128,8 @@ export default {
     Searchbar,
     PaginationControls,
     FieldContainer,
-    Filterer
+    Filterer,
+    Sorter
   },
 
   data () {
@@ -162,7 +163,8 @@ export default {
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue'
+      searchValue: 'search/searchValue',
+      sortValue: 'search/sortValue'
     }),
     pageData () {
       return this.siteContent[this.tag]
