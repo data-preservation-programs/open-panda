@@ -86,5 +86,21 @@
         }
       }
     }
+  },
+  "datasets_content": {
+    "empty": "There are no projects matching this search, please try again.",
+    "card": {
+      "labels1": {
+        "cid": "CID",
+        "replication": "Replication Factor",
+        "data_size": "Dataset Size",
+        "total": "Total Data on Network",
+        "storage": "Storage Provider"
+      },
+      "labels2": {
+        "file_extensions": "File Type",
+        "locations": "Location"
+      }
+    }
   }
 }

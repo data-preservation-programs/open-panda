@@ -1,6 +1,6 @@
 <template>
   <div :class="`page page-${tag}`">
-    <BlockBuilder :sections="sections" />
+    <BlockBuilder :sections="pageContent" />
 
     <div class="grid-noGutter-middle-spaceBetween">
       <Searchbar
@@ -61,7 +61,7 @@
       <Filters />
 
       <div v-if="noResults">
-        <h3>There are no projects matching this search, please try again.</h3>
+        <h3>{{ datasetContent.empty }}</h3>
       </div>
     </div>
 
@@ -70,17 +70,8 @@
         v-for="(data, index) in filteredDatasetList"
         :key="`dataset-${index}`"
         :data="data"
-        :labels1="{
-          cid: 'CIDs',
-          replication: 'Replication Factor',
-          data_size: 'Dataset Size',
-          total: 'Total Data on Network',
-          storage: 'Storage Providers'
-        }"
-        :labels2="{
-          file_extensions: 'File Types',
-          locations: 'Locations'
-        }" />
+        :labels1="datasetContent.card.labels1"
+        :labels2="datasetContent.card.labels2" />
     </div>
 
     <div class="grid-center-middle">
@@ -166,11 +157,11 @@ export default {
       searchValue: 'search/searchValue',
       sortValue: 'search/sortValue'
     }),
-    pageData () {
-      return this.siteContent[this.tag]
+    datasetContent () {
+      return this.siteContent[this.tag].datasets_content
     },
-    sections () {
-      return this.pageData.page_content
+    pageContent () {
+      return this.siteContent[this.tag].page_content
     },
     datasetList () {
       return this.$store.getters['datasets/datasetList']
