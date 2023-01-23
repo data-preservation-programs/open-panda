@@ -48,7 +48,6 @@ class Filter {
 
   // ================================================================ toggleTerm
   toggleTerm (term) {
-    // TODO JO: fix this for boolean
     const filterKey = term.filterKey
     const current = this.query[filterKey]
     if (!current) {
