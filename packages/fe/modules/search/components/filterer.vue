@@ -103,7 +103,6 @@ export default {
     },
     applyFilter (index) {
       const action = this.action
-      console.log(JSON.stringify(this.filters), index)
       const value = `${this.filters[index].value}`
       this.$filter.toggleTerm({
         instance: this,
