@@ -16,9 +16,9 @@
 
     <svg
       v-if="bottomTab"
-      width="276px"
+      width="24px"
       height="10px"
-      viewBox="0 0 276 10"
+      viewBox="0 0 24 10"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       class="tab-after">
@@ -79,11 +79,22 @@ svg {
 .tab-before {
   top: -0.625rem;
   left: 0;
+  @include medium {
+    width: 62px;
+    height: 0.375rem;
+    top: -0.34375rem;
+  }
 }
 
 .tab-after {
   bottom: -0.625rem;
   left: 86px;
+  @include medium {
+    width: 14px;
+    height: 0.375rem;
+    bottom: -0.375rem;
+    left: 50px;
+  }
 }
 
 .bg-left,
@@ -96,6 +107,9 @@ svg {
 .bg-left {
   left: 0;
   width: 110px;
+  @include medium {
+    width: 4rem;
+  }
   border-bottom-left-radius: 0.625rem;
   &.corner-radius {
     border-top-left-radius: 0.625rem;
@@ -109,6 +123,13 @@ svg {
   border-bottom-right-radius: 0.625rem;
   &.extended {
     height: calc(100% + 0.625rem);
+  }
+  @include medium {
+    left: 62px;
+    width: calc(100% - 62px);
+    &.extended {
+      height: calc(100% + 0.375rem);
+    }
   }
 }
 
