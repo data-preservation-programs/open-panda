@@ -110,6 +110,7 @@
     <section id="section-explorer">
       <div class="grid">
         <div class="col-10" data-push-left="off-1" data-push-right="off-1">
+          <CIDTable />
         </div>
       </div>
     </section>
@@ -124,6 +125,7 @@ import { mapGetters } from 'vuex'
 import ImageBlock from '@/components/blocks/image-block'
 import TextBlock from '@/components/blocks/text-block'
 import CardCutout from '@/components/card-cutout'
+import CIDTable from '@/components/cid-table'
 
 // ====================================================================== Export
 export default {
@@ -132,7 +134,8 @@ export default {
   components: {
     ImageBlock,
     TextBlock,
-    CardCutout
+    CardCutout,
+    CIDTable
   },
 
   data () {
