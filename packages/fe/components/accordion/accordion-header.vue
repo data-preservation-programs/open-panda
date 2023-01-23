@@ -13,6 +13,14 @@
 export default {
   name: 'AccordionHeader',
 
+  props: {
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+
   mounted () {
     this.$nextTick(() => {
       const parent = this.$parent.$parent
@@ -34,7 +42,9 @@ export default {
 
   methods: {
     toggle () {
-      this.$parent.$parent.$emit('toggle', this.$parent._uid)
+      if (!this.disabled) {
+        this.$parent.$parent.$emit('toggle', this.$parent._uid)
+      }
     }
   }
 }
