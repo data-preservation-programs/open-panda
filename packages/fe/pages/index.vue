@@ -211,9 +211,6 @@ export default {
     },
     datasetList () {
       this.stopLoading()
-    },
-    formList () {
-      // console.log(JSON.stringify(this.formList))
     }
   },
 

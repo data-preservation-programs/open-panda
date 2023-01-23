@@ -2,6 +2,8 @@
  *
  * 🔌 [plugin | search] sort
  *
+ * methods for sort
+ *
  */
 
 // //////////////////////////////////////////////////////////////// [Class] Sort
@@ -28,6 +30,17 @@ class Sort {
   }
 
   // ======================================================================= for
+  /**
+   * @method for - stores sort value
+   * @param {Object} term {
+   *    instance: this,
+   *     action,
+   *     storeAction: this.storeAction,
+   *     value
+   *   }
+   * @description term.value is an integer that reflects the select value
+   * if term.action = query - pushes to url and store
+   */
   for (term) {
     const action = term.action
     const value = term.value
