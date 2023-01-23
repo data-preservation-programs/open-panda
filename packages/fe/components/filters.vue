@@ -3,17 +3,18 @@
     ref="filtersContainer"
     class="filters">
 
-    <!-- ////////////////////////////////////////////// Preparation Progress -->
     <Filterer
-      filter-key="preparation_progress"
-      :filters="filters.preparation_progress"
+      v-for="(item, key) in filterPanelData.keys"
+      :key="key"
+      :filter-key="key"
+      :filters="filters[key]"
       @filterApplied="clearPage">
       <div
         slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
         class="button-list section">
 
         <div class="filters-label">
-          <span>Preparation Progress</span>
+          <span>{{ item }}</span>
           <ButtonFilters
             v-if="!empty"
             class="clear-button"
@@ -24,49 +25,16 @@
         </div>
 
         <ButtonFilters
-          v-for="(item, index) in filters.preparation_progress"
-          :key="`preparation-progress-${index}`"
-          :selected="isSelected(item.value)"
+          v-for="(item2, index2) in filters[key]"
+          :key="`${filters[key]}-${index2}`"
+          :selected="isSelected(item2.value)"
           class="filter-button"
-          @clicked="applyFilter(item.value)">
-          {{ item.label }}
+          @clicked="applyFilter(index2)">
+          {{ item2.label }}
         </ButtonFilters>
 
       </div>
     </Filterer>
-
-    <!-- //////////////////////////////////////////////////////////// Region -->
-    <Filterer
-      filter-key="region"
-      :filters="filters.region"
-      @filterApplied="clearPage">
-      <div
-        slot-scope="{ applyFilter, isSelected, empty, clearFilters }"
-        class="button-list section">
-
-        <div class="filters-label">
-          <span>Region</span>
-          <ButtonFilters
-            v-if="!empty"
-            class="clear-button"
-            @clicked="clearFilters">
-            <IconClose />
-            <span>Clear</span>
-          </ButtonFilters>
-        </div>
-
-        <ButtonFilters
-          v-for="(item, index) in filters.region"
-          :key="`region-${index}`"
-          :selected="isSelected(item.value)"
-          class="filter-button"
-          @clicked="applyFilter(index)">
-          {{ item.label }}
-        </ButtonFilters>
-
-      </div>
-    </Filterer>
-
   </div>
 </template>
 
@@ -91,8 +59,12 @@ export default {
 
   computed: {
     ...mapGetters({
-      filters: 'datasets/filters'
-    })
+      filters: 'datasets/filters',
+      siteContent: 'general/siteContent'
+    }),
+    filterPanelData () {
+      return this.siteContent.general ? this.siteContent.general.filterPanel : false
+    }
   },
 
   methods: {

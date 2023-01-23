@@ -49,7 +49,7 @@ class Sort {
     } else if (action === 'store') {
       this.store.dispatch(term.storeAction, value)
     } else {
-      this.query.sort = value === 0 ? undefined : value
+      this.query.sort = value
       this.store.dispatch('search/recordSortValue', value)
       this.app.router.push({ query: this.query })
     }

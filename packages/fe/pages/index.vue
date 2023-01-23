@@ -10,8 +10,8 @@
         class="dataset-searchbar col-4" />
 
       <Filterer
-        filter-key="new"
-        :filters="filters.new"
+        filter-key="fullyStored"
+        :filters="filters.fullyStored"
         :is-single-option="true">
         <div
           slot-scope="{ applyFilter, isSelected }"
@@ -24,7 +24,7 @@
               label: 'Show only fully stored datasets',
               model_key: 'fullyStored'
             }"
-            :value="isSelected('new')"
+            :value="isSelected('fullyStored')"
             @updateValue="applyFilter(0)" />
         </div>
       </Filterer>
@@ -84,7 +84,24 @@
           store-key="datasets" />
       </div>
       <div class="col-6">
-        results per page
+        <Sorter
+          :sort="sort.sort">
+          <div
+            slot-scope="{ value, applySort }"
+            class="col-3">
+            <FieldContainer
+              :form-id="formId"
+              :scaffold="{
+                type: 'select',
+                required: false,
+                label: 'results per page',
+                model_key: 'limit',
+                options: sort.sort
+              }"
+              :value="value"
+              @updateValue="applySort(getSelectedValue('sort'))" />
+          </div>
+        </Sorter>
       </div>
     </div>
 
@@ -134,6 +151,7 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFilters')
     await store.dispatch('datasets/getSort')
+    await store.dispatch('datasets/getLimit')
     await store.dispatch('datasets/getDatasetList', { route })
     await store.dispatch('form/registerFormModel', {
       formId,
@@ -150,6 +168,7 @@ export default {
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
       sort: 'datasets/sort',
+      limit: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',

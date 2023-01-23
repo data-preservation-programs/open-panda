@@ -75,18 +75,20 @@
     ]
   },
   "404_error_message": "404 Not Found",
-  "filters": {
+  "filterPanel": {
     "labels": {
       "add": "Add Filters",
-      "dataset": "Dataset Size",
-      "categories": "Categories",
-      "licenses": "Licenses",
-      "fileType": "File Type",
-      "location": "Location",
       "search": "Search",
       "clear": "Clear",
       "seeLess": "See Less",
       "seeMore": "See More"
+    },
+    "keys": {
+      "preparation_progress": "Preparation progress",
+      "categories": "Categories",
+      "licenses": "Licenses",
+      "fileType": "File Type",
+      "location": "Location"
     }
   }
 }

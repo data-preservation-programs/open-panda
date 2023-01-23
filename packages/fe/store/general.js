@@ -42,7 +42,7 @@ const actions = {
   // ///////////////////////////////////////////////////////////// getStaticFile
   async getStaticFile ({ commit, dispatch }, path) {
     try {
-      const response = await this.$axios.get('/get-static-file', {
+      const response = await this.$axiosAuth.get('/get-static-file', {
         params: { path }
       })
       const file = response.data.payload

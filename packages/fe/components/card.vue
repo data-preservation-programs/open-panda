@@ -97,13 +97,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .card {
-//   background-color: white;
-//   border-bottom-left-radius: toRem(10);
-//   border-bottom-right-radius: toRem(40);
-//   border-top-right-radius: toRem(10);
-//   @include shadow2;
-// }
 .card-img {
   background-color: $rangoonGreen;
   height: toRem(125);
