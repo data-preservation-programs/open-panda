@@ -18,7 +18,8 @@ const state = () => ({
   },
   loading: false,
   basicStats: false,
-  filters: false
+  filters: false,
+  sort: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -28,7 +29,8 @@ const getters = {
   metadata: state => state.metadata,
   loading: state => state.loading,
   basicStats: state => state.basicStats,
-  filters: state => state.filters
+  filters: state => state.filters,
+  sort: state => state.sort
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -40,6 +42,7 @@ const actions = {
     dispatch('setPage', { page: 1 })
     commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
     commit('SET_FILTERS', false)
+    commit('SET_SORT', false)
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
@@ -49,6 +52,7 @@ const actions = {
       const limit = getters.metadata.limit
       const query = route.query
       const search = query.search
+      const sort = query.sort
       const filters = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
@@ -61,17 +65,12 @@ const actions = {
           page,
           ...(search && { search }),
           ...(limit && { limit }),
-          ...(filters && { filter: filters })
+          ...(filters && { filter: filters }),
+          ...(sort && { sort })
         }
       })
       const payload = response.data.payload
       const datasetList = payload.results
-      datasetList.forEach((dataset) => {
-        this.dispatch('form/registerFormModel', Object.assign(CloneDeep(dataset), {
-          formId: `modify|${dataset._id}`,
-          state: dataset.new ? 'new' : 'valid'
-        }))
-      })
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata
@@ -84,11 +83,30 @@ const actions = {
       return false
     }
   },
+  // /////////////////////////////////////////////////////////////////// getSort
+  async getSort ({ commit, getters, dispatch }) {
+    try {
+      const response = await this.$axios.get('https://mocki.io/v1/637930d8-a3b7-4b26-b2c3-6a9ca416af51')
+      commit('SET_SORT', response.data.payload)
+    } catch (e) {
+      console.log('========================= [Store Action: modify/getSort]')
+      console.log(e)
+      return false
+    }
+  },
   // //////////////////////////////////////////////////////////////// getFilters
   async getFilters ({ commit, getters, dispatch }) {
     try {
+      // https://mocki.io/v1/fa232847-680e-4ed1-9372-d631c4d86c35
       const response = await this.$axios.get(API_BASEURL + '/modify/get-filters')
-      commit('SET_FILTERS', response.data.payload)
+      // TODO TEMP: remove later
+      const tempResponse = response.data.payload
+      tempResponse.new = [{
+        label: 'Show only fully stored datasets',
+        value: true
+      }]
+      // TODO TEMP: remove later
+      commit('SET_FILTERS', tempResponse)
     } catch (e) {
       console.log('========================= [Store Action: modify/getFilters]')
       console.log(e)
@@ -153,12 +171,6 @@ const mutations = {
       state.metadata.count = metadata.count
     }
   },
-  UPDATE_DATASET (state, payload) {
-    state.datasetList.editor.splice(payload.index, 1, payload.dataset)
-  },
-  ADD_DATASET (state, payload) {
-    state.datasetList.editor.splice(payload.index, 0, payload.dataset)
-  },
   SET_PAGE (state, payload) {
     state.metadata.page = payload.page
   },
@@ -173,6 +185,9 @@ const mutations = {
   },
   SET_FILTERS (state, filters) {
     state.filters = filters
+  },
+  SET_SORT (state, sort) {
+    state.sort = sort
   }
 }
 

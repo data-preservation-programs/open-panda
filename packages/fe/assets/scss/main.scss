@@ -541,3 +541,7 @@ p, .p1 {
     }
   }
 }
+
+*:focus-visible {
+  @include focusBoxShadow;
+}

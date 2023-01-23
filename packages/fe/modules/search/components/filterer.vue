@@ -1,6 +1,7 @@
 <script>
 // ===================================================================== Imports
 import { mapActions } from 'vuex'
+import { concat } from 'lodash'
 
 // ====================================================================== Export
 export default {
@@ -20,10 +21,18 @@ export default {
       type: Array,
       required: true
     },
-    multiple: { // search by multiple filters or just 1 at a time
+    // search by multiple filters or just 1 at a time
+    multiple: {
       type: Boolean,
       required: false,
       default: true
+    },
+    // for filters with boolean value
+    // ie. checkboxes or select
+    isSingleOption: {
+      type: Boolean,
+      required: false,
+      default: false
     }
     // storeGetter: {
     //   type: String,
@@ -70,9 +79,27 @@ export default {
     ...mapActions({
       recordFilter: 'search/recordFilter'
     }),
+
+    /**
+     * returns array of filters
+     * isSingleOption filters will return the key
+     *
+     * route example: /?new=true&region=us,ca
+     * returns: ['new', 'us', 'ca']
+     * @param {*} route
+     */
     getCurrentFilters (route) {
+      const isSingleOptionArr = []
+      let isMultiOptionArr = []
       const query = route.query[this.filterKey]
-      return query ? query.split(',') : []
+      if (query) {
+        if (this.isSingleOption) {
+          isSingleOptionArr.push(this.filterKey)
+        } else {
+          isMultiOptionArr = query.split(',')
+        }
+      }
+      return concat(isSingleOptionArr, isMultiOptionArr)
     },
     applyFilter (index) {
       const action = this.action

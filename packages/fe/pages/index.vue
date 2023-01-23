@@ -1,15 +1,59 @@
 <template>
   <div :class="`page page-${tag}`">
-    <BlockBuilder :sections="sections" />
+    <BlockBuilder :sections="pageContent" />
 
-    <div class="grid">
+    <div class="grid-noGutter-middle-spaceBetween">
       <Searchbar
-        :placeholder="`Search ${count} datasets`"
+        :placeholder="`Search ${count || '...'} datasets`"
         :loading="dataLoading"
-        theme="standalone"
-        format="mini"
+        theme="line"
         class="dataset-searchbar col-4" />
 
+      <Filterer
+        filter-key="new"
+        :filters="filters.new"
+        :is-single-option="true">
+        <div
+          slot-scope="{ applyFilter, isSelected }"
+          class="col-2">
+          <FieldContainer
+            :form-id="formId"
+            :scaffold="{
+              type: 'checkbox',
+              required: false,
+              label: 'Show only fully stored datasets',
+              model_key: 'fullyStored'
+            }"
+            :value="isSelected('new')"
+            @updateValue="applyFilter(0)" />
+        </div>
+      </Filterer>
+
+      <Sorter
+        :sort="sort.sort">
+        <div
+          slot-scope="{ value, applySort }"
+          class="col-3">
+          <FieldContainer
+            :form-id="formId"
+            :scaffold="{
+              type: 'select',
+              required: false,
+              label: 'Sort by',
+              model_key: 'sort',
+              options: sort.sort
+            }"
+            :value="value"
+            @updateValue="applySort(getSelectedValue('sort'))" />
+        </div>
+      </Sorter>
+
+      <div class="col">
+        <button>filter button</button>
+      </div>
+    </div>
+
+    <div class="grid-noGutter-middle-spaceBetween">
       <div class="col-4 results-count">
         {{ resultCount }}
       </div>
@@ -17,7 +61,7 @@
       <Filters />
 
       <div v-if="noResults">
-        <h3>There are no projects matching this search, please try again.</h3>
+        <h3>{{ datasetContent.empty }}</h3>
       </div>
     </div>
 
@@ -26,17 +70,8 @@
         v-for="(data, index) in filteredDatasetList"
         :key="`dataset-${index}`"
         :data="data"
-        :labels1="{
-          cid: 'CIDs',
-          replication: 'Replication Factor',
-          data_size: 'Dataset Size',
-          total: 'Total Data on Network',
-          storage: 'Storage Providers'
-        }"
-        :labels2="{
-          file_extensions: 'File Types',
-          locations: 'Locations'
-        }" />
+        :labels1="datasetContent.card.labels1"
+        :labels2="datasetContent.card.labels2" />
     </div>
 
     <div class="grid-center-middle">
@@ -59,6 +94,7 @@
 <script>
 // ===================================================================== Imports
 import { mapGetters, mapActions } from 'vuex'
+import { findIndex } from 'lodash'
 
 import IndexPageData from '@/content/pages/index.json'
 import BlockBuilder from '@/components/blocks/block-builder'
@@ -66,6 +102,11 @@ import Card from '@/components/card'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
+import FieldContainer from '@/components/form/field-container'
+import Filterer from '@/modules/search/components/filterer'
+import Sorter from '@/modules/search/components/sorter'
+
+const formId = 'datasets|form'
 
 // ====================================================================== Export
 export default {
@@ -76,19 +117,28 @@ export default {
     Card,
     Filters,
     Searchbar,
-    PaginationControls
+    PaginationControls,
+    FieldContainer,
+    Filterer,
+    Sorter
   },
 
   data () {
     return {
-      tag: 'index'
+      tag: 'index',
+      formId
     }
   },
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFilters')
+    await store.dispatch('datasets/getSort')
     await store.dispatch('datasets/getDatasetList', { route })
+    await store.dispatch('form/registerFormModel', {
+      formId,
+      state: 'valid'
+    })
   },
 
   head () {
@@ -98,18 +148,20 @@ export default {
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent',
-      filters: 'search/filters',
+      filters: 'datasets/filters',
+      sort: 'datasets/sort',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue'
+      searchValue: 'search/searchValue',
+      sortValue: 'search/sortValue'
     }),
-    pageData () {
-      return this.siteContent[this.tag]
+    datasetContent () {
+      return this.siteContent[this.tag].datasets_content
     },
-    sections () {
-      return this.pageData.page_content
+    pageContent () {
+      return this.siteContent[this.tag].page_content
     },
     datasetList () {
       return this.$store.getters['datasets/datasetList']
@@ -137,15 +189,16 @@ export default {
     },
     noResults () {
       return !this.count
+    },
+    // checkbox and dropdowns
+    formList () {
+      return this.$store.getters['form/fields']
     }
   },
 
   watch: {
     '$route' (route) {
-      this.getDatasetList({
-        tag: 'index',
-        route
-      })
+      this.getDatasetList({ route })
     },
     datasetList () {
       this.stopLoading()
@@ -174,6 +227,10 @@ export default {
           this.setLoadingStatus({ status: false })
         }
       })
+    },
+    getSelectedValue (modelKey) {
+      const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
+      return this.formList[idx] ? this.formList[idx].value : false
     }
   }
 

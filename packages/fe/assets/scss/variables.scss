@@ -23,6 +23,9 @@ $rangoonGreen: #1B1F12;
 $emperor: #4F4F4F;
 $grayNurse: #F1F3EF;
 $lavenderGray: #C6C1DF;
+$tasman: #CED7C9;
+$fuscousGray: #51504B;
+$athensGray: #E7E9ED;
 $capeCod: #3C4748;
 
 // ----------------------------------------------------------------- Breakpoints
@@ -53,6 +56,10 @@ $duration: 300ms;
 
 @mixin shadow2 { // cards
   box-shadow: 0px 4px 34px rgba(86, 106, 96, 0.25);
+}
+
+@mixin shadow3 { // searchbox
+  box-shadow: 0px 4px 34px rgba(81, 86, 130, 0.25);
 }
 
 @mixin highlight {
