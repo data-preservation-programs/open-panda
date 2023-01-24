@@ -218,6 +218,9 @@ export default {
     width: 100%;
     word-break: break-word;
     color: $grayNurse;
+    font-family: $font_Code;
+    font-size: 0.8125rem;
+    line-height: leading(24, 13);
   }
 }
 

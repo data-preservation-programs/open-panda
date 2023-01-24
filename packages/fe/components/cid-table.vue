@@ -8,7 +8,8 @@
       <CIDCard
         v-for="(cid, i) in mockCids"
         :key="`cid-${i}`"
-        :cid-data="cid" />
+        :cid-data="cid"
+        :mobile="mobileTable" />
     </div>
 
     <div class="pagination">
@@ -23,6 +24,19 @@ import CloneDeep from 'lodash/cloneDeep'
 
 import CIDCard from '@/components/cid-card'
 
+// =================================================================== Functions
+const handleTableResize = (instance) => {
+  if (window.matchMedia('(max-width: 64rem)').matches) {
+    if (!instance.mobileTable) {
+      instance.mobileTable = true
+    }
+  } else {
+    if (instance.mobileTable) {
+      instance.mobileTable = false
+    }
+  }
+}
+
 // ====================================================================== Export
 export default {
   name: 'CIDTable',
@@ -33,6 +47,8 @@ export default {
 
   data () {
     return {
+      mobileTable: false,
+      resize: false,
       cids: [
         {
           title: 'Genome in a Bottle 001',
@@ -104,6 +120,16 @@ export default {
       }
       return mockCids
     }
+  },
+
+  mounted () {
+    handleTableResize(this)
+    this.resize = () => { handleTableResize(this) }
+    window.addEventListener('resize', this.resize)
+  },
+
+  beforeDestroy () {
+    if (this.resize) { window.removeEventListener('resize', this.resize) }
   }
 }
 </script>

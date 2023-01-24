@@ -167,8 +167,11 @@
 
     <!-- ======================================================= SP EXPLORER -->
     <section id="section-explorer">
-      <div class="grid">
-        <div class="col-10" data-push-left="off-1" data-push-right="off-1">
+      <div :class="`grid${mobile ? '-noGutter' : ''}`">
+        <div
+          class="col-10_sm-12"
+          data-push-left="off-1_sm-0"
+          data-push-right="off-1_sm-0">
           <CIDTable />
         </div>
       </div>
@@ -437,6 +440,10 @@ export default {
 // ----------------------------------------------------------------------[INTRO]
 #section-intro {
   padding-bottom: 5.625rem;
+  border-bottom: solid 1px #DDDFE3;
+  @include small {
+    padding-bottom: 2rem;
+  }
 }
 
 :deep(.text-block) {
@@ -519,6 +526,9 @@ export default {
 
 #accordion-contents {
   padding: 2.625rem 0;
+  @include medium {
+    padding-bottom: 1rem;
+  }
   @include small {
     padding-top: 0.75rem;
   }
@@ -694,4 +704,9 @@ export default {
   }
 }
 
+// ///////////////////////////////////////////////////////////////////// SECTION
+// ---------------------------------------------------------------[CID EXPLORER]
+#section-explorer {
+  padding-top: 2.25rem;
+}
 </style>
