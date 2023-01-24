@@ -175,7 +175,7 @@ export default {
       return this.datasetList.filter(obj => !obj.new)
     },
     dataLoading () {
-      return this.loading.indexData
+      return this.loading
     },
     count () {
       return this.metadata.count
