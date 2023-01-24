@@ -48,7 +48,7 @@
       </Sorter>
 
       <div class="col">
-        <button>filter button</button>
+        <Filters />
       </div>
     </div>
 
@@ -56,8 +56,6 @@
       <div class="col-4 results-count">
         {{ resultCount }}
       </div>
-
-      <Filters />
 
       <div v-if="noResults">
         <h3>{{ datasetContent.empty }}</h3>
