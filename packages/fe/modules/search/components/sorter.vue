@@ -34,12 +34,12 @@ export default {
     storeGetter: {
       type: String,
       required: false,
-      default: 'general/sortValue'
+      default: 'general/sortValueIndex'
     },
     storeAction: {
       type: String,
       required: false,
-      default: 'general/setSortValue'
+      default: 'general/setSortValueIndex'
     }
   },
 
@@ -47,7 +47,7 @@ export default {
     const action = this.action
     let value = 0
     switch (action) {
-      case 'emit' : value = this.sortValue; break
+      case 'emit' : value = this.sortValueIndex; break
       case 'store' : value = this.$store.getters[this.storeGetter]; break
       case 'query' : value = this.$route.query.sort; break
     }

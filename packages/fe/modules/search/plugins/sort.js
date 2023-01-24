@@ -20,13 +20,13 @@ class Sort {
   // ================================================================ clearQuery
   clearQuery () {
     this.query.sort = undefined
-    this.store.dispatch('search/recordSortValue', 0)
+    this.store.dispatch('search/recordSortValueIndex', 0)
     this.app.router.push({ query: this.query })
   }
 
   // =================================================================== isEmpty
   isEmpty () {
-    return this.store.getters['search/sortValue'] === 0
+    return this.store.getters['search/sortValueIndex'] === 0
   }
 
   // ======================================================================= for
@@ -45,12 +45,12 @@ class Sort {
     const action = term.action
     const value = term.value
     if (action === 'emit') {
-      term.instance.$emit('setSortValue', value)
+      term.instance.$emit('setSortValueIndex', value)
     } else if (action === 'store') {
       this.store.dispatch(term.storeAction, value)
     } else {
       this.query.sort = value
-      this.store.dispatch('search/recordSortValue', value)
+      this.store.dispatch('search/recordSortValueIndex', value)
       this.app.router.push({ query: this.query })
     }
   }

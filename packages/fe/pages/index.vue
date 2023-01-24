@@ -29,8 +29,7 @@
         </div>
       </Filterer>
 
-      <Sorter
-        :options="limit">
+      <Sorter :options="sort">
         <div
           slot-scope="{ value, apply }"
           class="col-3">
@@ -175,8 +174,7 @@ export default {
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue',
-      sortValue: 'search/sortValue'
+      searchValue: 'search/searchValue'
     }),
     datasetContent () {
       return this.siteContent[this.tag].datasets_content
