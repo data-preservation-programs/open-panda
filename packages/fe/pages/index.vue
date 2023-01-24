@@ -47,16 +47,50 @@
         </div>
       </Sorter>
 
-      <div class="col">
+      <div class="col-1">
         <Filters />
       </div>
     </div>
 
     <div class="grid-noGutter-middle-spaceBetween">
-      <div class="col-4 results-count">
+      <div class="col-9">
         {{ resultCount }}
+        <Filterer
+          v-for="(item, key) in filterPanelData.keys"
+          :key="key"
+          :filter-key="key"
+          :filters="filters[key]">
+          <span
+            slot-scope="{ applyFilter, isSelected }"
+            class="button-list">
+            <span
+              v-for="(item2, index2) in filters[key]"
+              :key="`${filters[key]}-${index2}`">
+              <ButtonFilters
+                v-if="isSelected(item2.value)"
+                :selected="isSelected(item2.value)"
+                class="filter-button"
+                @clicked="applyFilter(index2)">
+                {{ item2.label }}
+              </ButtonFilters>
+            </span>
+          </span>
+        </Filterer>
       </div>
 
+      <div class="col">
+        <button @click="$clearAllFilters">
+          clear all filters
+        </button>
+      </div>
+
+      <div class="col">
+        <button>grid</button>
+        <button>list</button>
+      </div>
+    </div>
+
+    <div class="grid-noGutter-middle-spaceBetween">
       <div v-if="noResults">
         <h3>{{ datasetContent.empty }}</h3>
       </div>
@@ -82,6 +116,7 @@
       </div>
       <div class="col-6">
         <ResultsPerPage
+          v-if="totalPages > 1"
           :options="limit"
           :loading="dataLoading"
           store-key="datasets" />
@@ -106,6 +141,7 @@ import ResultsPerPage from '@/components/results-per-page'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
+import ButtonFilters from '@/components/buttons/button-filters'
 
 const formId = 'datasets|form'
 
@@ -122,7 +158,8 @@ export default {
     FieldContainer,
     Filterer,
     Sorter,
-    ResultsPerPage
+    ResultsPerPage,
+    ButtonFilters
   },
 
   data () {
@@ -160,6 +197,9 @@ export default {
       clipboard: 'general/clipboard',
       searchValue: 'search/searchValue'
     }),
+    filterPanelData () {
+      return this.siteContent.general ? this.siteContent.general.filterPanel : false
+    },
     datasetContent () {
       return this.siteContent[this.tag].datasets_content
     },

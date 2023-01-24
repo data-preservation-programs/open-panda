@@ -22,7 +22,7 @@ class Filter {
   }
 
   // ================================================================== clearAll
-  clearAll (filterKey) {
+  clearAll () {
     const filters = this.store.getters['search/filters']
     const query = this.query
     Object.keys(query).forEach((key) => {
