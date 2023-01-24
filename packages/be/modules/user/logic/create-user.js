@@ -15,9 +15,9 @@ const CreateUser = async (incoming) => {
       initiator: userId,
       client: userId,
       subject: userId,
-      initiator_ref: 'sl3_users',
-      client_ref: 'sl3_users',
-      subject_ref: 'sl3_users',
+      initiator_ref: 'op_users',
+      client_ref: 'op_users',
+      subject_ref: 'op_users',
       before: null,
       after: created
     })
