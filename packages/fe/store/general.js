@@ -55,6 +55,22 @@ const actions = {
       return false
     }
   },
+  // ///////////////////////////////////////////////////////////// getCachedFile
+  async getCachedFile ({ commit, dispatch }, path) {
+    try {
+      const response = await this.$axiosAuth.get('/get-cached-file', {
+        params: { path }
+      })
+      const file = response.data.payload
+      dispatch('setStaticFile', { path, file })
+      return file
+    } catch (e) {
+      console.log('===================== [Store Action: general/getCachedFile]')
+      console.log(e)
+      dispatch('setStaticFile', { path, file: false })
+      return false
+    }
+  },
   // ///////////////////////////////////////////////////////////// setStaticFile
   setStaticFile ({ commit, getters }, payload) {
     const staticFiles = CloneDeep(getters.staticFiles)
