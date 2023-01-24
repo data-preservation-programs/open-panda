@@ -83,23 +83,10 @@
           store-key="datasets" />
       </div>
       <div class="col-6">
-        <Limiter :options="limit">
-          <div
-            slot-scope="{ index, apply }"
-            class="col-3">
-            <FieldContainer
-              :form-id="formId"
-              :scaffold="{
-                type: 'select',
-                required: false,
-                label: 'results per page',
-                model_key: 'limit',
-                options: limit
-              }"
-              :value="index || 0"
-              @updateValue="apply(getSelectedValue('limit'))" />
-          </div>
-        </Limiter>
+        <ResultsPerPage
+          :options="limit"
+          :loading="dataLoading"
+          store-key="datasets" />
       </div>
     </div>
 
@@ -117,10 +104,10 @@ import Card from '@/components/card'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
+import ResultsPerPage from '@/components/results-per-page'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
-import Limiter from '@/modules/search/components/limiter'
 
 const formId = 'datasets|form'
 
@@ -137,7 +124,7 @@ export default {
     FieldContainer,
     Filterer,
     Sorter,
-    Limiter
+    ResultsPerPage
   },
 
   data () {
