@@ -6,7 +6,7 @@
 
     <div class="table">
       <CIDCard
-        v-for="(cid, i) in cids"
+        v-for="(cid, i) in mockCids"
         :key="`cid-${i}`"
         :cid-data="cid" />
     </div>
@@ -19,6 +19,8 @@
 
 <script>
 // ====================================================================== Import
+import CloneDeep from 'lodash/cloneDeep'
+
 import CIDCard from '@/components/cid-card'
 
 // ====================================================================== Export
@@ -90,10 +92,25 @@ export default {
         }
       ]
     }
+  },
+
+  computed: {
+    mockCids () {
+      const mockCids = []
+      for (let i = 0; i < 6; i++) {
+        const cid = CloneDeep(this.cids[0])
+        cid.title = `Genome in a Bottle 00${i}`
+        mockCids.push(cid)
+      }
+      return mockCids
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
+:deep(.card-cutout-wrapper) {
+  margin-bottom: 1.875rem;
+}
 </style>

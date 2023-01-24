@@ -67,7 +67,11 @@
           <code>
             {{ command }}
           </code>
-          <CopyIcon class="copy-icon" />
+          <button
+            class="copy-button"
+            @click="$addTextToClipboard(command)">
+            <CopyIcon class="copy-icon" />
+          </button>
         </div>
       </div>
     </template>
@@ -217,15 +221,14 @@ export default {
   }
 }
 
-.copy-icon {
+.copy-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  svg {
-    opacity: 1;
-    path {
-      fill: $grayNurse;
-    }
-  }
+}
+
+.copy-icon {
+  display: block;
+  fill: $grayNurse;
 }
 </style>

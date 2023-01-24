@@ -13,7 +13,7 @@
               {{ hash }}
               <button
                 class="copy-button"
-                @click="copyToClipboard">
+                @click="$addTextToClipboard(hash)">
                 <CopyIcon />
               </button>
             </div>
@@ -142,9 +142,6 @@ export default {
   methods: {
     toggleBottomPanel () {
       this.open = !this.open
-    },
-    copyToClipboard () {
-      console.log(this.hash)
     },
     changeBottomPanelHeight (height) {
       this.bottomPanelHeight = height + 80
