@@ -5,7 +5,7 @@
     tabindex="0"
     v-on="$listeners">
 
-    <div class="icon-before"></div>
+    <div :class="['icon-before', `theme__${theme}`]"></div>
 
     <div class="button-content">
       <slot />
@@ -21,6 +21,10 @@ export default {
 
   props: {
     theme: {
+      /**
+       * theme
+       * possible values: 'light', 'dark' & 'grey'
+       */
       type: String,
       required: false,
       default: 'light'
@@ -58,6 +62,14 @@ export default {
   }
   &.theme__light {
     background-color: #E7E9ED;
+  }
+  &.theme__dark {
+    background-color: #000000;
+    color: $grayNurse;
+  }
+  &.theme__grey {
+    background-color: #51504B;
+    color: $grayNurse;
   }
   &.active {
     .icon-before {
@@ -99,6 +111,13 @@ export default {
   &:after {
     top: calc(50% - 1.5px);
   }
+  &.theme__dark,
+  &.theme__grey {
+    &:before,
+    &:after {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='11' height='3' viewBox='0 0 11 3' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 1.48145C0 1.21623 0.115893 0.961875 0.322183 0.774339C0.528473 0.586802 0.808262 0.481445 1.1 0.481445H9.9C10.1917 0.481445 10.4715 0.586802 10.6778 0.774339C10.8841 0.961875 11 1.21623 11 1.48145C11 1.74666 10.8841 2.00102 10.6778 2.18855C10.4715 2.37609 10.1917 2.48145 9.9 2.48145H1.1C0.808262 2.48145 0.528473 2.37609 0.322183 2.18855C0.115893 2.00102 0 1.74666 0 1.48145Z' fill='%23F1F3EF'/%3e%3c/svg%3e ");
+    }
+  }
 }
 
 .button-content {
@@ -110,4 +129,5 @@ export default {
   align-items: center;
   font-weight: 500;
 }
+
 </style>
