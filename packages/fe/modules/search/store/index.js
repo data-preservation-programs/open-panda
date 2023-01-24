@@ -9,6 +9,8 @@
 // -----------------------------------------------------------------------------
 const state = {
   searchValue: '',
+  sortValueIndex: 0,
+  limitValueIndex: 0,
   filters: []
 }
 
@@ -16,7 +18,8 @@ const state = {
 // -----------------------------------------------------------------------------
 const getters = {
   searchValue: state => state.searchValue,
-  sortValue: state => state.sortValue,
+  sortValueIndex: state => state.sortValueIndex,
+  limitValueIndex: state => state.limitValueIndex,
   filters: state => state.filters
 }
 
@@ -27,9 +30,13 @@ const actions = {
   recordSearchValue ({ commit }, value) {
     commit('RECORD_SEARCH_VALUE', value)
   },
-  // ///////////////////////////////////////////////////////// recordSearchValue
-  recordSortValue ({ commit }, value) {
-    commit('RECORD_SORT_VALUE', value)
+  // ////////////////////////////////////////////////////// recordSortValueIndex
+  recordSortValueIndex ({ commit }, value) {
+    commit('RECORD_SORT_VALUE_INDEX', value)
+  },
+  // ///////////////////////////////////////////////////// recordLimitValueIndex
+  recordLimitValueIndex ({ commit }, value) {
+    commit('RECORD_LIMIT_VALUE_INDEX', value)
   },
   // ////////////////////////////////////////////////////////////// recordFilter
   recordFilter ({ commit, getters }, filterKey) {
@@ -49,8 +56,11 @@ const mutations = {
   RECORD_SEARCH_VALUE (state, value) {
     state.searchValue = value
   },
-  RECORD_SORT_VALUE (state, value) {
-    state.sortValue = value
+  RECORD_SORT_VALUE_INDEX (state, value) {
+    state.sortValueIndex = value
+  },
+  RECORD_LIMIT_VALUE_INDEX (state, value) {
+    state.limitValueIndex = value
   },
   RECORD_FILTER (state, filterKey) {
     state.filters.push(filterKey)

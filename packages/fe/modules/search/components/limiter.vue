@@ -3,7 +3,7 @@
 
 // ====================================================================== Export
 export default {
-  name: 'Sorter',
+  name: 'Limiter',
 
   props: {
     action: { // 'query', 'emit', 'store'
@@ -12,19 +12,15 @@ export default {
       default: 'query'
     },
     /**
-     * options
+     * sort options
      * [
      *  {
-     *    "label": "Data Stored ↑",
-     *    "value": 0
+     *    "label": 12,
+     *    "value": 12
      *  },
      *  {
-     *    "label": "Data Stored ↓",
-     *    "value": 1
-     *  },
-     *  {
-     *    "label": "No. of Storage Providers ↑",
-     *    "value": 2
+     *    "label": 24,
+     *    "value": 24
      *  }
      */
     options: {
@@ -34,12 +30,12 @@ export default {
     storeGetter: {
       type: String,
       required: false,
-      default: 'general/sortValueIndex'
+      default: 'general/limitValueIndex'
     },
     storeAction: {
       type: String,
       required: false,
-      default: 'general/setSortValueIndex'
+      default: 'general/setLimitValueIndex'
     }
   },
 
@@ -47,12 +43,12 @@ export default {
     const action = this.action
     let index = 0
     switch (action) {
-      case 'emit' : index = this.sortValueIndex; break
+      case 'emit' : index = this.limitValueIndex; break
       case 'store' : index = this.$store.getters[this.storeGetter]; break
-      case 'query' : index = this.$route.query.sort; break
+      case 'query' : index = this.$route.query.limit; break
     }
     return {
-      // value is the sort index, default to 0
+      // value is the limit index, default to 0
       index
     }
   },
@@ -65,7 +61,7 @@ export default {
 
   watch: {
     '$route' (route) {
-      if (route.query.sort === undefined && this.action === 'query') {
+      if (route.query.limit === undefined && this.action === 'query') {
         this.index = 0
       }
     }
@@ -77,13 +73,13 @@ export default {
     },
     apply (index) {
       const action = this.action
-      this.$sort.for({
+      this.$limit.for({
         instance: this,
         action,
         storeAction: this.storeAction,
         index
       })
-      this.$emit('sortUpdated')
+      this.$emit('limitUpdated')
     }
   },
 

@@ -10,8 +10,8 @@
         class="dataset-searchbar col-4" />
 
       <Filterer
-        filter-key="new"
-        :filters="filters.new"
+        filter-key="fullyStored"
+        :filters="filters.fullyStored"
         :is-single-option="true">
         <div
           slot-scope="{ applyFilter, isSelected }"
@@ -24,15 +24,14 @@
               label: 'Show only fully stored datasets',
               model_key: 'fullyStored'
             }"
-            :value="isSelected('new')"
+            :value="isSelected('fullyStored')"
             @updateValue="applyFilter(0)" />
         </div>
       </Filterer>
 
-      <Sorter
-        :sort="sort.sort">
+      <Sorter :options="sort">
         <div
-          slot-scope="{ value, applySort }"
+          slot-scope="{ index, apply }"
           class="col-3">
           <FieldContainer
             :form-id="formId"
@@ -41,15 +40,15 @@
               required: false,
               label: 'Sort by',
               model_key: 'sort',
-              options: sort.sort
+              options: sort
             }"
-            :value="value"
-            @updateValue="applySort(getSelectedValue('sort'))" />
+            :value="index || 0"
+            @updateValue="apply(getSelectedValue('sort'))" />
         </div>
       </Sorter>
 
       <div class="col">
-        <button>filter button</button>
+        <Filters />
       </div>
     </div>
 
@@ -57,8 +56,6 @@
       <div class="col-4 results-count">
         {{ resultCount }}
       </div>
-
-      <Filters />
 
       <div v-if="noResults">
         <h3>{{ datasetContent.empty }}</h3>
@@ -84,7 +81,10 @@
           store-key="datasets" />
       </div>
       <div class="col-6">
-        results per page
+        <ResultsPerPage
+          :options="limit"
+          :loading="dataLoading"
+          store-key="datasets" />
       </div>
     </div>
 
@@ -102,6 +102,7 @@ import Card from '@/components/card'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
+import ResultsPerPage from '@/components/results-per-page'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
@@ -120,7 +121,8 @@ export default {
     PaginationControls,
     FieldContainer,
     Filterer,
-    Sorter
+    Sorter,
+    ResultsPerPage
   },
 
   data () {
@@ -134,6 +136,7 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFilters')
     await store.dispatch('datasets/getSort')
+    await store.dispatch('datasets/getLimit')
     await store.dispatch('datasets/getDatasetList', { route })
     await store.dispatch('form/registerFormModel', {
       formId,
@@ -150,12 +153,12 @@ export default {
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
       sort: 'datasets/sort',
+      limit: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       basicStats: 'datasets/basicStats',
       clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue',
-      sortValue: 'search/sortValue'
+      searchValue: 'search/searchValue'
     }),
     datasetContent () {
       return this.siteContent[this.tag].datasets_content
@@ -170,7 +173,7 @@ export default {
       return this.datasetList.filter(obj => !obj.new)
     },
     dataLoading () {
-      return this.loading.indexData
+      return this.loading
     },
     count () {
       return this.metadata.count

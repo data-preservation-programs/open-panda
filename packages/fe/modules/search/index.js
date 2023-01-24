@@ -14,6 +14,7 @@ const IndexPlugin = Path.resolve(__dirname, 'plugins/index.js')
 const SearchPlugin = Path.resolve(__dirname, 'plugins/search.js')
 const FilterPlugin = Path.resolve(__dirname, 'plugins/filter.js')
 const SortPlugin = Path.resolve(__dirname, 'plugins/sort.js')
+const LimitPlugin = Path.resolve(__dirname, 'plugins/limit.js')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
@@ -24,7 +25,8 @@ const registerPlugin = (instance, next) => {
       { src: IndexPlugin, fileName: 'search/plugin-index.js' },
       { src: SearchPlugin, fileName: 'search/plugin-search.js' },
       { src: FilterPlugin, fileName: 'search/plugin-filter.js' },
-      { src: SortPlugin, fileName: 'search/plugin-sort.js' }
+      { src: SortPlugin, fileName: 'search/plugin-sort.js' },
+      { src: LimitPlugin, fileName: 'search/plugin-limit.js' }
     ]
     plugins.forEach((plugin) => {
       const dst = instance.addTemplate({ src: plugin.src, fileName: plugin.fileName }).dst
