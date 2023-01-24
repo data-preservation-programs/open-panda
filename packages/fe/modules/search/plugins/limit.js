@@ -20,13 +20,13 @@ class Limit {
   // ================================================================ clearQuery
   clearQuery () {
     this.query.limit = undefined
-    this.store.dispatch('search/recordLimitValue', 0)
+    this.store.dispatch('search/recordLimitValueIndex', 0)
     this.app.router.push({ query: this.query })
   }
 
   // =================================================================== isEmpty
   isEmpty () {
-    return this.store.getters['search/limitValue'] === 0
+    return this.store.getters['search/limitValueIndex'] === 0
   }
 
   // ======================================================================= for
@@ -43,14 +43,14 @@ class Limit {
    */
   for (term) {
     const action = term.action
-    const value = term.value
+    const index = term.index
     if (action === 'emit') {
-      term.instance.$emit('setLimitValue', value)
+      term.instance.$emit('setLimitValueIndex', index)
     } else if (action === 'store') {
-      this.store.dispatch(term.storeAction, value)
+      this.store.dispatch(term.storeAction, index)
     } else {
-      this.query.limit = value
-      this.store.dispatch('search/recordLimitValue', value)
+      this.query.limit = index
+      this.store.dispatch('search/recordLimitValueIndex', index)
       this.app.router.push({ query: this.query })
     }
   }

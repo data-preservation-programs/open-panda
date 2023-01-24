@@ -30,55 +30,54 @@ export default {
     storeGetter: {
       type: String,
       required: false,
-      default: 'general/limitValue'
+      default: 'general/limitValueIndex'
     },
     storeAction: {
       type: String,
       required: false,
-      default: 'general/setLimitValue'
+      default: 'general/setLimitValueIndex'
     }
   },
 
   data () {
     const action = this.action
-    let value = 0
+    let index = 0
     switch (action) {
-      case 'emit' : value = this.limitValue; break
-      case 'store' : value = this.$store.getters[this.storeGetter]; break
-      case 'query' : value = this.$route.query.limit; break
+      case 'emit' : index = this.limitValueIndex; break
+      case 'store' : index = this.$store.getters[this.storeGetter]; break
+      case 'query' : index = this.$route.query.limit; break
     }
     return {
-      // value is the sort index, default to 0
-      value
+      // value is the limit index, default to 0
+      index
     }
   },
 
   computed: {
     empty () {
-      return !this.value || this.value === 0
+      return !this.index || this.index === 0
     }
   },
 
   watch: {
     '$route' (route) {
       if (route.query.limit === undefined && this.action === 'query') {
-        this.value = 0
+        this.index = 0
       }
     }
   },
 
   methods: {
     clear () {
-      this.value = 0
+      this.index = 0
     },
     apply (index) {
-      const value = this.options[index].value
       const action = this.action
       this.$limit.for({
         instance: this,
         action,
         storeAction: this.storeAction,
-        value
+        index
       })
       this.$emit('limitUpdated')
     }
@@ -86,7 +85,7 @@ export default {
 
   render () {
     return this.$scopedSlots.default({
-      value: this.value,
+      index: this.index,
       apply: this.apply,
       empty: this.empty,
       clear: this.clear

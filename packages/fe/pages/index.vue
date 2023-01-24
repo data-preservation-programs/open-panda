@@ -83,8 +83,7 @@
           store-key="datasets" />
       </div>
       <div class="col-6">
-        <Limiter
-          :options="limit">
+        <Limiter :options="limit">
           <div
             slot-scope="{ index, apply }"
             class="col-3">

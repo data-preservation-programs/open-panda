@@ -50,9 +50,9 @@ const actions = {
       const route = metadata.route
       const page = getters.metadata.page
       const query = route.query
-      const limit = query.limit
       const search = query.search
-      const sort = query.sort
+      const limit = getters.limit[query.limit].value
+      const sort = getters.sort[query.sort].value
       const filters = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
