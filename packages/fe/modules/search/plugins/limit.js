@@ -1,14 +1,14 @@
 /*
  *
- * 🔌 [plugin | search] sort
+ * 🔌 [plugin | search] limit
  *
- * methods for sort
+ * methods for limit
  *
  */
 
 // //////////////////////////////////////////////////////////////// [Class] Sort
 // -----------------------------------------------------------------------------
-class Sort {
+class Limit {
   // =============================================================== constructor
   constructor (app, store, route) {
     this.app = app
@@ -19,19 +19,19 @@ class Sort {
 
   // ================================================================ clearQuery
   clearQuery () {
-    this.query.sort = undefined
-    this.store.dispatch('search/recordSortValue', 0)
+    this.query.limit = undefined
+    this.store.dispatch('search/recordLimitValue', 0)
     this.app.router.push({ query: this.query })
   }
 
   // =================================================================== isEmpty
   isEmpty () {
-    return this.store.getters['search/sortValue'] === 0
+    return this.store.getters['search/limitValue'] === 0
   }
 
   // ======================================================================= for
   /**
-   * @method for - stores sort value
+   * @method for - stores limit value
    * @param {Object} term {
    *    instance: this,
    *     action,
@@ -45,12 +45,12 @@ class Sort {
     const action = term.action
     const value = term.value
     if (action === 'emit') {
-      term.instance.$emit('setSortValue', value)
+      term.instance.$emit('setLimitValue', value)
     } else if (action === 'store') {
       this.store.dispatch(term.storeAction, value)
     } else {
-      this.query.sort = value
-      this.store.dispatch('search/recordSortValue', value)
+      this.query.limit = value
+      this.store.dispatch('search/recordLimitValue', value)
       this.app.router.push({ query: this.query })
     }
   }
@@ -59,5 +59,5 @@ class Sort {
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default function ({ app, store, route }, inject) {
-  inject('sort', new Sort(app, store, route))
+  inject('limit', new Limit(app, store, route))
 }

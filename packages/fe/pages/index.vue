@@ -30,9 +30,9 @@
       </Filterer>
 
       <Sorter
-        :sort="sort.sort">
+        :options="limit">
         <div
-          slot-scope="{ value, applySort }"
+          slot-scope="{ value, apply }"
           class="col-3">
           <FieldContainer
             :form-id="formId"
@@ -41,10 +41,10 @@
               required: false,
               label: 'Sort by',
               model_key: 'sort',
-              options: sort.sort
+              options: sort
             }"
-            :value="value"
-            @updateValue="applySort(getSelectedValue('sort'))" />
+            :value="value || 0"
+            @updateValue="apply(getSelectedValue('sort'))" />
         </div>
       </Sorter>
 
@@ -84,10 +84,10 @@
           store-key="datasets" />
       </div>
       <div class="col-6">
-        <Sorter
-          :sort="sort.sort">
+        <Limiter
+          :options="limit">
           <div
-            slot-scope="{ value, applySort }"
+            slot-scope="{ value, apply }"
             class="col-3">
             <FieldContainer
               :form-id="formId"
@@ -96,12 +96,12 @@
                 required: false,
                 label: 'results per page',
                 model_key: 'limit',
-                options: sort.sort
+                options: limit
               }"
-              :value="value"
-              @updateValue="applySort(getSelectedValue('sort'))" />
+              :value="value || 0"
+              @updateValue="apply(getSelectedValue('limit'))" />
           </div>
-        </Sorter>
+        </Limiter>
       </div>
     </div>
 
@@ -122,6 +122,7 @@ import PaginationControls from '@/components/pagination-controls'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
+import Limiter from '@/modules/search/components/limiter'
 
 const formId = 'datasets|form'
 
@@ -137,7 +138,8 @@ export default {
     PaginationControls,
     FieldContainer,
     Filterer,
-    Sorter
+    Sorter,
+    Limiter
   },
 
   data () {

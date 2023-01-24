@@ -11,7 +11,7 @@
       @filterApplied="clearPage">
       <div
         slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
-        class="button-list section">
+        class="button-list">
 
         <div class="filters-label">
           <span>{{ item }}</span>
@@ -80,12 +80,6 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.section {
-  &:not(:first-child) {
-    margin-top: 2rem;
-  }
-}
-
 .filters-label {
   margin-bottom: 1rem;
   font-weight: 500;

@@ -86,8 +86,10 @@ const actions = {
   // /////////////////////////////////////////////////////////////////// getSort
   async getSort ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axios.get('https://mocki.io/v1/637930d8-a3b7-4b26-b2c3-6a9ca416af51')
-      commit('SET_SORT', response.data.payload)
+      const response = await this.$axiosAuth.get('/get-static-file', {
+        params: { path: 'filters.json' }
+      })
+      commit('SET_SORT', response.data.payload.sort)
     } catch (e) {
       console.log('========================== [Store Action: datasets/getSort]')
       console.log(e)
@@ -97,8 +99,10 @@ const actions = {
   // ////////////////////////////////////////////////////////////////// getLimit
   async getLimit ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axios.get('https://mocki.io/v1/637930d8-a3b7-4b26-b2c3-6a9ca416af51')
-      commit('SET_LIMIT', response.data.payload)
+      const response = await this.$axiosAuth.get('/get-static-file', {
+        params: { path: 'filters.json' }
+      })
+      commit('SET_LIMIT', response.data.payload.limit)
     } catch (e) {
       console.log('========================= [Store Action: datasets/getLimit]')
       console.log(e)
