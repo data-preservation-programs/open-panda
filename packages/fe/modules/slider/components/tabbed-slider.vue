@@ -140,7 +140,9 @@ export default {
     positions: {
       deep: true,
       handler () {
-        this.height = this.slideHeights[this.positions.indexOf(1)]
+        const height = this.slideHeights[this.positions.indexOf(1)]
+        this.$emit('slide-changed', height)
+        this.height = height
       }
     }
   },
