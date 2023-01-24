@@ -26,6 +26,7 @@ module.exports = {
   // ===================================================================== Paths
   packageRoot: __dirname,
   repoRoot: Path.resolve(__dirname, '../../'),
+  cacheRoot: Path.resolve(__dirname, 'cache'),
   staticRoot: Path.resolve(__dirname, 'static'),
   publicRoot: Path.resolve(__dirname, 'public'),
   tmpRoot: Path.resolve(__dirname, 'tmp'),
