@@ -36,21 +36,21 @@ class Sort {
    *    instance: this,
    *     action,
    *     storeAction: this.storeAction,
-   *     value
+   *     index
    *   }
-   * @description term.value is an integer that reflects the select value
+   * @description term.index is an integer that reflects the select value
    * if term.action = query - pushes to url and store
    */
   for (term) {
     const action = term.action
-    const value = term.value
+    const index = term.index
     if (action === 'emit') {
-      term.instance.$emit('setSortValueIndex', value)
+      term.instance.$emit('setSortValueIndex', index)
     } else if (action === 'store') {
-      this.store.dispatch(term.storeAction, value)
+      this.store.dispatch(term.storeAction, index)
     } else {
-      this.query.sort = value
-      this.store.dispatch('search/recordSortValueIndex', value)
+      this.query.sort = index
+      this.store.dispatch('search/recordSortValueIndex', index)
       this.app.router.push({ query: this.query })
     }
   }

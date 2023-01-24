@@ -31,7 +31,7 @@
 
       <Sorter :options="sort">
         <div
-          slot-scope="{ value, apply }"
+          slot-scope="{ index, apply }"
           class="col-3">
           <FieldContainer
             :form-id="formId"
@@ -42,7 +42,7 @@
               model_key: 'sort',
               options: sort
             }"
-            :value="value || 0"
+            :value="index || 0"
             @updateValue="apply(getSelectedValue('sort'))" />
         </div>
       </Sorter>
@@ -86,7 +86,7 @@
         <Limiter
           :options="limit">
           <div
-            slot-scope="{ value, apply }"
+            slot-scope="{ index, apply }"
             class="col-3">
             <FieldContainer
               :form-id="formId"
@@ -97,7 +97,7 @@
                 model_key: 'limit',
                 options: limit
               }"
-              :value="value || 0"
+              :value="index || 0"
               @updateValue="apply(getSelectedValue('limit'))" />
           </div>
         </Limiter>
