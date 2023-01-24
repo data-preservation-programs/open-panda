@@ -281,6 +281,19 @@ export default {
   &.mobile {
     border-bottom: solid 1px rgba(#DDDFE3, 1);
   }
+  &:not(.mobile) {
+    .mobile-row,
+    .size {
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+      &:first-child {
+        margin-left: 0;
+      }
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
 }
 
 .panel-bottom {
@@ -542,9 +555,11 @@ export default {
 
 .label,
 .cell {
-  width: 40%;
-  @include fontSize_14;
-  line-height: leading(21, 14);
+  @include medium {
+    width: 40%;
+    @include fontSize_14;
+    line-height: leading(21, 14);
+  }
 }
 
 .cell {

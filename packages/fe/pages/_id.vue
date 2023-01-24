@@ -169,9 +169,9 @@
     <section id="section-explorer">
       <div :class="`grid${mobile ? '-noGutter' : ''}`">
         <div
-          class="col-10_sm-12"
-          data-push-left="off-1_sm-0"
-          data-push-right="off-1_sm-0">
+          class="col-10_xlg-12_md-10_sm-12"
+          data-push-left="off-1_xlg-0_md-1_sm-0"
+          data-push-right="off-1_xlg-0_md-1_sm-0">
           <CIDTable />
         </div>
       </div>

@@ -146,9 +146,15 @@ export default {
     height: var(--tabs-panel-height);
     border: solid 1px $grayNurse;
     border-radius: 0.625rem;
+    @include large {
+      width: calc(100% - 1.5rem);
+    }
   }
   .cell {
     @include fontWeight_Medium;
+    @include large {
+      font-size: 0.8125rem;
+    }
   }
 }
 
@@ -167,6 +173,9 @@ export default {
   display: flex;
   justify-content: flex-start;
   padding: 0.6875rem 1.5625rem;
+  @include large {
+    padding: 0.6875rem 1.25rem;
+  }
 }
 
 .sp-id {
@@ -176,10 +185,16 @@ export default {
 .sp-id,
 .deal-expiry {
   width: 26%;
+  @include large {
+    width: 28%;
+  }
 }
 
 .deal-id {
   width: 16%;
+  @include large {
+    width: 19%;
+  }
 }
 
 .retrieval {
