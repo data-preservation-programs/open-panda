@@ -15,11 +15,15 @@
           <div class="slider-controls">
             <div class="slide-selector">
 
-              <button @click="onClick(-1)">
+              <button
+                class="previous-button slider-button"
+                @click="onClick(-1)">
                 <slot name="icon-previous"></slot>
               </button>
 
-              <button @click="onClick(1)">
+              <button
+                class="next-button slider-button"
+                @click="onClick(1)">
                 <slot name="icon-next"></slot>
               </button>
 
@@ -187,7 +191,7 @@ export default {
       return this.$slider(this.sliderId).getPanelPositions()
     },
     mapToPixels () {
-      return this.positions.map((e, i) => (i - 1) * this.columnWidth)
+      return this.positions.map((e, i) => (i - 2) * this.columnWidth)
     },
     currentSlide () {
       return this.positions[1]
@@ -297,7 +301,6 @@ img {
  display: flex;
  flex-direction: column;
  justify-content: space-around;
- z-index: 1000;
 }
 
 .slide-selector {
