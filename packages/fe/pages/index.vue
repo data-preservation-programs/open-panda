@@ -30,7 +30,9 @@
                 :scaffold="{
                   type: 'checkbox',
                   required: false,
-                  label: 'Show only fully stored datasets'
+                  options: [
+                    { label: 'Show only fully stored datasets' }
+                  ]
                 }"
                 @updateValue="applyFilter(0)" />
             </div>

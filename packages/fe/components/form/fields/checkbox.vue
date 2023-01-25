@@ -82,13 +82,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$dimension: toRem(20);
-
-$borderColor: #CCCCCC;
-$focusBorderColor: black;
-
-@if variable-exists(formBorderColor) { $borderColor: $formBorderColor; }
-@if variable-exists(formBorderColorFocus) { $focusBorderColor: $formBorderColorFocus; }
+$dimension: 1.625rem;
 
 @keyframes shrink-bounce {
   0% { transform: scale(1); }
@@ -111,11 +105,31 @@ $focusBorderColor: black;
   display: flex;
   flex-direction: row;
   align-items: center;
+  &.error {
+    .checkbox + .checker {
+      border-color: red;
+    }
+  }
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    .checker {
+      transition: 150ms ease-in;
+      transform: scale(1.1);
+    }
+  }
+  &:not(:last-child) {
+    margin-right: 2.125rem;
+  }
 }
 
 .checkbox-container {
   position: relative;
-  margin-right: toRem(13);
 }
 
 .checkbox {
@@ -128,10 +142,11 @@ $focusBorderColor: black;
   z-index: 10;
   &:checked {
     + .checker {
-      animation: shrink-bounce 200ms cubic-bezier(0.4, 0, 0.23, 1);
-      border-color: $tasman;
+      animation: shrink-bounce 150ms cubic-bezier(0.4, 0, 0.23, 1);
+      border-color: teal;
+      background-color: tomato;
       .icon-checkmark {
-        animation: checkbox-check 125ms 250ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
+        animation: checkbox-check 75ms 200ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
       }
     }
   }
@@ -152,16 +167,23 @@ $focusBorderColor: black;
   left: 0;
   width: $dimension;
   height: $dimension;
-  border: 2px solid $tasman;
-  border-radius: 0.125rem;
+  border: 2px solid teal;
+  border-radius: 0.625rem;
+  background-color: tomato;
   pointer-events: none;
   z-index: 5;
-  transition: border-color 250ms, background-color 250ms;
+  transition: border-color 150ms, background-color 150ms, transform 150ms ease-out;
 }
 
 .icon-checkmark {
   display: block;
   width: 0.875rem;
   opacity: 0;
+}
+
+.label {
+  font-weight: 400;
+  cursor: pointer;
+  padding-left: 1rem;
 }
 </style>
