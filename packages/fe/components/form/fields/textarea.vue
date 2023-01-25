@@ -1,11 +1,6 @@
 <template>
   <div :class="['field field-textarea', state, { focused, empty }]">
 
-    <label v-if="label" :for="name" class="label floating">
-      <span class="text">{{ label }}</span>
-      <sup v-if="required" class="required">*</sup>
-    </label>
-
     <div v-if="disabled" :class="['textarea', { disabled }]">
       {{ value }}
     </div>
@@ -55,32 +50,32 @@ export default {
   },
 
   computed: {
+    scaffold () {
+      return this.field.scaffold
+    },
     name () {
-      return this.field.name
+      return this.scaffold.name
     },
     label () {
-      return this.field.label
+      return this.scaffold.label
     },
     placeholder () {
-      return this.field.placeholder || 'Enter a value...'
+      return this.scaffold.placeholder || 'Enter a value...'
     },
     autocomplete () {
-      return this.field.autocomplete
+      return this.scaffold.autocomplete
     },
     required () {
-      return this.field.required
+      return this.scaffold.required
     },
     disabled () {
-      return this.field.disabled
+      return this.scaffold.disabled
     },
     pre () {
-      return this.field.pre
+      return this.scaffold.pre
     },
     chars () {
-      return this.field.chars
-    },
-    validationMessage () {
-      return this.field.validation_message
+      return this.scaffold.chars
     },
     value () {
       return this.field.value
@@ -109,24 +104,13 @@ export default {
 .field-textarea {
   height: 10rem;
   transition: 150ms ease-out;
-  &.focused,
-  &:not(.empty) {
-    &:before {
-      transition: 150ms ease-in;
-      opacity: 0;
+  &.focused {
+    .textarea {
+      border-color: white;
     }
   }
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(227, 211, 192, 0.1), transparent 75%);
-    z-index: -1;
-    pointer-events: none;
-    transition: 150ms ease-out;
+  &:not(.empty) {
+
   }
 }
 
@@ -137,11 +121,15 @@ export default {
 
 .textarea {
   width: 100%;
-  padding-top: 0.5rem;
-  border-bottom: 2px solid tomato;
+  padding: 1.5rem;
+  border: 2px solid white;
+  border-radius: 0.625rem;
   transition: 150ms ease-in-out;
   @include placeholder {
-    opacity: 0;
+    color: rgba(white, 0.7);
+    font-size: toRem(18);
+    font-weight: 400;
+    font-style: italic;
   }
   &.caution {
     border-color: darkorange;

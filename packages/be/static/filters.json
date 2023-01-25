@@ -38,9 +38,9 @@
       { "value": "literature", "label": "Literature", "count": 40 },
       { "value": "multimedia", "label": "Multimedia", "count": 250 },
       { "value": "auditory", "label": "Auditory", "count": 6 },
-      { "value": "natural", "label": "Natural Language", "count": 7 },
-      { "value": "civil", "label": "Civil Engineering", "count": 8 },
-      { "value": "popular", "label": "Popular Culture", "count": 9 }
+      { "value": "Natural Language", "label": "Natural Language", "count": 7 },
+      { "value": "Civil Engineering", "label": "Civil Engineering", "count": 8 },
+      { "value": "Popular Culture", "label": "Popular Culture", "count": 9 }
     ],
     "fileType": [
       { "value": "csv", "label": "csv" },

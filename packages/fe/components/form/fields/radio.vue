@@ -1,25 +1,25 @@
 <template>
-  <div :class="['field field-checkbox', state]">
+  <div :class="['field field-radio', state]">
 
     <div
       v-for="(option, index) in options"
       :key="index"
-      class="checkbox-wrapper">
+      class="radio-wrapper">
 
-      <div class="checkbox-container">
+      <div class="radio-container">
         <input
-          :id="`checkbox-${id}-${index}`"
+          :id="`radio-${id}-${index}`"
           :checked="value === index"
-          :name="`checkbox-${id}`"
-          type="checkbox"
-          class="checkbox"
-          @input="updateValue(index)" />
+          :name="`radio-${id}`"
+          type="radio"
+          class="radio"
+          @input="$emit('updateValue', index)" />
         <div class="checker">
           <IconCheckmark />
         </div>
       </div>
 
-      <label :for="`checkbox-${id}-${index}`" class="label">
+      <label :for="`radio-${id}-${index}`" class="label">
         {{ option.label }}
       </label>
 
@@ -34,7 +34,7 @@ import IconCheckmark from '@/components/icons/checkmark'
 
 // ====================================================================== Export
 export default {
-  name: 'FieldCheckbox',
+  name: 'FieldRadio',
 
   components: {
     IconCheckmark
@@ -69,14 +69,6 @@ export default {
     required () {
       return this.scaffold.required
     }
-  },
-
-  methods: {
-    updateValue (index) {
-      let value = index
-      if (this.value === index) { value = -1 }
-      this.$emit('updateValue', value)
-    }
   }
 }
 </script>
@@ -101,18 +93,29 @@ $dimension: 1.625rem;
 }
 
 // ///////////////////////////////////////////////////////////////////// General
-.field-checkbox {
+.field-radio {
   display: flex;
   flex-direction: row;
   align-items: center;
+  &.caution {
+    .radio {
+      &:checked {
+        + .checker {
+          border-color: darkorange;
+        }
+      }
+    }
+  }
   &.error {
-    .checkbox + .checker {
-      border-color: red;
+    .radio {
+      + .checker {
+        border-color: red;
+      }
     }
   }
 }
 
-.checkbox-wrapper {
+.radio-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -128,11 +131,11 @@ $dimension: 1.625rem;
   }
 }
 
-.checkbox-container {
+.radio-container {
   position: relative;
 }
 
-.checkbox {
+.radio {
   display: flex;
   position: relative;
   width: $dimension;
@@ -143,8 +146,8 @@ $dimension: 1.625rem;
   &:checked {
     + .checker {
       animation: shrink-bounce 150ms cubic-bezier(0.4, 0, 0.23, 1);
-      border-color: teal;
-      background-color: tomato;
+      border-color: tomato;
+      background-color: teal;
       .icon-checkmark {
         animation: checkbox-check 75ms 200ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
       }
@@ -167,9 +170,9 @@ $dimension: 1.625rem;
   left: 0;
   width: $dimension;
   height: $dimension;
-  border: 2px solid teal;
+  border: 2px solid tomato;
   border-radius: 0.625rem;
-  background-color: tomato;
+  background-color: teal;
   pointer-events: none;
   z-index: 5;
   transition: border-color 150ms, background-color 150ms, transform 150ms ease-out;

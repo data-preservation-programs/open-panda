@@ -9,13 +9,14 @@
       @focus="focused = true"
       @blur="focused = false"
       @change="selectOption($event.target.value)">
-      <option disabled="disabled" selected value="-1">
+      <option disabled="disabled" :selected="selectedOption === -1" value="-1">
         <slot name="option-native-default-text" />
       </option>
       <option
         v-for="(option, index) in options"
         :key="`native-${index}`"
-        :value="index">
+        :value="index"
+        :selected="isCurrentlySelected(index)">
         <slot name="option-native-text" :option="option" />
       </option>
     </select>
@@ -69,7 +70,7 @@ export default {
       required: true
     },
     selectedOption: {
-      type: Number,
+      type: [Number, String],
       required: false,
       default: -1
     }
@@ -79,7 +80,6 @@ export default {
     const selectedOption = this.selectedOption
     return {
       keydown: false,
-      keyup: false,
       focused: false,
       dropdownOpen: false,
       currentOptionHighlighted: selectedOption,
@@ -99,7 +99,7 @@ export default {
   },
 
   beforeDestroy () {
-    if (this.keydown) { window.removeEventListener('keyup', this.keydown) }
+    if (this.keydown) { window.removeEventListener('keydown', this.keydown) }
   },
 
   methods: {
@@ -134,6 +134,7 @@ export default {
         const keyCode = e.keyCode
         const code = e.keyCode
         const key = e.key
+        // TODO: key and code should not both be strings, this is a bug!
         const down = keyCode === 40 || key === 'ArrowDown' || code === 'ArrowDown'
         const up = keyCode === 38 || key === 'ArrowUp' || code === 'ArrowUp'
         const submit = keyCode === 32 || key === ' ' || code === 'Space' || keyCode === 13 || key === 'Enter' || code === 'Enter'

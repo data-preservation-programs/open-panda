@@ -29,4 +29,13 @@ export default async function ({ app, store }, inject) {
     app.$search.clearSearchQuery()
     app.$filter.clearAll()
   })
+  inject('clearAllFilters', (exception) => {
+    app.$filter.clearAll(exception)
+  })
+  inject('clearSearchFilterSortAndLimit', () => {
+    app.$search.clearSearchQuery()
+    app.$filter.clearAll()
+    app.$sort.clearQuery()
+    app.$limit.clearQuery()
+  })
 }
