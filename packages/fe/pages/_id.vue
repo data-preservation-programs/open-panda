@@ -81,7 +81,7 @@
             <section id="accordion-contents">
               <div class="grid">
 
-                <div class="col-6_sm-12" data-push-left="off-1_sm-0">
+                <div class="col-6_md-6_sm-12" data-push-left="off-1_md-0">
 
                   <TextBlock class="text-block-desktop" :block="descriptionBlock" />
 
@@ -108,7 +108,7 @@
 
                 </div>
 
-                <div class="col-4_sm-12" data-push-left="off-1_sm-0">
+                <div class="col-4_md-5_sm-12" data-push-left="off-1_sm-0">
                   <div class="dataset-info-card">
                     <CardCutout>
                       <div class="info-card">
@@ -167,8 +167,12 @@
 
     <!-- ======================================================= SP EXPLORER -->
     <section id="section-explorer">
-      <div class="grid">
-        <div class="col-10" data-push-left="off-1" data-push-right="off-1">
+      <div :class="`grid${mobile ? '-noGutter' : ''}`">
+        <div
+          class="col-10_xlg-12_md-10_sm-12"
+          data-push-left="off-1_xlg-0_md-1_sm-0"
+          data-push-right="off-1_xlg-0_md-1_sm-0">
+          <CIDTable />
         </div>
       </div>
     </section>
@@ -182,6 +186,7 @@ import { mapGetters } from 'vuex'
 
 import TextBlock from '@/components/blocks/text-block'
 import CardCutout from '@/components/card-cutout'
+import CIDTable from '@/components/cid-table'
 import Accordion from '@/components/accordion/accordion'
 import AccordionSection from '@/components/accordion/accordion-section'
 import AccordionHeader from '@/components/accordion/accordion-header'
@@ -207,6 +212,7 @@ export default {
   components: {
     TextBlock,
     CardCutout,
+    CIDTable,
     Accordion,
     AccordionSection,
     AccordionHeader,
@@ -223,8 +229,7 @@ export default {
   },
 
   async fetch ({ store, route }) {
-    await store.dispatch('general/getBaseData', 'general')
-    await store.dispatch('datasets/getDatasetList', { route })
+    await store.dispatch('dataset/getDataset', { route })
   },
 
   // head () {
@@ -234,20 +239,16 @@ export default {
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent',
-      datasetList: 'datasets/datasetList'
+      dataset: 'dataset/dataset'
     }),
-    dataset () {
-      const dataset = this.datasetList.find(dataset => dataset.slug === this.id)
-      if (dataset) {
-        return dataset
-      }
-      return { file_extensions: '', slug: '' }
-    },
     slug () {
       return this.dataset.slug
     },
     progressMessage () {
-      return '<b>In progress -</b> This dataset is currently being onboarded to the network and is only partially available. All data will be fully available soon.'
+      if (this.dataset.preparation_progress === 4) {
+        return '<b>In progress -</b> This dataset is currently being onboarded to the network and is only partially available. All data will be fully available soon.'
+      }
+      return ''
     },
     headerImage () {
       const slug = this.dataset.slug
@@ -257,49 +258,52 @@ export default {
       return this.dataset.name
     },
     tags () {
-      return ['Genetics', 'Lorem Ipsum']
+      return this.dataset.categories
     },
     descriptionBlock () {
       return {
-        label: 'Genome in a Bottle is an academic consortium hosted by NIST to develop reference materials and standards for clinical sequencing.',
+        label: this.dataset.description_short,
         description: this.dataset.description
       }
     },
+    dateCreated () {
+      return this.dataset.createdAt ? this.$moment(this.dataset.createdAt).format('YYYY') : '-'
+    },
     datasetSize () {
-      return this.dataset.data_size
+      return this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-'
     },
-    totalData () {
-      return '3.9 PiB'
+    totalDataOnNetwork () {
+      return this.dataset.total_data_on_network ? this.dataset.total_data_on_network : '-'
     },
-    storageProviders () {
-      return 83
+    storageProviderCount () {
+      return this.dataset.storage_provider_count ? this.dataset.storage_provider_count : '-'
     },
     stats () {
-      const stats = []
-      if (this.datasetSize) {
-        stats.push({ icon: 'bar-graph', data: this.$formatBytes(this.datasetSize), label: 'Dataset Size' })
-      }
-      if (this.totalData) {
-        stats.push({ icon: 'pie-chart', data: this.totalData, label: 'Total Data on Network' })
-      }
-      if (this.storageProviders) {
-        stats.push({ icon: 'profile', data: this.storageProviders, label: 'Storage Providers' })
-      }
+      const stats = [
+        { icon: 'bar-graph', data: this.datasetSize, label: 'Dataset Size' },
+        { icon: 'pie-chart', data: this.totalDataOnNetwork, label: 'Total Data on Network' },
+        { icon: 'profile', data: this.storageProviderCount, label: 'Storage Providers' }
+      ]
       return stats
     },
+    locations () {
+      return this.dataset.locations ? this.dataset.locations : '-'
+    },
+    dataStored () {
+      return this.dataset.data_stored ? this.dataset.data_stored : '-'
+    },
     resources () {
-      return [this.dataset.documentation_url, 'https://genomeinabottle.org']
+      return this.dataset.resources
     },
     infoItems () {
-      const claimant = this.dataset.claimant ? this.dataset.claimant.firstName : ''
       return [
-        { label: 'Author', value: claimant },
-        { label: 'Date Created', value: this.$moment(this.dataset.createdAt).format('YYYY') },
-        { label: 'Funder', value: '' },
+        { label: 'Author', value: this.dataset.authors ? this.dataset.authors : '-' },
+        { label: 'Date Created', value: this.dateCreated },
+        { label: 'Funders', value: this.dataset.funders ? this.dataset.funders : '-' },
         { label: 'File Types', value: this.dataset.file_extensions.split(',').map(ext => ext.replaceAll(' ', '')) },
-        { label: 'Data Stored', value: false },
-        { label: 'Storage Providers', value: this.storageProviders },
-        { label: 'Locations', value: this.dataset.region }
+        { label: 'Data Stored', value: this.dataStored },
+        { label: 'Storage Providers', value: this.storageProviderCount },
+        { label: 'Locations', value: this.locations }
       ]
     }
   },
@@ -317,14 +321,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// General
-
 // ///////////////////////////////////////////////////////////////////// SECTION
 // ---------------------------------------------------------------------[HEADER]
-#section-header {
-  // margin-bottom: toRem(42);
-}
-
 .image-wrapper {
   height: 100%;
   display: flex;
@@ -434,6 +432,10 @@ export default {
 // ----------------------------------------------------------------------[INTRO]
 #section-intro {
   padding-bottom: 5.625rem;
+  border-bottom: solid 1px #DDDFE3;
+  @include small {
+    padding-bottom: 2rem;
+  }
 }
 
 :deep(.text-block) {
@@ -481,7 +483,6 @@ export default {
       font-family: $font_Primary;
       @include fontSize_20;
       line-height: leading(36, 20);
-      // margin-right: 0.812/5rem;
       &:after {
         content: '';
         display: inline-block;
@@ -516,6 +517,9 @@ export default {
 
 #accordion-contents {
   padding: 2.625rem 0;
+  @include medium {
+    padding-bottom: 1rem;
+  }
   @include small {
     padding-top: 0.75rem;
   }
@@ -674,8 +678,10 @@ export default {
     margin-left: 1.5rem;
     &.list {
       display: flex;
+      flex-direction: column;
       flex-wrap: wrap;
       &.file-types {
+        flex-direction: row;
         .list-item {
           line-height: leading(21, 14);
           padding: 0.3125rem 0.625rem;
@@ -691,4 +697,9 @@ export default {
   }
 }
 
+// ///////////////////////////////////////////////////////////////////// SECTION
+// ---------------------------------------------------------------[CID EXPLORER]
+#section-explorer {
+  padding-top: 2.25rem;
+}
 </style>
