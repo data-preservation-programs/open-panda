@@ -145,14 +145,11 @@ export default {
     },
     redirectAfterLogout: '/'
   },
-  // ////////////////////////////////////////////////////////// [Module] Account
+  // /////////////////////////////////////////////////////////////// [Module] ls
   // ---------------------------------------------------------------------------
-  // account: {
-  //   redirectAfterRegistering: {
-  //     path: '/account/:key/datasets/all',
-  //     key: 'githubUsername'
-  //   }
-  // },
+  ls: {
+    prefix: 'openpanda__'
+  },
   // //////////////////////////////////////////////////////////// [Module] Axios
   // -------------------------------------- See https://axios.nuxtjs.org/options
   axios: {},

@@ -1,24 +1,21 @@
 <template>
   <Limiter :options="options">
-    <div slot-scope="{ index, apply }">
+    <div slot-scope="{ apply }">
       <FieldContainer
-        :form-id="formId"
+        field-key="results_per_page"
         :scaffold="{
           type: 'select',
           required: false,
           label: 'Results per page',
-          model_key: 'limit',
-          options: options
+          options
         }"
-        :value="index || 0"
-        @updateValue="apply(getSelectedValue('limit'))" />
+        @updateValue="apply" />
     </div>
   </Limiter>
 </template>
 
 <script>
 // ===================================================================== Imports
-import { findIndex } from 'lodash'
 import Limiter from '@/modules/search/components/limiter'
 import FieldContainer from '@/components/form/field-container'
 
@@ -35,24 +32,6 @@ export default {
     options: {
       type: Array,
       required: true
-    },
-    formId: {
-      type: String,
-      required: true
-    }
-  },
-
-  computed: {
-    // checkbox and dropdowns
-    formList () {
-      return this.$store.getters['form/fields']
-    }
-  },
-
-  methods: {
-    getSelectedValue (modelKey) {
-      const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
-      return this.formList[idx] ? this.formList[idx].value : false
     }
   }
 }

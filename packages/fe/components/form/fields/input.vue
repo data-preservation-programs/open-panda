@@ -1,10 +1,5 @@
 <template>
-  <div :class="['field field-input', state, { focused, empty }]">
-
-    <label v-if="label" :for="name" class="label floating">
-      <span class="text">{{ label }}</span>
-      <sup v-if="required" class="required">*</sup>
-    </label>
+  <div :class="['field field-input', state, { focused, empty, predictive, 'dropdown-open': dropdownOpen }]">
 
     <div v-if="disabled" :class="['input', { disabled }]">
       {{ value }}
@@ -12,12 +7,14 @@
 
     <div v-else class="input-container">
       <input
-        :id="name"
+        :id="fieldKey"
         v-click-outside="closeDropdown"
         :type="inputType"
-        :name="name"
+        :name="fieldKey"
         :placeholder="placeholder"
         :value="value"
+        :min="min"
+        :max="max"
         :autocomplete="autocomplete"
         :class="['input', state]"
         @focus="focusHandler"
@@ -78,41 +75,50 @@ export default {
   },
 
   computed: {
-    inputType () {
-      return this.field.input_type || 'text'
+    scaffold () {
+      return this.field.scaffold
     },
-    name () {
-      return this.field.name
+    inputType () {
+      return this.scaffold.inputType || 'text'
+    },
+    fieldKey () {
+      return this.field.fieldKey
     },
     label () {
-      return this.field.label
+      return this.scaffold.label
     },
     placeholder () {
-      return this.field.placeholder || 'Enter a value...'
+      return this.scaffold.placeholder || 'Enter a value...'
     },
     autocomplete () {
-      return this.field.autocomplete
+      return this.scaffold.autocomplete
     },
     required () {
-      return this.field.required
+      return this.scaffold.required
     },
     disabled () {
-      return this.field.disabled
+      return this.scaffold.disabled
     },
     pre () {
-      return this.field.pre
+      return this.scaffold.pre
     },
     chars () {
-      return this.field.chars
+      return this.scaffold.chars
     },
     validationMessage () {
-      return this.field.validation_message
+      return this.scaffold.validationMessage
     },
     value () {
       return this.field.value
     },
     originalValue () {
       return this.field.originalValue
+    },
+    min () {
+      return this.scaffold.min
+    },
+    max () {
+      return this.scaffold.max
     },
     empty () {
       const value = this.value
@@ -122,16 +128,16 @@ export default {
       return this.field.state
     },
     predictive () {
-      return this.field.predictive
+      return this.scaffold.predictive
     },
     predictiveOptions () {
-      return this.field.predictive_options
+      return this.scaffold.predictiveOptions
     },
     predictiveDisplayKey () {
-      return this.field.predictive_options.display_key
+      return this.scaffold.predictiveOptions.display_key
     },
     predictiveOptionsList () {
-      return this.field.predictive_options.options
+      return this.scaffold.predictiveOptions.options
     },
     predictiveFiltered () {
       const filterValue = this.value.toLowerCase()

@@ -24,16 +24,14 @@
             :filters="filters.fullyStored"
             :is-single-option="true"
             class="col-5 datasets-checkbox">
-            <div slot-scope="{ applyFilter, isSelected }">
+            <div slot-scope="{ applyFilter }">
               <FieldContainer
-                :form-id="formId"
+                field-key="toggle_fully_stored"
                 :scaffold="{
                   type: 'checkbox',
                   required: false,
-                  label: 'Show only fully stored datasets',
-                  model_key: 'fullyStored'
+                  label: 'Show only fully stored datasets'
                 }"
-                :value="isSelected('fullyStored')"
                 @updateValue="applyFilter(0)" />
             </div>
           </Filterer>
@@ -41,19 +39,17 @@
       </div>
 
       <div class="col-6">
-        <Sorter :options="sort">
-          <div slot-scope="{ index, apply }">
+        <Sorter :options="sortOptions">
+          <div slot-scope="{ apply }">
             <FieldContainer
-              :form-id="formId"
+              field-key="sort_by"
               :scaffold="{
                 type: 'select',
                 required: false,
                 label: 'Sort by',
-                model_key: 'sort',
-                options: sort
+                options: sortOptions
               }"
-              :value="index || 0"
-              @updateValue="apply(getSelectedValue('sort'))" />
+              @updateValue="apply" />
           </div>
         </Sorter>
         <Filters />
@@ -88,7 +84,7 @@
       </div>
 
       <div class="col-3">
-        <button @click="clearAll">
+        <button @click="$clearSearchFilterSortAndLimit">
           clear all filters
         </button>
         <button @click="updateLayout('grid')">
@@ -134,7 +130,6 @@
       <div class="col-5">
         <ResultsPerPage
           v-if="totalPages > 1"
-          :form-id="formId"
           :options="limit" />
       </div>
     </div>
@@ -145,7 +140,6 @@
 <script>
 // ===================================================================== Imports
 import { mapGetters, mapActions } from 'vuex'
-import { findIndex } from 'lodash'
 
 import IndexPageData from '@/content/pages/index.json'
 import BlockBuilder from '@/components/blocks/block-builder'
@@ -159,8 +153,6 @@ import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
 import ButtonFilters from '@/components/buttons/button-filters'
-
-const formId = 'datasets|form'
 
 // ====================================================================== Export
 export default {
@@ -182,8 +174,7 @@ export default {
 
   data () {
     return {
-      tag: 'index',
-      formId
+      tag: 'index'
     }
   },
 
@@ -191,10 +182,6 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getSortLimitFilters')
     await store.dispatch('datasets/getDatasetList', { route })
-    await store.dispatch('form/registerFormModel', {
-      formId,
-      state: 'valid'
-    })
   },
 
   head () {
@@ -205,7 +192,7 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
-      sort: 'datasets/sort',
+      sortOptions: 'datasets/sort',
       limit: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
@@ -246,10 +233,6 @@ export default {
     },
     noResults () {
       return !this.count
-    },
-    // checkbox and dropdowns
-    formList () {
-      return this.$store.getters['form/fields']
     }
   },
 
@@ -286,22 +269,10 @@ export default {
         }
       })
     },
-    getSelectedValue (modelKey) {
-      const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
-      return this.formList[idx] ? this.formList[idx].value : false
-    },
-    clearAll () {
-      this.resetFormModel({
-        formId,
-        model: this.formList
-      })
-      this.$clearSearchFilterSortAndLimit()
-    },
     updateLayout (layout) {
       this.setLayout(layout)
     }
   }
-
 }
 </script>
 
