@@ -98,7 +98,7 @@ $focusBorderColor: black;
 
 .checkbox-container {
   position: relative;
-  margin-right: 2rem;
+  margin-right: toRem(13);
 }
 
 .checkbox {

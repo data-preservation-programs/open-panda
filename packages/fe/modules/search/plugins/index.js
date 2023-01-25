@@ -32,7 +32,7 @@ export default async function ({ app, store }, inject) {
   inject('clearAllFilters', (exception) => {
     app.$filter.clearAll(exception)
   })
-  inject('clearAll', () => {
+  inject('clearSearchFilterSortAndLimit', () => {
     app.$search.clearSearchQuery()
     app.$filter.clearAll()
     app.$sort.clearQuery()

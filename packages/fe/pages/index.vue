@@ -3,59 +3,65 @@
     <!-- hero -->
     <BlockBuilder :sections="pageContent" />
 
+    <!-- filter heading -->
+    <div class="grid-noGutter-middle-spaceBetween filter-heading">
+      <h5>{{ datasetContent.explore }}</h5>
+    </div>
+
     <!-- filter row1: searchbar, checkbox, sort, filter button -->
-    <div class="grid-noGutter-middle-spaceBetween">
-      <Searchbar
-        :placeholder="`Search ${count || '...'} datasets`"
-        :loading="dataLoading"
-        theme="line"
-        class="dataset-searchbar col-4" />
-
-      <Filterer
-        filter-key="fullyStored"
-        :filters="filters.fullyStored"
-        :is-single-option="true">
-        <div
-          slot-scope="{ applyFilter, isSelected }"
-          class="col-2">
-          <FieldContainer
-            :form-id="formId"
-            :scaffold="{
-              type: 'checkbox',
-              required: false,
-              label: 'Show only fully stored datasets',
-              model_key: 'fullyStored'
-            }"
-            :value="isSelected('fullyStored')"
-            @updateValue="applyFilter(0)" />
+    <div class="grid-noGutter-middle-spaceBetween filter-row1">
+      <div class="col-6">
+        <div class="grid-noGutter-middle-spaceBetween">
+          <div class="col-7">
+            <Searchbar
+              :placeholder="`Search ${count || '...'} datasets`"
+              :loading="dataLoading"
+              theme="line"
+              class="datasets-searchbar" />
+          </div>
+          <Filterer
+            filter-key="fullyStored"
+            :filters="filters.fullyStored"
+            :is-single-option="true"
+            class="col-5 datasets-checkbox">
+            <div slot-scope="{ applyFilter, isSelected }">
+              <FieldContainer
+                :form-id="formId"
+                :scaffold="{
+                  type: 'checkbox',
+                  required: false,
+                  label: 'Show only fully stored datasets',
+                  model_key: 'fullyStored'
+                }"
+                :value="isSelected('fullyStored')"
+                @updateValue="applyFilter(0)" />
+            </div>
+          </Filterer>
         </div>
-      </Filterer>
+      </div>
 
-      <Sorter :options="sort">
-        <div
-          slot-scope="{ index, apply }"
-          class="col-3">
-          <FieldContainer
-            :form-id="formId"
-            :scaffold="{
-              type: 'select',
-              required: false,
-              label: 'Sort by',
-              model_key: 'sort',
-              options: sort
-            }"
-            :value="index || 0"
-            @updateValue="apply(getSelectedValue('sort'))" />
-        </div>
-      </Sorter>
-
-      <div class="col-1">
+      <div class="col-6">
+        <Sorter :options="sort">
+          <div slot-scope="{ index, apply }">
+            <FieldContainer
+              :form-id="formId"
+              :scaffold="{
+                type: 'select',
+                required: false,
+                label: 'Sort by',
+                model_key: 'sort',
+                options: sort
+              }"
+              :value="index || 0"
+              @updateValue="apply(getSelectedValue('sort'))" />
+          </div>
+        </Sorter>
         <Filters />
       </div>
     </div>
 
     <!-- filter row2: results count, selected filters, layout button selection -->
-    <div class="grid-noGutter-middle-spaceBetween">
+    <div class="grid-middle-spaceBetween filter-row2">
       <div class="col-9">
         {{ resultCount }}
         <Filterer
@@ -81,13 +87,10 @@
         </Filterer>
       </div>
 
-      <div class="col">
+      <div class="col-3">
         <button @click="clearAll">
           clear all filters
         </button>
-      </div>
-
-      <div class="col">
         <button @click="updateLayout('grid')">
           grid</button>
         <button @click="updateLayout('list')">
@@ -96,14 +99,12 @@
     </div>
 
     <!-- cards - no result -->
-    <div class="grid-noGutter-middle-spaceBetween">
-      <div v-if="noResults">
-        <h3>{{ datasetContent.empty }}</h3>
-      </div>
+    <div v-if="noResults" class="grid-middle-spaceBetween no-results">
+      <h3>{{ datasetContent.empty }}</h3>
     </div>
 
     <!-- cards -->
-    <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1">
+    <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1 results">
       <DatasetsCardGrid
         v-for="(data, index) in filteredDatasetList"
         :key="`dataset-${index}`"
@@ -188,9 +189,7 @@ export default {
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
-    await store.dispatch('datasets/getFilters')
-    await store.dispatch('datasets/getSort')
-    await store.dispatch('datasets/getLimit')
+    await store.dispatch('datasets/getSortLimitFilters')
     await store.dispatch('datasets/getDatasetList', { route })
     await store.dispatch('form/registerFormModel', {
       formId,
@@ -269,7 +268,7 @@ export default {
 
   beforeDestroy () {
     this.resetStore()
-    this.$clearAll()
+    this.$clearSearchFilterSortAndLimit()
   },
 
   methods: {
@@ -296,7 +295,7 @@ export default {
         formId,
         model: this.formList
       })
-      this.$clearAll()
+      this.$clearSearchFilterSortAndLimit()
     },
     updateLayout (layout) {
       this.setLayout(layout)
@@ -318,7 +317,16 @@ export default {
     }
   }
 }
+
 .pagination {
   margin-top: toRem(50);
+}
+
+.filter-heading,
+.filter-row1 {
+  margin-bottom: toRem(20)
+}
+.filter-row2 {
+  margin-bottom: toRem(55);
 }
 </style>

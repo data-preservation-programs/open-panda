@@ -7,8 +7,7 @@ const state = () => ({
   metadata: {
     page: 1,
     totalPages: 1,
-    count: false,
-    limit: 12
+    count: false
   },
   loading: false,
   basicStats: false,
@@ -82,41 +81,17 @@ const actions = {
       return false
     }
   },
-  // /////////////////////////////////////////////////////////////////// getSort
-  async getSort ({ commit, getters, dispatch }) {
+  // /////////////////////////////////////////////////////// getSortLimitFilters
+  async getSortLimitFilters ({ commit, getters, dispatch }) {
     try {
       const response = await this.$axiosAuth.get('/get-static-file', {
         params: { path: 'filters.json' }
       })
       commit('SET_SORT', response.data.payload.sort)
-    } catch (e) {
-      console.log('========================== [Store Action: datasets/getSort]')
-      console.log(e)
-      return false
-    }
-  },
-  // ////////////////////////////////////////////////////////////////// getLimit
-  async getLimit ({ commit, getters, dispatch }) {
-    try {
-      const response = await this.$axiosAuth.get('/get-static-file', {
-        params: { path: 'filters.json' }
-      })
       commit('SET_LIMIT', response.data.payload.limit)
-    } catch (e) {
-      console.log('========================= [Store Action: datasets/getLimit]')
-      console.log(e)
-      return false
-    }
-  },
-  // //////////////////////////////////////////////////////////////// getFilters
-  async getFilters ({ commit, getters, dispatch }) {
-    try {
-      const response = await this.$axiosAuth.get('/get-static-file', {
-        params: { path: 'filters.json' }
-      })
       commit('SET_FILTERS', response.data.payload.filters)
     } catch (e) {
-      console.log('======================= [Store Action: datasets/getFilters]')
+      console.log('========================== [Store Action: datasets/getSort]')
       console.log(e)
       return false
     }
