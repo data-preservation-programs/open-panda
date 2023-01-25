@@ -99,7 +99,6 @@ export default {
       this.setPage({ page: 1 })
     },
     togglePanel () {
-      console.log('asdf')
       this.open = !this.open
     },
     clearAll () {
