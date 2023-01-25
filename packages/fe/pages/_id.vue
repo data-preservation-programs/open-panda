@@ -245,7 +245,10 @@ export default {
       return this.dataset.slug
     },
     progressMessage () {
-      return '<b>In progress -</b> This dataset is currently being onboarded to the network and is only partially available. All data will be fully available soon.'
+      if (this.dataset.preparation_progress === 4) {
+        return '<b>In progress -</b> This dataset is currently being onboarded to the network and is only partially available. All data will be fully available soon.'
+      }
+      return ''
     },
     headerImage () {
       const slug = this.dataset.slug
