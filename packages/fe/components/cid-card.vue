@@ -19,7 +19,7 @@
               {{ title }}
             </div>
             <div class="hash">
-              {{ hash }}
+              {{ shortenHashString(hash) }}
               <button
                 class="copy-button"
                 @click="$addTextToClipboard(hash)">
@@ -267,6 +267,13 @@ export default {
     },
     changeBottomPanelHeight (height) {
       this.bottomPanelHeight = height + 80
+    },
+    shortenHashString (string) {
+      const len = string.length
+      if (len > 16) {
+        return `${string.substring(0, 8)}...${string.substring(len - 8, len)}`
+      }
+      return string
     }
   }
 }
