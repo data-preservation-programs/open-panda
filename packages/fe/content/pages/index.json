@@ -88,6 +88,7 @@
     }
   },
   "datasets_content": {
+    "explore": "Explore datasets",
     "empty": "There are no projects matching this search, please try again.",
     "card": {
       "labels1": {

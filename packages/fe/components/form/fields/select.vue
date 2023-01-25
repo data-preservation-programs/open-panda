@@ -161,12 +161,18 @@ $height: 4rem;
     }
   }
   .select {
-    border-bottom: 2px solid white;
-    transition: 150ms ease-out;
+    // border-bottom: 0.1875rem solid tomato;
+    // transition: 150ms ease-out;
     &.native {
       &:focus-visible {
         @include focusBoxShadow;
       }
+    }
+    &.custom {
+      padding: toRem(8) toRem(5) toRem(8) toRem(10);
+      background-color: $gin;
+      border: 2px solid $tasman;
+      border-radius: toRem(5);
     }
   }
   .dropdown {
@@ -217,7 +223,10 @@ $height: 4rem;
   cursor: pointer;
   transition: 150ms ease-out;
   &:hover,
-  &.highlighted,
+  &.highlighted {
+    transition: 150ms ease-in;
+    background-color: $grayNurse2;
+  }
   &.selected {
     background-color: rgba(white, 0.1);
   }

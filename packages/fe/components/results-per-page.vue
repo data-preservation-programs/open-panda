@@ -1,8 +1,6 @@
 <template>
   <Limiter :options="options">
-    <div
-      slot-scope="{ apply }"
-      class="col-3">
+    <div slot-scope="{ apply }">
       <FieldContainer
         field-key="results_per_page"
         :scaffold="{

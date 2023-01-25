@@ -115,7 +115,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$dimension: 2.75rem;
+$dimension: 2.5rem;
 
 // ///////////////////////////////////////////////////////////////////// General
 #pagination-controls {
@@ -155,7 +155,7 @@ $dimension: 2.75rem;
 .breaker {
   display: flex;
   font-weight: 500;
-  color: tomato;
+  opacity: .5;
 }
 
 .page-button {
@@ -163,11 +163,12 @@ $dimension: 2.75rem;
   &:not(.current) {
     &:hover {
       text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 2px;
     }
   }
   &.current {
-    color: tomato;
-    background-color: teal;
+    border: 2px solid $tasman;
     border-radius: 0.3125rem;
     cursor: default;
   }
@@ -176,6 +177,8 @@ $dimension: 2.75rem;
 .control-button {
   &:hover {
     text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
   }
   &.first,
   &.prev {

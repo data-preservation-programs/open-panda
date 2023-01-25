@@ -3,6 +3,7 @@
     <Searchbar
       placeholder="Search datasets"
       theme="solid" />
+    <Filters />
 
     <nuxt-link to="/" class="logo-link">
       <SiteLogo />
@@ -36,6 +37,7 @@ import { mapGetters } from 'vuex'
 import Button from '@/components/buttons/button'
 import SiteLogo from '@/components/icons/logo'
 import Searchbar from '@/components/searchbar'
+import Filters from '@/components/filters'
 
 // ====================================================================== Export
 export default {
@@ -44,7 +46,8 @@ export default {
   components: {
     Button,
     SiteLogo,
-    Searchbar
+    Searchbar,
+    Filters
   },
 
   data () {

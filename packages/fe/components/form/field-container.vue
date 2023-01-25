@@ -140,7 +140,8 @@ export default {
 
 // /////////////////////////////////////////////////////////////////////// Label
 ::v-deep .label {
-  font-weight: 500;
+  font-weight: 400;
+  @include fontSize_14;
   cursor: pointer;
   &.floating {
     position: absolute;
