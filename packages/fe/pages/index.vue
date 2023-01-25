@@ -14,36 +14,32 @@
         :filters="filters.fullyStored"
         :is-single-option="true">
         <div
-          slot-scope="{ applyFilter, isSelected }"
+          slot-scope="{ applyFilter }"
           class="col-2">
           <FieldContainer
-            :form-id="formId"
+            field-key="toggle_fully_stored"
             :scaffold="{
               type: 'checkbox',
               required: false,
-              label: 'Show only fully stored datasets',
-              model_key: 'fullyStored'
+              label: 'Show only fully stored datasets'
             }"
-            :value="isSelected('fullyStored')"
             @updateValue="applyFilter(0)" />
         </div>
       </Filterer>
 
-      <Sorter :options="sort">
+      <Sorter :options="sortOptions">
         <div
-          slot-scope="{ index, apply }"
+          slot-scope="{ apply }"
           class="col-3">
           <FieldContainer
-            :form-id="formId"
+            field-key="sort_by"
             :scaffold="{
               type: 'select',
               required: false,
               label: 'Sort by',
-              model_key: 'sort',
-              options: sort
+              options: sortOptions
             }"
-            :value="index || 0"
-            @updateValue="apply(getSelectedValue('sort'))" />
+            @updateValue="apply" />
         </div>
       </Sorter>
 
@@ -94,7 +90,6 @@
 <script>
 // ===================================================================== Imports
 import { mapGetters, mapActions } from 'vuex'
-import { findIndex } from 'lodash'
 
 import IndexPageData from '@/content/pages/index.json'
 import BlockBuilder from '@/components/blocks/block-builder'
@@ -138,10 +133,6 @@ export default {
     await store.dispatch('datasets/getSort')
     await store.dispatch('datasets/getLimit')
     await store.dispatch('datasets/getDatasetList', { route })
-    await store.dispatch('form/registerFormModel', {
-      formId,
-      state: 'valid'
-    })
   },
 
   head () {
@@ -152,7 +143,7 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
-      sort: 'datasets/sort',
+      sortOptions: 'datasets/sort',
       limit: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
@@ -192,10 +183,6 @@ export default {
     },
     noResults () {
       return !this.count
-    },
-    // checkbox and dropdowns
-    formList () {
-      return this.$store.getters['form/fields']
     }
   },
 
@@ -230,13 +217,8 @@ export default {
           this.setLoadingStatus({ status: false })
         }
       })
-    },
-    getSelectedValue (modelKey) {
-      const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
-      return this.formList[idx] ? this.formList[idx].value : false
     }
   }
-
 }
 </script>
 

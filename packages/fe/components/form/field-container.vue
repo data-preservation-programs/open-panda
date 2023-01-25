@@ -1,22 +1,30 @@
 <template>
   <div class="field-container">
     <Field v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }">
+      <div slot-scope="{ updateValue, field, type, validationMessage }" class="field-wrapper">
+        <template v-if="field">
 
-        <component
-          :is="type"
-          :field="field"
-          v-on="$listeners"
-          @updateValue="updateValue" />
+          <label v-if="scaffold.label" :for="fieldKey" class="field-label">
+            {{ scaffold.label }}
+          </label>
 
-        <div v-if="field.description" class="description">
-          {{ field.description }}
-        </div>
+          <div v-if="scaffold.description" class="description">
+            {{ scaffold.description }}
+          </div>
 
-        <div v-if="validationMessage" class="validation-message">
-          <sup>*</sup>{{ validationMessage }}
-        </div>
+          <component
+            :is="type"
+            :field="field"
+            :field-key="fieldKey"
+            @updateValue="pushValue($event, updateValue)" />
 
+          <slot />
+
+          <div v-if="validationMessage" class="validation-message">
+            {{ validationMessage }}
+          </div>
+
+        </template>
       </div>
     </Field>
   </div>
@@ -62,6 +70,11 @@ export default {
       default: false
     },
     formId: {
+      type: [String, Boolean],
+      required: false,
+      default: false
+    },
+    fieldKey: {
       type: String,
       required: true
     },
@@ -75,15 +88,17 @@ export default {
       required: false,
       default: false
     },
-    deregisterFormFieldOnDestroy: {
+    deregisterOnDestroy: {
       type: Boolean,
       required: false,
       default: false
-    },
-    fieldUpdateValue: {
-      type: Function,
-      required: false,
-      default: () => {}
+    }
+  },
+
+  methods: {
+    pushValue (value, updateValue) {
+      updateValue(value)
+      this.$emit('updateValue', value)
     }
   }
 }

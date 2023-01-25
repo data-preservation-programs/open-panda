@@ -1,131 +1,105 @@
 <template>
-  <div :class="['field field-range', state, { focused, empty }]">
+  <div :class="['field field-range', state, { focused }]">
 
     <label v-if="label" :for="name" class="label floating">
       <span class="text">{{ label }}</span>
       <sup v-if="required" class="required">*</sup>
     </label>
 
-    <div class="track">
-      <div
-        ref="thumb"
-        :style="thumbPosition"
-        class="thumb" />
-      <div
-        v-if="showProgressBar"
-        :style="progressBarWidth"
-        :class="['progress-bar', `progress-${value}`]" />
-      <div v-if="showTicks" class="ticks">
-        <span
-          v-for="tick in 101"
-          :key="tick"
-          :style="{ transform: `translateX(${getTickPosition(tick)}px)` }"
-          :class="['tick', { current: tick === value + 1 }]" />
-      </div>
-      <input
-        :id="name"
-        ref="input"
-        :name="name"
-        :value="value"
-        :style="`--thumb-dimension-x: ${thumbDimensions.w}px; --thumb-dimension-y: ${thumbDimensions.h}px;`"
-        :class="['range', state]"
-        type="range"
-        @focus="focused = true"
-        @blur="focused = false"
-        @input="$emit('updateValue', $event.target.value)" />
-    </div>
+    <Range
+      ref="range"
+      :field="field"
+      :field-key="fieldKey"
+      v-on="$listeners">
 
-    <input
-      :value="value"
-      :autocomplete="autocomplete"
-      :class="['input', state]"
-      :minlength="chars.min"
-      :maxlength="chars.max"
-      type="number"
-      placeholder="0"
-      @input="$emit('updateValue', $event.target.value)" />
+      <template #thumb>
+        <div class="thumb" />
+      </template>
+
+      <template #progress-bar>
+        <div ref="progressBar" class="progress-bar">
+          <div class="tick-list">
+            <div
+              v-for="line in numTicks"
+              :key="line"
+              class="line" />
+          </div>
+        </div>
+      </template>
+
+      <template #tick-list="{ getPosition, getTick }">
+        <div class="positions">
+          <div class="position start" :style="{ left: `${getTick(getPosition(34359738368)) }%` }">
+            32 GiB
+          </div>
+          <div class="position middle" :style="{ left: `${getTick(getPosition(109951162777600)) }%` }">
+            100 TiB
+          </div>
+          <div class="position end" :style="{ left: `${getTick(getPosition(5629499534213120)) }%` }">
+            5 PiB
+          </div>
+        </div>
+      </template>
+
+    </Range>
 
   </div>
 </template>
 
 <script>
-// =================================================================== Functions
-const preValidate = (instance, val, pre) => {
-  if (typeof pre !== 'string') { return }
-  const regex = new RegExp(pre)
-  let value = parseInt(val.replace(regex, ''))
-  if (isNaN(value)) {
-    value = 0
-  } else if (value <= 0) {
-    value = 0
-  } else if (value > 100) {
-    value = 100
-  }
-  instance.$emit('updateValue', value)
-}
+// ===================================================================== Imports
+import Range from '@/modules/form/components/range'
 
 // ====================================================================== Export
 export default {
-  name: 'FieldInput',
+  name: 'FieldRange',
+
+  components: {
+    Range
+  },
 
   props: {
     field: {
       type: Object,
       required: true
     },
-    showTicks: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    showProgressBar: {
-      type: Boolean,
-      required: false,
-      default: true
+    fieldKey: {
+      type: String,
+      required: true
     }
   },
 
   data () {
     return {
       focused: false,
-      trackWidth: 0,
-      thumbDimensions: {
-        x: 0,
-        y: 0
-      }
+      numTicks: 0
     }
   },
 
   computed: {
-    inputType () {
-      return this.field.input_type || 'text'
+    scaffold () {
+      return this.field.scaffold
     },
     name () {
-      return this.field.name
+      return this.scaffold.name
     },
     label () {
-      return this.field.label
+      return this.scaffold.label
     },
     placeholder () {
-      return this.field.placeholder || 'Enter a value...'
-    },
-    autocomplete () {
-      return this.field.autocomplete
+      return this.scaffold.placeholder || 'Enter a value...'
     },
     required () {
-      return this.field.required
+      return this.scaffold.required
     },
     disabled () {
-      return this.field.disabled
+      return this.scaffold.disabled
     },
     pre () {
-      return this.field.pre
-    },
-    chars () {
-      return this.field.chars
+      return this.scaffold.pre
     },
     validationMessage () {
-      return this.field.validation_message
+      return this.scaffold.validationMessage
     },
     value () {
       return this.field.value
@@ -135,186 +109,151 @@ export default {
     },
     state () {
       return this.field.state
-    },
-    empty () {
-      return this.value === ''
-    },
-    thumbPosition () {
-      const tick = this.value
-      return `left: calc(${tick}% - ${this.thumbDimensions.w * (tick / 100)}px)`
-    },
-    progressBarWidth () {
-      const tick = this.value
-      const thumbWidth = this.thumbDimensions.w
-      return `width: calc(${tick}% - ${thumbWidth * (tick / 100) - (thumbWidth / 2)}px)`
-    }
-  },
-
-  watch: {
-    value (value) {
-      preValidate(this, value + '', this.pre)
     }
   },
 
   mounted () {
-    const thumb = this.$refs.thumb
-    this.thumbDimensions = {
-      w: thumb.offsetWidth,
-      h: thumb.offsetHeight
-    }
-    this.trackWidth = this.$refs.input.offsetWidth
-  },
-
-  methods: {
-    getTickPosition (tick) {
-      return (this.trackWidth / 100 * tick) - (this.thumbDimensions.w * tick / 100) - 1
-    }
+    this.$nextTick(() => {
+      this.numTicks = Math.ceil(this.$refs.range.$el.clientWidth / 3)
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$thumbWidth: 1.5rem;
+$trackHeight: 1.875rem;
+$thumbWidth: 4px;
 $borderWidth: 2px;
 
 // ///////////////////////////////////////////////////////////////////// General
 .field-range {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  height: 2.5rem;
-}
-
-.track {
-  position: relative;
-  width: 100%;
-  height: 0.75rem;
-  margin-right: 1rem;
-  border: 2px solid tomato;
-  border-radius: 0.5rem;
-  &:hover {
-    .thumb {
+  &.caution,
+  &.error {
+    :deep(.range-track) {
       &:before {
-        width: 100%;
-        transform: translateX(0);
+        transition: 150ms ease-in;
+      }
+    }
+  }
+  &.caution {
+    :deep(.range-track) {
+      &:before {
+        background-color: darkorange;
+      }
+    }
+  }
+  &.error {
+    :deep(.range-track) {
+      &:before {
+        background-color: red;
       }
     }
   }
 }
 
-.thumb {
-  position: absolute;
-  top: 50%;
-  width: $thumbWidth;
-  height: 350%;
-  border: $borderWidth solid transparent;
-  border-radius: 0.25rem;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 10;
+// /////////////////////////////////////////////////////////////////////// Track
+::v-deep .range-track {
+  position: relative;
+  left: calc(#{math.div(-$trackHeight, 2)} + #{math.div($thumbWidth, 2)});
+  height: $trackHeight;
+  width: calc(100% + #{$trackHeight} - #{math.div($thumbWidth, 1)});
+  margin-bottom: $borderWidth;
   &:before {
     content: '';
     position: absolute;
-    top: -$borderWidth;
-    left: -$borderWidth;
-    width: 0px;
-    height: 100%;
-    border-width: inherit;
-    border-style: solid;
-    border-color: tomato;
-    border-radius: inherit;
-    pointer-events: inherit;
-    background-color: tomato;
-    transform: translateX(calc(#{math.div($thumbWidth, 2)} - #{$borderWidth}));
-    transition: 150ms linear;
+    top: 100%;
+    left: calc(#{math.div($trackHeight, 2)} - #{math.div($thumbWidth, 2)});
+    width: calc(100% - #{$trackHeight} + #{math.div($thumbWidth, 1)});
+    height: $borderWidth;
+    background-color: white;
+    transition: 150ms ease-out;
+  }
+  &:hover {
+    .thumb {
+      &:before,
+      &:after {
+        height: 0.75rem;
+      }
+    }
+  }
+  &.disabled {
+    cursor: no-drop;
+    border-bottom-color: rgba(246, 245, 255, 0.25);
   }
 }
 
-.progress-bar {
-  position: absolute;
+// /////////////////////////////////////////////////////////////////////// Thumb
+.thumb {
+  position: relative;
+  left: calc(#{math.div($trackHeight, 2)} - #{math.div($thumbWidth, 2)});
   top: 0;
-  left: 0;
-  height: 100%;
-  border-radius: 0.5rem;
-  background-color: tomato;
-  &.progress-100 {
-    width: 100% !important;
+  width: $thumbWidth;
+  height: $trackHeight;
+  background-color: white;
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    height: 0.5rem;
+    width: 50%;
+    pointer-events: inherit;
+    background-color: inherit;
+    transition: all 150ms linear;
+  }
+  &:before {
+    content: '';
+    right: 50%;
+  }
+  &:after {
+    content: '';
+    left: 50%;
   }
 }
 
-.ticks {
+// //////////////////////////////////////////////////////////////// Progress Bar
+.progress-bar {
+  position: relative;
+  left: calc(#{math.div($trackHeight, 2)} - #{math.div($thumbWidth, 2)});
+  width: calc(100% - #{$trackHeight} + #{math.div($thumbWidth, 1)});
+  height: 100%;
+  overflow: hidden;
+}
+
+.tick-list {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
   height: 100%;
-  z-index: 5;
 }
 
-.tick {
-  position: absolute;
-  top: 0;
-  left: 0;
+.line {
+  background-color: white;
   width: 1px;
   height: 100%;
-  background-color: darkorange;
-  border-radius: 1px;
-  transition: 150ms linear;
-  &.current {
-    ~ .tick {
-      background-color: tomato;
-      opacity: 0.5;
-    }
+  &:not(:last-child) {
+    margin-right: 2px;
   }
 }
 
-.range {
+// /////////////////////////////////////////////////////////////////// Positions
+.positions {
   position: relative;
-  display: block;
-  appearance: none;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  z-index: 15;
-  &:focus {
-    outline: none;
-  }
-  @include inputRange ('thumb') {
-    appearance: none;
-    position: relative;
-    top: 50%;
-    left: 0;
-    width: var(--thumb-dimension-x);
-    height: var(--thumb-dimension-y);
-    transform: translateY(-50%);
-    cursor: grab;
-    &:active {
-      cursor: grabbing;
-    }
-  }
-  @include inputRange ('track') {
-    appearance: none;
-    width: 100%;
-    height: 100%;
-    border-color: transparent;
-    color: transparent;
-    cursor: pointer;
-  }
+  margin-top: 0.5rem;
 }
 
-.input {
-  appearance: none;
-  width: 2.875rem;
-  padding: 0.5rem;
-  border: 2px solid tomato;
-  border-radius: 0.5rem;
-  &::-webkit-inner-spin-button,
-  &::-webkit-outer-spin-button {
-    margin: 0;
-    appearance: none;
+.position {
+  position: absolute;
+  top: 0;
+  font-size: toRem(14);
+  white-space: nowrap;
+  &.middle {
+    transform: translateX(-50%);
+  }
+  &.end {
+    transform: translateX(-100%);
   }
 }
 </style>
