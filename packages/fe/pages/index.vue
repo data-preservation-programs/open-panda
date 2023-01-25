@@ -269,7 +269,7 @@ export default {
 
   beforeDestroy () {
     this.resetStore()
-    this.$clearAllFilters()
+    this.$clearAll()
   },
 
   methods: {
@@ -296,7 +296,7 @@ export default {
         formId,
         model: this.formList
       })
-      this.$clearAllFilters()
+      this.$clearAll()
     },
     updateLayout (layout) {
       this.setLayout(layout)

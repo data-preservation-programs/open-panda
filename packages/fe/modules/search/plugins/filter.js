@@ -22,12 +22,14 @@ class Filter {
   }
 
   // ================================================================== clearAll
-  clearAll () {
+  clearAll (exception) {
     const filters = this.store.getters['search/filters']
     const query = this.query
     Object.keys(query).forEach((key) => {
-      if (filters.includes(key) && query[key] !== undefined) {
-        this.query[key] = undefined
+      if (key !== exception) {
+        if (filters.includes(key) && query[key] !== undefined) {
+          this.query[key] = undefined
+        }
       }
     })
     this.app.router.push({ query: this.query })

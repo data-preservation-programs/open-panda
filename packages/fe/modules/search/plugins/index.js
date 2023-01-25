@@ -29,7 +29,10 @@ export default async function ({ app, store }, inject) {
     app.$search.clearSearchQuery()
     app.$filter.clearAll()
   })
-  inject('clearAllFilters', () => {
+  inject('clearAllFilters', (exception) => {
+    app.$filter.clearAll(exception)
+  })
+  inject('clearAll', () => {
     app.$search.clearSearchQuery()
     app.$filter.clearAll()
     app.$sort.clearQuery()

@@ -55,7 +55,7 @@
         <Button
           :button="{
             type: 'solid',
-            href: `/dataset/${data.id}`,
+            href: `/dataset/${data.slug}`,
             text: 'View dataset'
           }" />
       </div>

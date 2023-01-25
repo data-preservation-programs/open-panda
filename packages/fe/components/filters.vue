@@ -102,7 +102,8 @@ export default {
       this.open = !this.open
     },
     clearAll () {
-      console.log('clearAll')
+      // do not clear fullyStored because that's outside the filter dropdown
+      this.$clearAllFilters('fullyStored')
     },
     onSearch () {
       console.log('onSearch panel')
