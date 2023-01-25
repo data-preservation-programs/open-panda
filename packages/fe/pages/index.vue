@@ -1,7 +1,9 @@
 <template>
   <div :class="`page page-${tag}`">
+    <!-- hero -->
     <BlockBuilder :sections="pageContent" />
 
+    <!-- filter row1: searchbar, checkbox, sort, filter button -->
     <div class="grid-noGutter-middle-spaceBetween">
       <Searchbar
         :placeholder="`Search ${count || '...'} datasets`"
@@ -52,6 +54,7 @@
       </div>
     </div>
 
+    <!-- filter row2: results count, selected filters, layout button selection -->
     <div class="grid-noGutter-middle-spaceBetween">
       <div class="col-9">
         {{ resultCount }}
@@ -85,19 +88,31 @@
       </div>
 
       <div class="col">
-        <button>grid</button>
-        <button>list</button>
+        <button @click="updateLayout('grid')">
+          grid</button>
+        <button @click="updateLayout('list')">
+          list</button>
       </div>
     </div>
 
+    <!-- cards - no result -->
     <div class="grid-noGutter-middle-spaceBetween">
       <div v-if="noResults">
         <h3>{{ datasetContent.empty }}</h3>
       </div>
     </div>
 
-    <div class="grid-4-equalHeight_md-2_sm-1">
-      <Card
+    <!-- cards -->
+    <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1">
+      <DatasetsCardGrid
+        v-for="(data, index) in filteredDatasetList"
+        :key="`dataset-${index}`"
+        :data="data"
+        :labels1="datasetContent.card.labels1"
+        :labels2="datasetContent.card.labels2" />
+    </div>
+    <div v-if="layout === 'list'" class="grid-1">
+      <DatasetsCardList
         v-for="(data, index) in filteredDatasetList"
         :key="`dataset-${index}`"
         :data="data"
@@ -105,6 +120,7 @@
         :labels2="datasetContent.card.labels2" />
     </div>
 
+    <!-- pagination -->
     <div class="grid-center-middle">
       <div class="col-6">
         <PaginationControls
@@ -132,7 +148,8 @@ import { findIndex } from 'lodash'
 
 import IndexPageData from '@/content/pages/index.json'
 import BlockBuilder from '@/components/blocks/block-builder'
-import Card from '@/components/card'
+import DatasetsCardGrid from '@/components/datasets-card/datasets-card-grid'
+import DatasetsCardList from '@/components/datasets-card/datasets-card-list'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
@@ -150,7 +167,8 @@ export default {
 
   components: {
     BlockBuilder,
-    Card,
+    DatasetsCardGrid,
+    DatasetsCardList,
     Filters,
     Searchbar,
     PaginationControls,
@@ -192,9 +210,7 @@ export default {
       limit: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
-      basicStats: 'datasets/basicStats',
-      clipboard: 'general/clipboard',
-      searchValue: 'search/searchValue'
+      layout: 'datasets/layout'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -260,6 +276,7 @@ export default {
     ...mapActions({
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
+      setLayout: 'datasets/setLayout',
       getDatasetList: 'datasets/getDatasetList',
       resetFormModel: 'form/resetFormModel'
     }),
@@ -280,6 +297,9 @@ export default {
         model: this.formList
       })
       this.$clearAllFilters()
+    },
+    updateLayout (layout) {
+      this.setLayout(layout)
     }
   }
 

@@ -71,7 +71,7 @@ import CardCutout from '@/components/card-cutout'
 
 // ====================================================================== Export
 export default {
-  name: 'Card',
+  name: 'DatasetsCardGrid',
 
   components: {
     Button,

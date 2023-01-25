@@ -14,7 +14,8 @@ const state = () => ({
   basicStats: false,
   filters: false,
   sort: false,
-  limit: false
+  limit: false,
+  layout: 'grid'
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -26,7 +27,8 @@ const getters = {
   basicStats: state => state.basicStats,
   filters: state => state.filters,
   sort: state => state.sort,
-  limit: state => state.limit
+  limit: state => state.limit,
+  layout: state => state.layout
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -39,6 +41,7 @@ const actions = {
     commit('SET_FILTERS', false)
     commit('SET_SORT', false)
     commit('SET_LIMIT', false)
+    commit('SET_LAYOUT', 'grid')
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
@@ -126,6 +129,10 @@ const actions = {
   setLimit ({ commit }, payload) {
     commit('SET_LIMIT', payload)
   },
+  // ///////////////////////////////////////////////////////////////// setLayout
+  setLayout ({ commit }, payload) {
+    commit('SET_LAYOUT', payload)
+  },
   // /////////////////////////////////////////////////////////////////// setPage
   setPage ({ commit }, payload) {
     commit('SET_PAGE', payload)
@@ -180,6 +187,9 @@ const mutations = {
   },
   SET_SORT (state, sort) {
     state.sort = sort
+  },
+  SET_LAYOUT (state, layout) {
+    state.layout = layout
   }
 }
 
