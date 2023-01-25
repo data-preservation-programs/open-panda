@@ -43,8 +43,8 @@ const actions = {
     const fields = CloneDeep(getters.fields.filter(obj => obj.formId === formId))
     fields.forEach((field) => {
       dispatch('updateFormField', Object.assign(field, {
-        value: incoming[field.model_key],
-        originalValue: incoming[field.model_key],
+        value: field.type === 'select' ? 0 : incoming[field.model_key],
+        originalValue: field.type === 'select' ? 0 : incoming[field.model_key],
         state: 'valid',
         validation: false
       }))

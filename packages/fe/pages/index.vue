@@ -79,7 +79,7 @@
       </div>
 
       <div class="col">
-        <button @click="$clearAllFilters">
+        <button @click="clearAll">
           clear all filters
         </button>
       </div>
@@ -254,7 +254,7 @@ export default {
 
   beforeDestroy () {
     this.resetStore()
-    this.$clearSearchAndFilters()
+    this.$clearAllFilters()
   },
 
   methods: {
@@ -262,7 +262,7 @@ export default {
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
       getDatasetList: 'datasets/getDatasetList',
-      removeLoader: 'button/removeLoader'
+      resetFormModel: 'form/resetFormModel'
     }),
     stopLoading () {
       this.$nextTick(() => {
@@ -274,6 +274,13 @@ export default {
     getSelectedValue (modelKey) {
       const idx = findIndex(this.formList, function (o) { return o.model_key === modelKey })
       return this.formList[idx] ? this.formList[idx].value : false
+    },
+    clearAll () {
+      this.resetFormModel({
+        formId,
+        model: this.formList
+      })
+      this.$clearAllFilters()
     }
   }
 

@@ -33,7 +33,7 @@ const getters = {
 // -----------------------------------------------------------------------------
 const actions = {
   // //////////////////////////////////////////////////////////////// resetStore
-  resetStore ({ commit, getters, dispatch }) {
+  resetStore ({ commit, getters, dispatch }, formId) {
     dispatch('setPage', { page: 1 })
     commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
     commit('SET_FILTERS', false)
