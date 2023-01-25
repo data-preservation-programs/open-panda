@@ -117,9 +117,8 @@
       <div class="col-6">
         <ResultsPerPage
           v-if="totalPages > 1"
-          :options="limit"
-          :loading="dataLoading"
-          store-key="datasets" />
+          :form-id="formId"
+          :options="limit" />
       </div>
     </div>
 

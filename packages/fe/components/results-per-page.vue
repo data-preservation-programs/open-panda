@@ -1,19 +1,17 @@
 <template>
   <Limiter :options="options">
-    <div
-      slot-scope="{ index, apply }"
-      class="col-3">
+    <div slot-scope="{ index, apply }">
       <FieldContainer
         :form-id="formId"
         :scaffold="{
           type: 'select',
           required: false,
           label: 'Results per page',
-          model_key: `${storeKey}-limit`,
-          options
+          model_key: 'limit',
+          options: options
         }"
         :value="index || 0"
-        @updateValue="apply(getSelectedValue(`${storeKey}-limit`))" />
+        @updateValue="apply(getSelectedValue('limit'))" />
     </div>
   </Limiter>
 </template>
@@ -23,8 +21,6 @@
 import { findIndex } from 'lodash'
 import Limiter from '@/modules/search/components/limiter'
 import FieldContainer from '@/components/form/field-container'
-
-const formId = 'limit|form'
 
 // ====================================================================== Export
 export default {
@@ -40,28 +36,10 @@ export default {
       type: Array,
       required: true
     },
-    storeKey: {
+    formId: {
       type: String,
       required: true
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false
     }
-  },
-
-  data () {
-    return {
-      formId
-    }
-  },
-
-  async fetch ({ app, store, route, error }) {
-    await store.dispatch('form/registerFormModel', {
-      formId,
-      state: 'valid'
-    })
   },
 
   computed: {
