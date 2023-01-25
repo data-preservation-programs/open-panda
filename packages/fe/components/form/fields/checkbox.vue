@@ -112,8 +112,7 @@ $focusBorderColor: black;
   &:checked {
     + .checker {
       animation: shrink-bounce 200ms cubic-bezier(0.4, 0, 0.23, 1);
-      border-color: darkorange;
-      background-color: darkorange;
+      border-color: $tasman;
       .icon-checkmark {
         animation: checkbox-check 125ms 250ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
       }

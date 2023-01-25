@@ -165,8 +165,8 @@ $height: 2.5rem;
 
 ::v-deep .select-container {
   .select {
-    border-bottom: 0.1875rem solid tomato;
-    transition: 150ms ease-out;
+    // border-bottom: 0.1875rem solid tomato;
+    // transition: 150ms ease-out;
     &.native {
       border-radius: 0.25rem;
       &:focus-visible {
@@ -174,7 +174,10 @@ $height: 2.5rem;
       }
     }
     &.custom {
-      background-color: teal;
+      padding: toRem(8) toRem(5) toRem(8) toRem(10);
+      background-color: $gin;
+      border: 2px solid $tasman;
+      border-radius: toRem(5);
     }
   }
   .dropdown {
@@ -239,7 +242,7 @@ $height: 2.5rem;
   &:hover,
   &.highlighted {
     transition: 150ms ease-in;
-    background-color: teal;
+    background-color: $grayNurse2;
   }
   &.selected {
     .label {

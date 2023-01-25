@@ -121,8 +121,8 @@
     </div>
 
     <!-- pagination -->
-    <div class="grid-center-middle">
-      <div class="col-6">
+    <div class="grid-center-middle pagination">
+      <div class="col-5">
         <PaginationControls
           v-if="totalPages > 1"
           :page="page"
@@ -130,7 +130,7 @@
           :loading="dataLoading"
           store-key="datasets" />
       </div>
-      <div class="col-6">
+      <div class="col-5">
         <ResultsPerPage
           v-if="totalPages > 1"
           :form-id="formId"
@@ -317,5 +317,8 @@ export default {
       }
     }
   }
+}
+.pagination {
+  margin-top: toRem(50);
 }
 </style>
