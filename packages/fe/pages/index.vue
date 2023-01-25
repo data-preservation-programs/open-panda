@@ -242,6 +242,7 @@ export default {
 
 <style lang="scss" scoped>
 :deep(.home-hero) {
+  padding-bottom: 4.625rem;
   [data-block-id="col_2"] {
     .text-block {
       margin-left: $singleColumn;
