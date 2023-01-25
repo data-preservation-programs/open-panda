@@ -1,11 +1,17 @@
 <template>
   <div class="filters">
 
-    <div @click="togglePanel">
+    <button @click="togglePanel">
       Filters
-    </div>
+    </button>
 
     <CardCutout v-if="open" class="filter-panel">
+      <div class="header">
+        <h3>Add Filters</h3>
+        <button @click="togglePanel">
+          close
+        </button>
+      </div>
       <Filterer
         v-for="(item, key) in filterPanelData.keys"
         :key="key"
@@ -93,11 +99,11 @@ export default {
       this.setPage({ page: 1 })
     },
     togglePanel () {
-      console.log('toggle panel')
       this.open = !this.open
     },
     clearAll () {
-      console.log('clearAll')
+      // do not clear fullyStored because that's outside the filter dropdown
+      this.$clearAllFilters('fullyStored')
     },
     onSearch () {
       console.log('onSearch panel')

@@ -1,8 +1,4 @@
 <script>
-// ===================================================================== Imports
-import { mapActions } from 'vuex'
-import CloneDeep from 'lodash/cloneDeep'
-
 // ====================================================================== Export
 export default {
   name: 'Field',
@@ -12,12 +8,12 @@ export default {
       type: Object,
       required: true
     },
-    value: {
-      type: [Object, String, Number, Boolean],
+    formId: {
+      type: [String, Boolean],
       required: false,
       default: false
     },
-    formId: {
+    fieldKey: {
       type: String,
       required: true
     },
@@ -26,12 +22,17 @@ export default {
       required: false,
       default: ''
     },
-    forceDisableFields: {
+    validateOnEntry: {
       type: Boolean,
       required: false,
       default: false
     },
-    deregisterFormFieldOnDestroy: {
+    validateAcrossRoutes: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    deregisterOnDestroy: {
       type: Boolean,
       required: false,
       default: false
@@ -39,9 +40,9 @@ export default {
   },
 
   data () {
-    const scaffold = this.scaffold
-    const parentModelKey = scaffold.parent_model_key
-    const id = `${this.formId}${this.groupId}${parentModelKey ? `|${parentModelKey}` : ''}|${scaffold.model_key}`
+    const fieldKey = this.fieldKey
+    const formId = this.formId
+    const id = fieldKey !== '' && formId ? `${fieldKey}|${formId}` : fieldKey
     return {
       id
     }
@@ -49,81 +50,68 @@ export default {
 
   computed: {
     field () {
-      const field = CloneDeep(this.$field(this.id))
-      if (!field) { return false }
-      field.disabled = this.forceDisableFields || field.disabled
-      return field
+      return this.$field(this.id).get()
+    },
+    value () {
+      return this.field ? this.field.value : false
     },
     type () {
-      const type = this.field.type
+      const type = this.scaffold.type
       let component = false
       switch (type) {
         case 'input' : component = 'FieldInput'; break
         case 'textarea' : component = 'FieldTextarea'; break
         case 'range' : component = 'FieldRange'; break
         case 'checkbox' : component = 'FieldCheckbox'; break
+        case 'radio' : component = 'FieldRadio'; break
         case 'select' : component = 'FieldSelect'; break
       }
       return component
     },
+    min () {
+      return this.scaffold.min
+    },
+    max () {
+      return this.scaffold.max
+    },
     description () {
-      return this.field.description
+      return this.scaffold.description
     },
     validationMessage () {
-      const message = this.field.validation_message
+      const message = this.scaffold.validationMessage
       if (!message) { return false }
       return message[this.field.validation]
     }
   },
 
-  mounted () {
-    const formId = this.formId
-    const scaffold = this.scaffold
-    const value = typeof this.value === 'boolean' && !this.value ? this.getDefaultValue(scaffold) : this.value
-    this.registerFormField(Object.assign(CloneDeep(scaffold), {
-      id: this.id,
-      formId,
-      value,
-      originalValue: value,
-      state: 'valid',
-      validation: false
-    }))
+  watch: {
+    value (value) {
+      if (this.validateOnEntry) {
+        this.$field(this.id).validate()
+      }
+    }
   },
 
-  beforeDestroy () {
-    if (this.deregisterFormFieldOnDestroy) {
-      this.deregisterFormField(this.id)
+  async created () {
+    if (!this.field) {
+      await this.$field(this.id).register(this.formId, this.fieldKey, this.scaffold)
+    } else {
+      await this.$field(this.id).update({ validate: true })
+    }
+  },
+
+  async beforeDestroy () {
+    if (!this.validateAcrossRoutes) {
+      await this.$field(this.id).update({ validate: false })
+    }
+    if (this.deregisterOnDestroy) {
+      this.$field(this.id).remove()
     }
   },
 
   methods: {
-    ...mapActions({
-      registerFormField: 'form/registerFormField',
-      deregisterFormField: 'form/deregisterFormField',
-      updateFormField: 'form/updateFormField'
-    }),
-    getDefaultValue (scaffold) {
-      const type = this.scaffold.type
-      let value = ''
-      switch (type) {
-        case 'checkbox' : value = false; break
-        case 'select' : value = -1; break
-        default : value = ''; break
-      }
-      return value
-    },
     updateValue (value) {
-      const type = this.field.type
-      const inputType = this.field.input_type
-      let parsed = value
-      if ((type === 'input' && inputType === 'number') || type === 'range') {
-        parsed = value !== '' ? parseFloat(value) : null
-      }
-      const field = CloneDeep(this.field)
-      field.value = parsed
-      field.state = field.value !== field.originalValue ? 'caution' : 'valid'
-      field.validation = false
-      this.updateFormField(field)
+      this.$field(this.id).updateValue(value)
     }
   },
 

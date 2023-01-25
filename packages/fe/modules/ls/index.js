@@ -1,6 +1,6 @@
 /*
  *
- * 📦 [module] form
+ * 📦 [module] ls
  *
  */
 
@@ -10,22 +10,22 @@
 import Path from 'path'
 
 // ///////////////////////////////////////////////////////////////////// Plugins
-const plugins = ['index', 'form', 'field']
+const LsPlugin = Path.resolve(__dirname, 'plugins/index.js')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // ////////////////////////////////////////////////////////////// registerPlugin
-const registerPlugin = (instance, next) => {
+const registerPlugin = (ctx, next) => {
   return new Promise((next) => {
+    const plugins = [
+      { src: LsPlugin, fileName: 'ls/plugin-ls.js' }
+    ]
     plugins.forEach((plugin) => {
-      const dst = instance.addTemplate({
-        src: Path.resolve(__dirname, `plugins/${plugin}.js`),
-        fileName: `form/plugin-${plugin}.js`
-      }).dst
-      instance.options.plugins.push({
-        src: Path.join(instance.options.buildDir, dst),
-        ssr: undefined,
-        mode: undefined
+      ctx.addPlugin({
+        src: plugin.src,
+        fileName: plugin.fileName,
+        mode: 'client',
+        options: JSON.stringify(ctx.options.ls)
       })
     })
     next()

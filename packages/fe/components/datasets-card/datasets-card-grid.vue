@@ -55,7 +55,7 @@
         <Button
           :button="{
             type: 'solid',
-            href: `/dataset/${data.id}`,
+            href: `/dataset/${data.slug}`,
             text: 'View dataset'
           }" />
       </div>
@@ -71,7 +71,7 @@ import CardCutout from '@/components/card-cutout'
 
 // ====================================================================== Export
 export default {
-  name: 'Card',
+  name: 'DatasetsCardGrid',
 
   components: {
     Button,

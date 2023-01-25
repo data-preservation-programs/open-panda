@@ -57,18 +57,9 @@
     },
     "slider": {
       "id": "home-slider",
-      "grid": [],
+      "grid": ["noGutter"],
       "col_1": {
-        "type": "slider_block",
-        "slider_type": "circular",
-        "collection": [
-          "a",
-          "b",
-          "c",
-          "d",
-          "e",
-          "f"
-        ],
+        "type": "category_slider_block",
         "sliderGrid": {
           "before": {
             "num": "col-12"
@@ -88,6 +79,7 @@
     }
   },
   "datasets_content": {
+    "explore": "Explore datasets",
     "empty": "There are no projects matching this search, please try again.",
     "card": {
       "labels1": {
