@@ -1,7 +1,3 @@
-// ///////////////////////////////////////////////////////////////////// Imports
-// -----------------------------------------------------------------------------
-const API_BASEURL = 'https://slingshot.filecoin.io/api'
-
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////////////////// State
@@ -60,7 +56,7 @@ const actions = {
           filters[filter] = query[filter]
         }
       })
-      const response = await this.$axios.get(API_BASEURL + '/modify/get-dataset-list', {
+      const response = await this.$axiosAuth.get('/get-dataset-list', {
         params: {
           page,
           ...(search && { search }),
@@ -77,7 +73,7 @@ const actions = {
       })
       return payload.results
     } catch (e) {
-      console.log('===================== [Store Action: modify/getDatasetList]')
+      console.log('=================== [Store Action: datasets/getDatasetList]')
       console.log(e)
       dispatch('setLoadingStatus', { status: false })
       return false
@@ -146,7 +142,7 @@ const actions = {
   // ///////////////////////////////////////////////////////////// getBasicStats
   async getBasicStats ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axios.get(API_BASEURL + '/modify/get-basic-stats')
+      const response = await this.$axiosAuth.get('/get-basic-stats')
       commit('SET_BASIC_STATS', response.data.payload)
     } catch (e) {
       console.log('==================== [Store Action: datasets/getBasicStats]')
