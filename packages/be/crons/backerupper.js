@@ -1,4 +1,4 @@
-/**
+/*
  *
  * ⏱️️ [Cron | every 1 day] Backerupper
  *

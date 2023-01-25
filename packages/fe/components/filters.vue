@@ -1,72 +1,50 @@
 <template>
-  <div
-    ref="filtersContainer"
-    class="filters">
+  <div class="filters">
 
-    <!-- ////////////////////////////////////////////// Preparation Progress -->
-    <Filterer
-      filter-key="preparation_progress"
-      :filters="filters.preparation_progress"
-      @filterApplied="clearPage">
-      <div
-        slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
-        class="button-list section">
+    <div @click="togglePanel">
+      Filters
+    </div>
 
-        <div class="filters-label">
-          <span>Preparation Progress</span>
+    <CardCutout v-if="open" class="filter-panel">
+      <Filterer
+        v-for="(item, key) in filterPanelData.keys"
+        :key="key"
+        :filter-key="key"
+        :filters="filters[key]"
+        @filterApplied="clearPage">
+        <div
+          slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
+          class="button-list">
+  
+          <div class="filters-label">
+            <span>{{ item }}</span>
+            <ButtonFilters
+              v-if="!empty"
+              class="clear-button"
+              @clicked="clearFilters">
+              <IconClose />
+              <span>Clear</span>
+            </ButtonFilters>
+          </div>
           <ButtonFilters
-            v-if="!empty"
-            class="clear-button"
-            @clicked="clearFilters">
-            <IconClose />
-            <span>Clear</span>
+            v-for="(item2, index2) in filters[key]"
+            :key="`${filters[key]}-${index2}`"
+            :selected="isSelected(item2.value)"
+            class="filter-button"
+            @clicked="applyFilter(index2)">
+            {{ item2.label }}
           </ButtonFilters>
         </div>
+      </Filterer>
 
-        <ButtonFilters
-          v-for="(item, index) in filters.preparation_progress"
-          :key="`preparation-progress-${index}`"
-          :selected="isSelected(item.value)"
-          class="filter-button"
-          @clicked="applyFilter(item.value)">
-          {{ item.label }}
-        </ButtonFilters>
+      <button @click="clearAll">
+        clear
+      </button>
 
-      </div>
-    </Filterer>
-
-    <!-- //////////////////////////////////////////////////////////// Region -->
-    <Filterer
-      filter-key="region"
-      :filters="filters.region"
-      @filterApplied="clearPage">
-      <div
-        slot-scope="{ applyFilter, isSelected, empty, clearFilters }"
-        class="button-list section">
-
-        <div class="filters-label">
-          <span>Region</span>
-          <ButtonFilters
-            v-if="!empty"
-            class="clear-button"
-            @clicked="clearFilters">
-            <IconClose />
-            <span>Clear</span>
-          </ButtonFilters>
-        </div>
-
-        <ButtonFilters
-          v-for="(item, index) in filters.region"
-          :key="`region-${index}`"
-          :selected="isSelected(item.value)"
-          class="filter-button"
-          @clicked="applyFilter(index)">
-          {{ item.label }}
-        </ButtonFilters>
-
-      </div>
-    </Filterer>
-
+      <button @click="onSearch">
+        search
+      </button>
+    </CardCutout>
   </div>
 </template>
 
@@ -76,6 +54,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
+import CardCutout from '@/components/card-cutout'
 
 import IconClose from '@/components/icons/close-thick'
 
@@ -86,13 +65,24 @@ export default {
   components: {
     Filterer,
     ButtonFilters,
-    IconClose
+    IconClose,
+    CardCutout
+  },
+
+  data () {
+    return {
+      open: false
+    }
   },
 
   computed: {
     ...mapGetters({
-      filters: 'datasets/filters'
-    })
+      filters: 'datasets/filters',
+      siteContent: 'general/siteContent'
+    }),
+    filterPanelData () {
+      return this.siteContent.general ? this.siteContent.general.filterPanel : false
+    }
   },
 
   methods: {
@@ -100,55 +90,29 @@ export default {
       setPage: 'datasets/setPage'
     }),
     clearPage () {
-      this.setPage({ page: 1, tag: 'index' })
+      this.setPage({ page: 1 })
+    },
+    togglePanel () {
+      console.log('toggle panel')
+      this.open = !this.open
+    },
+    clearAll () {
+      console.log('clearAll')
+    },
+    onSearch () {
+      console.log('onSearch panel')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// General
-.section {
-  &:not(:first-child) {
-    margin-top: 2rem;
-  }
+.filter-panel {
+  position: absolute;
+  max-width: toRem(960);
+  width: 100%;
+  right: 0;
+  z-index: 100;
+  padding: toRem(50);
 }
-
-.filters-label {
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-::v-deep .clear-button {
-  margin-left: 0.25rem;
-  &:hover {
-    .svg-icon path {
-      transition: 150ms ease-in;
-      fill: red;
-    }
-  }
-  .svg-icon {
-    width: 8px;
-    margin-right: 0.25rem;
-    path {
-      transition: 150ms ease-out;
-      fill: $rangoonGreen;
-    }
-  }
-}
-
-.filters-button-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.filter-button:not([disabled]).selected,
-.filter-button {
-  margin-bottom: 0.5rem;
-  &:not(:last-child) {
-    margin-right: 0.5rem;
-  }
-}
-
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="col">
-    <div class="card">
+    <CardCutout class="card">
       <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
 
       <div class="card-heading grid-noGutter">
@@ -60,20 +60,22 @@
           }" />
       </div>
 
-    </div>
+    </CardCutout>
   </div>
 </template>
 
 <script>
 // ===================================================================== Imports
 import Button from '@/components/buttons/button'
+import CardCutout from '@/components/card-cutout'
 
 // ====================================================================== Export
 export default {
   name: 'Card',
 
   components: {
-    Button
+    Button,
+    CardCutout
   },
 
   props: {
@@ -95,13 +97,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.card {
-  background-color: white;
-  border-bottom-left-radius: toRem(10);
-  border-bottom-right-radius: toRem(40);
-  border-top-right-radius: toRem(10);
-  @include shadow2;
-}
 .card-img {
   background-color: $rangoonGreen;
   height: toRem(125);

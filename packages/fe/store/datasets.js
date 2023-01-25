@@ -1,7 +1,5 @@
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-import CloneDeep from 'lodash/cloneDeep'
-
 const API_BASEURL = 'https://slingshot.filecoin.io/api'
 
 // /////////////////////////////////////////////////////////////////// Functions
@@ -14,11 +12,13 @@ const state = () => ({
     page: 1,
     totalPages: 1,
     count: false,
-    limit: 20
+    limit: 12
   },
   loading: false,
   basicStats: false,
-  filters: false
+  filters: false,
+  sort: false,
+  limit: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -28,7 +28,9 @@ const getters = {
   metadata: state => state.metadata,
   loading: state => state.loading,
   basicStats: state => state.basicStats,
-  filters: state => state.filters
+  filters: state => state.filters,
+  sort: state => state.sort,
+  limit: state => state.limit
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -36,19 +38,21 @@ const getters = {
 const actions = {
   // //////////////////////////////////////////////////////////////// resetStore
   resetStore ({ commit, getters, dispatch }) {
-    dispatch('setLimit', { limit: 20 })
     dispatch('setPage', { page: 1 })
     commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
     commit('SET_FILTERS', false)
+    commit('SET_SORT', false)
+    commit('SET_LIMIT', false)
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
     try {
       const route = metadata.route
       const page = getters.metadata.page
-      const limit = getters.metadata.limit
       const query = route.query
       const search = query.search
+      const limit = getters.limit[query.limit || 0].value
+      const sort = getters.sort[query.sort || 0].value
       const filters = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
@@ -61,17 +65,12 @@ const actions = {
           page,
           ...(search && { search }),
           ...(limit && { limit }),
-          ...(filters && { filter: filters })
+          ...(filters && { filter: filters }),
+          ...(sort && { sort })
         }
       })
       const payload = response.data.payload
       const datasetList = payload.results
-      datasetList.forEach((dataset) => {
-        this.dispatch('form/registerFormModel', Object.assign(CloneDeep(dataset), {
-          formId: `modify|${dataset._id}`,
-          state: dataset.new ? 'new' : 'valid'
-        }))
-      })
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata
@@ -84,13 +83,41 @@ const actions = {
       return false
     }
   },
+  // /////////////////////////////////////////////////////////////////// getSort
+  async getSort ({ commit, getters, dispatch }) {
+    try {
+      const response = await this.$axiosAuth.get('/get-static-file', {
+        params: { path: 'filters.json' }
+      })
+      commit('SET_SORT', response.data.payload.sort)
+    } catch (e) {
+      console.log('========================== [Store Action: datasets/getSort]')
+      console.log(e)
+      return false
+    }
+  },
+  // ////////////////////////////////////////////////////////////////// getLimit
+  async getLimit ({ commit, getters, dispatch }) {
+    try {
+      const response = await this.$axiosAuth.get('/get-static-file', {
+        params: { path: 'filters.json' }
+      })
+      commit('SET_LIMIT', response.data.payload.limit)
+    } catch (e) {
+      console.log('========================= [Store Action: datasets/getLimit]')
+      console.log(e)
+      return false
+    }
+  },
   // //////////////////////////////////////////////////////////////// getFilters
   async getFilters ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axios.get(API_BASEURL + '/modify/get-filters')
-      commit('SET_FILTERS', response.data.payload)
+      const response = await this.$axiosAuth.get('/get-static-file', {
+        params: { path: 'filters.json' }
+      })
+      commit('SET_FILTERS', response.data.payload.filters)
     } catch (e) {
-      console.log('========================= [Store Action: modify/getFilters]')
+      console.log('======================= [Store Action: datasets/getFilters]')
       console.log(e)
       return false
     }
@@ -116,26 +143,13 @@ const actions = {
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
   },
-  // ///////////////////////////////////////////////////////////// updateDataset
-  updateDataset ({ commit, getters }, payload) {
-    try {
-      const id = payload.id
-      const dataset = payload.dataset
-      const datasetList = CloneDeep(getters.datasetList.editor)
-      const index = datasetList.findIndex(obj => (id === obj.id) || (id === obj._id))
-      commit('UPDATE_DATASET', { index, dataset })
-    } catch (e) {
-      console.log('====================== [Store Action: modify/updateDataset]')
-      console.log(e)
-    }
-  },
   // ///////////////////////////////////////////////////////////// getBasicStats
   async getBasicStats ({ commit, getters, dispatch }) {
     try {
       const response = await this.$axios.get(API_BASEURL + '/modify/get-basic-stats')
       commit('SET_BASIC_STATS', response.data.payload)
     } catch (e) {
-      console.log('====================== [Store Action: modify/getBasicStats]')
+      console.log('==================== [Store Action: datasets/getBasicStats]')
       console.log(e)
       return false
     }
@@ -153,17 +167,11 @@ const mutations = {
       state.metadata.count = metadata.count
     }
   },
-  UPDATE_DATASET (state, payload) {
-    state.datasetList.editor.splice(payload.index, 1, payload.dataset)
-  },
-  ADD_DATASET (state, payload) {
-    state.datasetList.editor.splice(payload.index, 0, payload.dataset)
-  },
   SET_PAGE (state, payload) {
     state.metadata.page = payload.page
   },
-  SET_LIMIT (state, payload) {
-    state.metadata.limit = payload.limit
+  SET_LIMIT (state, limit) {
+    state.limit = limit
   },
   SET_LOADING_STATUS (state, payload) {
     state.loading = payload.status
@@ -173,6 +181,9 @@ const mutations = {
   },
   SET_FILTERS (state, filters) {
     state.filters = filters
+  },
+  SET_SORT (state, sort) {
+    state.sort = sort
   }
 }
 

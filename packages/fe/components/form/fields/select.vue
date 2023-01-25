@@ -153,12 +153,12 @@ $height: 2.5rem;
   }
   &.caution {
     ::v-deep .select {
-      border-color: $pizazz;
+      border-color: red;
     }
   }
   &.error {
     ::v-deep .select {
-      border-color: $redOrange;
+      border-color: $rangoonGreen;
     }
   }
 }
@@ -179,7 +179,7 @@ $height: 2.5rem;
   }
   .dropdown {
     max-height: $height * 5.5;
-    background-color: blue;
+    background-color: $gin;
   }
 }
 

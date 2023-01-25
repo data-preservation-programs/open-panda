@@ -65,7 +65,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$dimension: 1.5rem;
+$dimension: toRem(20);
 
 $borderColor: #CCCCCC;
 $focusBorderColor: black;
@@ -136,7 +136,7 @@ $focusBorderColor: black;
   left: 0;
   width: $dimension;
   height: $dimension;
-  border: 2px solid darkorange;
+  border: 2px solid $tasman;
   border-radius: 0.125rem;
   pointer-events: none;
   z-index: 5;
