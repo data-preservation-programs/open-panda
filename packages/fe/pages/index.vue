@@ -1,14 +1,14 @@
 <template>
   <div :class="`page page-${tag}`">
-    <!-- hero -->
+    <!-- ============================================================== hero -->
     <BlockBuilder :sections="pageContent" />
 
-    <!-- filter heading -->
+    <!-- ==================================================== filter heading -->
     <div class="grid-noGutter-middle-spaceBetween filter-heading">
       <h5>{{ datasetContent.explore }}</h5>
     </div>
 
-    <!-- filter row1: searchbar, checkbox, sort, filter button -->
+    <!-- ============= filter row1: searchbar, checkbox, sort, filter button -->
     <div class="grid-noGutter-middle-spaceBetween filter-row1">
       <div class="col-6">
         <div class="grid-noGutter-middle-spaceBetween">
@@ -24,9 +24,10 @@
             :filters="filters.fullyStored"
             :is-single-option="true"
             class="col-5 datasets-checkbox">
-            <div slot-scope="{ applyFilter }">
+            <div slot-scope="{ applyFilter, empty }">
               <FieldContainer
                 field-key="toggle_fully_stored"
+                :reset="empty"
                 :scaffold="{
                   type: 'checkbox',
                   required: false,
@@ -42,9 +43,10 @@
 
       <div class="col-6">
         <Sorter :options="sortOptions">
-          <div slot-scope="{ apply }">
+          <div slot-scope="{ apply, empty }">
             <FieldContainer
               field-key="sort_by"
+              :reset="empty"
               :scaffold="{
                 type: 'select',
                 required: false,
@@ -96,12 +98,12 @@
       </div>
     </div>
 
-    <!-- cards - no result -->
+    <!-- ================================================= cards - no result -->
     <div v-if="noResults" class="grid-middle-spaceBetween no-results">
       <h3>{{ datasetContent.empty }}</h3>
     </div>
 
-    <!-- cards -->
+    <!-- ============================================================= cards -->
     <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1 results">
       <DatasetsCardGrid
         v-for="(data, index) in filteredDatasetList"
@@ -119,7 +121,7 @@
         :labels2="datasetContent.card.labels2" />
     </div>
 
-    <!-- pagination -->
+    <!-- ======================================================== pagination -->
     <div class="grid-center-middle pagination">
       <div class="col-5">
         <PaginationControls

@@ -17,6 +17,11 @@ export default {
       type: String,
       required: true
     },
+    reset: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     groupId: {
       type: String,
       required: false,
@@ -88,6 +93,11 @@ export default {
     value (value) {
       if (this.validateOnEntry) {
         this.$field(this.id).validate()
+      }
+    },
+    reset (reset) {
+      if (reset) {
+        this.$field(this.id).reset()
       }
     }
   },

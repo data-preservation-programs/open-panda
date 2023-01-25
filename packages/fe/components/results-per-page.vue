@@ -1,8 +1,9 @@
 <template>
   <Limiter :options="options">
-    <div slot-scope="{ apply }">
+    <div slot-scope="{ apply, empty }">
       <FieldContainer
         field-key="results_per_page"
+        :reset="empty"
         :scaffold="{
           type: 'select',
           required: false,

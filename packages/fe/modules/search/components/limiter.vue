@@ -71,6 +71,7 @@ export default {
     },
     apply (index) {
       const action = this.action
+      this.index = index
       this.$limit.for({
         instance: this,
         action,

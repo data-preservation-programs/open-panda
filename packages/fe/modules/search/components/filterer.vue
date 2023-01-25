@@ -79,7 +79,6 @@ export default {
     ...mapActions({
       recordFilter: 'search/recordFilter'
     }),
-
     /**
      * returns array of filters
      * isSingleOption filters will return the key

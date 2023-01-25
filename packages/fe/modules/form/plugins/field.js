@@ -236,6 +236,19 @@ const Field = (app, store, id) => {
       }
       await store.dispatch('form/setField', field)
       return { field, check }
+    },
+
+    // =================================================================== reset
+    reset () {
+      const form = store.getters['form/forms'].find(form => form.id === formId)
+      const value = getValue(scaffold, form)
+      this.update({
+        value,
+        originalValue: value,
+        state: 'valid',
+        validate: true,
+        validation: false
+      })
     }
 
   }

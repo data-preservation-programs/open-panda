@@ -77,6 +77,7 @@ export default {
     },
     apply (index) {
       const action = this.action
+      this.index = index
       this.$sort.for({
         instance: this,
         action,
