@@ -2,18 +2,15 @@
   <div class="filters">
 
     <button class="button-filter" @click="togglePanel">
-      <div :class="['hamburger']">
-        <div class="icon"></div>
-      </div>
-      <div class="icon"></div>
-      Filters
+      <FiltersIcon class="icon" />
+      <span>Filters</span>
     </button>
 
     <CardCutout v-if="open" class="filter-panel">
       <section class="grid-noGutter-spaceBetween">
         <h5>Add Filters</h5>
         <button @click="togglePanel">
-          close
+          <IconClose />
         </button>
       </section>
       <Filterer
@@ -23,17 +20,10 @@
         :filters="filters[key]"
         @filterApplied="clearPage">
         <section
-          slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
+          slot-scope="{ applyFilter, isSelected }"
           class="grid-noGutter">
           <div class="filters-label col-12">
             <span>{{ item }}</span>
-            <ButtonFilters
-              v-if="!empty"
-              class="clear-button"
-              @clicked="clearFilters">
-              <IconClose />
-              <span>Clear</span>
-            </ButtonFilters>
           </div>
           <ButtonFilters
             v-for="(item2, index2) in filters[key]"
@@ -66,7 +56,8 @@ import { mapGetters, mapActions } from 'vuex'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import CardCutout from '@/components/card-cutout'
-import IconClose from '@/components/icons/close-thick'
+import FiltersIcon from '@/components/icons/filter'
+import IconClose from '@/components/icons/close'
 
 // ====================================================================== Export
 export default {
@@ -75,8 +66,9 @@ export default {
   components: {
     Filterer,
     ButtonFilters,
-    IconClose,
-    CardCutout
+    CardCutout,
+    FiltersIcon,
+    IconClose
   },
 
   data () {
@@ -130,7 +122,7 @@ export default {
   border-radius: toRem(30);
   align-items: center;
   @include fontSize_16;
-  .hamburger {
+  .icon {
     margin-right: toRem(15);
   }
 }

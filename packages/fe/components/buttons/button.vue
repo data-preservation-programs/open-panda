@@ -33,16 +33,16 @@ export default {
 
   computed: {
     tag () {
-      return this.button.url ? this.$GetTagBasedOnUrl(this.button.url) : 'div'
+      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) : 'div'
     },
     target () {
-      return this.button.target ? this.button.target : this.$GetTargetBasedOnUrl(this.button.url)
+      return this.button && this.button.target ? this.button.target : this.$GetTargetBasedOnUrl(this.button.url)
     },
     to () {
-      return this.button.url ? this.$GetTagBasedOnUrl(this.button.url) === 'nuxt-link' ? this.button.url : false : false
+      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) === 'nuxt-link' ? this.button.url : false : false
     },
     href () {
-      return this.button.url ? this.$GetTagBasedOnUrl(this.button.url) === 'a' ? this.button.url : false : false
+      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) === 'a' ? this.button.url : false : false
     }
   }
 }

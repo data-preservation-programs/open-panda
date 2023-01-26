@@ -48,7 +48,7 @@
             <span v-if="key === 'file_extensions'">
               <span v-if="!data[key]" class="card-data">-</span>
               <span
-                v-for="(item, index) in data[key].split(',').map(ext => ext.replaceAll(' ', ''))"
+                v-for="(item, index) in data[key]"
                 :key="index">
                 <span v-if="index < 3" class="file-item">
                   {{ item }}
@@ -66,7 +66,9 @@
             type: 'solid',
             url: `/${data.slug}`,
             text: 'View dataset'
-          }" />
+          }">
+          <ArrowRightIcon class="icon" />
+        </Button>
       </div>
     </CardCutout>
   </div>
@@ -76,6 +78,7 @@
 // ===================================================================== Imports
 import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
+import ArrowRightIcon from '@/components/icons/arrow-right'
 
 // ====================================================================== Export
 export default {
@@ -83,7 +86,8 @@ export default {
 
   components: {
     Button,
-    CardCutout
+    CardCutout,
+    ArrowRightIcon
   },
 
   props: {
@@ -105,7 +109,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.col {
+.card {
   margin-bottom: toRem(10);
 }
 .card-img {
@@ -120,6 +124,21 @@ export default {
 }
 .card-button {
   padding: toRem(10) toRem(20);
+  :deep(.button) {
+    .icon {
+      transition: transform 100ms ease-out;
+      margin-left: toRem(15);
+      transform: rotate(-40deg);
+    }
+  }
+  &:hover {
+    :deep(.button) {
+      .icon {
+        transition: transform 100ms ease-in;
+        transform: rotate(0);
+      }
+    }
+  }
 }
 .card-heading {
   min-height: toRem(116.5);

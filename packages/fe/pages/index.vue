@@ -84,10 +84,12 @@
         <ButtonFilters @click="$clearSearchFilterSortAndLimit">
           Clear all filters
         </ButtonFilters>
-        <ButtonFilters @click="updateLayout('grid')">
-          grid</ButtonFilters>
-        <ButtonFilters @click="updateLayout('list')">
-          list</ButtonFilters>
+        <button class="button-layout" @click="updateLayout('grid')">
+          <GridIcon />
+        </button>
+        <button class="button-layout" @click="updateLayout('list')">
+          <ListIcon />
+        </button>
       </div>
     </div>
 
@@ -99,7 +101,7 @@
     <!-- cards -->
     <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1 results">
       <DatasetsCardGrid
-        v-for="(data, index) in filteredDatasetList"
+        v-for="(data, index) in datasetList"
         :key="`dataset-${index}`"
         :data="data"
         :labels1="datasetContent.card.labels1"
@@ -107,7 +109,7 @@
     </div>
     <div v-if="layout === 'list'" class="grid-1">
       <DatasetsCardList
-        v-for="(data, index) in filteredDatasetList"
+        v-for="(data, index) in datasetList"
         :key="`dataset-${index}`"
         :data="data"
         :labels1="datasetContent.card.labels1"
@@ -148,6 +150,8 @@ import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
 import ButtonFilters from '@/components/buttons/button-filters'
+import GridIcon from '@/components/icons/grid'
+import ListIcon from '@/components/icons/list'
 
 // ====================================================================== Export
 export default {
@@ -164,12 +168,15 @@ export default {
     Filterer,
     Sorter,
     ResultsPerPage,
-    ButtonFilters
+    ButtonFilters,
+    GridIcon,
+    ListIcon
   },
 
   data () {
     return {
-      tag: 'index'
+      tag: 'index',
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
     }
   },
 
@@ -191,7 +198,7 @@ export default {
       limitOptions: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
-      layout: 'datasets/layout'
+      datasetList: 'datasets/datasetList'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -201,12 +208,6 @@ export default {
     },
     pageContent () {
       return this.siteContent[this.tag].page_content
-    },
-    datasetList () {
-      return this.$store.getters['datasets/datasetList']
-    },
-    filteredDatasetList () {
-      return this.datasetList.filter(obj => !obj.new)
     },
     dataLoading () {
       return this.loading
@@ -253,9 +254,7 @@ export default {
     ...mapActions({
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
-      setLayout: 'datasets/setLayout',
-      getDatasetList: 'datasets/getDatasetList',
-      resetFormModel: 'form/resetFormModel'
+      getDatasetList: 'datasets/getDatasetList'
     }),
     stopLoading () {
       this.$nextTick(() => {
@@ -265,7 +264,8 @@ export default {
       })
     },
     updateLayout (layout) {
-      this.setLayout(layout)
+      this.$ls.set('layout', layout)
+      this.layout = layout
     }
   }
 }

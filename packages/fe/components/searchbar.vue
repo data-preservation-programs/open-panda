@@ -50,7 +50,7 @@ import Spinner from '@/components/spinners/material-circle'
 import ButtonFilters from '@/components/buttons/button-filters'
 
 import IconSearch from '@/components/icons/search'
-import IconClose from '@/components/icons/close-thick'
+import IconClose from '@/components/icons/close'
 
 // ====================================================================== Export
 export default {

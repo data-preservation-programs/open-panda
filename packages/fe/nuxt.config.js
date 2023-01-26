@@ -97,7 +97,7 @@ export default {
     '~/modules/https',
     '~/modules/toaster',
     '~/modules/slider',
-    // '~/modules/alert',
+    '~/modules/ls',
     '~/modules/auth',
     '~/modules/search',
     '~/modules/form',
