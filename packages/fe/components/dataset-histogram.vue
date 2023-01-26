@@ -20,11 +20,17 @@
           class="handle lower"
           :style="{ transform: `translateX(${lowerBoundIndex * stepWidth}px)`}"
           @mousedown="mousedown('lower')">
+          <div class="text">
+            {{ lowerBoundText }}
+          </div>
         </div>
         <div
           class="handle upper"
           :style="{ transform: `translateX(${upperBoundIndex * stepWidth}px)`}"
           @mousedown="mousedown('upper')">
+          <div class="text">
+            {{ upperBoundText }}
+          </div>
         </div>
       </div>
 
@@ -44,12 +50,19 @@ const calculateChartStepWidth = (instance) => {
   }
 }
 
+const exponentialThroughMax = (x, max, start) => {
+  const a = start || 1000000000
+  const b = Math.exp(Math.log(max / a) / max)
+  return a * Math.pow(b, x)
+}
+
 // ====================================================================== Export
 export default {
   name: 'DatasetHistogram',
 
   data () {
     return {
+      bars: 40,
       lowerBoundIndex: 0,
       upperBoundIndex: 0,
       stepWidth: 0,
@@ -65,15 +78,18 @@ export default {
     steps () {
       const steps = []
       const datasetSizes = this.datasetList.map(dataset => dataset.data_size)
-      const twentyTiB = 1099511627776 * 20
-      const maxDatasetSize = Math.max(...datasetSizes)
-      const stepNumber = maxDatasetSize / twentyTiB
-      for (let i = 0; i < stepNumber; i++) {
+      const maxDatasetSize = Math.max(...datasetSizes) * 1.5
+      const stepSize = maxDatasetSize / this.bars
+      for (let i = 0; i < 40; i++) {
         steps.push({
-          min: twentyTiB * i,
-          max: twentyTiB * (i + 1)
+          min: exponentialThroughMax(i * stepSize, maxDatasetSize),
+          max: exponentialThroughMax((i + 1) * stepSize, maxDatasetSize)
         })
       }
+      steps.unshift({
+        min: 0,
+        max: exponentialThroughMax(0, maxDatasetSize)
+      })
       return steps
     },
     segments () {
@@ -88,6 +104,22 @@ export default {
       const lengths = this.segments.map(segment => segment.length)
       const maxLength = Math.max(...lengths)
       return lengths.map(l => Math.round((l / maxLength) * 100 * 100) / 100)
+    },
+    lowerBoundText () {
+      if (this.steps.length) {
+        const formatted = this.$formatBytes(this.steps[this.lowerBoundIndex].min, false)
+        return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
+      }
+      return '-'
+    },
+    upperBoundText () {
+      if (this.steps.length) {
+        const index = Math.max(0, this.upperBoundIndex - 1)
+        const step = this.steps[index]
+        const formatted = this.$formatBytes(step.max, false)
+        return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
+      }
+      return '-'
     }
   },
 
@@ -148,6 +180,7 @@ export default {
 .dataset-histogram {
   width: 100%;
   padding: 1.5rem 3.125rem;
+  margin-bottom: 1.5rem;
   &.dragging {
     cursor: grabbing;
     .handle {
@@ -193,7 +226,7 @@ export default {
   .handle {
     position: absolute;
     left: -1.75rem;
-    top: -1.75rem;
+    top: -1.875rem;
     width: 3.5rem;
     height: 3.5rem;
     padding: 1rem;
@@ -224,6 +257,21 @@ export default {
     &:hover {
       cursor: pointer;
     }
+  }
+  .text {
+    position: absolute;
+    top: calc(100% - 0.625rem);
+    left: 50%;
+    transform: translateX(-50%);
+    @include fontSize_16;
+    @include fontWeight_Medium;
+    white-space: nowrap;
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
   }
 }
 

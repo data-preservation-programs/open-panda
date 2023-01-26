@@ -13,7 +13,12 @@
         </button>
       </div>
 
-      <DatasetHistogram />
+      <div class="section-histogram">
+        <h6 class="histogram-title">
+          Dataset Size
+        </h6>
+        <DatasetHistogram />
+      </div>
 
       <Filterer
         v-for="(item, key) in filterPanelData.keys"
@@ -124,6 +129,21 @@ export default {
   width: 100%;
   right: 0;
   z-index: 100;
-  padding: toRem(50);
+  padding: toRem(50) 0;
+}
+
+.header,
+.button-list {
+  padding: 0 toRem(50);
+}
+
+.section-histogram {
+  padding: 1.5rem toRem(50);
+  border-top: solid 1px $athensGray;
+  border-bottom: solid 1px $athensGray;
+}
+
+.histogram-title {
+  margin-bottom: 1rem;
 }
 </style>
