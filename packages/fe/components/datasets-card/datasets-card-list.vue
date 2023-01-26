@@ -1,67 +1,65 @@
 <template>
   <div class="col card">
     <CardCutout>
-      <div class="card-inner grid-noGutter-middle">
-        <img class="card-img col-1" :src="`/images/datasets/${data.slug}.jpg`" />
-        <div class="col-11">
-          <div class="card-details-c grid-noGutter-middle-bottom-spaceBetween">
-            <div class="card-details">
-              <div class="title">
-                {{ data.name }}
-              </div>
-              <div class="card-details-row">
-                <span
-                  v-for="(label, key) in labels1"
-                  :key="key"
-                  class="">
-                  <span class="caption">
-                    {{ label }}
-                  </span>
-                  <span class="card-data">
-                    {{ data[key] || '-' }}
-                  </span>
+      <div class="card-inner">
+        <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
+        <div class="card-details-c">
+          <div class="card-details">
+            <div class="card-details-row">
+              {{ data.name }}
+            </div>
+            <div class="card-details-row">
+              <span
+                v-for="(label, key) in labels1"
+                :key="key"
+                class="">
+                <span class="caption">
+                  {{ label }}
                 </span>
-              </div>
-    
-              <div v-if="labels2" class="card-details-row">
+                <span class="card-data">
+                  {{ data[key] || '-' }}
+                </span>
+              </span>
+            </div>
+            <div v-if="labels2" class="card-details-row">
+              <span
+                v-for="(label, key) in labels2"
+                :key="key"
+                class="">
+                <span class="caption">
+                  {{ label }}
+                </span>
                 <span
-                  v-for="(label, key) in labels2"
-                  :key="key"
+                  v-if="key === 'locations'"
                   class="">
-                  <span class="caption">
-                    {{ label }}
-                  </span>
+                  <span v-if="!data[key]" class="card-data">-</span>
                   <span
-                    v-if="key === 'locations'"
-                    class="">
-                    <span v-if="!data[key]" class="card-data">-</span>
-                    <span
-                      v-for="(item, index) in data[key]"
-                      :key="index">
-                      {{ $getFlagIcon(item.country_code) }}
-                    </span>
-                  </span>
-                  <span v-if="key === 'file_extensions'">
-                    <span v-if="!data[key]" class="card-data">-</span>
-                    <span
-                      v-for="(item, index) in data[key]"
-                      :key="index"
-                      class="file-item">
-                      {{ item }}
-                    </span>
+                    v-for="(item, index) in data[key]"
+                    :key="index">
+                    {{ $getFlagIcon(item.country_code) }}
                   </span>
                 </span>
-              </div>
-              
+                <span v-if="key === 'file_extensions'">
+                  <span v-if="!data[key]" class="card-data">-</span>
+                  <span
+                    v-for="(item, index) in data[key]"
+                    :key="index"
+                    class="file-item">
+                    {{ item }}
+                  </span>
+                </span>
+              </span>
             </div>
-            <div class="card-button">
-              <Button
-                :button="{
-                  type: 'solid',
-                  url: `/dataset/${data.id}`,
-                  text: 'View dataset'
-                }" />
-            </div>
+            
+          </div>
+          <div class="card-button">
+            <Button
+              :button="{
+                type: 'solid',
+                url: `/${data.slug}`,
+                text: 'View dataset',
+                icon: 'arrow'
+              }" />
           </div>
         </div>
       </div>
@@ -107,6 +105,7 @@ export default {
 }
 .card-inner {
   padding: toRem(25);
+  display: flex;
 }
 .card-img {
   background-color: $tasman;
@@ -116,6 +115,7 @@ export default {
   object-fit: cover;
 }
 .card-details-c {
-  padding-left: toRem(60)
+  padding-left: toRem(60);
+  flex-grow: 1;
 }
 </style>

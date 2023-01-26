@@ -8,16 +8,23 @@
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
+    <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
   </component>
 </template>
 
 <script>
+import ArrowRightIcon from '@/components/icons/arrow-right'
+
 /**
  * use this button component for simple buttons
  * ie. buttons that leads to another page or nav
  */
 export default {
   name: 'Button',
+
+  components: {
+    ArrowRightIcon
+  },
 
   props: {
     button: {
@@ -56,6 +63,21 @@ export default {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  .icon {
+    transition: transform 100ms ease-out;
+    margin-left: toRem(15);
+    &.arrow-icon {
+      transform: rotate(-40deg);
+    }
+  }
+  &:hover {
+    .icon {
+      transition: transform 100ms ease-in;
+      &.arrow-icon {
+        transform: rotate(0);
+      }
+    }
+  }
 }
 
 .type__nav {

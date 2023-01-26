@@ -65,9 +65,9 @@
           :button="{
             type: 'solid',
             url: `/${data.slug}`,
-            text: 'View dataset'
+            text: 'View dataset',
+            icon: 'arrow'
           }">
-          <ArrowRightIcon class="icon" />
         </Button>
       </div>
     </CardCutout>
@@ -78,7 +78,6 @@
 // ===================================================================== Imports
 import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
-import ArrowRightIcon from '@/components/icons/arrow-right'
 
 // ====================================================================== Export
 export default {
@@ -86,8 +85,7 @@ export default {
 
   components: {
     Button,
-    CardCutout,
-    ArrowRightIcon
+    CardCutout
   },
 
   props: {
@@ -113,7 +111,7 @@ export default {
   margin-bottom: toRem(10);
 }
 .card-img {
-  background-color: $rangoonGreen;
+  background-color: $tasman;
   height: toRem(125);
   object-fit: cover;
   border-top-right-radius: toRem(10);
@@ -124,21 +122,6 @@ export default {
 }
 .card-button {
   padding: toRem(10) toRem(20);
-  :deep(.button) {
-    .icon {
-      transition: transform 100ms ease-out;
-      margin-left: toRem(15);
-      transform: rotate(-40deg);
-    }
-  }
-  &:hover {
-    :deep(.button) {
-      .icon {
-        transition: transform 100ms ease-in;
-        transform: rotate(0);
-      }
-    }
-  }
 }
 .card-heading {
   min-height: toRem(116.5);
