@@ -60,7 +60,7 @@ $duration: 1.5s;
 .path {
   stroke-dasharray: $offset;
   stroke-dashoffset: 0;
-  stroke: tomato;
+  stroke: $rangoonGreen;
   transform-origin: center;
   animation: dash $duration ease-in-out infinite; // colors ($duration * 4) ease-in-out infinite; // UNCOMMENT FOR COLOR CHANGING
 }

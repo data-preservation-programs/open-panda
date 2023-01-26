@@ -10,39 +10,34 @@
 
     <!-- filter row1: searchbar, checkbox, sort, filter button -->
     <div class="grid-noGutter-middle-spaceBetween filter-row1">
-      <div class="col-6">
-        <div class="grid-noGutter-middle-spaceBetween">
-          <div class="col-7">
-            <Searchbar
-              :placeholder="`Search ${count || '...'} datasets`"
-              :loading="dataLoading"
-              theme="line"
-              class="datasets-searchbar" />
+      <div class="col-6 datasets-search-c">
+        <Searchbar
+          :placeholder="`Search ${count || '...'} datasets`"
+          :loading="dataLoading"
+          theme="line"
+          class="datasets-searchbar" />
+        <Filterer
+          filter-key="fullyStored"
+          :filters="filters.fullyStored"
+          :is-single-option="true"
+          class="datasets-checkbox">
+          <div slot-scope="{ applyFilter }">
+            <FieldContainer
+              field-key="toggle_fully_stored"
+              :scaffold="{
+                type: 'checkbox',
+                required: false,
+                options: [
+                  { label: 'Show only fully stored datasets' }
+                ]
+              }"
+              @updateValue="applyFilter(0)" />
           </div>
-          <Filterer
-            filter-key="fullyStored"
-            :filters="filters.fullyStored"
-            :is-single-option="true"
-            class="col-5 datasets-checkbox">
-            <div slot-scope="{ applyFilter }">
-              <FieldContainer
-                field-key="toggle_fully_stored"
-                :scaffold="{
-                  type: 'checkbox',
-                  required: false,
-                  options: [
-                    { label: 'Show only fully stored datasets' }
-                  ]
-                }"
-                @updateValue="applyFilter(0)" />
-            </div>
-          </Filterer>
-        </div>
+        </Filterer>
       </div>
-
-      <div class="col-6">
+      <div class="col-6 datasets-sort-c">
         <Sorter :options="sortOptions">
-          <div slot-scope="{ apply }">
+          <div slot-scope="{ apply }" class="datasets-sort">
             <FieldContainer
               field-key="sort_by"
               :scaffold="{
@@ -61,7 +56,7 @@
     <!-- filter row2: results count, selected filters, layout button selection -->
     <div class="grid-middle-spaceBetween filter-row2">
       <div class="col-9">
-        {{ resultCount }}
+        <span class="datasets-results">{{ resultCount }}</span>
         <Filterer
           v-for="(item, key) in filterPanelData.keys"
           :key="key"
@@ -86,13 +81,13 @@
       </div>
 
       <div class="col-3">
-        <button @click="$clearSearchFilterSortAndLimit">
-          clear all filters
-        </button>
-        <button @click="updateLayout('grid')">
-          grid</button>
-        <button @click="updateLayout('list')">
-          list</button>
+        <ButtonFilters @click="$clearSearchFilterSortAndLimit">
+          Clear all filters
+        </ButtonFilters>
+        <ButtonFilters @click="updateLayout('grid')">
+          grid</ButtonFilters>
+        <ButtonFilters @click="updateLayout('list')">
+          list</ButtonFilters>
       </div>
     </div>
 
@@ -130,9 +125,7 @@
           store-key="datasets" />
       </div>
       <div class="col-5">
-        <ResultsPerPage
-          v-if="totalPages > 1"
-          :options="limit" />
+        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" />
       </div>
     </div>
 
@@ -195,7 +188,7 @@ export default {
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
       sortOptions: 'datasets/sort',
-      limit: 'datasets/limit',
+      limitOptions: 'datasets/limit',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       layout: 'datasets/layout'
@@ -300,7 +293,34 @@ export default {
 .filter-row1 {
   margin-bottom: toRem(20)
 }
+
 .filter-row2 {
   margin-bottom: toRem(55);
 }
+
+.filter-row1 {
+  .datasets-search-c {
+    display: flex;
+    align-items: center;
+    .datasets-searchbar {
+      max-width: toRem(400);
+      margin-right: toRem(17);
+    }
+  }
+  .datasets-sort-c {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .datasets-sort {
+      margin-right: toRem(38);
+    }
+  }
+}
+
+.filter-row2 {
+  .datasets-results {
+    margin-right: toRem(20);
+  }
+}
+
 </style>

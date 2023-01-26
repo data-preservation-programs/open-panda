@@ -121,58 +121,9 @@ header {
 }
 
 .hamburger {
-  width: 24px;
-  height: 24px;
-  transition-duration: 150ms;
   display: none;
-  cursor: pointer;
-  position: relative;
   @include medium {
     display: block;
-  }
-
-  .icon {
-    transition-duration: 150ms;
-    position: absolute;
-    height: 3px;
-    width: 24px;
-    top: 10px;
-    background-color: $rangoonGreen;
-    &:before {
-      transition-duration: 150ms;
-      position: absolute;
-      width: 13px;
-      height: 3px;
-      right: 0;
-      background-color: $rangoonGreen;
-      content: "";
-      top: -6px;
-    }
-    &:after {
-      transition-duration: 150ms;
-      position: absolute;
-      width: 13px;
-      height: 3px;
-      background-color: $rangoonGreen;
-      content: "";
-      top: 6px;
-    }
-  }
-
-  &.open {
-    .icon {
-      transition-duration: 150ms;
-      background: transparent;
-      will-change: transform;
-      &:before {
-        width: 24px;
-        transform: rotateZ(45deg) scaleX(1.25) translate(4px, 4px);
-      }
-      &:after {
-        width: 24px;
-        transform: rotateZ(-45deg) scaleX(1.25) translate(3px, -4px);
-      }
-    }
   }
 }
 </style>

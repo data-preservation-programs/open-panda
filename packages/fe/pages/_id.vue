@@ -683,14 +683,7 @@ export default {
       &.file-types {
         flex-direction: row;
         .list-item {
-          line-height: leading(21, 14);
-          padding: 0.3125rem 0.625rem;
-          border-radius: 1.25rem;
-          background-color: #E7E9ED;
-          margin-bottom: 0.5625rem;
-          &:not(:last-child) {
-            margin-right: 0.5625rem;
-          }
+          @include fileItem;
         }
       }
     }

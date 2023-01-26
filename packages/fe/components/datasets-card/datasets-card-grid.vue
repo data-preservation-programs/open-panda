@@ -1,6 +1,6 @@
 <template>
-  <div class="col">
-    <CardCutout class="card">
+  <div class="col card">
+    <CardCutout>
       <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
 
       <div class="card-heading grid-noGutter">
@@ -18,7 +18,7 @@
             {{ label }}
           </div>
           <div class="card-data col-5">
-            {{ data[key] || '-' }}
+            {{ (key === 'data_size') ? $formatBytes(data[key]) : data[key] || '-' }}
           </div>
         </div>
       </div>
@@ -28,34 +28,33 @@
           v-for="(label, key) in labels2"
           :key="key"
           class="grid-noGutter card-details-row">
-          <div class="caption col-6">
-            {{ label }}
-          </div>
-          <div
-            v-if="key === 'locations'"
-            class="col-6">
-            <span v-if="!data[key]" class="card-data">-</span>
-            <span
-              v-for="(item, index) in data[key]"
-              :key="index">
-              {{ $getFlagIcon(item.country_code) }}
+          <div class="col-12">
+            <span class="caption caption-bold">
+              {{ label }}
             </span>
-          </div>
-          <div
-            v-if="key === 'file_extensions'"
-            class="col-6">
-            <span v-if="!data[key]" class="card-data">-</span>
-            <span
-              v-for="(item, index) in data[key]"
-              :key="index">
-              {{ item }}
+            <span v-if="key === 'locations'">
+              <span v-if="!data[key]" class="card-data">-</span>
+              <span
+                v-for="(item, index) in data[key]"
+                :key="index">
+                {{ $getFlagIcon(item.country_code) }}
+              </span>
+            </span>
+            <span v-if="key === 'file_extensions'">
+              <span v-if="!data[key]" class="card-data">-</span>
+              <span
+                v-for="(item, index) in data[key].split(',').map(ext => ext.replaceAll(' ', ''))"
+                :key="index"
+                class="file-item">
+                {{ item }}
+              </span>
             </span>
           </div>
         </div>
         <Button
           :button="{
             type: 'solid',
-            href: `/dataset/${data.slug}`,
+            url: `/${data.slug}`,
             text: 'View dataset'
           }" />
       </div>
@@ -97,6 +96,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.col {
+  margin-bottom: toRem(10);
+}
 .card-img {
   background-color: $rangoonGreen;
   height: toRem(125);
@@ -118,13 +120,19 @@ export default {
   }
 }
 .card-details {
-  border-top: 1px solid $lavenderGray;
+  border-top: 1px solid $athensGray;
   .card-details-row {
     margin-bottom: toRem(12);
   }
   .card-data {
     @include caption;
     @include fontWeight_Bold;
+  }
+  .caption {
+    margin-right: toRem(12);
+    &.caption-bold {
+      @include fontWeight_Medium;
+    }
   }
 }
 </style>

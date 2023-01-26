@@ -54,7 +54,7 @@ import CloneDeep from 'lodash/cloneDeep'
 
 import FieldContainer from '@/components/form/field-container'
 import ButtonB from '@/components/buttons/button-b'
-import ButtonX from '@/components/buttons/button-x'
+import ButtonX from '@/components/buttons/button-toggle'
 
 import IconTrash from '@/components/icons/trash'
 

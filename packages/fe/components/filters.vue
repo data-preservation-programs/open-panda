@@ -1,28 +1,31 @@
 <template>
   <div class="filters">
 
-    <button @click="togglePanel">
+    <button class="button-filter" @click="togglePanel">
+      <div :class="['hamburger']">
+        <div class="icon"></div>
+      </div>
+      <div class="icon"></div>
       Filters
     </button>
 
     <CardCutout v-if="open" class="filter-panel">
-      <div class="header">
-        <h3>Add Filters</h3>
+      <section class="grid-noGutter-spaceBetween">
+        <h5>Add Filters</h5>
         <button @click="togglePanel">
           close
         </button>
-      </div>
+      </section>
       <Filterer
         v-for="(item, key) in filterPanelData.keys"
         :key="key"
         :filter-key="key"
         :filters="filters[key]"
         @filterApplied="clearPage">
-        <div
+        <section
           slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
-          class="button-list">
-  
-          <div class="filters-label">
+          class="grid-noGutter">
+          <div class="filters-label col-12">
             <span>{{ item }}</span>
             <ButtonFilters
               v-if="!empty"
@@ -39,17 +42,19 @@
             class="filter-button"
             @clicked="applyFilter(index2)">
             {{ item2.label }}
+            <span v-if="item2.count">&nbsp;({{ item2.count }})</span>
           </ButtonFilters>
-        </div>
+        </section>
       </Filterer>
 
-      <button @click="clearAll">
-        clear
-      </button>
-
-      <button @click="onSearch">
-        search
-      </button>
+      <section class="grid-noGutter-right">
+        <button @click="clearAll">
+          clear
+        </button>
+        <button @click="onSearch">
+          search
+        </button>
+      </section>
     </CardCutout>
   </div>
 </template>
@@ -61,7 +66,6 @@ import { mapGetters, mapActions } from 'vuex'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import CardCutout from '@/components/card-cutout'
-
 import IconClose from '@/components/icons/close-thick'
 
 // ====================================================================== Export
@@ -113,12 +117,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.filters {
+  position: relative;
+}
+// main button toggle to open panel
+.button-filter {
+  display: flex;
+  background-color: white;
+  padding: toRem(15) toRem(28);
+  box-shadow: 0px 4px 34px rgba(81, 106, 130, 0.25);
+  border-radius: toRem(30);
+  align-items: center;
+  @include fontWeight_Medium;
+  @include fontSize_16;
+  .hamburger {
+    margin-right: toRem(15);
+  }
+}
 .filter-panel {
   position: absolute;
-  max-width: toRem(960);
-  width: 100%;
+  width: 60vw;
   right: 0;
+  top: 120%;
   z-index: 100;
-  padding: toRem(50);
+  section {
+    padding: toRem(20) toRem(40);
+    border-bottom: 1px solid $athensGray;
+    display: flex;
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+  .header {
+    justify-content: space-between;
+  }
 }
+
 </style>
