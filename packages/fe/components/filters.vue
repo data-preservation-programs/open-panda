@@ -12,6 +12,9 @@
           close
         </button>
       </div>
+
+      <DatasetHistogram />
+
       <Filterer
         v-for="(item, key) in filterPanelData.keys"
         :key="key"
@@ -21,7 +24,7 @@
         <div
           slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
           class="button-list">
-  
+
           <div class="filters-label">
             <span>{{ item }}</span>
             <ButtonFilters
@@ -61,6 +64,7 @@ import { mapGetters, mapActions } from 'vuex'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import CardCutout from '@/components/card-cutout'
+import DatasetHistogram from '@/components/dataset-histogram'
 
 import IconClose from '@/components/icons/close-thick'
 
@@ -72,7 +76,8 @@ export default {
     Filterer,
     ButtonFilters,
     IconClose,
-    CardCutout
+    CardCutout,
+    DatasetHistogram
   },
 
   data () {
