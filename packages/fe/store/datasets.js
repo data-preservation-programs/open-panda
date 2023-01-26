@@ -81,17 +81,15 @@ const actions = {
       return false
     }
   },
-  // /////////////////////////////////////////////////////// getSortLimitFilters
-  async getSortLimitFilters ({ commit, getters, dispatch }) {
+  // //////////////////////////////////////////////////////////////// getFilters
+  async getFilters ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axiosAuth.get('/get-static-file', {
-        params: { path: 'filters.json' }
-      })
+      const response = await this.$axiosAuth.get('/get-filters')
       commit('SET_SORT', response.data.payload.sort)
       commit('SET_LIMIT', response.data.payload.limit)
       commit('SET_FILTERS', response.data.payload.filters)
     } catch (e) {
-      console.log('========================== [Store Action: datasets/getSort]')
+      console.log('======================= [Store Action: datasets/getFilters]')
       console.log(e)
       return false
     }
