@@ -3,12 +3,14 @@
     <CardCutout>
       <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
 
+      <!-- heading -->
       <div class="card-heading grid-noGutter">
         <div class="col-12 title">
           {{ data.name }}
         </div>
       </div>
 
+      <!-- details: section 1 -->
       <div class="card-details">
         <div
           v-for="(label, key) in labels1"
@@ -23,6 +25,7 @@
         </div>
       </div>
 
+      <!-- details: section 2 -->
       <div v-if="labels2" class="card-details">
         <div
           v-for="(label, key) in labels2"
@@ -37,20 +40,27 @@
               <span
                 v-for="(item, index) in data[key]"
                 :key="index">
-                {{ $getFlagIcon(item.country_code) }}
+                <span v-if="index < 6">
+                  {{ $getFlagIcon(item.country_code) }}
+                </span>
               </span>
             </span>
             <span v-if="key === 'file_extensions'">
               <span v-if="!data[key]" class="card-data">-</span>
               <span
                 v-for="(item, index) in data[key].split(',').map(ext => ext.replaceAll(' ', ''))"
-                :key="index"
-                class="file-item">
-                {{ item }}
+                :key="index">
+                <span v-if="index < 3" class="file-item">
+                  {{ item }}
+                </span>
               </span>
             </span>
           </div>
         </div>
+      </div>
+
+      <!-- button -->
+      <div class="card-button grid-noGutter-right">
         <Button
           :button="{
             type: 'solid',
@@ -58,7 +68,6 @@
             text: 'View dataset'
           }" />
       </div>
-
     </CardCutout>
   </div>
 </template>
@@ -108,6 +117,9 @@ export default {
 .card-heading,
 .card-details {
   padding: toRem(20);
+}
+.card-button {
+  padding: toRem(10) toRem(20);
 }
 .card-heading {
   min-height: toRem(116.5);

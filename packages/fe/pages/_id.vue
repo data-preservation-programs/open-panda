@@ -684,6 +684,10 @@ export default {
         flex-direction: row;
         .list-item {
           @include fileItem;
+          margin-bottom: 0.5625rem;
+          &:not(:last-child) {
+            margin-right: 0.5625rem;
+          }
         }
       }
     }

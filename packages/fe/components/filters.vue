@@ -119,6 +119,7 @@ export default {
 <style lang="scss" scoped>
 .filters {
   position: relative;
+  @include fontWeight_Medium;
 }
 // main button toggle to open panel
 .button-filter {
@@ -128,7 +129,6 @@ export default {
   box-shadow: 0px 4px 34px rgba(81, 106, 130, 0.25);
   border-radius: toRem(30);
   align-items: center;
-  @include fontWeight_Medium;
   @include fontSize_16;
   .hamburger {
     margin-right: toRem(15);
@@ -136,7 +136,7 @@ export default {
 }
 .filter-panel {
   position: absolute;
-  width: 60vw;
+  width: 70vw;
   right: 0;
   top: 120%;
   z-index: 100;
@@ -150,6 +150,16 @@ export default {
   }
   .header {
     justify-content: space-between;
+  }
+  .filters-label {
+    margin-bottom: toRem(15);
+    @include fontSize_20;
+  }
+  .filter-button {
+    margin-bottom: 0.5rem;
+    &:not(:last-child) {
+      margin-right: 0.5rem;
+    }
   }
 }
 
