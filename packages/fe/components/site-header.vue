@@ -121,9 +121,59 @@ header {
 }
 
 .hamburger {
+  width: 20px;
+  height: 20px;
+  transition-duration: 150ms;
+  cursor: pointer;
+  position: relative;
   display: none;
   @include medium {
     display: block;
+  }
+
+  .icon {
+    transition-duration: 150ms;
+    position: absolute;
+    height: 3px;
+    width: 20px;
+    top: 10px;
+    background-color: $rangoonGreen;
+    &:before {
+      transition-duration: 150ms;
+      position: absolute;
+      width: 20px;
+      height: 3px;
+      right: 0;
+      background-color: $rangoonGreen;
+      content: "";
+      top: -6px;
+    }
+    &:after {
+      transition-duration: 150ms;
+      position: absolute;
+      width: 20px;
+      height: 3px;
+      left: 0;
+      background-color: $rangoonGreen;
+      content: "";
+      top: 6px;
+    }
+  }
+
+  &.open {
+    .icon {
+      transition-duration: 150ms;
+      background: transparent;
+      will-change: transform;
+    &:before {
+        width: 20px;
+        transform: rotateZ(45deg) scaleX(1.25) translate(4px, 4px);
+      }
+      &:after {
+        width: 20px;
+        transform: rotateZ(-45deg) scaleX(1.25) translate(3px, -4px);
+      }
+    }
   }
 }
 </style>

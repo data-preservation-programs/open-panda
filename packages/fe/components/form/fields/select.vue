@@ -186,7 +186,7 @@ $height: 2.5rem;
 }
 
 .selection-window {
-  padding: toRem(8) toRem(5) toRem(8) toRem(10);
+  padding: toRem(8) toRem(10);
   border: 2px solid $tasman;
   border-radius: toRem(5);
   display: flex;
