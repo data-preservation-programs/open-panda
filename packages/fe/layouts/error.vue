@@ -3,14 +3,12 @@
     <section class="content">
       <div class="grid">
 
-        <div class="col-5">
-          <ImageBlock
-            class="image-left"
-            :block="imageLeft" />
+        <div class="col-5_sm-hidden">
+          <ImageBlock :block="imageLeft" />
         </div>
 
-        <div class="col-7">
-          <ImageBlock :block="topRightImageBlock" />
+        <div class="col-7_sm-12">
+          <ImageBlock class="image-right" :block="topRightImageBlock" />
           <TextBlock :block="textblock" />
         </div>
 
@@ -70,14 +68,27 @@ export default {
   overflow: hidden;
 }
 
+.image-right {
+  @include tiny {
+    margin: 0 -1rem;
+  }
+}
+
 :deep(.text-block) {
   margin-top: toRem(90);
   margin-left: 5rem;
+  @include mini {
+    margin-left: 1rem;
+  }
   .heading {
     font-size: toRem(80);
     @include fontWeight_Bold;
     line-height: leading(75, 80);
     font-family: $font_Secondary;
+    @include mini {
+      font-size: toRem(45);
+      line-height: leading(45, 40);
+    }
   }
   .description {
     @include p1;
