@@ -28,7 +28,7 @@
           <ButtonFilters
             v-for="(item2, index2) in filters[key]"
             :key="`${filters[key]}-${index2}`"
-            :selected="isSelected(item2.value)"
+            :selected="isSelected(index2)"
             class="filter-button"
             @clicked="applyFilter(index2)">
             {{ item2.label }}

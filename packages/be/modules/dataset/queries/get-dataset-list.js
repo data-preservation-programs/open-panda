@@ -1,4 +1,4 @@
-module.exports = (search = '', page = 1, limit = 10) => {
+module.exports = (search = '', page = 1, limit = 10, sort = {}) => {
   const skip = (page - 1) * limit
   return [
 
@@ -39,7 +39,7 @@ module.exports = (search = '', page = 1, limit = 10) => {
       }
     },
 
-    { $sort: { createdAt: -1 } },
+    { $sort: Object.assign({ createdAt: -1 }, sort) },
 
     {
       $facet: {

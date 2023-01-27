@@ -1,11 +1,9 @@
 {
   "sort": [
-    { "label": "Data Stored ↑", "value": 0 },
-    { "label": "Data Stored ↓", "value": 1 },
-    { "label": "No. of Storage Providers ↑", "value": 2 },
-    { "label": "No. of Storage Providers ↓", "value": 3 },
-    { "label": "A-Z", "value": 5 },
-    { "label": "Z-A", "value": 6 }
+    { "label": "Data Size ↑", "value": "data_size,1" },
+    { "label": "Data Size ↓", "value": "data_size,-1" },
+    { "label": "A-Z", "value": "name,1" },
+    { "label": "Z-A", "value": "name,-1" }
   ],
   "limit": [
     { "label": 12, "value": 12 },

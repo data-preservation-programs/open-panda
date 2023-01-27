@@ -18,13 +18,12 @@ class Search {
   // ========================================================== clearSearchQuery
   clearSearchQuery () {
     this.query.search = undefined
-    this.store.dispatch('search/recordSearchValue', '')
     this.app.router.push({ query: this.query })
   }
 
   // =================================================================== isEmpty
   isEmpty () {
-    return this.store.getters['search/searchValue'] === ''
+    return !this.query.search
   }
 
   // ================================================================ toggleTerm
@@ -37,7 +36,6 @@ class Search {
       this.store.dispatch(term.storeAction, value)
     } else {
       this.query.search = value === '' ? undefined : value
-      this.store.dispatch('search/recordSearchValue', value)
       this.app.router.push({ query: this.query })
     }
   }
