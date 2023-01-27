@@ -74,7 +74,19 @@
       }
     ]
   },
-  "404_error_message": "404 Not Found",
+  "404_error_page": {
+    "message": {
+      "heading": "404",
+      "description": "Looks like this page doesn’t exist, try again!",
+      "ctas": [
+        {
+          "type": "solid",
+          "url": "/",
+          "text": "Back to Home"
+        }
+      ]
+    }
+  },
   "filterPanel": {
     "labels": {
       "buttonText": "Filters",

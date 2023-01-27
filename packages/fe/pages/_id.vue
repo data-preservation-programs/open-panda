@@ -219,6 +219,13 @@ export default {
     AccordionContent
   },
 
+  async asyncData ({ store, route, error }) {
+    await store.dispatch('datasets/getBasicStats')
+    const datasetExists = await store.dispatch('dataset/getDataset', { route })
+    if (!datasetExists) { return error('Dataset could not be found.') }
+    return { datasetExists }
+  },
+
   data () {
     const id = this.$route.params.id
     return {
@@ -226,11 +233,6 @@ export default {
       resize: false,
       mobile: false
     }
-  },
-
-  async fetch ({ store, route }) {
-    await store.dispatch('dataset/getDataset', { route })
-    await store.dispatch('datasets/getBasicStats')
   },
 
   // head () {
