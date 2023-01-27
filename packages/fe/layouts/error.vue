@@ -1,20 +1,19 @@
 <template>
   <div class="error-page">
-
     <section class="content">
       <div class="grid">
-        <div class="col">
-          <div class="inner-content">
 
-            <h1 class="heading">
-              {{ message }}
-            </h1>
-
-          </div>
+        <div class="col-5_sm-hidden">
+          <ImageBlock :block="imageLeft" />
         </div>
+
+        <div class="col-7_sm-12">
+          <ImageBlock class="image-right" :block="topRightImageBlock" />
+          <TextBlock :block="textblock" />
+        </div>
+
       </div>
     </section>
-
   </div>
 </template>
 
@@ -22,16 +21,37 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
+import TextBlock from '@/components/blocks/text-block'
+import ImageBlock from '@/components/blocks/image-block'
+
 // ====================================================================== Export
 export default {
   name: 'ErrorPage',
+
+  components: {
+    TextBlock,
+    ImageBlock
+  },
+
+  async fetch () {
+    await this.$store.dispatch('general/getBaseData', 'general')
+  },
 
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent'
     }),
-    message () {
-      return this.siteContent.general['404_error_message']
+    pageContent () {
+      return this.siteContent.general['404_error_page']
+    },
+    textblock () {
+      return this.pageContent.message
+    },
+    imageLeft () {
+      return { src: '/images/error-page/pointilist-cube-and-colorful-static.png' }
+    },
+    topRightImageBlock () {
+      return { src: '/images/error-page/television-color-test-and-pointlist-waves.png' }
     }
   }
 }
@@ -41,46 +61,37 @@ export default {
 // ///////////////////////////////////////////////////////////////////// General
 .error-page {
   position: relative;
-  margin-bottom: -5rem;
   overflow: hidden;
 }
 
-.content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  [class~="grid"], [class*="grid-"], [class*="grid_"] {
-    width: 100%;
-    height: 100%;
+.image-right {
+  @include tiny {
+    margin: 0 -1rem;
   }
 }
 
-.inner-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-.heading {
-  font-size: 3.125rem;
-  font-weight: 600;
+:deep(.text-block) {
+  margin-top: toRem(90);
+  margin-left: 5rem;
   @include mini {
-    font-size: 2rem;
+    margin-left: 1rem;
+  }
+  .heading {
+    font-size: toRem(80);
+    @include fontWeight_Bold;
+    line-height: leading(75, 80);
+    font-family: $font_Secondary;
+    @include mini {
+      font-size: toRem(45);
+      line-height: leading(45, 40);
+    }
+  }
+  .description {
+    @include p1;
+  }
+  .button {
+    border-top-left-radius: 0.125rem;
   }
 }
 
-.image {
-  position: relative;
-  width: 100%;
-  @include mini {
-    width: 150%;
-    left: -22%;
-  }
-}
 </style>

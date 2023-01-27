@@ -7,7 +7,7 @@
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
-      slot-scope="{ value, updateValue, empty, clearSearch }"
+      slot-scope="{ value, updateValue, empty }"
       :class="['searchbar', `theme__${theme}`, { focused, empty, loading }]">
 
       <div class="input-wrapper">
@@ -21,14 +21,6 @@
           @input="updateValue"
           @focus="focused = true"
           @blur="focused = false">
-
-        <ButtonFilters
-          v-if="!empty"
-          class="clear-button"
-          @clicked="clearSearch">
-          <IconClose />
-          <span>Clear</span>
-        </ButtonFilters>
 
         <button
           :class="['search-button', { loading }]"
@@ -47,10 +39,8 @@
 // ===================================================================== Imports
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
-import ButtonFilters from '@/components/buttons/button-filters'
 
 import IconSearch from '@/components/icons/search'
-import IconClose from '@/components/icons/close-thick'
 
 // ====================================================================== Export
 export default {
@@ -59,9 +49,7 @@ export default {
   components: {
     Searcher,
     Spinner,
-    ButtonFilters,
-    IconSearch,
-    IconClose
+    IconSearch
   },
 
   props: {

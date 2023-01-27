@@ -67,7 +67,8 @@
 import TextBlock from '@/components/blocks/text-block'
 import ImageBlock from '@/components/blocks/image-block'
 import MarkdownBlock from '@/components/blocks/markdown-block'
-import SliderBlock from '@/components/blocks/slider-block'
+import CategorySliderBlock from '@/components/blocks/category-slider-block'
+import CategoryTicker from '@/components/category-ticker'
 import BlockBuilder from '@/components/blocks/block-builder'
 
 export default {
@@ -78,7 +79,8 @@ export default {
     ImageBlock,
     BlockBuilder,
     MarkdownBlock,
-    SliderBlock
+    CategorySliderBlock,
+    CategoryTicker
   },
 
   props: {
@@ -112,7 +114,7 @@ export default {
         case 'text_block' : name = 'TextBlock'; break
         case 'image_block' : name = 'ImageBlock'; break
         case 'markdown_block': name = 'MarkdownBlock'; break
-        case 'slider_block': name = 'SliderBlock'; break
+        case 'category_slider_block': name = 'CategorySliderBlock'; break
         case 'custom' : name = block.component; break
       }
       return name

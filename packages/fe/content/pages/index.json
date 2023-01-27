@@ -51,24 +51,23 @@
                 }]
               }
             }
+          },
+          "ticker": {
+            "name": "CategoryTicker",
+            "props": {
+              "block": {
+                "message": "Search categories like"
+              }
+            }
           }
         }
       }
     },
     "slider": {
       "id": "home-slider",
-      "grid": [],
+      "grid": ["noGutter"],
       "col_1": {
-        "type": "slider_block",
-        "slider_type": "circular",
-        "collection": [
-          "a",
-          "b",
-          "c",
-          "d",
-          "e",
-          "f"
-        ],
+        "type": "category_slider_block",
         "sliderGrid": {
           "before": {
             "num": "col-12"
@@ -99,7 +98,7 @@
         "storage": "Storage Provider"
       },
       "labels2": {
-        "file_extensions": "File Type",
+        "file_extensions": "File Types",
         "locations": "Location"
       }
     }

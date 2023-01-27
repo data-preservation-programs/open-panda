@@ -1,3 +1,5 @@
+import CloneDeep from 'lodash/cloneDeep'
+
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////////////////// State
@@ -67,12 +69,17 @@ const actions = {
         }
       })
       const payload = response.data.payload
-      const datasetList = payload.results
+      const datasetListOriginal = CloneDeep(payload.results)
+      const datasetList = datasetListOriginal
+      // modify file_ext string to array
+      datasetList.forEach((item) => {
+        item.file_extensions = item.file_extensions.split(',').map(ext => ext.replaceAll(' ', ''))
+      })
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata
       })
-      return payload.results
+      return datasetList
     } catch (e) {
       console.log('=================== [Store Action: datasets/getDatasetList]')
       console.log(e)
