@@ -51,6 +51,14 @@
                 }]
               }
             }
+          },
+          "ticker": {
+            "name": "CategoryTicker",
+            "props": {
+              "block": {
+                "message": "Search categories like"
+              }
+            }
           }
         }
       }
