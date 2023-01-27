@@ -1,36 +1,29 @@
 <template>
   <div class="filters">
 
-    <button @click="togglePanel">
-      Filters
+    <button class="button-filter" @click="togglePanel">
+      <FiltersIcon class="icon" />
+      <span>Filters</span>
     </button>
 
     <CardCutout v-if="open" class="filter-panel">
-      <div class="header">
-        <h3>Add Filters</h3>
+      <section class="grid-noGutter-spaceBetween">
+        <h5>Add Filters</h5>
         <button @click="togglePanel">
-          close
+          <IconClose />
         </button>
-      </div>
+      </section>
       <Filterer
         v-for="(item, key) in filterPanelData.keys"
         :key="key"
         :filter-key="key"
         :filters="filters[key]"
         @filterApplied="clearPage">
-        <div
-          slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
-          class="button-list">
-  
-          <div class="filters-label">
+        <section
+          slot-scope="{ applyFilter, isSelected }"
+          class="grid-noGutter">
+          <div class="filters-label col-12">
             <span>{{ item }}</span>
-            <ButtonFilters
-              v-if="!empty"
-              class="clear-button"
-              @clicked="clearFilters">
-              <IconClose />
-              <span>Clear</span>
-            </ButtonFilters>
           </div>
           <ButtonFilters
             v-for="(item2, index2) in filters[key]"
@@ -39,17 +32,19 @@
             class="filter-button"
             @clicked="applyFilter(index2)">
             {{ item2.label }}
+            <span v-if="item2.count">&nbsp;({{ item2.count }})</span>
           </ButtonFilters>
-        </div>
+        </section>
       </Filterer>
 
-      <button @click="clearAll">
-        clear
-      </button>
-
-      <button @click="onSearch">
-        search
-      </button>
+      <section class="grid-noGutter-right">
+        <button @click="clearAll">
+          clear
+        </button>
+        <button @click="onSearch">
+          search
+        </button>
+      </section>
     </CardCutout>
   </div>
 </template>
@@ -61,8 +56,8 @@ import { mapGetters, mapActions } from 'vuex'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import CardCutout from '@/components/card-cutout'
-
-import IconClose from '@/components/icons/close-thick'
+import FiltersIcon from '@/components/icons/filter'
+import IconClose from '@/components/icons/close'
 
 // ====================================================================== Export
 export default {
@@ -71,8 +66,9 @@ export default {
   components: {
     Filterer,
     ButtonFilters,
-    IconClose,
-    CardCutout
+    CardCutout,
+    FiltersIcon,
+    IconClose
   },
 
   data () {
@@ -113,12 +109,50 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.filters {
+  position: relative;
+  @include fontWeight_Medium;
+}
+// main button toggle to open panel
+.button-filter {
+  display: flex;
+  background-color: white;
+  padding: toRem(15) toRem(28);
+  box-shadow: 0px 4px 34px rgba(81, 106, 130, 0.25);
+  border-radius: toRem(30);
+  align-items: center;
+  @include fontSize_16;
+  .icon {
+    margin-right: toRem(15);
+  }
+}
 .filter-panel {
   position: absolute;
-  max-width: toRem(960);
-  width: 100%;
+  width: 70vw;
   right: 0;
+  top: 120%;
   z-index: 100;
-  padding: toRem(50);
+  section {
+    padding: toRem(20) toRem(40);
+    border-bottom: 1px solid $athensGray;
+    display: flex;
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+  .header {
+    justify-content: space-between;
+  }
+  .filters-label {
+    margin-bottom: toRem(15);
+    @include fontSize_20;
+  }
+  .filter-button {
+    margin-bottom: 0.5rem;
+    &:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+  }
 }
+
 </style>

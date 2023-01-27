@@ -1,7 +1,7 @@
 <template>
   <div class="field-container">
     <Field v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }" class="field-wrapper">
+      <div slot-scope="{ updateValue, field, type, validationMessage }" :class="`field-wrapper field-wrapper-${scaffold.type}`">
         <template v-if="field">
 
           <label v-if="scaffold.label" :for="fieldKey" class="field-label">
@@ -141,7 +141,6 @@ export default {
 // /////////////////////////////////////////////////////////////////////// Label
 ::v-deep .label {
   font-weight: 400;
-  @include fontSize_14;
   cursor: pointer;
   &.floating {
     position: absolute;
@@ -181,5 +180,18 @@ export default {
     margin-right: 0.0625rem;
     font-size: 100%;
   }
+}
+
+// custom
+.field-wrapper-select {
+  display: flex;
+  align-items: center;
+  .field-label {
+    margin-right: toRem(24);
+  }
+}
+
+.field-wrapper-checkbox {
+  @include fontSize_14;
 }
 </style>

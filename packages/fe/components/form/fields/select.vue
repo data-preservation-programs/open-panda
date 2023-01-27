@@ -120,7 +120,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$height: 4rem;
+$height: 2.5rem;
 
 // ///////////////////////////////////////////////////////////////////// General
 .field-select {
@@ -168,18 +168,16 @@ $height: 4rem;
         @include focusBoxShadow;
       }
     }
-    &.custom {
-      padding: toRem(8) toRem(5) toRem(8) toRem(10);
-      background-color: $gin;
-      border: 2px solid $tasman;
-      border-radius: toRem(5);
-    }
   }
   .dropdown {
-    max-height: $height * 5.5;
-    background-color: black;
-    border: 2px solid white;
-    border-radius: 0.3125rem;
+    top: calc(100% - 4px);
+    border-bottom-left-radius: 0.3125rem;
+    border-bottom-right-radius: 0.3125rem;
+    max-height: $height * 6.5;
+    border-right: 2px solid $tasman;
+    border-bottom: 2px solid $tasman;
+    border-left: 2px solid $tasman;
+    background-color: $gin;
   }
 }
 
@@ -188,6 +186,9 @@ $height: 4rem;
 }
 
 .selection-window {
+  padding: toRem(8) toRem(10);
+  border: 2px solid $tasman;
+  border-radius: toRem(5);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -228,11 +229,8 @@ $height: 4rem;
     background-color: $grayNurse2;
   }
   &.selected {
-    background-color: rgba(white, 0.1);
-  }
-  &:hover,
-  &.highlighted {
-    text-decoration: underline;
+    background-color: $rangoonGreen;
+    color: white;
   }
 }
 </style>

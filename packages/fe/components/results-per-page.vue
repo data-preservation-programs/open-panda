@@ -38,5 +38,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+:deep(.field-select) {
+  width: toRem(66);
+}
 </style>

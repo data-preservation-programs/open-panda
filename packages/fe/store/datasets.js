@@ -1,3 +1,5 @@
+import CloneDeep from 'lodash/cloneDeep'
+
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////////////////// State
@@ -13,8 +15,7 @@ const state = () => ({
   basicStats: false,
   filters: false,
   sort: false,
-  limit: false,
-  layout: 'grid'
+  limit: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -26,8 +27,7 @@ const getters = {
   basicStats: state => state.basicStats,
   filters: state => state.filters,
   sort: state => state.sort,
-  limit: state => state.limit,
-  layout: state => state.layout
+  limit: state => state.limit
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -40,7 +40,6 @@ const actions = {
     commit('SET_FILTERS', false)
     commit('SET_SORT', false)
     commit('SET_LIMIT', false)
-    commit('SET_LAYOUT', 'grid')
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
@@ -68,12 +67,17 @@ const actions = {
         }
       })
       const payload = response.data.payload
-      const datasetList = payload.results
+      const datasetListOriginal = CloneDeep(payload.results)
+      const datasetList = datasetListOriginal
+      // modify file_ext string to array
+      datasetList.forEach((item) => {
+        item.file_extensions = item.file_extensions.split(',').map(ext => ext.replaceAll(' ', ''))
+      })
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata
       })
-      return payload.results
+      return datasetList
     } catch (e) {
       console.log('=================== [Store Action: datasets/getDatasetList]')
       console.log(e)
@@ -103,10 +107,6 @@ const actions = {
   // ////////////////////////////////////////////////////////////////// setLimit
   setLimit ({ commit }, payload) {
     commit('SET_LIMIT', payload)
-  },
-  // ///////////////////////////////////////////////////////////////// setLayout
-  setLayout ({ commit }, payload) {
-    commit('SET_LAYOUT', payload)
   },
   // /////////////////////////////////////////////////////////////////// setPage
   setPage ({ commit }, payload) {
@@ -162,9 +162,6 @@ const mutations = {
   },
   SET_SORT (state, sort) {
     state.sort = sort
-  },
-  SET_LAYOUT (state, layout) {
-    state.layout = layout
   }
 }
 
