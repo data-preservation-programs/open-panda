@@ -53,10 +53,6 @@ export default {
     topRightImageBlock () {
       return { src: '/images/error-page/television-color-test-and-pointlist-waves.png' }
     }
-  },
-
-  mounted () {
-    console.log(this.siteContent)
   }
 }
 </script>
