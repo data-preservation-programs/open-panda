@@ -104,7 +104,10 @@ const actions = {
       const dataset = response.data.payload
       dispatch('getCidList', { datasetId: dataset._id })
       commit('SET_DATASET', { dataset })
+      return dataset
     } catch (e) {
+      if (getters.dataset) { commit('SET_DATASET', { dataset: false }) }
+      console.log('Dataset not found.')
       console.log('======================== [Store Action: dataset/getDataset]')
       console.log(e)
       return false
