@@ -81,9 +81,9 @@
       </div>
 
       <div class="col-3 flex-end">
-        <ButtonFilters @click="$clearSearchFilterSortAndLimit">
+        <Button :button="{type: 'outline'}" @click.native="$clearSearchFilterSortAndLimit">
           Clear all filters
-        </ButtonFilters>
+        </Button>
         <button :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']" @click="updateLayout('grid')">
           <GridIcon />
         </button>
@@ -105,16 +105,16 @@
         v-for="(data, index) in datasetList"
         :key="`dataset-${index}`"
         :data="data"
-        :labels1="datasetContent.card.labels1"
-        :labels2="datasetContent.card.labels2" />
+        :labels1="datasetContent.gridLayout.labels1"
+        :labels2="datasetContent.gridLayout.labels2" />
     </div>
     <div v-if="layout === 'list'" class="grid-1-equalHeight">
       <DatasetsCardList
         v-for="(data, index) in datasetList"
         :key="`dataset-${index}`"
         :data="data"
-        :labels1="datasetContent.card.labels1"
-        :labels2="datasetContent.card.labels2" />
+        :labels1="datasetContent.listLayout.labels1"
+        :labels2="datasetContent.listLayout.labels2" />
     </div>
 
     <!-- pagination -->
@@ -151,6 +151,7 @@ import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
 import Sorter from '@/modules/search/components/sorter'
 import ButtonFilters from '@/components/buttons/button-filters'
+import Button from '@/components/buttons/button'
 import GridIcon from '@/components/icons/grid'
 import ListIcon from '@/components/icons/list'
 
@@ -163,6 +164,7 @@ export default {
     DatasetsCardGrid,
     DatasetsCardList,
     Filters,
+    Button,
     Searchbar,
     PaginationControls,
     FieldContainer,
@@ -185,6 +187,7 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getSortLimitFilters')
     await store.dispatch('datasets/getDatasetList', { route })
+    await store.dispatch('datasets/getBasicStats')
   },
 
   head () {

@@ -1,16 +1,22 @@
 <template>
-  <div class="filters">
+  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']">
 
-    <button class="button-filter" @click="togglePanel">
-      <FiltersIcon class="icon" />
-      <span>Filters</span>
-    </button>
+    <div class="button-c">
+      <Searchbar
+        v-if="showSearch"
+        :placeholder="`Search ${basicStats.count__datasets__total || '...'} datasets`"
+        theme="solid" />
+      <button class="button-filter" @click="togglePanel">
+        <FiltersIcon class="icon" />
+        <span>{{ filterPanelData.labels.buttonText }}</span>
+      </button>
+    </div>
 
     <CardCutout v-if="open" class="filter-panel">
       <section class="grid-noGutter-spaceBetween">
-        <h5>Add Filters</h5>
-        <button @click="togglePanel">
-          <IconClose />
+        <h5>{{ filterPanelData.labels.add }}</h5>
+        <button class="circle-border" @click="togglePanel">
+          <IconClose width="13" height="13" />
         </button>
       </section>
       <Filterer
@@ -37,13 +43,13 @@
         </section>
       </Filterer>
 
-      <section class="grid-noGutter-right">
-        <button @click="clearAll">
-          clear
-        </button>
-        <button @click="onSearch">
-          search
-        </button>
+      <section class="grid-noGutter-right filter-button">
+        <Button :button="{}" @click.native="clearAll">
+          {{ filterPanelData.labels.clear }}
+        </Button>
+        <Button :button="{type:'solid'}" @click.native="onSearch">
+          {{ filterPanelData.labels.search }}
+        </Button>
       </section>
     </CardCutout>
   </div>
@@ -55,9 +61,11 @@ import { mapGetters, mapActions } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
+import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
 import FiltersIcon from '@/components/icons/filter'
 import IconClose from '@/components/icons/close'
+import Searchbar from '@/components/searchbar'
 
 // ====================================================================== Export
 export default {
@@ -66,9 +74,24 @@ export default {
   components: {
     Filterer,
     ButtonFilters,
+    Button,
     CardCutout,
     FiltersIcon,
-    IconClose
+    IconClose,
+    Searchbar
+  },
+
+  props: {
+    openDirection: {
+      type: String,
+      required: false,
+      default: 'left'
+    },
+    showSearch: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
 
   data () {
@@ -80,7 +103,8 @@ export default {
   computed: {
     ...mapGetters({
       filters: 'datasets/filters',
-      siteContent: 'general/siteContent'
+      siteContent: 'general/siteContent',
+      basicStats: 'datasets/basicStats'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -89,7 +113,8 @@ export default {
 
   methods: {
     ...mapActions({
-      setPage: 'datasets/setPage'
+      setPage: 'datasets/setPage',
+      getDatasetList: 'datasets/getDatasetList'
     }),
     clearPage () {
       this.setPage({ page: 1 })
@@ -102,7 +127,8 @@ export default {
       this.$clearAllFilters('fullyStored')
     },
     onSearch () {
-      console.log('onSearch panel')
+      this.open = false
+      this.getDatasetList({ route: this.$route })
     }
   }
 }
@@ -113,25 +139,49 @@ export default {
   position: relative;
   @include fontWeight_Medium;
 }
+
 // main button toggle to open panel
-.button-filter {
+.button-c {
   display: flex;
-  background-color: white;
-  padding: toRem(15) toRem(28);
-  box-shadow: 0px 4px 34px rgba(81, 106, 130, 0.25);
-  border-radius: toRem(30);
-  align-items: center;
-  @include fontSize_16;
-  .icon {
-    margin-right: toRem(15);
+  height: toRem(50);
+  .has-search & {
+    @include shadow3;
+    border-radius: toRem(30);
   }
+  .button-filter {
+    height: toRem(50);
+    display: flex;
+    align-items: center;
+    @include fontSize_16;
+    background-color: white;
+    padding: toRem(15) toRem(28);
+    border-radius: 0 toRem(30) toRem(30) 0;
+    .no-search & {
+      box-shadow: 0px 4px 34px rgba(81, 106, 130, 0.25);
+      border-radius: toRem(30);
+    }
+    .has-search & {
+      padding-left: toRem(20);
+      border-left: 1px solid $grayNurse;
+    }
+    .icon {
+      margin-right: toRem(15);
+    }
+  }
+  
 }
+
+// panel
 .filter-panel {
   position: absolute;
   width: 70vw;
   right: 0;
   top: 120%;
   z-index: 100;
+  .direction-right & {
+    left: 0;
+    top: 135%;
+  }
   section {
     padding: toRem(20) toRem(40);
     border-bottom: 1px solid $athensGray;
@@ -151,6 +201,11 @@ export default {
     margin-bottom: 0.5rem;
     &:not(:last-child) {
       margin-right: 0.5rem;
+    }
+  }
+  .filter-button {
+    button {
+      margin-left: toRem(30);
     }
   }
 }

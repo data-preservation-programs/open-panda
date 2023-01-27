@@ -230,6 +230,7 @@ export default {
 
   async fetch ({ store, route }) {
     await store.dispatch('dataset/getDataset', { route })
+    await store.dispatch('datasets/getBasicStats')
   },
 
   // head () {

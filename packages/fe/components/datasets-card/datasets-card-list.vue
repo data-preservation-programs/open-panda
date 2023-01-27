@@ -5,14 +5,15 @@
         <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
         <div class="card-details-c">
           <div class="card-details">
-            <div class="card-details-row">
+            <div class="card-details-row title">
               {{ data.name }}
             </div>
+
             <div class="card-details-row">
               <span
                 v-for="(label, key) in labels1"
                 :key="key"
-                class="">
+                class="card-details-row-item">
                 <span class="caption">
                   {{ label }}
                 </span>
@@ -21,6 +22,7 @@
                 </span>
               </span>
             </div>
+
             <div v-if="labels2" class="card-details-row">
               <span
                 v-for="(label, key) in labels2"
@@ -106,6 +108,7 @@ export default {
 .card-inner {
   padding: toRem(25);
   display: flex;
+  align-items: center;
 }
 .card-img {
   background-color: $tasman;
@@ -117,5 +120,20 @@ export default {
 .card-details-c {
   padding-left: toRem(60);
   flex-grow: 1;
+  align-items: flex-end;
+  display: flex;
+  .card-details {
+    flex-grow: 1;
+  }
+}
+.title {
+  @include fontSize_20;
+  line-height: leading(30, 20);
+}
+.card-details-row {
+  margin-bottom: toRem(10);
+  &:last-child {
+    margin-bottom: 0;
+  }
 }
 </style>

@@ -37,6 +37,7 @@ export default {
 
   async fetch ({ store, route }) {
     await store.dispatch('general/getBaseData', { key: 'static', data: StaticPageData })
+    await store.dispatch('datasets/getBasicStats')
   },
 
   head () {

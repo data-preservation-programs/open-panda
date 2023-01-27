@@ -89,7 +89,7 @@
   "datasets_content": {
     "explore": "Explore datasets",
     "empty": "There are no projects matching this search, please try again.",
-    "card": {
+    "gridLayout": {
       "labels1": {
         "cid": "CID",
         "replication": "Replication Factor",
@@ -100,6 +100,19 @@
       "labels2": {
         "file_extensions": "File Types",
         "locations": "Location"
+      }
+    },
+    "listLayout": {
+      "labels1": {
+        "cid": "CID",
+        "replication": "Replication Factor",
+        "data_size": "Dataset Size",
+        "locations": "Location"
+      },
+      "labels2": {
+        "storage": "Storage Provider",
+        "total": "Total Data on Network",
+        "file_extensions": "File Types"
       }
     }
   }

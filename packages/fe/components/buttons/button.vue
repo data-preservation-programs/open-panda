@@ -4,7 +4,7 @@
     :to="to"
     :href="href"
     :target="target"
-    :class="[`button type__${button.type || 'default'} ${button.selected ? 'selected' : ''}`]"
+    :class="[`button type__${button.type || ''} ${button.selected ? 'selected' : ''}`]"
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
@@ -40,7 +40,7 @@ export default {
 
   computed: {
     tag () {
-      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) : 'div'
+      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) : 'button'
     },
     target () {
       return this.button && this.button.target ? this.button.target : this.$GetTargetBasedOnUrl(this.button.url)
@@ -160,5 +160,11 @@ export default {
 
 .type__outline {
   border: 1px solid $rangoonGreen;
+  padding: toRem(7) toRem(15);
+  border-radius: toRem(20);
+  &:hover {
+    background-color: $athensGray;
+    color: $rangoonGreen;
+  }
 }
 </style>
