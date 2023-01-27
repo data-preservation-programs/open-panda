@@ -21,41 +21,46 @@
           </div>
           <Filterer
             filter-key="fullyStored"
-            :filters="filters.fullyStored"
             :is-single-option="true"
+            :filters="filters.fullyStored"
             class="col-5 datasets-checkbox">
-            <div slot-scope="{ applyFilter, empty }">
+            <div slot-scope="{ applyFilter, originalSelected }">
               <FieldContainer
                 field-key="toggle_fully_stored"
-                :reset="empty"
+                reset-group-id="filters"
                 :scaffold="{
                   type: 'checkbox',
                   required: false,
                   options: [
                     { label: 'Show only fully stored datasets' }
-                  ]
+                  ],
+                  defaultValue: originalSelected
                 }"
-                @updateValue="applyFilter(0)" />
+                @updateValue="applyFilter" />
             </div>
           </Filterer>
         </div>
       </div>
 
       <div class="col-6">
-        <Sorter :options="sortOptions">
-          <div slot-scope="{ apply, empty }">
+        <Filterer
+          filter-key="sort"
+          :is-single-option="true"
+          :filters="sortOptions">
+          <div slot-scope="{ applyFilter, originalSelected }">
             <FieldContainer
               field-key="sort_by"
-              :reset="empty"
+              reset-group-id="filters"
               :scaffold="{
                 type: 'select',
                 required: false,
                 label: 'Sort by',
-                options: sortOptions
+                options: sortOptions,
+                defaultValue: originalSelected
               }"
-              @updateValue="apply" />
+              @updateValue="applyFilter" />
           </div>
-        </Sorter>
+        </Filterer>
         <Filters />
       </div>
     </div>
@@ -76,8 +81,8 @@
               v-for="(item2, index2) in filters[key]"
               :key="`${filters[key]}-${index2}`">
               <ButtonFilters
-                v-if="isSelected(item2.value)"
-                :selected="isSelected(item2.value)"
+                v-if="isSelected(index2)"
+                :selected="isSelected(index2)"
                 class="filter-button"
                 @clicked="applyFilter(index2)">
                 {{ item2.label }}
@@ -134,7 +139,7 @@
       <div class="col-5">
         <ResultsPerPage
           v-if="totalPages > 1"
-          :options="limit" />
+          :options="limitOptions" />
       </div>
     </div>
 
@@ -155,7 +160,6 @@ import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
-import Sorter from '@/modules/search/components/sorter'
 import ButtonFilters from '@/components/buttons/button-filters'
 
 // ====================================================================== Export
@@ -171,7 +175,6 @@ export default {
     PaginationControls,
     FieldContainer,
     Filterer,
-    Sorter,
     ResultsPerPage,
     ButtonFilters
   },
@@ -196,8 +199,8 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
-      sortOptions: 'datasets/sort',
-      limit: 'datasets/limit',
+      sortOptions: 'datasets/sortOptions',
+      limitOptions: 'datasets/limitOptions',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       layout: 'datasets/layout'
@@ -215,7 +218,8 @@ export default {
       return this.$store.getters['datasets/datasetList']
     },
     filteredDatasetList () {
-      return this.datasetList.filter(obj => !obj.new)
+      const datasetList = this.datasetList
+      return datasetList ? this.datasetList.filter(obj => !obj.new) : []
     },
     dataLoading () {
       return this.loading
@@ -263,8 +267,7 @@ export default {
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
       setLayout: 'datasets/setLayout',
-      getDatasetList: 'datasets/getDatasetList',
-      resetFormModel: 'form/resetFormModel'
+      getDatasetList: 'datasets/getDatasetList'
     }),
     stopLoading () {
       this.$nextTick(() => {

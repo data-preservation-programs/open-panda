@@ -6,14 +6,15 @@ const state = () => ({
   datasetList: false,
   metadata: {
     page: 1,
+    limit: 12,
     totalPages: 1,
     count: false
   },
   loading: false,
   basicStats: false,
   filters: false,
-  sort: false,
-  limit: false,
+  sortOptions: false,
+  limitOptions: false,
   layout: 'grid'
 })
 
@@ -25,8 +26,8 @@ const getters = {
   loading: state => state.loading,
   basicStats: state => state.basicStats,
   filters: state => state.filters,
-  sort: state => state.sort,
-  limit: state => state.limit,
+  sortOptions: state => state.sortOptions,
+  limitOptions: state => state.limitOptions,
   layout: state => state.layout
 }
 
@@ -38,8 +39,6 @@ const actions = {
     dispatch('setPage', { page: 1 })
     commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
     commit('SET_FILTERS', false)
-    commit('SET_SORT', false)
-    commit('SET_LIMIT', false)
     commit('SET_LAYOUT', 'grid')
   },
   // //////////////////////////////////////////////////////////// getDatasetList
@@ -49,8 +48,8 @@ const actions = {
       const page = getters.metadata.page
       const query = route.query
       const search = query.search
-      const limit = getters.limit[query.limit || 0].value
-      const sort = getters.sort[query.sort || 0].value
+      const limit = query.limit || getters.metadata.limit
+      const sort = query.sort
       const filters = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
@@ -87,8 +86,8 @@ const actions = {
       const response = await this.$axiosAuth.get('/get-static-file', {
         params: { path: 'filters.json' }
       })
-      commit('SET_SORT', response.data.payload.sort)
-      commit('SET_LIMIT', response.data.payload.limit)
+      commit('SET_SORT_OPTIONS', response.data.payload.sort)
+      commit('SET_LIMIT_OPTIONS', response.data.payload.limit)
       commit('SET_FILTERS', response.data.payload.filters)
     } catch (e) {
       console.log('========================== [Store Action: datasets/getSort]')
@@ -99,10 +98,6 @@ const actions = {
   // //////////////////////////////////////////////////////////// setDatasetList
   setDatasetList ({ commit }, payload) {
     commit('SET_DATASET_LIST', payload)
-  },
-  // ////////////////////////////////////////////////////////////////// setLimit
-  setLimit ({ commit }, payload) {
-    commit('SET_LIMIT', payload)
   },
   // ///////////////////////////////////////////////////////////////// setLayout
   setLayout ({ commit }, payload) {
@@ -138,8 +133,8 @@ const actions = {
 // -----------------------------------------------------------------------------
 const mutations = {
   SET_DATASET_LIST (state, payload) {
-    const metadata = payload.metadata
     state.datasetList = payload.datasetList
+    const metadata = payload.metadata
     if (metadata) {
       state.metadata.totalPages = metadata.totalPages
       state.metadata.count = metadata.count
@@ -147,9 +142,6 @@ const mutations = {
   },
   SET_PAGE (state, payload) {
     state.metadata.page = payload.page
-  },
-  SET_LIMIT (state, limit) {
-    state.limit = limit
   },
   SET_LOADING_STATUS (state, payload) {
     state.loading = payload.status
@@ -160,8 +152,11 @@ const mutations = {
   SET_FILTERS (state, filters) {
     state.filters = filters
   },
-  SET_SORT (state, sort) {
-    state.sort = sort
+  SET_SORT_OPTIONS (state, options) {
+    state.sortOptions = options
+  },
+  SET_LIMIT_OPTIONS (state, options) {
+    state.limitOptions = options
   },
   SET_LAYOUT (state, layout) {
     state.layout = layout

@@ -57,7 +57,7 @@ export default {
    *
    * @updateValue - triggers when field has changed
    * :value - is the value of the input
-   * :reset - changeable boolean that, if true, resets field to defaultValue
+   * :resetGroupId - if this prop matches ID passed to 'resetFormFields' global bus event, then reset the field value
    */
   props: {
     scaffold: {
@@ -73,10 +73,10 @@ export default {
       type: String,
       required: true
     },
-    reset: {
-      type: Boolean,
+    resetGroupId: {
+      type: String,
       required: false,
-      default: false
+      default: ''
     },
     groupId: {
       type: String,

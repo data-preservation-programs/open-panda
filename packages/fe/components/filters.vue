@@ -21,7 +21,7 @@
         <div
           slot-scope="{ applyFilter, empty, clearFilters, isSelected }"
           class="button-list">
-  
+
           <div class="filters-label">
             <span>{{ item }}</span>
             <ButtonFilters
@@ -35,7 +35,7 @@
           <ButtonFilters
             v-for="(item2, index2) in filters[key]"
             :key="`${filters[key]}-${index2}`"
-            :selected="isSelected(item2.value)"
+            :selected="isSelected(index2)"
             class="filter-button"
             @clicked="applyFilter(index2)">
             {{ item2.label }}

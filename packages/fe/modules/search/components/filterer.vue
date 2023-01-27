@@ -1,7 +1,6 @@
 <script>
 // ===================================================================== Imports
 import { mapActions } from 'vuex'
-import { concat } from 'lodash'
 
 // ====================================================================== Export
 export default {
@@ -27,7 +26,7 @@ export default {
       required: false,
       default: true
     },
-    // for filters with boolean value
+    // for filters with boolean or single-select value
     // ie. checkboxes or select
     isSingleOption: {
       type: Boolean,
@@ -52,10 +51,11 @@ export default {
     switch (action) {
       // case 'emit' : selected = this.filterValue; break
       // case 'store' : selected = this.$store.getters[this.storeGetter]; break
-      case 'query' : selected = this.getCurrentFilters(this.$route); break
+      case 'query' : selected = this.getCurrentFilterIndexes(this.$route); break
     }
     return {
-      selected
+      selected,
+      originalSelected: selected // lock in the filters on page load
     }
   },
 
@@ -67,7 +67,7 @@ export default {
 
   watch: {
     '$route' (route) {
-      this.selected = this.getCurrentFilters(route)
+      this.selected = this.getCurrentFilterIndexes(route)
     }
   },
 
@@ -80,35 +80,35 @@ export default {
       recordFilter: 'search/recordFilter'
     }),
     /**
-     * returns array of filters
-     * isSingleOption filters will return the key
+     * returns array of filter indexes
      *
      * route example: /?new=true&region=us,ca
-     * returns: ['new', 'us', 'ca']
+     * returns: [0] and [2, 6]
      * @param {*} route
      */
-    getCurrentFilters (route) {
-      const isSingleOptionArr = []
-      let isMultiOptionArr = []
-      const query = route.query[this.filterKey]
-      if (query) {
-        if (this.isSingleOption) {
-          isSingleOptionArr.push(this.filterKey)
-        } else {
-          isMultiOptionArr = query.split(',')
-        }
-      }
-      return concat(isSingleOptionArr, isMultiOptionArr)
+    getCurrentFilterIndexes (route) {
+      const isSingleOption = this.isSingleOption
+      let query = route.query[this.filterKey]
+      if (!query) { return [] }
+      query = isSingleOption ? [query] : query.split(',')
+      const filters = this.filters
+      return query.reduce((acc, item) => {
+        acc.push(filters.findIndex((filter) => {
+          return item === `${filter.value}`
+        }))
+        return acc
+      }, [])
     },
     applyFilter (index) {
       const action = this.action
-      const value = `${this.filters[index].value}`
+      const value = index === -1 ? undefined : `${this.filters[index].value}`
       this.$filter.toggleTerm({
         instance: this,
         action,
         storeAction: this.storeAction,
         value,
-        filterKey: this.filterKey
+        filterKey: this.filterKey,
+        isSingleOption: this.isSingleOption
       })
       this.$emit('filterApplied')
       // if (action === 'emit') {
@@ -119,8 +119,8 @@ export default {
       //   // this.$search.applyFilter(filter)
       // }
     },
-    isSelected (value) {
-      return this.selected.includes(`${value}`)
+    isSelected (index) {
+      return this.selected.includes(index)
     },
     clearFilters () {
       this.$filter.clear(this.filterKey)
@@ -128,8 +128,11 @@ export default {
   },
 
   render () {
+    const isSingleOption = this.isSingleOption
+    const originalSelected = this.originalSelected
     return this.$scopedSlots.default({
       applyFilter: this.applyFilter,
+      originalSelected: isSingleOption ? originalSelected[0] : originalSelected,
       selected: this.selected,
       isSelected: this.isSelected,
       clearFilters: this.clearFilters,

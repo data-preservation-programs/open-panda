@@ -10,24 +10,37 @@ import CloneDeep from 'lodash/cloneDeep'
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
+// =========================================================== getNullStateValue
+const getNullStateValue = (type) => {
+  let value
+  switch (type) {
+    case 'checkbox' : value = -1; break
+    case 'select' : value = -1; break
+    case 'range' : value = scaffold.min; break
+    default : value = ''; break
+  }
+  return value
+}
+
 // ==================================================================== getValue
-const getValue = (scaffold, form) => {
+const getValue = (scaffold, form, resetTo) => {
   const dualValueFields = ['select', 'radio', 'checkbox']
   const type = scaffold.type
   let value = form ? form.scaffold[scaffold.formKey] : undefined // First grab the value found in the form
-  if (scaffold.hasOwnProperty('defaultValue')) { // If a default value is set in the field scaffold, grab that instead
+  // If this is just a reset to the nullState, then grab and return the null state
+  if (resetTo && resetTo === 'nullState') {
+    return getNullStateValue(type)
+  }
+  // If a default value is set in the field scaffold, grab that instead (both for regular getValue calls as well as if it's a reset)
+  if (scaffold.hasOwnProperty('defaultValue') && scaffold.defaultValue !== undefined) {
     const defaultValue = scaffold.defaultValue
     value = defaultValue
     if ((dualValueFields.includes(type)) && typeof defaultValue === 'string') {
       value = scaffold.options.findIndex(option => option.label === defaultValue)
     }
-  } else { // Otherwise set a default value
-    switch (type) {
-      case 'checkbox' : value = false; break
-      case 'select' : value = -1; break
-      case 'range' : value = scaffold.min; break
-      default : value = ''; break
-    }
+  // Otherwise set a null state default value
+  } else {
+    value = getNullStateValue(type)
   }
   return value
 }
@@ -239,9 +252,9 @@ const Field = (app, store, id) => {
     },
 
     // =================================================================== reset
-    reset () {
+    reset (resetTo) {
       const form = store.getters['form/forms'].find(form => form.id === formId)
-      const value = getValue(scaffold, form)
+      const value = getValue(scaffold, form, resetTo)
       this.update({
         value,
         originalValue: value,

@@ -50,11 +50,6 @@ export default {
   },
 
   watch: {
-    '$route' (route) {
-      if (route.query.search === undefined && this.action === 'query') {
-        this.value = ''
-      }
-    },
     value () {
       this.debounce()
     }

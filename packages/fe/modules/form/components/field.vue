@@ -17,10 +17,10 @@ export default {
       type: String,
       required: true
     },
-    reset: {
-      type: Boolean,
+    resetGroupId: {
+      type: String,
       required: false,
-      default: false
+      default: ''
     },
     groupId: {
       type: String,
@@ -94,11 +94,6 @@ export default {
       if (this.validateOnEntry) {
         this.$field(this.id).validate()
       }
-    },
-    reset (reset) {
-      if (reset) {
-        this.$field(this.id).reset()
-      }
     }
   },
 
@@ -108,6 +103,21 @@ export default {
     } else {
       await this.$field(this.id).update({ validate: true })
     }
+  },
+
+  mounted () {
+    /**
+      * This event is emitted in @/modules/search/plugins/index.js in the
+      * $clearSearchFilterSortAndLimit helper
+      * @param {object} payload contains id and resetTo keys
+      *  @param {string} payload.id If the field.vue prop (resetGroupId) matches this ID, then it will be reset
+      *  @param {string} payload.resetTo 'nullState' (nothing selected) or 'defaultValue' (back to default value as often set in JSON)
+      */
+    this.$nuxt.$on('resetFormFields', (payload) => {
+      if (this.resetGroupId === payload.id) {
+        this.$field(this.id).reset(payload.resetTo)
+      }
+    })
   },
 
   async beforeDestroy () {
