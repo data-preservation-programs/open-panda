@@ -335,6 +335,7 @@ export default {
       margin-top: toRem(90);
       @include medium {
         margin-left: 0;
+        margin-top: toRem(20);
       }
     }
   }
@@ -364,7 +365,10 @@ export default {
 
 .filter-heading,
 .filter-row1 {
-  margin-bottom: toRem(20)
+  margin-bottom: toRem(20);
+  @include mini {
+        margin-bottom: toRem(10);
+      }
 }
 
 .filter-row2-mobile {
@@ -374,7 +378,7 @@ export default {
   }
   .datasets-checkbox {
     @include mini {
-      margin-bottom: toRem(20);
+      margin-bottom: toRem(10);
     }
   }
 }
@@ -395,7 +399,7 @@ export default {
         max-width: none;
       }
       @include mini {
-        margin-bottom: toRem(20);
+        margin-bottom: toRem(10);
       }
     }
   }

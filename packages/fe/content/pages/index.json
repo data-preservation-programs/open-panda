@@ -16,7 +16,7 @@
       "col_1": {
         "type": "custom",
         "cols": {
-          "num": "col-5_md-12",
+          "num": "col-5_md-12_lg-first_md-last",
           "push_left": "",
           "push_right": ""
         },
@@ -43,7 +43,7 @@
       "col_2": {
         "type": "custom",
         "cols": {
-          "num": "col-7_md-12",
+          "num": "col-7_md-12_lg-last_md-first",
           "push_left": "",
           "push_right": ""
         },
