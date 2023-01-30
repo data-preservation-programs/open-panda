@@ -16,7 +16,8 @@
           type: 'nav',
           selected: isRouteCurrent(link.href ? link.href : null),
           disabled: typeof link.href === 'undefined' || link.href === '',
-          url: link.href
+          url: link.href,
+          tooltip: link.tooltip || ''
         }" />
     </nav>
 

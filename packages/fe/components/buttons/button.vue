@@ -8,6 +8,8 @@
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
+    <div v-if="button.tooltip" class="tooltip">
+      {{ button.tooltip }}</div>
     <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
   </component>
 </template>
@@ -77,6 +79,34 @@ export default {
         transform: rotate(0);
       }
     }
+    .tooltip {
+      display: block;
+    }
+  }
+  .tooltip {
+    background-color: $rangoonGreen;
+    padding: toRem(5) toRem(8) toRem(7) toRem(8);
+    border-radius: toRem(10);
+    color: white;
+    top: calc(100% - 7px);
+    font-size: toRem(10);
+    display: none;
+    @include fontWeight_Medium;
+    position: absolute;
+    line-height: 1;
+    width: max-content;
+    &:before {
+      width: 0;
+      height: 0;
+      border-top: toRem(5) solid transparent;
+      border-bottom: toRem(5) solid transparent;
+      border-right: toRem(5) solid $rangoonGreen;
+      content: '';
+      position: absolute;
+      top: toRem(-7);
+      left: calc(50% - 2.5px);
+      transform: rotate(90deg);
+    }
   }
 }
 
@@ -117,7 +147,7 @@ export default {
       display: block;
     }
   }
-  &[disabled] {
+  &[disabled] .text {
     opacity: 0.7;
   }
 }
