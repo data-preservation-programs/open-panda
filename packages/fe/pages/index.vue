@@ -338,6 +338,11 @@ export default {
       }
     }
   }
+  [data-block-id="col_1"] {
+    .image-block {
+      margin-top: -10%;
+    }
+  }
 }
 
 .pagination {

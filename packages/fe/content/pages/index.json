@@ -14,12 +14,30 @@
       "id": "home-hero",
       "grid": [],
       "col_1": {
-        "type": "image_block",
-        "src": "/images/index-hero-left.png",
+        "type": "custom",
         "cols": {
           "num": "col-5_md-12",
           "push_left": "",
           "push_right": ""
+        },
+        "customizations": {
+          "ticker": {
+            "name": "CategoryTicker",
+            "props": {
+              "block": {
+                "image": "/images/index-hero-left.png",
+                "message": "Search categories like"
+              }
+            }
+          },
+          "image2": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/index-hero-left2.png"
+              }
+            }
+          }
         }
       },
       "col_2": {
@@ -49,14 +67,6 @@
                   "text": "About OpenPanda",
                   "url": "/about"
                 }]
-              }
-            }
-          },
-          "ticker": {
-            "name": "CategoryTicker",
-            "props": {
-              "block": {
-                "message": "Search categories like"
               }
             }
           }

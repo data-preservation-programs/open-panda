@@ -1,5 +1,6 @@
 <template>
   <div class="category-ticker">
+    <img :src="block.image" class="img" />
     <Filterer
       filter-key="categories"
       :filters="filters.categories">
@@ -95,10 +96,13 @@ export default {
   display: flex;
   justify-content: center;
   width: 100%;
+  position: relative;
 }
 
 .text-wrapper {
   display: flex;
+  position: absolute;
+  bottom: 20%;
 }
 
 .ticker {
