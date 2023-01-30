@@ -4,10 +4,12 @@
     :to="to"
     :href="href"
     :target="target"
-    :class="[`button type__${button.type || 'default'} ${button.selected ? 'selected' : ''}`]"
+    :class="[`button type__${button.type || ''} ${button.selected ? 'selected' : ''}`]"
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
+    <div v-if="button.tooltip" class="tooltip">
+      {{ button.tooltip }}</div>
     <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
   </component>
 </template>
@@ -40,7 +42,7 @@ export default {
 
   computed: {
     tag () {
-      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) : 'div'
+      return this.button && this.button.url ? this.$GetTagBasedOnUrl(this.button.url) : 'button'
     },
     target () {
       return this.button && this.button.target ? this.button.target : this.$GetTargetBasedOnUrl(this.button.url)
@@ -77,15 +79,42 @@ export default {
         transform: rotate(0);
       }
     }
+    .tooltip {
+      display: block;
+    }
+  }
+  .tooltip {
+    background-color: $rangoonGreen;
+    padding: toRem(5) toRem(8) toRem(7) toRem(8);
+    border-radius: toRem(10);
+    color: white;
+    top: calc(100% - 7px);
+    font-size: toRem(10);
+    display: none;
+    @include fontWeight_Medium;
+    position: absolute;
+    line-height: 1;
+    width: max-content;
+    &:before {
+      width: 0;
+      height: 0;
+      border-top: toRem(5) solid transparent;
+      border-bottom: toRem(5) solid transparent;
+      border-right: toRem(5) solid $rangoonGreen;
+      content: '';
+      position: absolute;
+      top: toRem(-7);
+      left: calc(50% - 2.5px);
+      transform: rotate(90deg);
+    }
   }
 }
 
 .type__nav {
   font-family: $font_Secondary;
   @include fontWeight_Bold;
-  @include fontSize_16;
   line-height: leading(30, 16);
-  padding: toRem(5) toRem(20) toRem(10) toRem(20);
+  padding: toRem(5) 0.8vw toRem(10) 0.8vw;
   border: 2px solid transparent;
   border-top-right-radius: toRem(8);
   border-bottom-left-radius: toRem(8);
@@ -106,8 +135,10 @@ export default {
   @include large {
     padding: toRem(5) toRem(10);
   }
-  &:hover {
-    border-color: white;
+  &:not([disabled]) {
+    &:hover {
+      border-color: white;
+    }
   }
   &.selected {
     background-color: white;
@@ -116,7 +147,7 @@ export default {
       display: block;
     }
   }
-  &[disabled] {
+  &[disabled] .text {
     opacity: 0.7;
   }
 }
@@ -160,5 +191,11 @@ export default {
 
 .type__outline {
   border: 1px solid $rangoonGreen;
+  padding: toRem(7) toRem(15);
+  border-radius: toRem(20);
+  &:hover {
+    background-color: $athensGray;
+    color: $rangoonGreen;
+  }
 }
 </style>

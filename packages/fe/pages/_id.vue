@@ -220,6 +220,7 @@ export default {
   },
 
   async asyncData ({ store, route, error }) {
+    await store.dispatch('datasets/getBasicStats')
     const datasetExists = await store.dispatch('dataset/getDataset', { route })
     if (!datasetExists) { return error('Dataset could not be found.') }
     return { datasetExists }

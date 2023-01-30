@@ -53,6 +53,20 @@ $duration: 300ms;
   margin-right: 0.5625rem;
 }
 
+@mixin circleBorder {
+  width: 2.1875rem;
+  height: 2.1875rem;
+  border-radius: 50%;
+  border: solid 1px #DDDFE3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  path {
+    fill: $rangoonGreen;
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////// Mixins
 // =============================================================================
 // --------------------------------------------------------------------- Styling

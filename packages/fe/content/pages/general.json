@@ -29,7 +29,8 @@
       },
       {
         "href": "",
-        "label": "Login"
+        "label": "Login",
+        "tooltip": "coming soon"
       }
     ]
   },
@@ -89,6 +90,7 @@
   },
   "filterPanel": {
     "labels": {
+      "buttonText": "Filters",
       "add": "Add Filters",
       "search": "Search",
       "clear": "Clear",

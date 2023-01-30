@@ -1,12 +1,10 @@
 <template>
   <header class="grid-middle-center-spaceBetween-noGutter">
-    <Searchbar
-      placeholder="Search datasets"
-      theme="solid" />
-    <Filters />
+    <Filters open-direction="right" :show-search="true" />
 
     <nuxt-link to="/" class="logo-link">
-      <SiteLogo />
+      <SiteLogo class="logo-big" />
+      <SiteLogoSmall class="logo-small" />
     </nuxt-link>
 
     <nav>
@@ -18,7 +16,8 @@
           type: 'nav',
           selected: isRouteCurrent(link.href ? link.href : null),
           disabled: typeof link.href === 'undefined' || link.href === '',
-          url: link.href
+          url: link.href,
+          tooltip: link.tooltip || ''
         }" />
     </nav>
 
@@ -36,7 +35,7 @@ import { mapGetters } from 'vuex'
 
 import Button from '@/components/buttons/button'
 import SiteLogo from '@/components/icons/logo'
-import Searchbar from '@/components/searchbar'
+import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
 
 // ====================================================================== Export
@@ -46,7 +45,7 @@ export default {
   components: {
     Button,
     SiteLogo,
-    Searchbar,
+    SiteLogoSmall,
     Filters
   },
 
@@ -88,6 +87,9 @@ header {
 }
 
 :deep(.searchbar) {
+  @include large {
+    width: toRem(210);
+  }
   @include medium {
     display: none;
   }
@@ -98,25 +100,50 @@ header {
     display: none;
   }
   > * {
-    margin-right: toRem(10);
-    @include large {
-      margin-right: toRem(5);
-    }
+    margin-right: 0.4vw;
     &:last-child {
       margin-right: 0;
     }
   }
 }
 
+@include large {
+  :deep(.button-filter span) {
+    display: none;
+  }
+  :deep(.button-filter .icon) {
+    margin-right: 0 !important;
+  }
+}
+
 .logo-link {
+  width: 10vw;
+  @include large {
+    width: 4vw;
+  }
+  @include medium {
+    width: toRem(121);
+  }
   svg {
     width: 100%;
   }
-  @include large {
-    width: toRem(160);
+  .logo-small {
+    display: none;
+    @include large {
+      display: inline-block;
+    }
+    @include medium {
+      display: none;
+    }
   }
-  @include medium {
-    width: toRem(120);
+  .logo-big {
+    display: inline-block;
+    @include large {
+      display: none;
+    }
+    @include medium {
+      display: inline-block;
+    }
   }
 }
 

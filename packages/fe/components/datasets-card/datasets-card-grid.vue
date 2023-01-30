@@ -5,7 +5,7 @@
 
       <!-- heading -->
       <div class="card-heading grid-noGutter">
-        <div class="col-12 title">
+        <div class="col-12 title" :title="data.title">
           {{ data.name }}
         </div>
       </div>
@@ -20,7 +20,7 @@
             {{ label }}
           </div>
           <div class="card-data col-5">
-            {{ (key === 'data_size') ? $formatBytes(data[key]) : data[key] || '-' }}
+            {{ data[key] || '-' }}
           </div>
         </div>
       </div>
@@ -137,16 +137,6 @@ export default {
   border-top: 1px solid $athensGray;
   .card-details-row {
     margin-bottom: toRem(12);
-  }
-  .card-data {
-    @include caption;
-    @include fontWeight_Bold;
-  }
-  .caption {
-    margin-right: toRem(12);
-    &.caption-bold {
-      @include fontWeight_Medium;
-    }
   }
 }
 </style>

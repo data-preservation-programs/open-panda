@@ -198,9 +198,9 @@ export default {
 
 .theme__solid {
   background-color: white;
-  border-radius: toRem(30) toRem(30) toRem(30) toRem(2);
-  @include shadow3;
+  border-radius: toRem(30) 0 0 toRem(2);
   .input {
+    height: toRem(50);
     padding: toRem(15) toRem(15) toRem(15) toRem(22);
   }
 }

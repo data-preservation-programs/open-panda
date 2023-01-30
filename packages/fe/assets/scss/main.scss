@@ -551,8 +551,40 @@ p, .p1 {
   @include fileItem;
 }
 
+.circle-border {
+  @include circleBorder;
+}
+
 .flex-end {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+// index page cards global for both layouts
+.card-details {
+  .card-data {
+    @include caption;
+    @include fontWeight_Bold;
+  }
+  .caption {
+    margin-right: toRem(12);
+    &.caption-bold {
+      @include fontWeight_Medium;
+    }
+  }
+}
+
+.show-desktop-only {
+  display: flex;
+  @include medium {
+    display: none;
+  }
+}
+
+.show-mobile-only {
+  display: none;
+  @include medium {
+    display: flex;
+  }
 }

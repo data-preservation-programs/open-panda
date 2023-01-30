@@ -71,9 +71,10 @@ const actions = {
       const payload = response.data.payload
       const datasetListOriginal = CloneDeep(payload.results)
       const datasetList = datasetListOriginal
-      // modify file_ext string to array
       datasetList.forEach((item) => {
+        // modify file_ext string to array and only return 3
         item.file_extensions = item.file_extensions.split(',').map(ext => ext.replaceAll(' ', ''))
+        item.data_size = this.$formatBytes(item.data_size)
       })
       dispatch('setDatasetList', {
         datasetList,
@@ -126,7 +127,9 @@ const actions = {
   // ///////////////////////////////////////////////////////////// getBasicStats
   async getBasicStats ({ commit, getters, dispatch }) {
     try {
-      const response = await this.$axiosAuth.get('/get-basic-stats')
+      const response = await this.$axiosAuth.get('/get-cached-file', {
+        params: { path: 'basic-stats.json' }
+      })
       commit('SET_BASIC_STATS', response.data.payload)
     } catch (e) {
       console.log('==================== [Store Action: datasets/getBasicStats]')

@@ -196,16 +196,7 @@ export default {
     width: toRem(112);
   }
   .slider-button {
-    width: 2.1875rem;
-    height: 2.1875rem;
-    border-radius: 50%;
-    border: solid 1px #DDDFE3;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    path {
-      fill: $rangoonGreen;
-    }
+    @include circleBorder;
   }
   .previous-button {
     svg {
