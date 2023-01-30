@@ -152,7 +152,7 @@
 
     <!-- ============================================================= cards -->
     <div :class="`selected-layout-${layout}`">
-      <div class="grid-4-equalHeight_md-2_sm-1 layout-grid">
+      <div class="grid-4-equalHeight_lg-3_md-2_sm-1 layout-grid">
         <DatasetsCardGrid
           v-for="(data, index) in datasetList"
           :key="`dataset-${index}`"

@@ -106,16 +106,18 @@ export default {
 .card-inner {
   padding: toRem(25);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   .card-img {
     background-color: $tasman;
     height: toRem(100);
     width: toRem(100);
     border-radius: toRem(2);
     object-fit: cover;
+    flex-shrink: 0;
   }
   .card-details {
     padding-left: toRem(60);
+    padding-right: toRem(20);
     flex-grow: 1;
     .title {
       @include fontSize_20;
@@ -130,6 +132,7 @@ export default {
   }
   .card-button {
     flex-shrink: 0;
+    margin-top: auto;
   }
 }
 </style>
