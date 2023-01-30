@@ -83,9 +83,8 @@ export default {
 .type__nav {
   font-family: $font_Secondary;
   @include fontWeight_Bold;
-  @include fontSize_16;
   line-height: leading(30, 16);
-  padding: toRem(5) toRem(20) toRem(10) toRem(20);
+  padding: toRem(5) 0.8vw toRem(10) 0.8vw;
   border: 2px solid transparent;
   border-top-right-radius: toRem(8);
   border-bottom-left-radius: toRem(8);
@@ -106,8 +105,10 @@ export default {
   @include large {
     padding: toRem(5) toRem(10);
   }
-  &:hover {
-    border-color: white;
+  &:not([disabled]) {
+    &:hover {
+      border-color: white;
+    }
   }
   &.selected {
     background-color: white;

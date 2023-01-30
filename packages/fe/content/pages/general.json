@@ -29,7 +29,8 @@
       },
       {
         "href": "",
-        "label": "Login"
+        "label": "Login",
+        "tooltip": "coming soon"
       }
     ]
   },

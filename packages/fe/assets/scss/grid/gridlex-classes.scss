@@ -176,7 +176,7 @@
 @each $mq-key, $mq-value in $gl-mq-list {
   @include bp(#{$mq-key}) {
     [#{$gl-attributeName}*="#{$mq-key}-hidden"] {
-      display: none !important;
+      display: none;
     }
   }
 }
