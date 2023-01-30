@@ -121,12 +121,12 @@ header {
 }
 
 .hamburger {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   transition-duration: 150ms;
-  display: none;
   cursor: pointer;
   position: relative;
+  display: none;
   @include medium {
     display: block;
   }
@@ -135,13 +135,13 @@ header {
     transition-duration: 150ms;
     position: absolute;
     height: 3px;
-    width: 24px;
+    width: 20px;
     top: 10px;
     background-color: $rangoonGreen;
     &:before {
       transition-duration: 150ms;
       position: absolute;
-      width: 13px;
+      width: 20px;
       height: 3px;
       right: 0;
       background-color: $rangoonGreen;
@@ -151,8 +151,9 @@ header {
     &:after {
       transition-duration: 150ms;
       position: absolute;
-      width: 13px;
+      width: 20px;
       height: 3px;
+      left: 0;
       background-color: $rangoonGreen;
       content: "";
       top: 6px;
@@ -164,12 +165,12 @@ header {
       transition-duration: 150ms;
       background: transparent;
       will-change: transform;
-      &:before {
-        width: 24px;
+    &:before {
+        width: 20px;
         transform: rotateZ(45deg) scaleX(1.25) translate(4px, 4px);
       }
       &:after {
-        width: 24px;
+        width: 20px;
         transform: rotateZ(-45deg) scaleX(1.25) translate(3px, -4px);
       }
     }

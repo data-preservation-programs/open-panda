@@ -138,9 +138,18 @@ const GetFileFromDisk = async (path = false, parseJson = false) => {
 }
 
 // //////////////////////////////////////////////////////////// ParseQuerySearch
-const ParseQuerySearch = async (search = '') => {
+const ParseQuerySearch = (search = '') => {
   return new Promise((resolve) => {
     resolve(search.replace(/([.\-+|?*$<>!?=^{}[]()\\])/g, '\\$1'))
+  })
+}
+
+// ////////////////////////////////////////////////////////////// ParseQuerySort
+const ParseQuerySort = (sort) => {
+  return new Promise((resolve) => {
+    if (!sort) { resolve({}) }
+    const split = sort.split(',')
+    resolve({ [split[0]]: parseInt(split[1]) })
   })
 }
 
@@ -228,6 +237,7 @@ module.exports = {
   SecondsToHms,
   GetFileFromDisk,
   ParseQuerySearch,
+  ParseQuerySort,
   GenerateWebsocketClient,
   GetSocket,
   IsValidObjectId,

@@ -8,9 +8,9 @@
 
       <div class="checkbox-container">
         <input
-          :id="`checkbox-${id}-${index}`"
+          :id="`checkbox__${id}__${index}`"
           :checked="value === index"
-          :name="`checkbox-${id}`"
+          :name="`checkbox__${id}`"
           type="checkbox"
           class="checkbox"
           @input="updateValue(index)" />
@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <label :for="`checkbox-${id}-${index}`" class="label">
+      <label :for="`checkbox__${id}__${index}`" class="label">
         {{ option.label }}
       </label>
 
@@ -82,7 +82,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$dimension: 1.625rem;
+$dimension: 1.25rem;
 
 @keyframes shrink-bounce {
   0% { transform: scale(1); }
@@ -143,8 +143,7 @@ $dimension: 1.625rem;
   &:checked {
     + .checker {
       animation: shrink-bounce 150ms cubic-bezier(0.4, 0, 0.23, 1);
-      border-color: teal;
-      background-color: tomato;
+      border-color: $tasman;
       .icon-checkmark {
         animation: checkbox-check 75ms 200ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
       }
@@ -167,9 +166,8 @@ $dimension: 1.625rem;
   left: 0;
   width: $dimension;
   height: $dimension;
-  border: 2px solid teal;
-  border-radius: 0.625rem;
-  background-color: tomato;
+  border: 2px solid $tasman;
+  border-radius: 0.25rem;
   pointer-events: none;
   z-index: 5;
   transition: border-color 150ms, background-color 150ms, transform 150ms ease-out;
@@ -184,6 +182,6 @@ $dimension: 1.625rem;
 .label {
   font-weight: 400;
   cursor: pointer;
-  padding-left: 1rem;
+  padding-left: toRem(13);
 }
 </style>

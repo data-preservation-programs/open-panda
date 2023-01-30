@@ -9,6 +9,9 @@
 
       <div :class="['button-content', { hide: loadingForced || loading }]">
         <slot />
+        <span v-if="selected">
+          <IconClose class="close" />
+        </span>
       </div>
 
     </div>
@@ -19,6 +22,7 @@
 // ===================================================================== Imports
 import Button from '@/modules/button/components/button'
 import LoaderTripleDot from '@/components/spinners/triple-dot'
+import IconClose from '@/components/icons/close'
 
 // ====================================================================== Export
 export default {
@@ -26,30 +30,11 @@ export default {
 
   components: {
     Button,
-    LoaderTripleDot
+    LoaderTripleDot,
+    IconClose
   },
 
   props: {
-    tag: { // button, 'a' or nuxt-link
-      type: String,
-      required: false,
-      default: 'button'
-    },
-    to: {
-      type: [String, Boolean],
-      required: false,
-      default: false
-    },
-    target: {
-      type: [String, Boolean],
-      required: false,
-      default: false
-    },
-    loader: {
-      type: [String, Boolean],
-      required: false,
-      default: false
-    },
     loadingForced: { // overrides 'loader' prop
       type: Boolean,
       required: false,
@@ -64,6 +49,12 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    }
+  },
+
+  methods: {
+    imClicked (e) {
+      console.log(e)
     }
   }
 }
@@ -87,9 +78,22 @@ export default {
     background-color: $rangoonGreen;
     color: white;
   }
+  :deep(.close) {
+    margin-left: toRem(10);
+    path {
+      fill: white;
+    }
+  }
   &:hover {
     background-color: $athensGray;
     color: $rangoonGreen;
+    &:hover {
+      :deep(.close) {
+        path {
+          fill: $rangoonGreen;
+        }
+      }
+    }
   }
 }
 
@@ -125,4 +129,5 @@ export default {
     opacity: 0;
   }
 }
+
 </style>

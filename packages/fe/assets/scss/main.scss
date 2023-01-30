@@ -545,3 +545,14 @@ p, .p1 {
 *:focus-visible {
   @include focusBoxShadow;
 }
+
+// /////////////////////////////////////////////////////////////// Global styles
+.file-item {
+  @include fileItem;
+}
+
+.flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

@@ -219,6 +219,12 @@ export default {
     AccordionContent
   },
 
+  async asyncData ({ store, route, error }) {
+    const datasetExists = await store.dispatch('dataset/getDataset', { route })
+    if (!datasetExists) { return error('Dataset could not be found.') }
+    return { datasetExists }
+  },
+
   data () {
     const id = this.$route.params.id
     return {
@@ -226,10 +232,6 @@ export default {
       resize: false,
       mobile: false
     }
-  },
-
-  async fetch ({ store, route }) {
-    await store.dispatch('dataset/getDataset', { route })
   },
 
   // head () {
@@ -683,10 +685,7 @@ export default {
       &.file-types {
         flex-direction: row;
         .list-item {
-          line-height: leading(21, 14);
-          padding: 0.3125rem 0.625rem;
-          border-radius: 1.25rem;
-          background-color: #E7E9ED;
+          @include fileItem;
           margin-bottom: 0.5625rem;
           &:not(:last-child) {
             margin-right: 0.5625rem;

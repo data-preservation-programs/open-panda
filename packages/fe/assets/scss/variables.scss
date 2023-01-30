@@ -22,7 +22,6 @@ $gin: #EEF5F1;
 $rangoonGreen: #1B1F12;
 $emperor: #4F4F4F;
 $grayNurse: #F1F3EF;
-$lavenderGray: #C6C1DF;
 $tasman: #CED7C9;
 $fuscousGray: #51504B;
 $athensGray: #E7E9ED;
@@ -41,6 +40,18 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 // ------------------------------------------------------------------------ Misc
 $borderRadius: 1.25rem;
 $duration: 300ms;
+
+// ------------------------ file item - gray background that looks like a button
+@mixin fileItem() {
+  display: inline-block;
+  line-height: leading(21, 14);
+  padding: 0.3125rem 0.625rem;
+  border-radius: 1.25rem;
+  background-color: #E7E9ED;
+  @include fontWeight_Medium;
+  @include fontSize_14;
+  margin-right: 0.5625rem;
+}
 
 // ////////////////////////////////////////////////////////////////////// Mixins
 // =============================================================================

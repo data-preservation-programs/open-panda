@@ -1,7 +1,7 @@
 <template>
   <div class="field-container">
     <Field v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }" class="field-wrapper">
+      <div slot-scope="{ updateValue, field, type, validationMessage }" :class="`field-wrapper field-wrapper-${scaffold.type}`">
         <template v-if="field">
 
           <label v-if="scaffold.label" :for="fieldKey" class="field-label">
@@ -40,13 +40,6 @@ import FieldCheckbox from '@/components/form/fields/checkbox'
 import FieldSelect from '@/components/form/fields/select'
 
 // ====================================================================== Export
-
-/**
- * props:
- *
- * @updateValue - triggers when field has changed
- * :value - is the value of the input
- */
 export default {
   name: 'FieldContainer',
 
@@ -59,15 +52,17 @@ export default {
     FieldSelect
   },
 
+  /**
+   * props:
+   *
+   * @updateValue - triggers when field has changed
+   * :value - is the value of the input
+   * :resetGroupId - if this prop matches ID passed to 'resetFormFields' global bus event, then reset the field value
+   */
   props: {
     scaffold: {
       type: Object,
       required: true
-    },
-    value: {
-      type: [Object, String, Number, Boolean],
-      required: false,
-      default: false
     },
     formId: {
       type: [String, Boolean],
@@ -77,6 +72,11 @@ export default {
     fieldKey: {
       type: String,
       required: true
+    },
+    resetGroupId: {
+      type: String,
+      required: false,
+      default: ''
     },
     groupId: {
       type: String,
@@ -141,7 +141,6 @@ export default {
 // /////////////////////////////////////////////////////////////////////// Label
 ::v-deep .label {
   font-weight: 400;
-  @include fontSize_14;
   cursor: pointer;
   &.floating {
     position: absolute;
@@ -181,5 +180,18 @@ export default {
     margin-right: 0.0625rem;
     font-size: 100%;
   }
+}
+
+// custom
+.field-wrapper-select {
+  display: flex;
+  align-items: center;
+  .field-label {
+    margin-right: toRem(24);
+  }
+}
+
+.field-wrapper-checkbox {
+  @include fontSize_14;
 }
 </style>

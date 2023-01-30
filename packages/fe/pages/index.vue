@@ -1,67 +1,70 @@
 <template>
   <div :class="`page page-${tag}`">
-    <!-- hero -->
+    <!-- ============================================================== hero -->
     <BlockBuilder :sections="pageContent" />
 
-    <!-- filter heading -->
+    <!-- ==================================================== filter heading -->
     <div class="grid-noGutter-middle-spaceBetween filter-heading">
       <h5>{{ datasetContent.explore }}</h5>
     </div>
 
-    <!-- filter row1: searchbar, checkbox, sort, filter button -->
+    <!-- ============= filter row1: searchbar, checkbox, sort, filter button -->
     <div class="grid-noGutter-middle-spaceBetween filter-row1">
-      <div class="col-6">
-        <div class="grid-noGutter-middle-spaceBetween">
-          <div class="col-7">
-            <Searchbar
-              :placeholder="`Search ${count || '...'} datasets`"
-              :loading="dataLoading"
-              theme="line"
-              class="datasets-searchbar" />
+      <div class="col-6 datasets-search-c">
+        <Searchbar
+          :placeholder="`Search ${count || '...'} datasets`"
+          :loading="dataLoading"
+          theme="line"
+          class="datasets-searchbar" />
+        <Filterer
+          filter-key="fullyStored"
+          :is-single-option="true"
+          :filters="filters.fullyStored"
+          class="col-5 datasets-checkbox">
+          <div slot-scope="{ applyFilter, originalSelected }">
+            <FieldContainer
+              field-key="toggle_fully_stored"
+              reset-group-id="filters"
+              :scaffold="{
+                type: 'checkbox',
+                required: false,
+                options: [
+                  { label: 'Show only fully stored datasets' }
+                ],
+                defaultValue: originalSelected
+              }"
+              @updateValue="applyFilter" />
           </div>
-          <Filterer
-            filter-key="fullyStored"
-            :filters="filters.fullyStored"
-            :is-single-option="true"
-            class="col-5 datasets-checkbox">
-            <div slot-scope="{ applyFilter }">
-              <FieldContainer
-                field-key="toggle_fully_stored"
-                :scaffold="{
-                  type: 'checkbox',
-                  required: false,
-                  options: [
-                    { label: 'Show only fully stored datasets' }
-                  ]
-                }"
-                @updateValue="applyFilter(0)" />
-            </div>
-          </Filterer>
-        </div>
+        </Filterer>
       </div>
 
       <div class="col-6">
-        <Sorter :options="sortOptions">
-          <div slot-scope="{ apply }">
+        <Filterer
+          filter-key="sort"
+          :is-single-option="true"
+          :filters="sortOptions">
+          <div slot-scope="{ applyFilter, originalSelected }">
             <FieldContainer
               field-key="sort_by"
+              reset-group-id="filters"
               :scaffold="{
                 type: 'select',
                 required: false,
                 label: 'Sort by',
-                options: sortOptions
+                options: sortOptions,
+                defaultValue: originalSelected
               }"
-              @updateValue="apply" />
+              @updateValue="applyFilter" />
           </div>
-        </Sorter>
+        </Filterer>
         <Filters />
       </div>
     </div>
 
     <!-- filter row2: results count, selected filters, layout button selection -->
-    <div class="grid-middle-spaceBetween filter-row2">
+    <div class="grid-middle-noGutter-spaceBetween filter-row2">
       <div class="col-9">
-        {{ resultCount }}
+        <span class="datasets-results">{{ resultCount }}</span>
         <Filterer
           v-for="(item, key) in filterPanelData.keys"
           :key="key"
@@ -74,8 +77,8 @@
               v-for="(item2, index2) in filters[key]"
               :key="`${filters[key]}-${index2}`">
               <ButtonFilters
-                v-if="isSelected(item2.value)"
-                :selected="isSelected(item2.value)"
+                v-if="isSelected(index2)"
+                :selected="isSelected(index2)"
                 class="filter-button"
                 @clicked="applyFilter(index2)">
                 {{ item2.label }}
@@ -85,42 +88,46 @@
         </Filterer>
       </div>
 
-      <div class="col-3">
-        <button @click="$clearSearchFilterSortAndLimit">
-          clear all filters
+      <div class="col-3 flex-end">
+        <ButtonFilters @clicked="$clearSearchFilterSortAndLimit">
+          Clear all filters
+        </ButtonFilters>
+        <button :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']" @click="updateLayout('grid')">
+          <GridIcon />
         </button>
-        <button @click="updateLayout('grid')">
-          grid</button>
-        <button @click="updateLayout('list')">
-          list</button>
+        <button :class="['button-layout button-layout-list', layout === 'list' ? 'selected' : '']" @click="updateLayout('list')">
+          <ListIcon />
+        </button>
       </div>
     </div>
 
-    <!-- cards - no result -->
-    <div v-if="noResults" class="grid-middle-spaceBetween no-results">
-      <h3>{{ datasetContent.empty }}</h3>
+    <!-- ================================================= cards - no result -->
+    <div v-if="noResults" class="grid-middle-center no-results">
+      <h3 class="col-8">
+        {{ datasetContent.empty }}
+      </h3>
     </div>
 
-    <!-- cards -->
+    <!-- ============================================================= cards -->
     <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1 results">
       <DatasetsCardGrid
-        v-for="(data, index) in filteredDatasetList"
+        v-for="(data, index) in datasetList"
         :key="`dataset-${index}`"
         :data="data"
         :labels1="datasetContent.card.labels1"
         :labels2="datasetContent.card.labels2" />
     </div>
-    <div v-if="layout === 'list'" class="grid-1">
+    <div v-if="layout === 'list'" class="grid-1-equalHeight">
       <DatasetsCardList
-        v-for="(data, index) in filteredDatasetList"
+        v-for="(data, index) in datasetList"
         :key="`dataset-${index}`"
         :data="data"
         :labels1="datasetContent.card.labels1"
         :labels2="datasetContent.card.labels2" />
     </div>
 
-    <!-- pagination -->
-    <div class="grid-center-middle pagination">
+    <!-- ======================================================== pagination -->
+    <div class="grid-center-noGutter-middle pagination">
       <div class="col-5">
         <PaginationControls
           v-if="totalPages > 1"
@@ -129,10 +136,8 @@
           :loading="dataLoading"
           store-key="datasets" />
       </div>
-      <div class="col-5">
-        <ResultsPerPage
-          v-if="totalPages > 1"
-          :options="limit" />
+      <div class="col-5 flex-end">
+        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" />
       </div>
     </div>
 
@@ -153,8 +158,9 @@ import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
-import Sorter from '@/modules/search/components/sorter'
 import ButtonFilters from '@/components/buttons/button-filters'
+import GridIcon from '@/components/icons/grid'
+import ListIcon from '@/components/icons/list'
 
 // ====================================================================== Export
 export default {
@@ -169,14 +175,16 @@ export default {
     PaginationControls,
     FieldContainer,
     Filterer,
-    Sorter,
     ResultsPerPage,
-    ButtonFilters
+    ButtonFilters,
+    GridIcon,
+    ListIcon
   },
 
   data () {
     return {
-      tag: 'index'
+      tag: 'index',
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
     }
   },
 
@@ -194,11 +202,11 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
-      sortOptions: 'datasets/sort',
-      limit: 'datasets/limit',
+      sortOptions: 'datasets/sortOptions',
+      limitOptions: 'datasets/limitOptions',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
-      layout: 'datasets/layout'
+      datasetList: 'datasets/datasetList'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -208,12 +216,6 @@ export default {
     },
     pageContent () {
       return this.siteContent[this.tag].page_content
-    },
-    datasetList () {
-      return this.$store.getters['datasets/datasetList']
-    },
-    filteredDatasetList () {
-      return this.datasetList.filter(obj => !obj.new)
     },
     dataLoading () {
       return this.loading
@@ -260,9 +262,7 @@ export default {
     ...mapActions({
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
-      setLayout: 'datasets/setLayout',
-      getDatasetList: 'datasets/getDatasetList',
-      resetFormModel: 'form/resetFormModel'
+      getDatasetList: 'datasets/getDatasetList'
     }),
     stopLoading () {
       this.$nextTick(() => {
@@ -272,7 +272,8 @@ export default {
       })
     },
     updateLayout (layout) {
-      this.setLayout(layout)
+      this.$ls.set('layout', layout)
+      this.layout = layout
     }
   }
 }
@@ -300,7 +301,58 @@ export default {
 .filter-row1 {
   margin-bottom: toRem(20)
 }
+
 .filter-row2 {
   margin-bottom: toRem(55);
 }
+
+.filter-row1 {
+  .datasets-search-c {
+    display: flex;
+    align-items: center;
+    .datasets-searchbar {
+      max-width: toRem(400);
+      margin-right: toRem(17);
+    }
+  }
+  .datasets-sort {
+    margin-right: toRem(38);
+    :deep(.field-select) {
+      width: toRem(240);
+    }
+  }
+}
+
+.filter-row2 {
+  .datasets-results {
+    margin-right: toRem(20);
+  }
+}
+
+.button-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: toRem(10);
+  width: toRem(36);
+  height: toRem(36);
+  margin-left: toRem(10);
+  :deep(path) {
+    fill: $rangoonGreen;
+  }
+  &.selected {
+    background-color: $rangoonGreen;
+    :deep(path) {
+      fill: white;
+    }
+  }
+  &.button-layout-grid {
+    margin-left: toRem(20);
+  }
+}
+
+.no-results {
+  text-align: center;
+}
+
 </style>
