@@ -99,8 +99,7 @@
     "keys": {
       "categories": "Categories",
       "licenses": "Licenses",
-      "fileType": "File Type",
-      "location": "Location"
+      "fileTypes": "File Type"
     }
   }
 }

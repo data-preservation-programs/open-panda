@@ -14,9 +14,9 @@ MC.app.get('/get-cached-file', async (req, res) => {
     if (!file) {
       return SendData(res, 404, 'Can\'t find what you\'re looking for.')
     }
-    SendData(res, 200, 'Cached file retrieved succesfully', file)
+    SendData(res, 200, 'Static file retrieved succesfully', file)
   } catch (e) {
-    console.log('================================ [Endpoint: /get-static-file]')
+    console.log('================================ [Endpoint: /get-cached-file]')
     console.log(e)
     SendData(res, 404, 'Can\'t find what you\'re looking for.')
   }

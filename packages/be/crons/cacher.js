@@ -1,6 +1,8 @@
-/*
+/**
  *
- * ⏱️️ [Cron | every 5 mins] BasicStatsAggregator
+ * ⏱️️ [Cron | every 10 seconds] Cacher
+ *
+ * Caches data
  *
  */
 
@@ -41,6 +43,8 @@ try {
 // ///////////////////////////////////////////////////////////////////// Modules
 require('@Module_Database')
 require('@Module_Dataset')
+const { SecondsToHms } = require('@Module_Utilities')
+const GetFilters = require('@Module_Dataset/logic/get-filters')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
@@ -55,10 +59,12 @@ const getDatasetCount = async () => {
 }
 
 // ///////////////////////////////////////////////////////////////// writeToDisc
-const writeToDisc = async (data) => {
+const writeToDisc = async (files) => {
   try {
     return new Promise((resolve) => {
-      Fs.writeFileSync(`${MC.cacheRoot}/basic-stats.json`, JSON.stringify(data))
+      files.forEach((item) => {
+        Fs.writeFileSync(`${MC.cacheRoot}/${item.filename}`, JSON.stringify(item.data))
+      })
       resolve()
     })
   } catch (e) {
@@ -67,18 +73,29 @@ const writeToDisc = async (data) => {
   }
 }
 
-// //////////////////////////////////////////////////////// BasicStatsAggregator
-const BasicStatsAggregator = async () => {
-  console.log('🤖 Basic stats aggregation started')
+// ////////////////////////////////////////////////////////////////////// Cacher
+const Cacher = async () => {
+  console.log('🤖 Caching started')
   try {
+    const start = process.hrtime()[0]
     const count = await getDatasetCount()
-    await writeToDisc({
-      count__datasets__total: count
-    })
-    console.log('🏁 Basic stats aggregation complete')
+    await writeToDisc([
+      {
+        filename: 'basic-stats.json',
+        data: {
+          count__datasets__total: count
+        }
+      },
+      {
+        filename: 'filters.json',
+        data: await GetFilters()
+      }
+    ])
+    const end = process.hrtime()[0]
+    console.log(`🏁 Caching complete | took ${SecondsToHms(end - start)}`)
     process.exit(0)
   } catch (e) {
-    console.log('============================ [Function: BasicStatsAggregator]')
+    console.log('========================================== [Function: Cacher]')
     console.log(e)
     process.exit(0)
   }
@@ -86,4 +103,4 @@ const BasicStatsAggregator = async () => {
 
 // ////////////////////////////////////////////////////////////////// Initialize
 // -----------------------------------------------------------------------------
-MC.app.on('mongoose-connected', BasicStatsAggregator)
+MC.app.on('mongoose-connected', Cacher)
