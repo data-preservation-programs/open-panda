@@ -88,12 +88,14 @@ const actions = {
     }
   },
   // //////////////////////////////////////////////////////////////// getFilters
-  async getFilters ({ commit, getters, dispatch }) {
+  async getFilters ({ commit }) {
     try {
-      const response = await this.$axiosAuth.get('/get-filters')
-      commit('SET_SORT_OPTIONS', response.data.payload.sort)
-      commit('SET_LIMIT_OPTIONS', response.data.payload.limit)
-      commit('SET_FILTERS', response.data.payload.filters)
+      const filters = await this.dispatch('general/getCachedFile', 'filters.json')
+      if (filters) {
+        commit('SET_SORT_OPTIONS', filters.sort)
+        commit('SET_LIMIT_OPTIONS', filters.limit)
+        commit('SET_FILTERS', filters.filters)
+      }
     } catch (e) {
       console.log('======================= [Store Action: datasets/getFilters]')
       console.log(e)

@@ -1,8 +1,6 @@
-console.log('💡 [endpoint] /get-filters')
-
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-const { SendData, GetFileFromDisk } = require('@Module_Utilities')
+const { GetFileFromDisk } = require('@Module_Utilities')
 
 const MC = require('@Root/config')
 
@@ -44,23 +42,22 @@ const processFileExtensions = async (datasets) => {
 
 // //////////////////////////////////////////////////////////////////// Endpoint
 // -----------------------------------------------------------------------------
-MC.app.get('/get-filters', async (req, res) => {
+module.exports = async () => {
   try {
     const staticFilters = await GetFileFromDisk(`${MC.staticRoot}/filters.json`, true)
     const datasets = await MC.model.Dataset
       .find({})
       .select('categories file_extensions license location')
-    SendData(res, 200, 'Static file retrieved succesfully', {
+    return {
       sort: staticFilters.sort,
       limit: staticFilters.limit,
       filters: Object.assign({
         categories: await processCategories(datasets),
         fileTypes: await processFileExtensions(datasets)
       }, staticFilters.filters)
-    })
+    }
   } catch (e) {
-    console.log('==================================== [Endpoint: /get-filters]')
+    console.log('========================================= [Logic: GetFilters]')
     console.log(e)
-    SendData(res, 500, 'Something went wrong. Please try again.')
   }
-})
+}
