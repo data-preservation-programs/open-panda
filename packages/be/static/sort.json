@@ -1,6 +1,0 @@
-[
-  { "label": "Data Size ↑", "value": "data_size,1" },
-  { "label": "Data Size ↓", "value": "data_size,-1" },
-  { "label": "A-Z", "value": "name,1" },
-  { "label": "Z-A", "value": "name,-1" }
-]

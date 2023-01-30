@@ -46,18 +46,18 @@ const processFileExtensions = async (datasets) => {
 // -----------------------------------------------------------------------------
 MC.app.get('/get-filters', async (req, res) => {
   try {
-    const staticSort = await GetFileFromDisk(`${MC.staticRoot}/sort.json`, true)
-    const staticLimit = await GetFileFromDisk(`${MC.staticRoot}/limit.json`, true)
     const staticFilters = await GetFileFromDisk(`${MC.staticRoot}/filters.json`, true)
     const datasets = await MC.model.Dataset
       .find({})
       .select('categories file_extensions license location')
-    const filters = Object.assign({
-      categories: await processCategories(datasets),
-      fileTypes: await processFileExtensions(datasets)
-    }, staticFilters)
-    const data = { sort: staticSort, limit: staticLimit, filters }
-    SendData(res, 200, 'Static file retrieved succesfully', data)
+    SendData(res, 200, 'Static file retrieved succesfully', {
+      sort: staticFilters.sort,
+      limit: staticFilters.limit,
+      filters: Object.assign({
+        categories: await processCategories(datasets),
+        fileTypes: await processFileExtensions(datasets)
+      }, staticFilters.filters)
+    })
   } catch (e) {
     console.log('==================================== [Endpoint: /get-filters]')
     console.log(e)
