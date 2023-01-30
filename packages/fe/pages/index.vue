@@ -190,7 +190,7 @@ export default {
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
-    await store.dispatch('datasets/getSortLimitFilters')
+    await store.dispatch('datasets/getFilters')
     await store.dispatch('datasets/getDatasetList', { route })
   },
 
