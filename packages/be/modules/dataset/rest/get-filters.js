@@ -7,6 +7,8 @@ const { SendData, GetFileFromDisk } = require('@Module_Utilities')
 const MC = require('@Root/config')
 
 // /////////////////////////////////////////////////////////////////// Functions
+// -----------------------------------------------------------------------------
+// /////////////////////////////////////////////////////////// processCategories
 const processCategories = async (datasets) => {
   const nonUniqueCategories = datasets.map(dataset => dataset.categories).flat()
   const categories = [...new Set(nonUniqueCategories)].map(category => ({
@@ -27,6 +29,7 @@ const processCategories = async (datasets) => {
   return categories
 }
 
+// /////////////////////////////////////////////////////// processFileExtensions
 const processFileExtensions = async (datasets) => {
   let extensions = datasets.map(dataset => dataset.file_extensions)
   extensions = extensions.map(string => string.split(','))
@@ -43,24 +46,17 @@ const processFileExtensions = async (datasets) => {
 // -----------------------------------------------------------------------------
 MC.app.get('/get-filters', async (req, res) => {
   try {
-    const staticSorts = await GetFileFromDisk(`${MC.staticRoot}/sort.json`, true)
-    const staticLimits = await GetFileFromDisk(`${MC.staticRoot}/limit.json`, true)
-    const staticFilters = await GetFileFromDisk(`${MC.staticRoot}/fully-stored.json`, true)
-    const staticLicenses = await GetFileFromDisk(`${MC.staticRoot}/licenses.json`, true)
-    const staticLocation = await GetFileFromDisk(`${MC.staticRoot}/location.json`, true)
+    const staticSort = await GetFileFromDisk(`${MC.staticRoot}/sort.json`, true)
+    const staticLimit = await GetFileFromDisk(`${MC.staticRoot}/limit.json`, true)
+    const staticFilters = await GetFileFromDisk(`${MC.staticRoot}/filters.json`, true)
     const datasets = await MC.model.Dataset
       .find({})
       .select('categories file_extensions license location')
-    const categories = await processCategories(datasets)
-    const fileType = await processFileExtensions(datasets)
-    const filters = {
-        categories,
-        fileType,
-        fullyStored: staticFilters.fullyStored,
-        licenses: staticLicenses.licenses,
-        location: staticLocation.location
-      }
-    const data = { sort: staticSorts.sort, limit: staticLimits.limit, filters }
+    const filters = Object.assign({
+      categories: await processCategories(datasets),
+      fileTypes: await processFileExtensions(datasets)
+    }, staticFilters)
+    const data = { sort: staticSort, limit: staticLimit, filters }
     SendData(res, 200, 'Static file retrieved succesfully', data)
   } catch (e) {
     console.log('==================================== [Endpoint: /get-filters]')
