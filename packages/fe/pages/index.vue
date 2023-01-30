@@ -1,14 +1,14 @@
 <template>
   <div :class="`page page-${tag}`">
-    <!-- hero -->
+    <!-- ============================================================== hero -->
     <BlockBuilder :sections="pageContent" />
 
-    <!-- filter heading -->
+    <!-- ==================================================== filter heading -->
     <div class="grid-noGutter-middle-spaceBetween filter-heading">
       <h5>{{ datasetContent.explore }}</h5>
     </div>
 
-    <!-- filter row1: searchbar, checkbox, sort, filter button -->
+    <!-- ============= filter row1: searchbar, checkbox, sort, filter button -->
     <div class="grid-noGutter-middle-spaceBetween filter-row1">
       <div class="col-6 datasets-search-c">
         <Searchbar
@@ -18,37 +18,45 @@
           class="datasets-searchbar" />
         <Filterer
           filter-key="fullyStored"
-          :filters="filters.fullyStored"
           :is-single-option="true"
-          class="datasets-checkbox">
-          <div slot-scope="{ applyFilter }">
+          :filters="filters.fullyStored"
+          class="col-5 datasets-checkbox">
+          <div slot-scope="{ applyFilter, originalSelected }">
             <FieldContainer
               field-key="toggle_fully_stored"
+              reset-group-id="filters"
               :scaffold="{
                 type: 'checkbox',
                 required: false,
                 options: [
                   { label: 'Show only fully stored datasets' }
-                ]
+                ],
+                defaultValue: originalSelected
               }"
-              @updateValue="applyFilter(0)" />
+              @updateValue="applyFilter" />
           </div>
         </Filterer>
       </div>
-      <div class="col-6 flex-end">
-        <Sorter :options="sortOptions">
-          <div slot-scope="{ apply }" class="datasets-sort">
+
+      <div class="col-6">
+        <Filterer
+          filter-key="sort"
+          :is-single-option="true"
+          :filters="sortOptions">
+          <div slot-scope="{ applyFilter, originalSelected }">
             <FieldContainer
               field-key="sort_by"
+              reset-group-id="filters"
               :scaffold="{
                 type: 'select',
                 required: false,
                 label: 'Sort by',
-                options: sortOptions
+                options: sortOptions,
+                defaultValue: originalSelected
               }"
-              @updateValue="apply" />
+              @updateValue="applyFilter" />
           </div>
-        </Sorter>
+        </Filterer>
         <Filters />
       </div>
     </div>
@@ -69,8 +77,8 @@
               v-for="(item2, index2) in filters[key]"
               :key="`${filters[key]}-${index2}`">
               <ButtonFilters
-                v-if="isSelected(item2.value)"
-                :selected="isSelected(item2.value)"
+                v-if="isSelected(index2)"
+                :selected="isSelected(index2)"
                 class="filter-button"
                 @clicked="applyFilter(index2)">
                 {{ item2.label }}
@@ -93,13 +101,14 @@
       </div>
     </div>
 
-    <!-- cards - no result -->
+    <!-- ================================================= cards - no result -->
     <div v-if="noResults" class="grid-middle-center no-results">
       <h3 class="col-8">
-        {{ datasetContent.empty }}</h3>
+        {{ datasetContent.empty }}
+      </h3>
     </div>
 
-    <!-- cards -->
+    <!-- ============================================================= cards -->
     <div v-if="layout === 'grid'" class="grid-4-equalHeight_md-2_sm-1 results">
       <DatasetsCardGrid
         v-for="(data, index) in datasetList"
@@ -117,7 +126,7 @@
         :labels2="datasetContent.listLayout.labels2" />
     </div>
 
-    <!-- pagination -->
+    <!-- ======================================================== pagination -->
     <div class="grid-center-noGutter-middle pagination">
       <div class="col-5">
         <PaginationControls
@@ -149,7 +158,6 @@ import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
 import FieldContainer from '@/components/form/field-container'
 import Filterer from '@/modules/search/components/filterer'
-import Sorter from '@/modules/search/components/sorter'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
 import GridIcon from '@/components/icons/grid'
@@ -169,7 +177,6 @@ export default {
     PaginationControls,
     FieldContainer,
     Filterer,
-    Sorter,
     ResultsPerPage,
     ButtonFilters,
     GridIcon,
@@ -198,8 +205,8 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       filters: 'datasets/filters',
-      sortOptions: 'datasets/sort',
-      limitOptions: 'datasets/limit',
+      sortOptions: 'datasets/sortOptions',
+      limitOptions: 'datasets/limitOptions',
       loading: 'datasets/loading',
       metadata: 'datasets/metadata',
       datasetList: 'datasets/datasetList'

@@ -40,13 +40,6 @@ import FieldCheckbox from '@/components/form/fields/checkbox'
 import FieldSelect from '@/components/form/fields/select'
 
 // ====================================================================== Export
-
-/**
- * props:
- *
- * @updateValue - triggers when field has changed
- * :value - is the value of the input
- */
 export default {
   name: 'FieldContainer',
 
@@ -59,15 +52,17 @@ export default {
     FieldSelect
   },
 
+  /**
+   * props:
+   *
+   * @updateValue - triggers when field has changed
+   * :value - is the value of the input
+   * :resetGroupId - if this prop matches ID passed to 'resetFormFields' global bus event, then reset the field value
+   */
   props: {
     scaffold: {
       type: Object,
       required: true
-    },
-    value: {
-      type: [Object, String, Number, Boolean],
-      required: false,
-      default: false
     },
     formId: {
       type: [String, Boolean],
@@ -77,6 +72,11 @@ export default {
     fieldKey: {
       type: String,
       required: true
+    },
+    resetGroupId: {
+      type: String,
+      required: false,
+      default: ''
     },
     groupId: {
       type: String,

@@ -2,7 +2,8 @@
   <Button
     v-bind="$props"
     :class="['button-filters']"
-    v-on="$listeners">
+    v-on="$listeners"
+    @clicked="$emit('clicked')">
     <div slot-scope="{ loading }" class="inner-content">
 
       <LoaderTripleDot :class="{ show: loadingForced || loading }" />

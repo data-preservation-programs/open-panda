@@ -51,20 +51,28 @@ class Filter {
   // ================================================================ toggleTerm
   toggleTerm (term) {
     const filterKey = term.filterKey
+    const isSingleOption = term.isSingleOption
+    const value = term.value
     const current = this.query[filterKey]
     if (!current) {
-      this.query[term.filterKey] = term.value
+      this.query[term.filterKey] = value
     } else {
-      const selected = current.split(',')
-      const value = term.value
-      const index = selected.findIndex(item => item === value)
-      if (index !== -1) {
-        selected.splice(index, 1)
+      let join
+      // If single option, replace entire value of query param
+      if (isSingleOption) {
+        join = value
+      // Otherwise, add or remove to query param
       } else {
-        selected.push(value)
+        const selected = current.split(',')
+        const index = selected.findIndex(item => item === value)
+        if (!value || index !== -1) {
+          selected.splice(index, 1)
+        } else {
+          selected.push(value)
+        }
+        join = selected.join(',')
       }
-      const join = selected.join(',')
-      this.query[term.filterKey] = join.length === 0 ? undefined : join
+      this.query[term.filterKey] = (!join || join.length === 0) ? undefined : join
     }
     this.app.router.push({ query: this.query })
   }

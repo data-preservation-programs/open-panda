@@ -8,9 +8,9 @@
 
       <div class="checkbox-container">
         <input
-          :id="`checkbox-${id}-${index}`"
+          :id="`checkbox__${id}__${index}`"
           :checked="value === index"
-          :name="`checkbox-${id}`"
+          :name="`checkbox__${id}`"
           type="checkbox"
           class="checkbox"
           @input="updateValue(index)" />
@@ -19,7 +19,7 @@
         </div>
       </div>
 
-      <label :for="`checkbox-${id}-${index}`" class="label">
+      <label :for="`checkbox__${id}__${index}`" class="label">
         {{ option.label }}
       </label>
 

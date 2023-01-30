@@ -1,43 +1,25 @@
 /*
- * state.filters and state.searchValue are only used to maintain a list of all
- * registered filters and THE search term that is applied to the ?search=<VALUE>
- * query param. These records are primarily used to detect if the search and
- * filter states have changed and to present a "Clear All" type of button
+ * This store is only used to maintain a list of all registered filters and the
+ * search term that is applied to the ?search=<VALUE> query param. These records
+ * are primarily used to detect if the search and filter states have changed and
+ * to present a "Clear All" type of button
  */
 
 // /////////////////////////////////////////////////////////////////////// State
 // -----------------------------------------------------------------------------
 const state = {
-  searchValue: '',
-  sortValueIndex: 0,
-  limitValueIndex: 0,
   filters: []
 }
 
 // ///////////////////////////////////////////////////////////////////// Getters
 // -----------------------------------------------------------------------------
 const getters = {
-  searchValue: state => state.searchValue,
-  sortValueIndex: state => state.sortValueIndex,
-  limitValueIndex: state => state.limitValueIndex,
   filters: state => state.filters
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
 // -----------------------------------------------------------------------------
 const actions = {
-  // ///////////////////////////////////////////////////////// recordSearchValue
-  recordSearchValue ({ commit }, value) {
-    commit('RECORD_SEARCH_VALUE', value)
-  },
-  // ////////////////////////////////////////////////////// recordSortValueIndex
-  recordSortValueIndex ({ commit }, value) {
-    commit('RECORD_SORT_VALUE_INDEX', value)
-  },
-  // ///////////////////////////////////////////////////// recordLimitValueIndex
-  recordLimitValueIndex ({ commit }, value) {
-    commit('RECORD_LIMIT_VALUE_INDEX', value)
-  },
   // ////////////////////////////////////////////////////////////// recordFilter
   recordFilter ({ commit, getters }, filterKey) {
     if (!getters.filters.includes(filterKey)) {
@@ -53,15 +35,6 @@ const actions = {
 // /////////////////////////////////////////////////////////////////// Mutations
 // -----------------------------------------------------------------------------
 const mutations = {
-  RECORD_SEARCH_VALUE (state, value) {
-    state.searchValue = value
-  },
-  RECORD_SORT_VALUE_INDEX (state, value) {
-    state.sortValueIndex = value
-  },
-  RECORD_LIMIT_VALUE_INDEX (state, value) {
-    state.limitValueIndex = value
-  },
   RECORD_FILTER (state, filterKey) {
     state.filters.push(filterKey)
   },
