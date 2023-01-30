@@ -574,3 +574,17 @@ p, .p1 {
     }
   }
 }
+
+.show-desktop-only {
+  display: flex;
+  @include medium {
+    display: none;
+  }
+}
+
+.show-mobile-only {
+  display: none;
+  @include medium {
+    display: flex;
+  }
+}

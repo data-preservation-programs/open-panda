@@ -5,7 +5,7 @@
 
       <!-- heading -->
       <div class="card-heading grid-noGutter">
-        <div class="col-12 title">
+        <div class="col-12 title" :title="data.title">
           {{ data.name }}
         </div>
       </div>

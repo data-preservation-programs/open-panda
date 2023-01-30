@@ -71,8 +71,8 @@ const actions = {
       const payload = response.data.payload
       const datasetListOriginal = CloneDeep(payload.results)
       const datasetList = datasetListOriginal
-      // modify file_ext string to array
       datasetList.forEach((item) => {
+        // modify file_ext string to array and only return 3
         item.file_extensions = item.file_extensions.split(',').map(ext => ext.replaceAll(' ', ''))
         item.data_size = this.$formatBytes(item.data_size)
       })

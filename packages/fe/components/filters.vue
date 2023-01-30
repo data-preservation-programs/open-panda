@@ -178,6 +178,9 @@ export default {
   right: 0;
   top: 120%;
   z-index: 100;
+  @include medium {
+    width: 88vw;
+  }
   .direction-right & {
     left: 0;
     top: 135%;
