@@ -16,7 +16,7 @@
       <section class="grid-noGutter-spaceBetween">
         <h5>{{ filterPanelData.labels.add }}</h5>
         <button class="circle-border" @click="togglePanel">
-          <IconClose width="13" height="13" />
+          <IconClose :width="13" :height="13" />
         </button>
       </section>
       <Filterer
