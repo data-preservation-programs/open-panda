@@ -2,8 +2,7 @@
   <Button
     v-bind="$props"
     :class="['button-filters']"
-    v-on="$listeners"
-    @clicked="$emit('clicked')">
+    v-on="$listeners">
     <div slot-scope="{ loading }" class="inner-content">
 
       <LoaderTripleDot :class="{ show: loadingForced || loading }" />
@@ -50,6 +49,12 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    }
+  },
+
+  methods: {
+    imClicked (e) {
+      console.log(e)
     }
   }
 }
