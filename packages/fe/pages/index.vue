@@ -38,12 +38,12 @@
         </Filterer>
       </div>
 
-      <div class="col-6">
+      <div class="col-6 flex-end">
         <Filterer
           filter-key="sort"
           :is-single-option="true"
           :filters="sortOptions">
-          <div slot-scope="{ applyFilter, originalSelected }">
+          <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort">
             <FieldContainer
               field-key="sort_by"
               reset-group-id="filters"
@@ -55,7 +55,7 @@
                 defaultValue: originalSelected
               }"
               @updateValue="applyFilter" />
-          </div>
+          </span>
         </Filterer>
         <Filters />
       </div>
