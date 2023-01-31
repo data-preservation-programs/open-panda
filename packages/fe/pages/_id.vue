@@ -96,7 +96,7 @@
                         <div :class="['icon', stat.icon]"></div>
                         <div>
                           <h3 class="heading">
-                            {{ stat.data }}
+                            {{ stat.data ? stat.data : '-' }}
                           </h3>
                           <div class="label">
                             {{ stat.label }}
@@ -140,13 +140,25 @@
                               <div class="label">
                                 {{ item.label }}
                               </div>
-                              <div v-if="Array.isArray(item.value)" :class="['value', 'list', $slugify(item.label)]">
-                                <div v-for="value in item.value" :key="value" class="list-item">
-                                  {{ value }}
-                                </div>
+                              <div
+                                v-if="Array.isArray(item.value)"
+                                :class="['value', 'list', $slugify(item.label)]">
+                                <template v-if="item.value.length">
+                                  <div
+                                    v-for="value in item.value"
+                                    :key="value"
+                                    class="list-item">
+                                    {{ value }}
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  <div>-</div>
+                                </template>
                               </div>
-                              <div v-else :class="['value', $slugify(item.label)]">
-                                {{ item.value }}
+                              <div
+                                v-else
+                                :class="['value', $slugify(item.label)]">
+                                {{ item.value ? item.value : '-' }}
                               </div>
                             </div>
                           </div>
@@ -172,7 +184,9 @@
           class="col-10_xlg-12_md-10_sm-12"
           data-push-left="off-1_xlg-0_md-1_sm-0"
           data-push-right="off-1_xlg-0_md-1_sm-0">
+
           <CIDTable />
+
         </div>
       </div>
     </section>
@@ -276,10 +290,10 @@ export default {
       return this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-'
     },
     totalDataOnNetwork () {
-      return this.dataset.total_data_on_network ? this.dataset.total_data_on_network : '-'
+      return this.dataset.total_data_on_network
     },
     storageProviderCount () {
-      return this.dataset.storage_provider_count ? this.dataset.storage_provider_count : '-'
+      return this.dataset.storage_provider_count
     },
     stats () {
       const stats = [
@@ -290,20 +304,23 @@ export default {
       return stats
     },
     locations () {
-      return this.dataset.locations ? this.dataset.locations : '-'
+      return this.dataset.locations
     },
     dataStored () {
-      return this.dataset.data_stored ? this.dataset.data_stored : '-'
+      return this.dataset.data_stored
     },
     resources () {
       return this.dataset.resources
     },
+    fileTypes () {
+      return this.dataset.file_extensions.split(',').map(ext => ext.replaceAll(' ', '')).filter(item => item)
+    },
     infoItems () {
       return [
-        { label: 'Author', value: this.dataset.authors ? this.dataset.authors : '-' },
+        { label: 'Author', value: this.dataset.authors },
         { label: 'Date Created', value: this.dateCreated },
-        { label: 'Funders', value: this.dataset.funders ? this.dataset.funders : '-' },
-        { label: 'File Types', value: this.dataset.file_extensions.split(',').map(ext => ext.replaceAll(' ', '')) },
+        { label: 'Funders', value: this.dataset.funders },
+        { label: 'File Types', value: this.fileTypes },
         { label: 'Data Stored', value: this.dataStored },
         { label: 'Storage Providers', value: this.storageProviderCount },
         { label: 'Locations', value: this.locations }
