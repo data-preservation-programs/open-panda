@@ -69,6 +69,7 @@ import ImageBlock from '@/components/blocks/image-block'
 import MarkdownBlock from '@/components/blocks/markdown-block'
 import CategorySliderBlock from '@/components/blocks/category-slider-block'
 import CategoryTicker from '@/components/category-ticker'
+import CardListBlock from '@/components/blocks/card-list-block'
 import BlockBuilder from '@/components/blocks/block-builder'
 
 export default {
@@ -80,7 +81,8 @@ export default {
     BlockBuilder,
     MarkdownBlock,
     CategorySliderBlock,
-    CategoryTicker
+    CategoryTicker,
+    CardListBlock
   },
 
   props: {
@@ -115,6 +117,7 @@ export default {
         case 'image_block' : name = 'ImageBlock'; break
         case 'markdown_block': name = 'MarkdownBlock'; break
         case 'category_slider_block': name = 'CategorySliderBlock'; break
+        case 'card_list_block': name = 'CardListBlock'; break
         case 'custom' : name = block.component; break
       }
       return name
