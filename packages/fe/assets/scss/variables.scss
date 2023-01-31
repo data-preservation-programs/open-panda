@@ -287,6 +287,20 @@ $duration: 300ms;
   100% { transform: matrix3d(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
 }
 
+@mixin fadeIn() {
+  opacity: 1;
+  visibility: visible;
+  transition: all 200ms ease-in;
+  pointer-events: auto;
+}
+
+@mixin fadeOut() {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 200ms ease-in;
+  pointer-events: none;
+}
+
 // ///////////////////////////////////////////////////////////////////// Imports
 // =============================================================================
 @import 'typography';

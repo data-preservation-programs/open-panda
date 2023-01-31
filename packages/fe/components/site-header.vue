@@ -7,7 +7,7 @@
       <SiteLogoSmall class="logo-small" />
     </nuxt-link>
 
-    <nav>
+    <nav class="desktop-nav">
       <ButtonNav
         v-for="(link, index) in headerData.nav"
         :key="index"
@@ -26,6 +26,9 @@
         <div class="hamburger-icon"></div>
       </div>
     </div>
+
+    <NavMobile :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
+
   </header>
 </template>
 
@@ -39,6 +42,7 @@ import SiteLogo from '@/components/icons/logo'
 import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
 import IconSearch from '@/components/icons/search'
+import NavMobile from '@/components/nav-mobile'
 
 // ====================================================================== Export
 export default {
@@ -49,7 +53,8 @@ export default {
     SiteLogo,
     SiteLogoSmall,
     Filters,
-    IconSearch
+    IconSearch,
+    NavMobile
   },
 
   computed: {
@@ -88,7 +93,7 @@ export default {
         this.closeNav()
       } else {
         this.setNavigationOpen(true)
-        document.body.classList.remove('no-scroll')
+        document.body.classList.add('no-scroll')
       }
     },
     closeNav () {
@@ -121,7 +126,7 @@ header {
   }
 }
 
-:deep(nav) {
+.desktop-nav {
   @include medium {
     display: none;
   }
@@ -143,6 +148,7 @@ header {
 }
 
 .logo-link {
+  z-index: 101;
   width: 10vw;
   @include large {
     width: 4vw;
@@ -175,6 +181,8 @@ header {
 
 .hamburger-c {
   display: flex;
+  position: relative;
+  z-index: 101;
   align-items: center;
   :deep(.icon-search) {
     width: toRem(15);
@@ -236,6 +244,13 @@ header {
         transform: rotateZ(-45deg) scaleX(1.25) translate(3px, -4px);
       }
     }
+  }
+}
+
+.mobile-nav {
+  @include fadeOut;
+  &.mobile-nav-open {
+    @include fadeIn;
   }
 }
 </style>
