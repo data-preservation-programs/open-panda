@@ -1,8 +1,14 @@
 <template>
   <div class="mobile-nav-c">
     <div class="mobile-nav-inner">
+
+      <!-- ====================================================== filter bar -->
       <div class="grid-noGutter">
         <Filters class="col-12" :show-search="true" />
+      </div>
+
+      <!-- ============================================================= nav -->
+      <div class="grid-noGutter">
         <Button
           v-for="(link, index) in header.nav"
           :key="index"
@@ -14,12 +20,33 @@
             tooltip: link.tooltip || ''
           }" />
       </div>
+
+      <!-- =================================================== dataset cards -->
+      <div class="grid-1">
+        <h2>Datasets</h2>
+        <div
+          v-for="(data, index) in datasetList"
+          :key="`dataset-${index}`">
+          <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
+          <div class="title" :title="data.name">
+            {{ data.name }}
+          </div>
+          <span>
+            {{ data.data_size }}
+          </span>
+          <span>
+            storage
+            {{ data.storage }}
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 // ====================================================================== Import
+import { mapGetters, mapActions } from 'vuex'
 import Button from '@/components/buttons/button'
 import Filters from '@/components/filters'
 
@@ -37,6 +64,39 @@ export default {
       type: Object,
       required: false,
       default: () => { }
+    }
+  },
+
+  computed: {
+    ...mapGetters({
+      datasetList: 'datasets/datasetList'
+    })
+  },
+
+  watch: {
+    '$route' (route) {
+      this.getDatasetList({ route })
+    },
+    datasetList () {
+      this.stopLoading()
+    }
+  },
+
+  mounted () {
+    this.stopLoading()
+  },
+
+  methods: {
+    ...mapActions({
+      setLoadingStatus: 'datasets/setLoadingStatus',
+      getDatasetList: 'datasets/getDatasetList'
+    }),
+    stopLoading () {
+      this.$nextTick(() => {
+        if (typeof this.datasetList !== 'boolean') {
+          this.setLoadingStatus({ status: false })
+        }
+      })
     }
   }
 }

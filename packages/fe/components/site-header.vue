@@ -94,6 +94,7 @@ export default {
       }
     },
     closeNav () {
+      this.$clearSearchFilterSortAndLimit()
       this.setNavigationOpen(false)
       document.body.classList.remove('no-scroll')
     }
@@ -171,10 +172,14 @@ header {
 }
 
 .hamburger-c {
-  display: flex;
   position: relative;
   z-index: 101;
   align-items: center;
+  display: none;
+  cursor: pointer;
+  @include medium {
+    display: flex;
+  }
   :deep(.icon-search) {
     width: toRem(17);
   }
@@ -185,12 +190,7 @@ header {
   top: -3px;
   transition-duration: 150ms;
   margin-left: toRem(15);
-  cursor: pointer;
   position: relative;
-  display: none;
-  @include medium {
-    display: block;
-  }
 
   .hamburger-icon {
     transition-duration: 150ms;

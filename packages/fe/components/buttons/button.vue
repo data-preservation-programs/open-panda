@@ -98,7 +98,6 @@ export default {
 }
 
 .type__solid {
-  transition: background-color $duration ease;
   background-color: $rangoonGreen;
   padding: toRem(7) toRem(20);
   border-radius: $borderRadius;
@@ -107,9 +106,6 @@ export default {
   @include fontSize_16;
   line-height: leading(24, 16);
   color: $grayNurse;
-  &:hover {
-    transition: background-color $duration ease;
-  }
   &[disabled] {
     background-color: gray;
   }
@@ -118,6 +114,9 @@ export default {
 .type__solid-tear {
   @extend .type__solid;
   border-radius: toRem(2) toRem(30) toRem(30) toRem(30);
+  &:hover {
+    border-radius: toRem(30) toRem(30) toRem(2) toRem(30);
+  }
 }
 
 .type__outline {
