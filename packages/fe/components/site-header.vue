@@ -8,12 +8,11 @@
     </nuxt-link>
 
     <nav>
-      <Button
+      <ButtonNav
         v-for="(link, index) in headerData.nav"
         :key="index"
         :button="{
           text: link.label,
-          type: 'nav',
           selected: isRouteCurrent(link.href ? link.href : null),
           disabled: typeof link.href === 'undefined' || link.href === '',
           url: link.href,
@@ -33,7 +32,7 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
-import Button from '@/components/buttons/button'
+import ButtonNav from '@/components/buttons/button-nav'
 import SiteLogo from '@/components/icons/logo'
 import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
@@ -43,7 +42,7 @@ export default {
   name: 'SiteHeader',
 
   components: {
-    Button,
+    ButtonNav,
     SiteLogo,
     SiteLogoSmall,
     Filters

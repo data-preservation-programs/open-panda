@@ -16,7 +16,7 @@
     </div>
 
     <CardCutout v-if="open" class="filter-panel">
-      <section class="grid-noGutter-spaceBetween">
+      <section class="grid-noGutter-middle-spaceBetween">
         <h5>{{ filterPanelData.labels.add }}</h5>
         <button class="circle-border" @click="togglePanel">
           <IconClose :width="13" :height="13" />
@@ -202,6 +202,15 @@ export default {
   }
   section {
     padding: toRem(20) toRem(40);
+    &:first-child {
+      padding-bottom: toRem(15);
+    }
+    &:last-child {
+      padding-bottom: toRem(10);
+    }
+    @include medium {
+      padding: toRem(20);
+    }
     border-bottom: 1px solid $athensGray;
     display: flex;
     &:last-child {

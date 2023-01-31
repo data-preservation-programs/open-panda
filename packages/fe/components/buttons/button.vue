@@ -8,8 +8,6 @@
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
-    <div v-if="button.tooltip" class="tooltip">
-      {{ button.tooltip }}</div>
     <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
   </component>
 </template>
@@ -32,7 +30,7 @@ export default {
     button: {
       /**
        * text
-       * type: solid, nav, solid-tear, default, outline
+       * type: solid, solid-tear, default, outline
        * disabled: Bool
        */
       type: Object,
@@ -82,73 +80,6 @@ export default {
     .tooltip {
       display: block;
     }
-  }
-  .tooltip {
-    background-color: $rangoonGreen;
-    padding: toRem(5) toRem(8) toRem(7) toRem(8);
-    border-radius: toRem(10);
-    color: white;
-    top: calc(100% - 7px);
-    font-size: toRem(10);
-    display: none;
-    @include fontWeight_Medium;
-    position: absolute;
-    line-height: 1;
-    width: max-content;
-    &:before {
-      width: 0;
-      height: 0;
-      border-top: toRem(5) solid transparent;
-      border-bottom: toRem(5) solid transparent;
-      border-right: toRem(5) solid $rangoonGreen;
-      content: '';
-      position: absolute;
-      top: toRem(-7);
-      left: calc(50% - 2.5px);
-      transform: rotate(90deg);
-    }
-  }
-}
-
-.type__nav {
-  font-family: $font_Secondary;
-  @include fontWeight_Bold;
-  line-height: leading(30, 16);
-  padding: toRem(5) 0.8vw toRem(10) 0.8vw;
-  border: 2px solid transparent;
-  border-top-right-radius: toRem(8);
-  border-bottom-left-radius: toRem(8);
-  border-bottom-right-radius: toRem(8);
-  position: relative;
-  &:before {
-    content: '';
-    background-color: white;
-    height: toRem(10);
-    position: absolute;
-    top: toRem(-10);
-    left: -2px;
-    width: toRem(40);
-    border-top-right-radius: toRem(8);
-    border-top-left-radius: toRem(8);
-    display: none;
-  }
-  @include large {
-    padding: toRem(5) toRem(10);
-  }
-  &:not([disabled]) {
-    &:hover {
-      border-color: white;
-    }
-  }
-  &.selected {
-    background-color: white;
-    @include shadow1;
-    &:before {
-      display: block;
-    }
-  }
-  &[disabled] .text {
-    opacity: 0.7;
   }
 }
 
