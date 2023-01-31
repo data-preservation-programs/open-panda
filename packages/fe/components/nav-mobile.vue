@@ -3,12 +3,12 @@
     <div class="mobile-nav-inner">
 
       <!-- ====================================================== filter bar -->
-      <div class="grid-noGutter">
+      <div class="grid-noGutter mobile-nav-searchbar">
         <Filters class="col-12" :show-search="true" />
       </div>
 
       <!-- ============================================================= nav -->
-      <div class="grid-noGutter">
+      <div v-if="!$route.query.search" class="grid-noGutter">
         <Button
           v-for="(link, index) in header.nav"
           :key="index"
@@ -22,22 +22,33 @@
       </div>
 
       <!-- =================================================== dataset cards -->
-      <div class="grid-1">
-        <h2>Datasets</h2>
+      <div v-if="$route.query.search" class="grid-noGutter">
+        <h4 class="heading col-12">
+          Datasets</h4>
+        <div v-if="!metadata.count" class="no-result col-12">
+          <h4>no results</h4>
+        </div>
         <div
           v-for="(data, index) in datasetList"
-          :key="`dataset-${index}`">
-          <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
-          <div class="title" :title="data.name">
-            {{ data.name }}
-          </div>
-          <span>
-            {{ data.data_size }}
-          </span>
-          <span>
-            storage
-            {{ data.storage }}
-          </span>
+          :key="`dataset-${index}`"
+          class="col-12 result">
+          <nuxt-link :to="`/dataset/${data.slug}`">
+            <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
+            <div class="grid">
+              <div class="col-12 title" :title="data.name">
+                {{ data.name }}
+              </div>
+              <div class="col-12">
+                <span>
+                  {{ data.data_size }}
+                </span>
+                <span>
+                  Storage Providers
+                  {{ data.storage }}
+                </span>
+              </div>
+            </div>
+          </nuxt-link>
         </div>
       </div>
     </div>
@@ -69,7 +80,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      datasetList: 'datasets/datasetList'
+      datasetList: 'datasets/datasetList',
+      metadata: 'datasets/metadata'
     })
   },
 
@@ -121,6 +133,15 @@ export default {
   .mobile-nav-inner {
     overflow: scroll;
     height: 100%;
+  }
+  .mobile-nav-searchbar {
+    margin-bottom: toRem(50);
+  }
+  .heading {
+    border-bottom: 1px solid $athensGray;
+  }
+  .result {
+    display: flex;
   }
 }
 
