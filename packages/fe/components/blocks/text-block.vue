@@ -77,7 +77,7 @@ export default {
     }
   }
   > * {
-    margin-bottom: toRem(30);
+    margin-bottom: toRem(18);
     position: relative;
   }
 }

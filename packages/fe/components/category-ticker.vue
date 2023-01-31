@@ -1,30 +1,33 @@
 <template>
-  <div class="category-ticker">
-    <img :src="block.image" class="img" />
-    <Filterer
-      filter-key="categories"
-      :filters="filters.categories">
-      <div
-        slot-scope="{ clearFilters, applyFilter }"
-        class="text-wrapper">
-
-        <div class="message">
-          {{ message }}
-        </div>
-
+  <div>
+    <Filters class="show-mobile-only" open-direction="right" :show-search="true" />
+    <div class="category-ticker">
+      <img :src="block.image" class="img" />
+      <Filterer
+        filter-key="categories"
+        :filters="filters.categories">
         <div
-          class="ticker"
-          @click="() => { clearFilters(); applyFilter(categoryIndex) }">
-          <span
-            v-for="(category, i) in categories"
-            :key="category"
-            :class="['tick', { current: categoryIndex === i }]">
-            {{ category }}
-          </span>
+          slot-scope="{ clearFilters, applyFilter }"
+          class="text-wrapper">
+  
+          <div class="message">
+            {{ message }}
+          </div>
+  
+          <div
+            class="ticker"
+            @click="() => { clearFilters(); applyFilter(categoryIndex) }">
+            <span
+              v-for="(category, i) in categories"
+              :key="category"
+              :class="['tick', { current: categoryIndex === i }]">
+              {{ category }}
+            </span>
+          </div>
+  
         </div>
-
-      </div>
-    </Filterer>
+      </Filterer>
+    </div>
   </div>
 </template>
 
@@ -32,13 +35,15 @@
 // ====================================================================== Import
 import { mapGetters } from 'vuex'
 import Filterer from '@/modules/search/components/filterer'
+import Filters from '@/components/filters'
 
 // ====================================================================== Export
 export default {
   name: 'CategoryTicker',
 
   components: {
-    Filterer
+    Filterer,
+    Filters
   },
 
   props: {
@@ -92,6 +97,10 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
+:deep(.filters) {
+  margin-bottom: toRem(20);
+}
+
 .category-ticker {
   display: flex;
   justify-content: center;

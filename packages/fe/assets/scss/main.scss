@@ -27,6 +27,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  &.no-scroll {
+    overflow-y: hidden;
+  }
+  &.no-cursor {
+    cursor: none;
+  }
 }
 
 button::-moz-focus-inner,
@@ -111,9 +117,6 @@ input[type=week] {
     font-weight: inherit;
     font-style: inherit;
   }
-  &:hover, &:active, &:focus {
-    background-color: transparent;
-  }
 }
 
 a,
@@ -122,7 +125,6 @@ button, .button {
   outline: none;
   &:hover, &:active, &:focus {
     outline: none;
-    background-color: transparent;
   }
 }
 
@@ -132,7 +134,6 @@ textarea {
   transition: 250ms;
   &:active, &:focus, &:hover {
     transition: 250ms;
-    background-color: transparent;
   }
 }
 
@@ -156,7 +157,6 @@ button, .button {
   &:active, &:focus, &:hover {
     transition: 250ms;
     outline: none;
-    color: inherit;
   }
 }
 
@@ -587,4 +587,8 @@ p, .p1 {
   @include medium {
     display: flex;
   }
+}
+
+.sectionals {
+  overflow: hidden;
 }

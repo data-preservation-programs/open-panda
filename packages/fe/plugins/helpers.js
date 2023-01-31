@@ -412,9 +412,14 @@ const GetTargetBasedOnUrl = (url) => {
   return url ? url.includes('http') ? '_blank' : '' : false
 }
 
+const IsRouteCurrent = (route, href) => {
+  return route.fullPath === href
+}
+
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default ({ $config, app }, inject) => {
+  inject('isRouteCurrent', IsRouteCurrent)
   inject('slugify', Slugify)
   inject('parseURL', ParseURL)
   inject('throttle', Throttle)

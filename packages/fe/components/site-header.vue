@@ -1,80 +1,102 @@
 <template>
-  <header class="grid-middle-center-spaceBetween-noGutter">
-    <Filters open-direction="right" :show-search="true" />
+  <div>
+    <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
+    <header class="grid-middle-center-spaceBetween-noGutter">
+      <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
 
-    <nuxt-link to="/" class="logo-link">
-      <SiteLogo class="logo-big" />
-      <SiteLogoSmall class="logo-small" />
-    </nuxt-link>
+      <nuxt-link to="/" class="logo-link">
+        <SiteLogo class="logo-big" />
+        <SiteLogoSmall class="logo-small" />
+      </nuxt-link>
 
-    <nav>
-      <Button
-        v-for="(link, index) in headerData.nav"
-        :key="index"
-        :button="{
-          text: link.label,
-          type: 'nav',
-          selected: isRouteCurrent(link.href ? link.href : null),
-          disabled: typeof link.href === 'undefined' || link.href === '',
-          url: link.href,
-          tooltip: link.tooltip || ''
-        }" />
-    </nav>
+      <nav class="desktop-nav">
+        <ButtonNav
+          v-for="(link, index) in headerData.nav"
+          :key="index"
+          :button="{
+            text: link.label,
+            selected: $isRouteCurrent($route, link.href ? link.href : null),
+            disabled: typeof link.href === 'undefined' || link.href === '',
+            url: link.href,
+            tooltip: link.tooltip || ''
+          }" />
+      </nav>
 
-    <div
-      :class="['hamburger']"
-      @click="toggleNav">
-      <div class="icon"></div>
-    </div>
-  </header>
+      <div class="hamburger-c" @click="toggleNav">
+        <IconSearch />
+        <div :class="['hamburger', { open : navigationOpen}]">
+          <div class="hamburger-icon"></div>
+        </div>
+      </div>
+    </header>
+  </div>
 </template>
 
 <script>
 // ===================================================================== Imports
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+import Throttle from 'lodash/throttle'
 
-import Button from '@/components/buttons/button'
+import ButtonNav from '@/components/buttons/button-nav'
 import SiteLogo from '@/components/icons/logo'
 import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
+import IconSearch from '@/components/icons/search'
+import NavMobile from '@/components/nav-mobile'
 
 // ====================================================================== Export
 export default {
   name: 'SiteHeader',
 
   components: {
-    Button,
+    ButtonNav,
     SiteLogo,
     SiteLogoSmall,
-    Filters
-  },
-
-  data () {
-    return {
-      navigationOpen: false
-    }
+    Filters,
+    IconSearch,
+    NavMobile
   },
 
   computed: {
     ...mapGetters({
-      siteContent: 'general/siteContent'
+      siteContent: 'general/siteContent',
+      navigationOpen: 'general/navigationOpen'
     }),
     headerData () {
       return this.siteContent.general ? this.siteContent.general.header : false
     }
   },
 
+  mounted () {
+    this.closeNav()
+    this.resize = Throttle(() => {
+      if (this.navigationOpen) {
+        this.closeNav()
+      }
+    }, 200)
+    window.addEventListener('resize', this.resize)
+  },
+
+  beforeDestroy () {
+    if (this.resize) { window.removeEventListener('resize', this.resize) }
+  },
+
   methods: {
-    isRouteCurrent (href) {
-      return this.$route.fullPath === href
-    },
+    ...mapActions({
+      setNavigationOpen: 'general/setNavigationOpen'
+    }),
     toggleNav () {
       if (this.navigationOpen) {
         this.closeNav()
       } else {
-        this.navigationOpen = true
-        document.body.classList.remove('no-scroll')
+        this.setNavigationOpen(true)
+        document.body.classList.add('no-scroll')
       }
+    },
+    closeNav () {
+      this.$clearSearchFilterSortAndLimit()
+      this.setNavigationOpen(false)
+      document.body.classList.remove('no-scroll')
     }
   }
 }
@@ -84,18 +106,19 @@ export default {
 header {
   padding-top: toRem(50);
   padding-bottom: toRem(70);
+  @include medium {
+    padding-top: toRem(10);
+    padding-bottom: toRem(10);
+  }
 }
 
 :deep(.searchbar) {
   @include large {
     width: toRem(210);
   }
-  @include medium {
-    display: none;
-  }
 }
 
-:deep(nav) {
+.desktop-nav {
   @include medium {
     display: none;
   }
@@ -117,6 +140,7 @@ header {
 }
 
 .logo-link {
+  z-index: 101;
   width: 10vw;
   @include large {
     width: 4vw;
@@ -147,21 +171,31 @@ header {
   }
 }
 
+.hamburger-c {
+  position: relative;
+  z-index: 101;
+  align-items: center;
+  display: none;
+  cursor: pointer;
+  @include medium {
+    display: flex;
+  }
+  :deep(.icon-search) {
+    width: toRem(17);
+  }
+}
 .hamburger {
   width: 20px;
-  height: 20px;
+  height: 18px;
+  top: -3px;
   transition-duration: 150ms;
-  cursor: pointer;
+  margin-left: toRem(15);
   position: relative;
-  display: none;
-  @include medium {
-    display: block;
-  }
 
-  .icon {
+  .hamburger-icon {
     transition-duration: 150ms;
     position: absolute;
-    height: 3px;
+    height: 2px;
     width: 20px;
     top: 10px;
     background-color: $rangoonGreen;
@@ -169,7 +203,7 @@ header {
       transition-duration: 150ms;
       position: absolute;
       width: 20px;
-      height: 3px;
+      height: 2px;
       right: 0;
       background-color: $rangoonGreen;
       content: "";
@@ -179,7 +213,7 @@ header {
       transition-duration: 150ms;
       position: absolute;
       width: 20px;
-      height: 3px;
+      height: 2px;
       left: 0;
       background-color: $rangoonGreen;
       content: "";
@@ -188,11 +222,11 @@ header {
   }
 
   &.open {
-    .icon {
+    .hamburger-icon {
       transition-duration: 150ms;
       background: transparent;
       will-change: transform;
-    &:before {
+      &:before {
         width: 20px;
         transform: rotateZ(45deg) scaleX(1.25) translate(4px, 4px);
       }
@@ -201,6 +235,13 @@ header {
         transform: rotateZ(-45deg) scaleX(1.25) translate(3px, -4px);
       }
     }
+  }
+}
+
+.mobile-nav {
+  @include fadeOut;
+  &.mobile-nav-open {
+    @include fadeIn;
   }
 }
 </style>

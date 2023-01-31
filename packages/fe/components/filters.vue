@@ -1,5 +1,5 @@
 <template>
-  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']">
+  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']" @keydown.esc="closePanel()">
 
     <div class="button-c">
       <Searchbar
@@ -8,12 +8,15 @@
         theme="solid" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
-        <span>{{ filterPanelData.labels.buttonText }}</span>
+        <div class="button-content">
+          <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
+          <span>{{ filterPanelData.labels.buttonText }}</span>
+        </div>
       </button>
     </div>
 
     <CardCutout v-if="open" class="filter-panel">
-      <section class="grid-noGutter-spaceBetween">
+      <section class="grid-noGutter-middle-spaceBetween">
         <h5>{{ filterPanelData.labels.add }}</h5>
         <button class="circle-border" @click="togglePanel">
           <IconClose :width="13" :height="13" />
@@ -104,7 +107,8 @@ export default {
     ...mapGetters({
       filters: 'datasets/filters',
       siteContent: 'general/siteContent',
-      basicStats: 'datasets/basicStats'
+      basicStats: 'datasets/basicStats',
+      selectedFilters: 'search/filters'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -122,13 +126,21 @@ export default {
     togglePanel () {
       this.open = !this.open
     },
+    closePanel () {
+      this.open = false
+    },
     clearAll () {
       // do not clear fullyStored because that's outside the filter dropdown
       this.$clearAllFilters('fullyStored')
     },
     onSearch () {
-      this.open = false
+      this.closePanel()
       this.getDatasetList({ route: this.$route })
+      if (this.$route.name !== 'index') {
+        this.$router.push({
+          path: '/#datasets'
+        })
+      }
     }
   }
 }
@@ -168,7 +180,18 @@ export default {
       margin-right: toRem(15);
     }
   }
-  
+  .button-content {
+    position: relative;
+    .has-filters-dot {
+      background-color: $dodgerBlue;
+      border-radius: 100%;
+      position: absolute;
+      width: toRem(10);
+      height: toRem(10);
+      top: toRem(-5);
+      right: toRem(-12);
+    }
+  }
 }
 
 // panel
@@ -187,6 +210,15 @@ export default {
   }
   section {
     padding: toRem(20) toRem(40);
+    &:first-child {
+      padding-bottom: toRem(15);
+    }
+    &:last-child {
+      padding-bottom: toRem(10);
+    }
+    @include medium {
+      padding: toRem(20);
+    }
     border-bottom: 1px solid $athensGray;
     display: flex;
     &:last-child {

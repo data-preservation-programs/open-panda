@@ -4,7 +4,7 @@
     <BlockBuilder :sections="pageContent" />
 
     <!-- ==================================================== filter heading -->
-    <div class="grid-noGutter-middle-spaceBetween filter-heading">
+    <div id="datasets" class="grid-noGutter-middle-spaceBetween filter-heading">
       <h5>{{ datasetContent.explore }}</h5>
     </div>
 
@@ -328,7 +328,10 @@ export default {
 
 <style lang="scss" scoped>
 :deep(.home-hero) {
-  padding-bottom: 4.625rem;
+  padding-bottom: toRem(60);
+  @include medium {
+    padding-bottom: 0;
+  }
   [data-block-id="col_2"] {
     .text-block {
       margin-left: $singleColumn;
@@ -342,6 +345,11 @@ export default {
   [data-block-id="col_1"] {
     .image-block {
       margin-top: -10%;
+    }
+  }
+  @include medium {
+    .button-row {
+      display: none;
     }
   }
 }

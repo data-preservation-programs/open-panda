@@ -89,9 +89,6 @@ export default {
   .description {
     @include p1;
   }
-  .button {
-    border-top-left-radius: 0.125rem;
-  }
 }
 
 </style>
