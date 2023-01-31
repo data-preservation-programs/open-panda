@@ -1,35 +1,35 @@
 <template>
-  <header class="grid-middle-center-spaceBetween-noGutter">
-    <Filters open-direction="right" :show-search="true" />
+  <div>
+    <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
+    <header class="grid-middle-center-spaceBetween-noGutter">
+      <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
 
-    <nuxt-link to="/" class="logo-link">
-      <SiteLogo class="logo-big" />
-      <SiteLogoSmall class="logo-small" />
-    </nuxt-link>
+      <nuxt-link to="/" class="logo-link">
+        <SiteLogo class="logo-big" />
+        <SiteLogoSmall class="logo-small" />
+      </nuxt-link>
 
-    <nav class="desktop-nav">
-      <ButtonNav
-        v-for="(link, index) in headerData.nav"
-        :key="index"
-        :button="{
-          text: link.label,
-          selected: isRouteCurrent(link.href ? link.href : null),
-          disabled: typeof link.href === 'undefined' || link.href === '',
-          url: link.href,
-          tooltip: link.tooltip || ''
-        }" />
-    </nav>
+      <nav class="desktop-nav">
+        <ButtonNav
+          v-for="(link, index) in headerData.nav"
+          :key="index"
+          :button="{
+            text: link.label,
+            selected: $isRouteCurrent($route, link.href ? link.href : null),
+            disabled: typeof link.href === 'undefined' || link.href === '',
+            url: link.href,
+            tooltip: link.tooltip || ''
+          }" />
+      </nav>
 
-    <div class="hamburger-c" @click="toggleNav">
-      <IconSearch />
-      <div :class="['hamburger', { open : navigationOpen}]">
-        <div class="hamburger-icon"></div>
+      <div class="hamburger-c" @click="toggleNav">
+        <IconSearch />
+        <div :class="['hamburger', { open : navigationOpen}]">
+          <div class="hamburger-icon"></div>
+        </div>
       </div>
-    </div>
-
-    <NavMobile :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
-
-  </header>
+    </header>
+  </div>
 </template>
 
 <script>
@@ -85,9 +85,6 @@ export default {
     ...mapActions({
       setNavigationOpen: 'general/setNavigationOpen'
     }),
-    isRouteCurrent (href) {
-      return this.$route.fullPath === href
-    },
     toggleNav () {
       if (this.navigationOpen) {
         this.closeNav()
@@ -117,12 +114,6 @@ header {
 :deep(.searchbar) {
   @include large {
     width: toRem(210);
-  }
-}
-
-:deep(.filters) {
-  @include medium {
-    display: none;
   }
 }
 
@@ -185,7 +176,7 @@ header {
   z-index: 101;
   align-items: center;
   :deep(.icon-search) {
-    width: toRem(15);
+    width: toRem(17);
   }
 }
 .hamburger {

@@ -81,7 +81,7 @@ export default {
     padding: toRem(5) toRem(8) toRem(7) toRem(8);
     border-radius: toRem(10);
     color: white;
-    top: calc(100% - 7px);
+    top: calc(100%);
     font-size: toRem(10);
     display: none;
     @include fontWeight_Medium;

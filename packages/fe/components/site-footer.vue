@@ -64,14 +64,6 @@ export default {
     footerData () {
       return this.siteContent.general.footer
     }
-  },
-
-  methods: {
-    isRouteCurrent (href) {
-      const route = this.$route
-      if (route.path === href) { return true }
-      return false
-    }
   }
 }
 </script>
