@@ -27,6 +27,7 @@ $fuscousGray: #51504B;
 $athensGray: #E7E9ED;
 $capeCod: #3C4748;
 $grayNurse2: #E0E7E0;
+$dodgerBlue: #3DA2FF;
 
 // ----------------------------------------------------------------- Breakpoints
 $breakpoint_Tiny: 25.9375rem; // 415px
@@ -235,6 +236,10 @@ $duration: 300ms;
 @function toRem($value) {
   $remValue: math.div($value, 16) + rem;
   @return $remValue;
+}
+
+@function vw($px-vw, $base-vw: 1360px) {
+  @return math.div($px-vw * 100vw, $base-vw);
 }
 
 // ------------------------------------------------------------------- Animation

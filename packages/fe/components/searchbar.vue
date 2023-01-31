@@ -126,6 +126,7 @@ export default {
   font-weight: 500;
   transition: 150ms ease-out;
   color: $fuscousGray;
+  width: 100%;
   @include placeholder {
     color: $fuscousGray;
     opacity: 1;

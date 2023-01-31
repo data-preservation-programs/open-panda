@@ -8,7 +8,10 @@
         theme="solid" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
-        <span>{{ filterPanelData.labels.buttonText }}</span>
+        <div class="button-content">
+          <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
+          <span>{{ filterPanelData.labels.buttonText }}</span>
+        </div>
       </button>
     </div>
 
@@ -104,7 +107,8 @@ export default {
     ...mapGetters({
       filters: 'datasets/filters',
       siteContent: 'general/siteContent',
-      basicStats: 'datasets/basicStats'
+      basicStats: 'datasets/basicStats',
+      selectedFilters: 'search/filters'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -168,7 +172,18 @@ export default {
       margin-right: toRem(15);
     }
   }
-  
+  .button-content {
+    position: relative;
+    .has-filters-dot {
+      background-color: $dodgerBlue;
+      border-radius: 100%;
+      position: absolute;
+      width: toRem(10);
+      height: toRem(10);
+      top: toRem(-5);
+      right: toRem(-12);
+    }
+  }
 }
 
 // panel

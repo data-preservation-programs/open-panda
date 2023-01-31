@@ -84,12 +84,19 @@ export default {
 header {
   padding-top: toRem(50);
   padding-bottom: toRem(70);
+  @include medium {
+    padding-top: toRem(10);
+    padding-bottom: toRem(10);
+  }
 }
 
 :deep(.searchbar) {
   @include large {
     width: toRem(210);
   }
+}
+
+:deep(.filters) {
   @include medium {
     display: none;
   }
