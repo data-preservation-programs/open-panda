@@ -81,7 +81,7 @@
       "description": "Looks like this page doesn’t exist, try again!",
       "ctas": [
         {
-          "type": "solid",
+          "type": "solid-tear",
           "url": "/",
           "text": "Back to Home"
         }

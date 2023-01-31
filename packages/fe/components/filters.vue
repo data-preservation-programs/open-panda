@@ -1,5 +1,5 @@
 <template>
-  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']">
+  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']" @keydown.esc="closePanel()">
 
     <div class="button-c">
       <Searchbar
@@ -126,12 +126,15 @@ export default {
     togglePanel () {
       this.open = !this.open
     },
+    closePanel () {
+      this.open = false
+    },
     clearAll () {
       // do not clear fullyStored because that's outside the filter dropdown
       this.$clearAllFilters('fullyStored')
     },
     onSearch () {
-      this.open = false
+      this.closePanel()
       this.getDatasetList({ route: this.$route })
     }
   }
