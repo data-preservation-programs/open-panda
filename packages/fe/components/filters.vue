@@ -136,6 +136,11 @@ export default {
     onSearch () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
+      if (this.$route.name !== 'index') {
+        this.$router.push({
+          path: '/#datasets'
+        })
+      }
     }
   }
 }

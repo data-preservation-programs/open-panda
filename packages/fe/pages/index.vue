@@ -4,7 +4,7 @@
     <BlockBuilder :sections="pageContent" />
 
     <!-- ==================================================== filter heading -->
-    <div class="grid-noGutter-middle-spaceBetween filter-heading">
+    <div id="datasets" class="grid-noGutter-middle-spaceBetween filter-heading">
       <h5>{{ datasetContent.explore }}</h5>
     </div>
 
