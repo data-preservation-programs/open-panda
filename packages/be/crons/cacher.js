@@ -10,7 +10,6 @@
 // -----------------------------------------------------------------------------
 const ModuleAlias = require('module-alias')
 const Path = require('path')
-const Axios = require('axios')
 const Fs = require('fs-extra')
 const Express = require('express')
 require('dotenv').config({ path: Path.resolve(__dirname, '../.env') })
