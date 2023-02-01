@@ -29,7 +29,9 @@ export default {
     BlockBuilder
   },
 
-  async asyncData ({ $content }) {
+  async asyncData ({ $content, store }) {
+    await store.dispatch('datasets/getBasicStats')
+    await store.dispatch('datasets/getFilters')
     const termsContent = await $content('markdown/terms').fetch()
     return { termsContent }
   },

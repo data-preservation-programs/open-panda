@@ -4,7 +4,7 @@
     <header class="grid-middle-center-spaceBetween-noGutter">
       <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
 
-      <nuxt-link to="/" class="logo-link">
+      <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
         <SiteLogo class="logo-big" />
         <SiteLogoSmall class="logo-small" />
       </nuxt-link>

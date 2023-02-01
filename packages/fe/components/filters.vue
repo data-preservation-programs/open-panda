@@ -27,8 +27,7 @@
         v-for="(parentItem, parentIndex) in parentItems"
         :key="parentItem.id"
         :filter-key="parentItem.id"
-        :filters="filters[parentItem.id]"
-        @filterApplied="clearPage">
+        :filters="filters[parentItem.id]">
         <section
           slot-scope="{ applyFilter, isSelected }"
           class="grid-noGutter">
@@ -60,7 +59,7 @@
       </Filterer>
 
       <section class="grid-noGutter-right filter-button">
-        <Button :button="{}" @click.native="clearAll">
+        <Button :button="{type: 'default'}" @click.native="clearAll">
           {{ filterPanelData.labels.clear }}
         </Button>
         <Button :button="{type:'solid'}" @click.native="onSearch">
@@ -153,12 +152,8 @@ export default {
 
   methods: {
     ...mapActions({
-      setPage: 'datasets/setPage',
       getDatasetList: 'datasets/getDatasetList'
     }),
-    clearPage () {
-      this.setPage({ page: 1 })
-    },
     togglePanel () {
       this.open = !this.open
     },
@@ -176,6 +171,7 @@ export default {
     onSearch () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
+      this.$emit('filterPanelOnSearch')
       this.$router.push({
         path: '/#datasets',
         query: this.$route.query

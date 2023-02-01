@@ -8,6 +8,8 @@
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
+    <div v-if="button.tooltip" class="tooltip">
+      {{ button.tooltip }}</div>
     <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
   </component>
 </template>
@@ -71,6 +73,9 @@ export default {
       transform: rotate(-40deg);
     }
   }
+  .tooltip {
+    top: calc(100% + 5px);
+  }
   &:hover {
     .icon {
       transition: transform 100ms ease-in;
@@ -85,6 +90,17 @@ export default {
 }
 
 .type__default {
+  &:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  &[disabled] .text {
+    opacity: 0.7;
+  }
+}
+
+.type__footerNav {
   font-family: $font_Secondary;
   @include fontWeight_Bold;
   @include fontSize_24;
@@ -109,6 +125,11 @@ export default {
   color: $grayNurse;
   &[disabled] {
     background-color: gray;
+  }
+  &:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
 }
 

@@ -236,11 +236,6 @@ export default {
     this.stopLoading()
   },
 
-  beforeDestroy () {
-    this.resetStore()
-    this.$clearSearchFilterSortAndLimit()
-  },
-
   methods: {
     ...mapActions({
       resetStore: 'datasets/resetStore',

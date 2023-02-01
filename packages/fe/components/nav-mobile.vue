@@ -7,7 +7,7 @@
         <button v-if="$route.query.search" class="circle-border" @click="$clearSearchAndFilters">
           <ArrowLeftIcon :width="20" :height="14" />
         </button>
-        <Filters :show-search="true" theme="line" @searchbarUpdated="shouldCallEndpoint = true" />
+        <Filters :show-search="true" theme="line" @searchbarUpdated="shouldCallEndpoint = true" @filterPanelOnSearch="setNavigationOpen(false)" />
       </div>
 
       <!-- ============================================================= nav -->
