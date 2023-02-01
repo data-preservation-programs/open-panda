@@ -3,8 +3,11 @@
     <div class="mobile-nav-inner">
 
       <!-- ====================================================== filter bar -->
-      <div class="grid-noGutter mobile-nav-searchbar">
-        <Filters class="col-12" :show-search="true" theme="line" />
+      <div class="grid-noGutter-middle mobile-nav-searchbar">
+        <button v-if="$route.query.search" class="circle-border" @click="$search.clearSearchQuery">
+          <ArrowLeftIcon :width="20" :height="14" />
+        </button>
+        <Filters :show-search="true" theme="line" />
       </div>
 
       <!-- ============================================================= nav -->
@@ -29,7 +32,7 @@
         <h4 class="heading col-12">
           Datasets</h4>
         <div v-if="!metadata.count" class="no-result col-12">
-          <h4>no results</h4>
+          <p>no results</p>
         </div>
         <div
           v-for="(data, index) in datasetList"
@@ -72,6 +75,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import Button from '@/components/buttons/button'
 import Filters from '@/components/filters'
+import ArrowLeftIcon from '@/components/icons/arrow-left'
 
 // ====================================================================== Export
 export default {
@@ -79,7 +83,8 @@ export default {
 
   components: {
     Button,
-    Filters
+    Filters,
+    ArrowLeftIcon
   },
 
   props: {
@@ -149,9 +154,20 @@ export default {
   }
   .mobile-nav-searchbar {
     margin-bottom: toRem(50);
+    display: flex;
+    .circle-border {
+      margin-right: toRem(10);
+      flex-shrink: 0;
+    }
+    :deep(.filters) {
+      flex-grow: 1;
+    }
   }
   .heading {
     border-bottom: 1px solid $athensGray;
+  }
+  .no-result {
+    margin-top: toRem(10);
   }
   .result a {
     display: flex;
@@ -195,5 +211,4 @@ export default {
     justify-content: left;
   }
 }
-
 </style>

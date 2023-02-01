@@ -106,11 +106,11 @@ header {
   }
 }
 
-:deep(.searchbar) {
-  @include large {
-    width: toRem(210);
-  }
-}
+// :deep(.searchbar) {
+//   @include large {
+//     width: toRem(210);
+//   }
+// }
 
 .desktop-nav {
   @include medium {

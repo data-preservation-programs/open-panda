@@ -118,6 +118,10 @@ export default {
   align-items: center;
 }
 
+.searchbar {
+  width: 100%;
+}
+
 .input {
   flex: 1;
   appearance: none;
