@@ -10,15 +10,23 @@ const Schema = Mongoose.Schema
 const DatasetSchema = new Schema({
   name: {
     type: String,
-    required: allowEmptyIfNew
+    required: true
+  },
+  slug: {
+    type: String,
+    required: false
   },
   description: {
     type: String,
-    required: allowEmptyIfNew
+    required: true
   },
   description_short: {
     type: String,
-    required: allowEmptyIfNew
+    required: true
+  },
+  citation: {
+    type: String,
+    required: false
   },
   data_size: {
     type: Number,
@@ -31,7 +39,7 @@ const DatasetSchema = new Schema({
     enum: [0, 1, 2, 3, 4, 5, 6],
     default: 0
   },
-  documentation_url: {
+  url: {
     type: String,
     required: false
   },
@@ -41,17 +49,17 @@ const DatasetSchema = new Schema({
   },
   web_3_storage_token: {
     type: String,
-    required: allowEmptyIfNew
+    required: true
   },
-  slug: {
+  bucket: [{
     type: String,
     required: false
-  },
-  bucket: {
-    type: String,
-    required: false
-  },
+  }],
   license: {
+    type: String,
+    required: false
+  },
+  license_tag: {
     type: String,
     required: false
   },
@@ -59,10 +67,10 @@ const DatasetSchema = new Schema({
     type: String,
     required: false
   },
-  file_extensions: {
+  file_extensions: [{
     type: String,
     required: false
-  },
+  }],
   categories: [{
     type: String,
     required: false
@@ -78,16 +86,14 @@ const DatasetSchema = new Schema({
   funders: [{
     type: String,
     required: false
+  }],
+  languages: [{
+    type: String,
+    required: false
   }]
 }, {
   timestamps: true
 })
-
-// /////////////////////////////////////////////////////////////////// Functions
-// -----------------------------------------------------------------------------
-function allowEmptyIfNew () {
-  return !this.new
-}
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
