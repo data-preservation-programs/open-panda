@@ -177,7 +177,8 @@ export default {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
       this.$router.push({
-        path: '/#datasets'
+        path: '/#datasets',
+        query: this.$route.query
       })
     }
   }
