@@ -23,7 +23,7 @@
 
       <div class="col-4_mi-12 datasets-sort-c">
         <!-- ================================================== desktop sort -->
-        <Sort :options="sortOptions" class="datasets-sort show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
+        <Sort :options="sortOptions" class="show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
         <Filters />
       </div>
     </div>
@@ -33,7 +33,7 @@
       <!-- ================================================= mobile checkbox -->
       <CheckboxFullyStored :options="filters.fullyStored" class="col-6_mi-12 datasets-checkbox" @filterApplied="shouldCallEndpoint = true" />
       <!-- ===================================================== mobile sort -->
-      <Sort :options="sortOptions" class="col-6_mi-12 datasets-sort" @filterApplied="shouldCallEndpoint = true" />
+      <Sort :options="sortOptions" class="col-6_mi-12" @filterApplied="shouldCallEndpoint = true" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -362,17 +362,6 @@ export default {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-    }
-  }
-  .datasets-sort {
-    margin-right: toRem(30);
-    :deep(.field-select) {
-      width: toRem(140);
-    }
-    @include large {
-      :deep(.field-label) {
-        display: none;
-      }
     }
   }
   @include medium {
