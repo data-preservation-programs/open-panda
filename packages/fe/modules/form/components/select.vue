@@ -23,7 +23,7 @@
 
     <!-- =================================================== [Select] Custom -->
     <div
-      v-click-outside="closeDropdown"
+      v-click-outside="clickOutside"
       :aria-hidden="dropdownOpen ? 'false' : 'true'"
       class="select custom"
       @click="toggleDropdown">
@@ -45,6 +45,7 @@
           <slot
             name="option-custom"
             :option="option"
+            :index="index"
             :highlighted="isCurrentlyHighlighted(index)"
             :selected="isCurrentlySelected(index)" />
         </div>
@@ -73,6 +74,15 @@ export default {
       type: [Number, String],
       required: false,
       default: -1
+    },
+    /**
+     * Define whether or not to handle v-click-outside in this component. Example:
+     * the typeahead field handles this instead.
+     */
+    handleClickOutside: {
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
 
@@ -106,10 +116,18 @@ export default {
     toggleDropdown () {
       this.dropdownOpen = !this.dropdownOpen
     },
+    openDropdown () {
+      this.dropdownOpen = true
+    },
     closeDropdown () {
       this.dropdownOpen = false
       if (this.selectedOption === -1) {
         this.currentOptionHighlighted = -1
+      }
+    },
+    clickOutside () {
+      if (this.handleClickOutside) {
+        this.closeDropdown()
       }
     },
     toggleOptionHighlighted (action, index) {

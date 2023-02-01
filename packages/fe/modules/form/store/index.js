@@ -1,7 +1,3 @@
-// ///////////////////////////////////////////////////////////////////// Imports
-// -----------------------------------------------------------------------------
-import CloneDeep from 'lodash/cloneDeep'
-
 // /////////////////////////////////////////////////////////////////////// State
 // -----------------------------------------------------------------------------
 const state = () => ({
@@ -26,6 +22,11 @@ const actions = {
     const index = getters.forms.findIndex(form => form.id === payload.id)
     commit('SET_FORM', { index, form: payload })
   },
+  // /////////////////////////////////////////////////////////////////// setForm
+  removeForm ({ commit, getters }, id) {
+    const index = getters.forms.findIndex(form => form.id === id)
+    commit('REMOVE_FORM', index)
+  },
   // ////////////////////////////////////////////////////////////////// setField
   async setField ({ commit, getters }, payload) {
     const index = getters.fields.findIndex(field => field.id === payload.id)
@@ -33,9 +34,8 @@ const actions = {
   },
   // /////////////////////////////////////////////////////////////// removeField
   removeField ({ commit, getters }, id) {
-    const fields = CloneDeep(getters.fields)
-    delete fields[id]
-    commit('REMOVE_FIELD', fields)
+    const index = getters.fields.findIndex(field => field.id === id)
+    commit('REMOVE_FIELD', index)
   },
   // ////////////////////////////////////////////////// setSavedFormExistsStatus
   setSavedFormExistsStatus ({ commit }, status) {
@@ -64,13 +64,16 @@ const mutations = {
     const form = payload.form
     index === -1 ? state.forms.push(form) : state.forms.splice(index, 1, form)
   },
+  REMOVE_FORM (state, index) {
+    state.forms.splice(index, 1)
+  },
   SET_FIELD (state, payload) {
     const index = payload.index
     const field = payload.field
     index === -1 ? state.fields.push(field) : state.fields.splice(index, 1, field)
   },
-  REMOVE_FIELD (state, fields) {
-    state.fields = fields
+  REMOVE_FIELD (state, index) {
+    state.fields.splice(index, 1)
   },
   SET_SAVED_FORM_EXISTS_STATUS (state, status) {
     state.savedFormExists = status
