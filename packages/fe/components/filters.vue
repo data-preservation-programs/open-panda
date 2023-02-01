@@ -1,11 +1,12 @@
 <template>
-  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']" @keydown.esc="closePanel()">
+  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
         v-if="showSearch"
         :placeholder="`Search ${basicStats.count__datasets__total || '...'} datasets`"
-        theme="solid" />
+        theme="solid"
+        v-on="$listeners" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
@@ -23,31 +24,42 @@
         </button>
       </section>
       <Filterer
-        v-for="(item, key) in filterPanelData.keys"
-        :key="key"
-        :filter-key="key"
-        :filters="filters[key]"
-        @filterApplied="clearPage">
+        v-for="(parentItem, parentIndex) in parentItems"
+        :key="parentItem.id"
+        :filter-key="parentItem.id"
+        :filters="filters[parentItem.id]">
         <section
           slot-scope="{ applyFilter, isSelected }"
           class="grid-noGutter">
           <div class="filters-label col-12">
-            <span>{{ item }}</span>
+            <span>{{ parentItem.label }}</span>
           </div>
-          <ButtonFilters
-            v-for="(item2, index2) in filters[key]"
-            :key="`${filters[key]}-${index2}`"
-            :selected="isSelected(index2)"
-            class="filter-button"
-            @clicked="applyFilter(index2)">
-            {{ item2.label }}
-            <span v-if="item2.count">&nbsp;({{ item2.count }})</span>
-          </ButtonFilters>
+
+          <span
+            v-for="(childItem, childIndex) in filters[parentItem.id]"
+            :key="`${filters[parentIndex.id]}-${childIndex}`">
+            <ButtonFilters
+              v-if="childIndex < parentItem.limit"
+              :selected="isSelected(childIndex)"
+              class="filter-button"
+              @clicked="applyFilter(childIndex)">
+              {{ childItem.label }}
+              <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
+            </ButtonFilters>
+          </span>
+
+          <ButtonToggle
+            theme="light"
+            :class="[{ active: parentItem.showMore }]"
+            @click="toggleLimit(parentIndex, filters[parentItem.id])">
+            {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
+          </ButtonToggle>
+
         </section>
       </Filterer>
 
       <section class="grid-noGutter-right filter-button">
-        <Button :button="{}" @click.native="clearAll">
+        <Button :button="{type: 'default'}" @click.native="clearAll">
           {{ filterPanelData.labels.clear }}
         </Button>
         <Button :button="{type:'solid'}" @click.native="onSearch">
@@ -64,6 +76,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
+import ButtonToggle from '@/components/buttons/button-toggle'
 import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
 import FiltersIcon from '@/components/icons/filter'
@@ -77,6 +90,7 @@ export default {
   components: {
     Filterer,
     ButtonFilters,
+    ButtonToggle,
     Button,
     CardCutout,
     FiltersIcon,
@@ -90,6 +104,11 @@ export default {
       required: false,
       default: 'left'
     },
+    theme: {
+      type: String,
+      required: false,
+      default: 'solid'
+    },
     showSearch: {
       type: Boolean,
       required: false,
@@ -99,7 +118,23 @@ export default {
 
   data () {
     return {
-      open: false
+      open: false,
+      parentItems: [{
+        id: 'categories',
+        label: 'Categories',
+        limit: 10,
+        showMore: false
+      }, {
+        id: 'licenses',
+        label: 'Licenses',
+        limit: 10,
+        showMore: false
+      }, {
+        id: 'fileTypes',
+        label: 'File Types',
+        limit: 10,
+        showMore: false
+      }]
     }
   },
 
@@ -117,12 +152,8 @@ export default {
 
   methods: {
     ...mapActions({
-      setPage: 'datasets/setPage',
       getDatasetList: 'datasets/getDatasetList'
     }),
-    clearPage () {
-      this.setPage({ page: 1 })
-    },
     togglePanel () {
       this.open = !this.open
     },
@@ -133,20 +164,31 @@ export default {
       // do not clear fullyStored because that's outside the filter dropdown
       this.$clearAllFilters('fullyStored')
     },
+    toggleLimit (index, child) {
+      this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
+      this.parentItems[index].showMore = !this.parentItems[index].showMore
+    },
     onSearch () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
-      if (this.$route.name !== 'index') {
-        this.$router.push({
-          path: '/#datasets'
-        })
-      }
+      this.$emit('filterPanelOnSearch')
+      this.$router.push({
+        path: '/#datasets',
+        query: this.$route.query
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+:deep(.button-toggle) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
 .filters {
   position: relative;
   @include fontWeight_Medium;
@@ -190,6 +232,24 @@ export default {
       height: toRem(10);
       top: toRem(-5);
       right: toRem(-12);
+    }
+  }
+}
+
+.theme-line {
+  border: 1px solid $tasman;
+  border-radius: toRem(30);
+  :deep(.searchbar) {
+    background-color: transparent;
+  }
+  &.has-search {
+    .button-c {
+      box-shadow: none;
+    }
+  }
+  .button-c {
+    .button-filter {
+      border: none;
     }
   }
 }

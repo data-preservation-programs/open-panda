@@ -15,92 +15,25 @@
           :placeholder="`Search ${count || '...'} datasets`"
           :loading="dataLoading"
           theme="line"
-          class="datasets-searchbar" />
-        <Filterer
-          filter-key="fullyStored"
-          :is-single-option="true"
-          :filters="filters.fullyStored"
-          class="datasets-checkbox show-desktop-only">
-          <div slot-scope="{ applyFilter, originalSelected }">
-            <FieldContainer
-              field-key="toggle_fully_stored"
-              reset-group-id="filters"
-              :scaffold="{
-                type: 'checkbox',
-                required: false,
-                options: [
-                  { label: 'Show only fully stored datasets' }
-                ],
-                defaultValue: originalSelected
-              }"
-              @updateValue="applyFilter" />
-          </div>
-        </Filterer>
+          class="datasets-searchbar"
+          @searchbarUpdated="shouldCallEndpoint = true" />
+        <!-- ============================================== desktop checkbox -->
+        <CheckboxFullyStored :options="filters.fullyStored" class="datasets-checkbox show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
-        <Filterer
-          filter-key="sort"
-          :is-single-option="true"
-          :filters="sortOptions">
-          <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort show-desktop-only">
-            <FieldContainer
-              field-key="sort_by"
-              reset-group-id="filters"
-              :scaffold="{
-                type: 'select',
-                required: false,
-                label: 'Sort by',
-                options: sortOptions,
-                defaultValue: originalSelected
-              }"
-              @updateValue="applyFilter" />
-          </span>
-        </Filterer>
+        <!-- ================================================== desktop sort -->
+        <Sort :options="sortOptions" class="datasets-sort show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
         <Filters />
       </div>
     </div>
 
     <!-- =========================== filter row2 mobile only: checkbox, sort -->
     <div class="grid-noGutter-middle-spaceBetween show-mobile-only filter-row2-mobile">
-      <Filterer
-        filter-key="fullyStored"
-        :is-single-option="true"
-        :filters="filters.fullyStored"
-        class="col-6_mi-12 datasets-checkbox">
-        <div slot-scope="{ applyFilter, originalSelected }">
-          <FieldContainer
-            field-key="toggle_fully_stored"
-            reset-group-id="filters"
-            :scaffold="{
-              type: 'checkbox',
-              required: false,
-              options: [
-                { label: 'Show only fully stored datasets' }
-              ],
-              defaultValue: originalSelected
-            }"
-            @updateValue="applyFilter" />
-        </div>
-      </Filterer>
-      <Filterer
-        filter-key="sort"
-        :is-single-option="true"
-        :filters="sortOptions">
-        <span slot-scope="{ applyFilter, originalSelected }" class="col-6_mi-12 datasets-sort">
-          <FieldContainer
-            field-key="sort_by"
-            reset-group-id="filters"
-            :scaffold="{
-              type: 'select',
-              required: false,
-              label: '',
-              options: sortOptions,
-              defaultValue: originalSelected
-            }"
-            @updateValue="applyFilter" />
-        </span>
-      </Filterer>
+      <!-- ================================================= mobile checkbox -->
+      <CheckboxFullyStored :options="filters.fullyStored" class="col-6_mi-12 datasets-checkbox" @filterApplied="shouldCallEndpoint = true" />
+      <!-- ===================================================== mobile sort -->
+      <Sort :options="sortOptions" class="col-6_mi-12 datasets-sort" @filterApplied="shouldCallEndpoint = true" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -132,7 +65,7 @@
 
       <div class="col-4 flex-end">
         <Button :button="{type: 'outline'}" @click.native="$clearSearchFilterSortAndLimit">
-          Clear all filters
+          {{ datasetContent.clearAllFilters }}
         </Button>
         <button :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']" @click="updateLayout('grid')">
           <GridIcon />
@@ -181,7 +114,7 @@
           store-key="datasets" />
       </div>
       <div class="col-5_md-12 flex-end">
-        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" />
+        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" @filterApplied="shouldCallEndpoint = true" />
       </div>
     </div>
 
@@ -200,7 +133,8 @@ import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
-import FieldContainer from '@/components/form/field-container'
+import CheckboxFullyStored from '@/components/checkbox-fully-stored'
+import Sort from '@/components/sort'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
@@ -215,22 +149,24 @@ export default {
     BlockBuilder,
     DatasetsCardGrid,
     DatasetsCardList,
+    CheckboxFullyStored,
     Filters,
     Button,
     Searchbar,
     PaginationControls,
-    FieldContainer,
     Filterer,
     ResultsPerPage,
     ButtonFilters,
     GridIcon,
-    ListIcon
+    ListIcon,
+    Sort
   },
 
   data () {
     return {
       tag: 'index',
-      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid',
+      shouldCallEndpoint: false
     }
   },
 
@@ -272,9 +208,9 @@ export default {
     },
     resultCount () {
       const count = this.count
-      if (!count) { return '0 results' }
-      if (count === 1) { return '1 result' }
-      return `${count} results`
+      if (!count) { return '0 Results' }
+      if (count === 1) { return '1 Result' }
+      return `${count} Results`
     },
     page () {
       return this.metadata.page
@@ -289,7 +225,7 @@ export default {
 
   watch: {
     '$route' (route) {
-      this.getDatasetList({ route })
+      this.callGetDatasetList(route)
     },
     datasetList () {
       this.stopLoading()
@@ -298,11 +234,6 @@ export default {
 
   mounted () {
     this.stopLoading()
-  },
-
-  beforeDestroy () {
-    this.resetStore()
-    this.$clearSearchFilterSortAndLimit()
   },
 
   methods: {
@@ -321,6 +252,16 @@ export default {
     updateLayout (layout) {
       this.$ls.set('layout', layout)
       this.layout = layout
+    },
+    callGetDatasetList (route) {
+      /**
+       * this.shouldCallEndpoint flag is here because @filterApplied gets triggered before the route has been registered
+       * so we need to watch the route first and then call the endpoint if flag is true
+       */
+      if (this.shouldCallEndpoint) {
+        this.getDatasetList({ route })
+        this.shouldCallEndpoint = false
+      }
     }
   }
 }

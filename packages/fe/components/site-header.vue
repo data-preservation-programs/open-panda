@@ -4,7 +4,7 @@
     <header class="grid-middle-center-spaceBetween-noGutter">
       <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
 
-      <nuxt-link to="/" class="logo-link">
+      <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
         <SiteLogo class="logo-big" />
         <SiteLogoSmall class="logo-small" />
       </nuxt-link>
@@ -68,10 +68,10 @@ export default {
   },
 
   mounted () {
-    this.closeNav()
+    this.setNavigationOpen(false)
     this.resize = Throttle(() => {
       if (this.navigationOpen) {
-        this.closeNav()
+        this.setNavigationOpen(false)
       }
     }, 200)
     window.addEventListener('resize', this.resize)
@@ -87,16 +87,10 @@ export default {
     }),
     toggleNav () {
       if (this.navigationOpen) {
-        this.closeNav()
+        this.setNavigationOpen(false)
       } else {
         this.setNavigationOpen(true)
-        document.body.classList.add('no-scroll')
       }
-    },
-    closeNav () {
-      this.$clearSearchFilterSortAndLimit()
-      this.setNavigationOpen(false)
-      document.body.classList.remove('no-scroll')
     }
   }
 }
@@ -109,12 +103,6 @@ header {
   @include medium {
     padding-top: toRem(10);
     padding-bottom: toRem(10);
-  }
-}
-
-:deep(.searchbar) {
-  @include large {
-    width: toRem(210);
   }
 }
 
@@ -131,11 +119,13 @@ header {
 }
 
 @include large {
-  :deep(.button-filter span) {
-    display: none;
-  }
-  :deep(.button-filter .icon) {
-    margin-right: 0 !important;
+  .show-desktop-only {
+    :deep(.button-filter span) {
+      display: none;
+    }
+    :deep(.button-filter .icon) {
+      margin-right: 0 !important;
+    }
   }
 }
 

@@ -592,3 +592,29 @@ p, .p1 {
 .sectionals {
   overflow: hidden;
 }
+
+.tooltip {
+  background-color: $rangoonGreen;
+  padding: toRem(5) toRem(8) toRem(7) toRem(8);
+  border-radius: toRem(10);
+  color: white;
+  top: 100%;
+  font-size: toRem(10);
+  display: none;
+  @include fontWeight_Medium;
+  position: absolute;
+  line-height: 1;
+  width: max-content;
+  &:before {
+    width: 0;
+    height: 0;
+    border-top: toRem(5) solid transparent;
+    border-bottom: toRem(5) solid transparent;
+    border-right: toRem(5) solid $rangoonGreen;
+    content: '';
+    position: absolute;
+    top: toRem(-7);
+    left: calc(50% - 2.5px);
+    transform: rotate(90deg);
+  }
+}

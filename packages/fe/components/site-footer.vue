@@ -15,7 +15,7 @@
                 v-for="(link, index) in footerData.nav_1"
                 :key="index"
                 :button="{
-                  type: 'default',
+                  type: 'footerNav',
                   text: link.label,
                   url: link.href
                 }" />
@@ -25,7 +25,7 @@
                 v-for="(link, index) in footerData.nav_2"
                 :key="index"
                 :button="{
-                  type: 'default',
+                  type: 'footerNav',
                   text: link.label,
                   url: link.href
                 }" />

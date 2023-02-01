@@ -12,6 +12,13 @@
 
       <div class="input-wrapper">
 
+        <button
+          :class="['search-button', { loading }]"
+          @click="focusInput">
+          <Spinner />
+          <IconSearch />
+        </button>
+
         <input
           ref="input"
           :value="value"
@@ -21,13 +28,6 @@
           @input="updateValue"
           @focus="focused = true"
           @blur="focused = false">
-
-        <button
-          :class="['search-button', { loading }]"
-          @click="focusInput">
-          <Spinner />
-          <IconSearch />
-        </button>
 
       </div>
 
@@ -118,6 +118,10 @@ export default {
   align-items: center;
 }
 
+.searchbar {
+  width: 100%;
+}
+
 .input {
   flex: 1;
   appearance: none;
@@ -139,8 +143,8 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-right: toRem(20);
-  margin-left: toRem(10);
+  margin-right: toRem(10);
+  margin-left: toRem(20);
   cursor: pointer;
   &.loading {
     .spinner {
@@ -190,7 +194,7 @@ export default {
   border: 2px solid $tasman;
   border-radius: toRem(30);
   .input {
-    padding: toRem(15) toRem(30);
+    padding: toRem(15) toRem(30) toRem(15) toRem(10);
   }
   .icon-container {
     align-items: flex-end;
@@ -202,7 +206,7 @@ export default {
   border-radius: toRem(30) 0 0 toRem(2);
   .input {
     height: toRem(50);
-    padding: toRem(15) toRem(15) toRem(15) toRem(22);
+    padding: toRem(15) toRem(30) toRem(15) toRem(10);
   }
 }
 

@@ -51,9 +51,19 @@ export default {
   padding: 0.25rem 1rem;
   border-radius: 1.5rem;
   cursor: pointer;
+  transition: 250ms;
   &:not([disabled]) {
     &:focus-visible {
       @include focusBoxShadow;
+    }
+    &:hover {
+      transition: 250ms;
+      background-color: $rangoonGreen;
+      color: white;
+      .icon-before {
+        transition: 250ms;
+        filter: invert(1);
+      }
     }
   }
   &[disabled] {
@@ -82,6 +92,7 @@ export default {
 }
 
 .icon-before {
+  transition: 250ms;
   position: absolute;
   transition: 200ms ease;
   transform: rotate(0deg);

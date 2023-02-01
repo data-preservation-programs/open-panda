@@ -8,6 +8,8 @@
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
+    <div v-if="button.tooltip" class="tooltip">
+      {{ button.tooltip }}</div>
     <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
   </component>
 </template>
@@ -62,6 +64,7 @@ export default {
   position: relative;
   align-items: center;
   justify-content: center;
+  @include fontSize_16;
   cursor: pointer;
   .icon {
     transition: transform 100ms ease-out;
@@ -69,6 +72,9 @@ export default {
     &.arrow-icon {
       transform: rotate(-40deg);
     }
+  }
+  .tooltip {
+    top: calc(100% + 5px);
   }
   &:hover {
     .icon {
@@ -84,6 +90,17 @@ export default {
 }
 
 .type__default {
+  &:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  &[disabled] .text {
+    opacity: 0.7;
+  }
+}
+
+.type__footerNav {
   font-family: $font_Secondary;
   @include fontWeight_Bold;
   @include fontSize_24;
@@ -109,6 +126,11 @@ export default {
   &[disabled] {
     background-color: gray;
   }
+  &:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
 }
 
 .type__solid-tear {
@@ -123,6 +145,9 @@ export default {
   border: 1px solid $rangoonGreen;
   padding: toRem(7) toRem(15);
   border-radius: toRem(20);
+  @include medium {
+    padding: toRem(4) toRem(10);
+  }
   &:hover {
     background-color: $athensGray;
     color: $rangoonGreen;

@@ -50,12 +50,6 @@ export default {
       required: false,
       default: false
     }
-  },
-
-  methods: {
-    imClicked (e) {
-      console.log(e)
-    }
   }
 }
 </script>
@@ -69,6 +63,7 @@ export default {
   border-radius: toRem(20);
   white-space: nowrap;
   cursor: pointer;
+  margin-right: toRem(8);
   &[disabled] {
     box-shadow: none;
     cursor: no-drop;
