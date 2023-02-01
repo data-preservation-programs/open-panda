@@ -180,6 +180,7 @@ export default {
       flex-shrink: 0;
     }
     :deep(.filters) {
+      width: calc(100% - 50px);
       flex-grow: 1;
     }
   }
