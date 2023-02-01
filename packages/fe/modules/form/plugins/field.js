@@ -7,9 +7,28 @@
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
 import CloneDeep from 'lodash/cloneDeep'
+import { uuid as Uuid } from 'vue-uuid'
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
+// ====================================================== getArrayFormFieldValue
+const getArrayFormFieldValue = (form, scaffold, groupIndex) => {
+  const entry = form.scaffold[scaffold.parentModelKey][groupIndex]
+  if (!entry) { return getNullStateValue(scaffold.type) }
+  return entry[scaffold.modelKey]
+}
+
+// ============================================== getCheckboxRadioFormFieldValue
+const getCheckboxRadioFormFieldValue = (value, scaffold) => {
+  const isSingleOption = scaffold.options.length === 1
+  if (isSingleOption) {
+    return value === true ? 0 : -1
+  } else {
+    console.log('TODO: Wire up multi-option radios/checkboxes. Remember to keep values index-based for interoperability with the search/filters module.')
+    return value
+  }
+}
+
 // =========================================================== getNullStateValue
 const getNullStateValue = (type) => {
   let value
@@ -17,29 +36,40 @@ const getNullStateValue = (type) => {
     case 'checkbox' : value = -1; break
     case 'select' : value = -1; break
     case 'range' : value = scaffold.min; break
+    case 'array' : value = []; break
     default : value = ''; break
   }
   return value
 }
 
 // ==================================================================== getValue
-const getValue = (scaffold, form, resetTo) => {
+const getValue = (app, scaffold, form, resetTo, groupIndex) => {
   const dualValueFields = ['select', 'radio', 'checkbox']
   const type = scaffold.type
-  let value = form ? form.scaffold[scaffold.formKey] : undefined // First grab the value found in the form
+  let value = form ? form.scaffold[scaffold.modelKey] : undefined // First grab the value found in the form
+  if (type === 'array') {
+    value.map(entry => (Object.assign(entry, { groupId: Uuid.v4() })))
+  } else if (type === 'checkbox') {
+    value = getCheckboxRadioFormFieldValue(value, scaffold)
+  }
+  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined) { return value }
   // If this is just a reset to the nullState, then grab and return the null state
-  if (resetTo && resetTo === 'nullState') {
+  if (resetTo && resetTo !== '' && resetTo === 'nullState') {
     return getNullStateValue(type)
   }
+  // If the field is part of an array, grab the internal array form field value
+  if (scaffold.hasOwnProperty('parentModelKey')) {
+    value = getArrayFormFieldValue(form, scaffold, groupIndex)
+  }
   // If a default value is set in the field scaffold, grab that instead (both for regular getValue calls as well as if it's a reset)
-  if (scaffold.hasOwnProperty('defaultValue') && scaffold.defaultValue !== undefined) {
+  if (scaffold.hasOwnProperty('defaultValue') && scaffold.defaultValue !== '') {
     const defaultValue = scaffold.defaultValue
     value = defaultValue
     if ((dualValueFields.includes(type)) && typeof defaultValue === 'string') {
       value = scaffold.options.findIndex(option => option.label === defaultValue)
     }
-  // Otherwise set a null state default value
-  } else {
+  // Otherwise set a null state default value, except for array field values
+  } else if (!scaffold.hasOwnProperty('parentModelKey')) {
     value = getNullStateValue(type)
   }
   return value
@@ -125,7 +155,7 @@ const applyTransformations = async (app, store, transformSourceField) => {
           value = applyTransformation(app, field, transformSourceField, scaffold.mirror)
           await app.$field(field.id).update({
             value,
-            state: value !== field.originalValue ? 'caution' : 'valid',
+            state: JSON.stringify(value) !== JSON.stringify(field.originalValue) ? 'caution' : 'valid',
             validation: transformSourceField.validation
           })
         }
@@ -133,7 +163,7 @@ const applyTransformations = async (app, store, transformSourceField) => {
           value = applyTransformation(app, field, transformSourceField, scaffold.react)
           await app.$field(field.id).update({
             value,
-            state: value !== field.originalValue ? 'caution' : 'valid',
+            state: JSON.stringify(value) !== JSON.stringify(field.originalValue) ? 'caution' : 'valid',
             validation: transformSourceField.validation
           })
         }
@@ -166,8 +196,9 @@ const updateLocalStorageSavedField = (ctx, store, formId) => {
 // -----------------------------------------------------------------------------
 const Field = (app, store, id) => {
   let field = store.getters['form/fields'].find(field => field.id === id)
-  let value, scaffold, type, inputType, required, pattern, chars, min, max, mirror, react
+  let formId, form, value, scaffold, type, inputType, required, pattern, chars, min, max, mirror, react
   if (field) {
+    formId = field.formId
     value = field.value
     scaffold = field.scaffold
     type = scaffold.type
@@ -180,17 +211,21 @@ const Field = (app, store, id) => {
     mirror = scaffold.mirror
     react = scaffold.react
   }
+  if (formId) {
+    form = store.$form(formId).get()
+  }
   return {
 
     // ================================================================ register
-    async register (formId, fieldKey, scaffold) {
+    async register (formId, groupIndex, fieldKey, scaffold) {
       if (!field) {
-        const form = store.getters['form/forms'].find(form => form.id === formId)
-        const value = getValue(scaffold, form)
+        const form = app.$form(formId).get()
+        const value = getValue(app, scaffold, form, false, groupIndex)
         await store.dispatch('form/setField', {
           id,
           fieldKey,
           formId,
+          ...(typeof groupIndex === 'number' && { groupIndex }),
           value,
           originalValue: value,
           state: 'valid',
@@ -201,14 +236,16 @@ const Field = (app, store, id) => {
       }
     },
 
+    // ============================================================== deregister
+    async deregister () {
+      if (field) {
+        await store.dispatch('form/removeField', id)
+      }
+    },
+
     // ===================================================================== get
     get () {
       return field
-    },
-
-    // ================================================================== remove
-    remove () {
-      store.dispatch('form/removeField', field.id)
     },
 
     // ================================================================== update
@@ -224,10 +261,13 @@ const Field = (app, store, id) => {
         parsed = value !== '' ? parseFloat(value) : null
       }
       field.value = parsed
-      field.state = field.value !== field.originalValue ? 'caution' : 'valid'
+      field.state = JSON.stringify(field.value) !== JSON.stringify(field.originalValue) ? 'caution' : 'valid'
       field.validation = false
       await store.dispatch('form/setField', field)
       await applyTransformations(app, store, field)
+      if (formId) {
+        app.$form(formId).updateState()
+      }
       updateLocalStorageSavedField(app, store, field.formId)
     },
 
@@ -248,13 +288,15 @@ const Field = (app, store, id) => {
         }
       }
       await store.dispatch('form/setField', field)
+      if (formId) {
+        app.$form(formId).updateState()
+      }
       return { field, check }
     },
 
     // =================================================================== reset
     reset (resetTo) {
-      const form = store.getters['form/forms'].find(form => form.id === formId)
-      const value = getValue(scaffold, form, resetTo)
+      const value = getValue(app, scaffold, form, resetTo)
       this.update({
         value,
         originalValue: value,

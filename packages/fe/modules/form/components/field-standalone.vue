@@ -22,10 +22,10 @@ export default {
       required: false,
       default: ''
     },
-    groupId: {
-      type: String,
+    groupIndex: {
+      type: [Number, Boolean],
       required: false,
-      default: ''
+      default: false
     },
     validateOnEntry: {
       type: Boolean,
@@ -45,8 +45,11 @@ export default {
   },
 
   data () {
-    const fieldKey = this.fieldKey
+    let fieldKey = this.fieldKey
     const formId = this.formId
+    if (this.scaffold.hasOwnProperty('parentModelKey')) {
+      fieldKey = `${fieldKey}|${this.groupIndex}`
+    }
     const id = fieldKey !== '' && formId ? `${fieldKey}|${formId}` : fieldKey
     return {
       id
@@ -70,6 +73,8 @@ export default {
         case 'checkbox' : component = 'FieldCheckbox'; break
         case 'radio' : component = 'FieldRadio'; break
         case 'select' : component = 'FieldSelect'; break
+        case 'typeahead' : component = 'FieldTypeahead'; break
+        case 'chiclet' : component = 'FieldChiclet'; break
       }
       return component
     },
@@ -84,8 +89,9 @@ export default {
     },
     validationMessage () {
       const message = this.scaffold.validationMessage
-      if (!message) { return false }
-      return message[this.field.validation]
+      const field = this.field
+      if (!message || !field) { return false }
+      return message[field.validation]
     }
   },
 
@@ -99,7 +105,7 @@ export default {
 
   async created () {
     if (!this.field) {
-      await this.$field(this.id).register(this.formId, this.fieldKey, this.scaffold)
+      await this.$field(this.id).register(this.formId, this.groupIndex, this.fieldKey, this.scaffold)
     } else {
       await this.$field(this.id).update({ validate: true })
     }
@@ -118,6 +124,7 @@ export default {
         this.$field(this.id).reset(payload.resetTo)
       }
     })
+    this.$emit('fieldRegistered', this.id)
   },
 
   async beforeDestroy () {
@@ -125,7 +132,7 @@ export default {
       await this.$field(this.id).update({ validate: false })
     }
     if (this.deregisterOnDestroy) {
-      this.$field(this.id).remove()
+      this.$field(this.id).deregister()
     }
   },
 

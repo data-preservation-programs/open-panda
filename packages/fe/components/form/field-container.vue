@@ -1,6 +1,6 @@
 <template>
   <div class="field-container">
-    <Field v-bind="$props">
+    <FieldStandalone v-bind="$props">
       <div slot-scope="{ updateValue, field, type, validationMessage }" :class="`field-wrapper field-wrapper-${scaffold.type}`">
         <template v-if="field">
 
@@ -26,37 +26,42 @@
 
         </template>
       </div>
-    </Field>
+    </FieldStandalone>
   </div>
 </template>
 
 <script>
 // ===================================================================== Imports
-import Field from '@/modules/form/components/field'
+import FieldStandalone from '@/modules/form/components/field-standalone'
 import FieldInput from '@/components/form/fields/input'
 import FieldTextarea from '@/components/form/fields/textarea'
 import FieldRange from '@/components/form/fields/range'
 import FieldCheckbox from '@/components/form/fields/checkbox'
+import FieldRadio from '@/components/form/fields/radio'
 import FieldSelect from '@/components/form/fields/select'
+import FieldTypeahead from '@/components/form/fields/typeahead'
+import FieldChiclet from '@/components/form/fields/chiclet'
 
 // ====================================================================== Export
 export default {
   name: 'FieldContainer',
 
   components: {
-    Field,
+    FieldStandalone,
     FieldInput,
     FieldTextarea,
     FieldRange,
     FieldCheckbox,
-    FieldSelect
+    FieldRadio,
+    FieldSelect,
+    FieldTypeahead,
+    FieldChiclet
   },
 
   /**
    * props:
    *
    * @updateValue - triggers when field has changed
-   * :value - is the value of the input
    * :resetGroupId - if this prop matches ID passed to 'resetFormFields' global bus event, then reset the field value
    */
   props: {
@@ -73,15 +78,10 @@ export default {
       type: String,
       required: true
     },
-    resetGroupId: {
-      type: String,
+    groupIndex: {
+      type: [Number, Boolean],
       required: false,
-      default: ''
-    },
-    groupId: {
-      type: String,
-      required: false,
-      default: ''
+      default: false
     },
     forceDisableFields: {
       type: Boolean,
