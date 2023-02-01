@@ -141,6 +141,9 @@ export default {
     },
     optionDisplayKey () {
       return this.scaffold.optionDisplayKey
+    },
+    optionReturnKey () {
+      return this.scaffold.optionReturnKey
     }
   },
 
@@ -170,7 +173,7 @@ export default {
     },
     optionSelected (index) {
       this.selectedOption = index
-      this.$emit('updateValue', this.options[index][this.optionDisplayKey])
+      this.$emit('updateValue', this.options[index][this.optionReturnKey])
     },
     optionIncludedInSearch (option) {
       const value = option[this.optionDisplayKey]
