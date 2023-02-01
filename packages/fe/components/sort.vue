@@ -4,7 +4,7 @@
     :is-single-option="true"
     :filters="options"
     v-on="$listeners">
-    <span slot-scope="{ applyFilter, originalSelected }">
+    <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort">
       <FieldContainer
         field-key="sort_by"
         reset-group-id="filters"
@@ -42,3 +42,20 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.datasets-sort {
+  margin-right: toRem(30);
+  @include medium {
+    margin-right: 0;
+  }
+  :deep(.field-select) {
+    width: toRem(140);
+  }
+  @include large {
+    :deep(.field-label) {
+      display: none;
+    }
+  }
+}
+</style>

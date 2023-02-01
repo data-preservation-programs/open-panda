@@ -314,7 +314,7 @@ export default {
       return this.dataset.resources
     },
     fileTypes () {
-      return this.dataset.file_extensions.split(',').map(ext => ext.replaceAll(' ', '')).filter(item => item)
+      return this.dataset.file_extensions
     },
     infoItems () {
       return [
