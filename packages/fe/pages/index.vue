@@ -114,7 +114,7 @@
           store-key="datasets" />
       </div>
       <div class="col-5_md-12 flex-end">
-        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" @filterApplied="callGetDatasetList" />
+        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" @filterApplied="shouldCallEndpoint = true" />
       </div>
     </div>
 
