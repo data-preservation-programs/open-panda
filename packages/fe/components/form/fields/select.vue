@@ -5,7 +5,6 @@
       :options="options"
       :aria-labelledby="modelKey || fieldKey"
       :selected-option="value"
-      handle-state="internally"
       @dropdownToggled="dropdownToggled"
       @optionSelected="optionSelected">
 

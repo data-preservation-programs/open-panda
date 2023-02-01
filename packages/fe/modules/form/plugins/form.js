@@ -11,52 +11,59 @@ import CloneDeep from 'lodash/cloneDeep'
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // ================================================================ compileArray
-// const compileArray = (arrayField, fields) => {
-//   return new Promise((resolve) => {
-//     const template = arrayField.template
-//     const valueScaffold = arrayField.value
-//     let match
-//     if (typeof template === 'object') { // if array of objects
-//       match = valueScaffold.map((group) => {
-//         const groupId = group.group_id
-//         const groupFields = group.fields
-//         return Object.values(groupFields).reduce((acc, fieldScaffold) => {
-//           const field = fields.find((obj) => {
-//             return obj.parent_model_key === arrayField.model_key &&
-//                    obj.group_id === groupId &&
-//                    obj.model_key === fieldScaffold.model_key
-//           })
-//           acc[fieldScaffold.model_key] = field.value
-//           return acc
-//         }, {})
-//       })
-//     }
-//     resolve(match)
-//   })
-// }
+const compileArray = (arrayField, fields) => {
+  return new Promise((resolve) => {
+    const groups = fields.reduce((acc, field) => {
+      const groupIndex = field.groupIndex
+      if (field.scaffold.parentModelKey === arrayField.scaffold.modelKey) {
+        !acc.hasOwnProperty(groupIndex) ? acc[groupIndex] = [field] : acc[groupIndex].push(field)
+      }
+      return acc
+    }, {})
+    const lenI = groups.length
+    if (lenI === 0) { return arrayField.value }
+    const final = []
+    Object.keys(groups).forEach((key) => {
+      const group = groups[key]
+      const compiled = {}
+      arrayField.scaffold.template.forEach((template, index) => {
+        const field = group[index]
+        compiled[field.scaffold.modelKey] = field.value
+      })
+      final.push(compiled)
+    })
+    resolve(final)
+  })
+}
 
 // ================================================================ extractModel
-const extractModel = (scaffold, fields) => {
+const extractModel = async (scaffold, fields) => {
   try {
     const len = fields.length
     for (let i = 0; i < len; i++) {
       const field = fields[i]
       const fieldScaffold = field.scaffold
+      const options = fieldScaffold.options
       const modelKey = fieldScaffold.modelKey
       const mirror = fieldScaffold.mirror
       const type = fieldScaffold.type
       let value = field.value
       if (!field.hasOwnProperty('parentModelKey') && field.validate && ((mirror && mirror.primary) || !mirror)) {
         if (type === 'array') {
-          // scaffold[modelKey] = await compileArray(field, fields)
-        } else if ((type === 'select' || type === 'radio' || type === 'checkbox') && fieldScaffold.output === 'option') {
-          if (typeof value !== 'string') {
-            const option = fieldScaffold.options[value]
+          value = await compileArray(field, fields)
+        } else if (type === 'select' || type === 'radio' || type === 'checkbox') {
+          if (typeof value !== 'string' && fieldScaffold.output === 'option') {
+            const option = options[value]
             if (option) {
               value = option.label
             } else {
               value = fieldScaffold.baseValue
               if (!value) { throw new Error(`baseValue key missing from ${field.fieldKey} field scaffold`) }
+            }
+          } else if (type === 'radio' || type === 'checkbox') {
+            const isSingleOption = options.length === 1
+            if (isSingleOption) {
+              value = value === -1 ? false : true
             }
           }
         }
@@ -87,6 +94,7 @@ const resetFields = (app, fields) => {
 // -----------------------------------------------------------------------------
 const Form = (app, store, id) => {
   const form = store.getters['form/forms'].find(form => form.id === id)
+  const fields = store.getters['form/fields'].filter(field => field.formId === id)
   return {
 
     // ================================================================ register
@@ -94,9 +102,16 @@ const Form = (app, store, id) => {
       if (!form) {
         await store.dispatch('form/setForm', {
           id,
-          state: 'valid',
+          state: data.new ? 'new' : 'valid',
           scaffold: data
         })
+      }
+    },
+
+    // ============================================================== deregister
+    deregister () {
+      if (form) {
+        store.dispatch('form/removeForm', id)
       }
     },
 
@@ -108,6 +123,22 @@ const Form = (app, store, id) => {
     // ================================================================== update
     update (values) {
       store.dispatch('form/setForm', Object.assign(CloneDeep(form), values))
+    },
+
+    // ============================================================= updateState
+    updateState (forcedState) {
+      if (forcedState) {
+        return this.update({ state: forcedState })
+      }
+      const len = fields.length
+      let state = 'valid'
+      for (let i = 0; i < len; i++) {
+        const fieldState = fields[i].state
+        if (fieldState !== 'valid') {
+          state = fieldState
+        }
+      }
+      this.update({ state })
     },
 
     // ================================================================ validate
