@@ -6,8 +6,8 @@ const env = process.env.SERVER_ENV
 
 const baseUrls = {
   development: 'https://localhost',
-  stable: '',
-  production: ''
+  stable: 'https://stable.openpanda.io',
+  production: 'https://openpanda.io'
 }
 
 const frontendPort = (function () {
