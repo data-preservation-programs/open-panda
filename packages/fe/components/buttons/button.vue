@@ -137,6 +137,7 @@ export default {
   @extend .type__solid;
   border-radius: toRem(2) toRem(30) toRem(30) toRem(30);
   &:hover {
+    text-decoration: none;
     border-radius: toRem(30) toRem(30) toRem(2) toRem(30);
   }
 }

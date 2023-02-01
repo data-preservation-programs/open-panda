@@ -57,7 +57,7 @@
           <Button
             :button="{
               type: 'solid',
-              url: `/${data.slug}`,
+              url: `/dataset/${data.slug}`,
               text: 'View dataset',
               icon: 'arrow'
             }" />
