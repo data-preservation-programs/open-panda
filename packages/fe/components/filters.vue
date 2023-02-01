@@ -1,5 +1,5 @@
 <template>
-  <div :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']" @keydown.esc="closePanel()">
+  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']">
 
     <div class="button-c">
       <Searchbar
@@ -23,26 +23,38 @@
         </button>
       </section>
       <Filterer
-        v-for="(item, key) in filterPanelData.keys"
-        :key="key"
-        :filter-key="key"
-        :filters="filters[key]"
+        v-for="(parentItem, parentIndex) in parentItems"
+        :key="parentItem.id"
+        :filter-key="parentItem.id"
+        :filters="filters[parentItem.id]"
         @filterApplied="clearPage">
         <section
           slot-scope="{ applyFilter, isSelected }"
           class="grid-noGutter">
           <div class="filters-label col-12">
-            <span>{{ item }}</span>
+            <span>{{ parentItem.label }}</span>
           </div>
-          <ButtonFilters
-            v-for="(item2, index2) in filters[key]"
-            :key="`${filters[key]}-${index2}`"
-            :selected="isSelected(index2)"
-            class="filter-button"
-            @clicked="applyFilter(index2)">
-            {{ item2.label }}
-            <span v-if="item2.count">&nbsp;({{ item2.count }})</span>
-          </ButtonFilters>
+
+          <span
+            v-for="(childItem, childIndex) in filters[parentItem.id]"
+            :key="`${filters[parentIndex.id]}-${childIndex}`">
+            <ButtonFilters
+              v-if="childIndex < parentItem.limit"
+              :selected="isSelected(childIndex)"
+              class="filter-button"
+              @clicked="applyFilter(childIndex)">
+              {{ childItem.label }}
+              <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
+            </ButtonFilters>
+          </span>
+
+          <ButtonToggle
+            theme="light"
+            :class="[{ active: parentItem.showMore }]"
+            @click="toggleLimit(parentIndex, filters[parentItem.id])">
+            {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
+          </ButtonToggle>
+
         </section>
       </Filterer>
 
@@ -64,6 +76,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
+import ButtonToggle from '@/components/buttons/button-toggle'
 import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
 import FiltersIcon from '@/components/icons/filter'
@@ -77,6 +90,7 @@ export default {
   components: {
     Filterer,
     ButtonFilters,
+    ButtonToggle,
     Button,
     CardCutout,
     FiltersIcon,
@@ -99,7 +113,23 @@ export default {
 
   data () {
     return {
-      open: false
+      open: false,
+      parentItems: [{
+        id: 'categories',
+        label: 'Categories',
+        limit: 10,
+        showMore: false
+      }, {
+        id: 'licenses',
+        label: 'Licenses',
+        limit: 10,
+        showMore: false
+      }, {
+        id: 'fileTypes',
+        label: 'File Types',
+        limit: 10,
+        showMore: false
+      }]
     }
   },
 
@@ -133,20 +163,29 @@ export default {
       // do not clear fullyStored because that's outside the filter dropdown
       this.$clearAllFilters('fullyStored')
     },
+    toggleLimit (index, child) {
+      this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
+      this.parentItems[index].showMore = !this.parentItems[index].showMore
+    },
     onSearch () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
-      if (this.$route.name !== 'index') {
-        this.$router.push({
-          path: '/#datasets'
-        })
-      }
+      this.$router.push({
+        path: '/#datasets'
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+:deep(.button-toggle) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
 .filters {
   position: relative;
   @include fontWeight_Medium;
