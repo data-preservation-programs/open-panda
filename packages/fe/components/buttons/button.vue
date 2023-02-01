@@ -62,6 +62,7 @@ export default {
   position: relative;
   align-items: center;
   justify-content: center;
+  @include fontSize_16;
   cursor: pointer;
   .icon {
     transition: transform 100ms ease-out;
@@ -123,6 +124,9 @@ export default {
   border: 1px solid $rangoonGreen;
   padding: toRem(7) toRem(15);
   border-radius: toRem(20);
+  @include medium {
+    padding: toRem(4) toRem(10);
+  }
   &:hover {
     background-color: $athensGray;
     color: $rangoonGreen;

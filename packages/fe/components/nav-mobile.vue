@@ -4,7 +4,7 @@
 
       <!-- ====================================================== filter bar -->
       <div class="grid-noGutter mobile-nav-searchbar">
-        <Filters class="col-12" :show-search="true" />
+        <Filters class="col-12" :show-search="true" theme="line" />
       </div>
 
       <!-- ============================================================= nav -->
@@ -17,8 +17,11 @@
             selected: $isRouteCurrent($route, link.href ? link.href : null),
             disabled: typeof link.href === 'undefined' || link.href === '',
             url: link.href,
+            type: 'default',
             tooltip: link.tooltip || ''
-          }" />
+          }"
+          class="col-12 mobile-nav-buttons"
+          @click.native="setNavigationOpen(false)" />
       </div>
 
       <!-- =================================================== dataset cards -->
@@ -32,20 +35,29 @@
           v-for="(data, index) in datasetList"
           :key="`dataset-${index}`"
           class="col-12 result">
-          <nuxt-link :to="`/dataset/${data.slug}`">
-            <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
-            <div class="grid">
+          <nuxt-link :to="`/${data.slug}`" @click.native="setNavigationOpen(false)">
+            <div class="card-img" :style="`background-image: url(/images/datasets/${data.slug}.jpg)`" />
+            <div class="card-data grid-noGutter">
               <div class="col-12 title" :title="data.name">
                 {{ data.name }}
               </div>
-              <div class="col-12">
+              <div class="col-12 data">
                 <span>
                   {{ data.data_size }}
                 </span>
-                <span>
+                <span v-if="data.storage">
                   Storage Providers
-                  {{ data.storage }}
+                  <strong>{{ data.storage }}</strong>
                 </span>
+              </div>
+              <div class="col-12 cat">
+                <Button
+                  v-for="(cat, catIndex) in data.categories"
+                  :key="`cat-${catIndex}`"
+                  :button="{
+                    text: cat,
+                    type: 'outline'
+                  }" />
               </div>
             </div>
           </nuxt-link>
@@ -101,7 +113,8 @@ export default {
   methods: {
     ...mapActions({
       setLoadingStatus: 'datasets/setLoadingStatus',
-      getDatasetList: 'datasets/getDatasetList'
+      getDatasetList: 'datasets/getDatasetList',
+      setNavigationOpen: 'general/setNavigationOpen'
     }),
     stopLoading () {
       this.$nextTick(() => {
@@ -140,8 +153,46 @@ export default {
   .heading {
     border-bottom: 1px solid $athensGray;
   }
-  .result {
+  .result a {
     display: flex;
+    border-bottom: 1px solid $athensGray;
+    padding: toRem(16) 0 toRem(11) 0;
+  }
+  .card-img {
+    border-radius: 50%;
+    border-bottom-left-radius: 0.125rem;
+    width: toRem(45);
+    height: toRem(45);
+    background-size: cover;
+    background-position: center center;
+    background-color: $tasman;
+    flex-shrink: 0;
+  }
+  .card-data {
+    margin-left: toRem(20);
+    .title {
+      @include fontWeight_Medium;
+      line-height: 1.3;
+      margin-bottom: toRem(5);
+    }
+    .data {
+      margin-bottom: toRem(5);
+      @include fontSize_14;
+      span {
+        margin-right: toRem(20);
+      }
+    }
+    .cat {
+      :deep(.button) {
+        margin-right: toRem(5);
+        margin-bottom: toRem(5);
+      }
+    }
+  }
+  .mobile-nav-buttons {
+    @include fontSize_24;
+    margin-bottom: toRem(22);
+    justify-content: left;
   }
 }
 

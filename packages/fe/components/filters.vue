@@ -1,5 +1,5 @@
 <template>
-  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search']">
+  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
@@ -103,6 +103,11 @@ export default {
       type: String,
       required: false,
       default: 'left'
+    },
+    theme: {
+      type: String,
+      required: false,
+      default: 'solid'
     },
     showSearch: {
       type: Boolean,
@@ -229,6 +234,24 @@ export default {
       height: toRem(10);
       top: toRem(-5);
       right: toRem(-12);
+    }
+  }
+}
+
+.theme-line {
+  border: 1px solid $tasman;
+  border-radius: toRem(30);
+  :deep(.searchbar) {
+    background-color: transparent;
+  }
+  &.has-search {
+    .button-c {
+      box-shadow: none;
+    }
+  }
+  .button-c {
+    .button-filter {
+      border: none;
     }
   }
 }

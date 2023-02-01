@@ -68,10 +68,10 @@ export default {
   },
 
   mounted () {
-    this.closeNav()
+    this.setNavigationOpen(false)
     this.resize = Throttle(() => {
       if (this.navigationOpen) {
-        this.closeNav()
+        this.setNavigationOpen(false)
       }
     }, 200)
     window.addEventListener('resize', this.resize)
@@ -87,16 +87,10 @@ export default {
     }),
     toggleNav () {
       if (this.navigationOpen) {
-        this.closeNav()
+        this.setNavigationOpen(false)
       } else {
         this.setNavigationOpen(true)
-        document.body.classList.add('no-scroll')
       }
-    },
-    closeNav () {
-      this.$clearSearchFilterSortAndLimit()
-      this.setNavigationOpen(false)
-      document.body.classList.remove('no-scroll')
     }
   }
 }
@@ -131,11 +125,13 @@ header {
 }
 
 @include large {
-  :deep(.button-filter span) {
-    display: none;
-  }
-  :deep(.button-filter .icon) {
-    margin-right: 0 !important;
+  .show-desktop-only {
+    :deep(.button-filter span) {
+      display: none;
+    }
+    :deep(.button-filter .icon) {
+      margin-right: 0 !important;
+    }
   }
 }
 
