@@ -94,6 +94,7 @@ export default {
   modules: [
     '@nuxtjs/axios', // Doc: https://axios.nuxtjs.org/usage
     'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
+    '@nuxt/content', // Doc: https://content.nuxtjs.org
     '~/modules/https',
     '~/modules/toaster',
     '~/modules/slider',
@@ -103,6 +104,15 @@ export default {
     '~/modules/form',
     '~/modules/button'
   ],
+  // ///////////////////////////////////////////////////// [Module] Nuxt-content
+  // ---------------------------------------------------------------------------
+  content: {
+    markdown: {
+      prism: {
+        theme: false
+      }
+    }
+  },
   // /////////////////////////////////// Plugins to load before mounting the App
   // ---------------------------------------------------------------------------
   plugins: [
