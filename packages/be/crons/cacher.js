@@ -48,12 +48,24 @@ const GetFilters = require('@Module_Dataset/logic/get-filters')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
-// ///////////////////////////////////////////////////////////// getDatasetCount
-const getDatasetCount = async () => {
+// /////////////////////////////////////////////////////////////// getBasicStats
+const getBasicStats = async () => {
   try {
-    return await MC.model.Dataset.countDocuments()
+    return {
+      count__datasets__total: await MC.model.Dataset.countDocuments()
+    }
   } catch (e) {
-    console.log('================================= [Function: getDatasetCount]')
+    console.log('=================================== [Function: getBasicStats]')
+    throw e
+  }
+}
+
+// /////////////////////////////////////////////// getTypeaheadDatasetSearchData
+const getTypeaheadDatasetSearchData = async () => {
+  try {
+    return await MC.model.Dataset.find({}).select('-_id name slug')
+  } catch (e) {
+    console.log('=================== [Function: getTypeaheadDatasetSearchData]')
     throw e
   }
 }
@@ -78,18 +90,10 @@ const Cacher = async () => {
   console.log('🤖 Caching started')
   try {
     const start = process.hrtime()[0]
-    const count = await getDatasetCount()
     await writeToDisc([
-      {
-        filename: 'basic-stats.json',
-        data: {
-          count__datasets__total: count
-        }
-      },
-      {
-        filename: 'filters.json',
-        data: await GetFilters()
-      }
+      { filename: 'basic-stats.json', data: await getBasicStats() },
+      { filename: 'filters.json', data: await GetFilters() },
+      { filename: 'typeahead-dataset-search-data.json', data: await getTypeaheadDatasetSearchData() }
     ])
     const end = process.hrtime()[0]
     console.log(`🏁 Caching complete | took ${SecondsToHms(end - start)}`)

@@ -49,7 +49,6 @@ const findDatasets = async (search = '', page = 1, limit = 10, sort = {}) => {
 MC.app.get('/get-dataset-list', async (req, res) => {
   try {
     const query = req.query
-    console.log(query)
     const search = await ParseQuerySearch(query.search)
     const page = await parseNumber(query.page)
     const limit = await parseNumber(query.limit)
