@@ -46,7 +46,6 @@ const actions = {
     if (toggle) {
       document.body.classList.add('no-scroll')
     } else {
-      this.$clearSearchFilterSortAndLimit()
       document.body.classList.remove('no-scroll')
     }
     commit('SET_NAVIGATION_OPEN', toggle)

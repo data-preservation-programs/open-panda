@@ -4,10 +4,10 @@
 
       <!-- ====================================================== filter bar -->
       <div class="grid-noGutter-middle mobile-nav-searchbar">
-        <button v-if="$route.query.search" class="circle-border" @click="$search.clearSearchQuery">
+        <button v-if="$route.query.search" class="circle-border" @click="$clearSearchAndFilters">
           <ArrowLeftIcon :width="20" :height="14" />
         </button>
-        <Filters :show-search="true" theme="line" />
+        <Filters :show-search="true" theme="line" @searchbarUpdated="shouldCallEndpoint = true" />
       </div>
 
       <!-- ============================================================= nav -->
@@ -30,40 +30,39 @@
       <!-- =================================================== dataset cards -->
       <div v-if="$route.query.search" class="grid-noGutter">
         <h4 class="heading col-12">
-          Datasets</h4>
+          {{ header.mobileNavFilter.datasets }}</h4>
         <div v-if="!metadata.count" class="no-result col-12">
-          <p>no results</p>
+          <p>{{ header.mobileNavFilter.noResults }}</p>
         </div>
         <div
           v-for="(data, index) in datasetList"
           :key="`dataset-${index}`"
-          class="col-12 result">
-          <nuxt-link :to="`/${data.slug}`" @click.native="setNavigationOpen(false)">
-            <div class="card-img" :style="`background-image: url(/images/datasets/${data.slug}.jpg)`" />
-            <div class="card-data grid-noGutter">
-              <div class="col-12 title" :title="data.name">
-                {{ data.name }}
-              </div>
-              <div class="col-12 data">
-                <span>
-                  {{ data.data_size }}
-                </span>
-                <span v-if="data.storage">
-                  Storage Providers
-                  <strong>{{ data.storage }}</strong>
-                </span>
-              </div>
-              <div class="col-12 cat">
-                <Button
-                  v-for="(cat, catIndex) in data.categories"
-                  :key="`cat-${catIndex}`"
-                  :button="{
-                    text: cat,
-                    type: 'outline'
-                  }" />
-              </div>
+          class="col-12 result"
+          @click="goToPage(data.slug)">
+          <div class="card-img" :style="`background-image: url(/images/datasets/${data.slug}.jpg)`" />
+          <div class="card-data grid-noGutter">
+            <div class="col-12 title" :title="data.name">
+              {{ data.name }}
             </div>
-          </nuxt-link>
+            <div class="col-12 data">
+              <span>
+                {{ data.data_size }}
+              </span>
+              <span v-if="data.storage">
+                {{ header.mobileNavFilter.storage }}
+                <strong>{{ data.storage }}</strong>
+              </span>
+            </div>
+            <div class="col-12 cat">
+              <Button
+                v-for="(cat, catIndex) in data.categories"
+                :key="`cat-${catIndex}`"
+                :button="{
+                  text: cat,
+                  type: 'outline'
+                }" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -95,6 +94,12 @@ export default {
     }
   },
 
+  data () {
+    return {
+      shouldCallEndpoint: false
+    }
+  },
+
   computed: {
     ...mapGetters({
       datasetList: 'datasets/datasetList',
@@ -103,6 +108,9 @@ export default {
   },
 
   watch: {
+    '$route' (route) {
+      this.callGetDatasetList(route)
+    },
     datasetList () {
       this.stopLoading()
     }
@@ -124,6 +132,21 @@ export default {
           this.setLoadingStatus({ status: false })
         }
       })
+    },
+    goToPage (slug) {
+      this.$router.push({
+        path: `/dataset/${slug}`
+      }, this.setNavigationOpen(false))
+    },
+    callGetDatasetList (route) {
+      /**
+       * this.shouldCallEndpoint flag is here because @filterApplied gets triggered before the route has been registered
+       * so we need to watch the route first and then call the endpoint if flag is true
+       */
+      if (this.shouldCallEndpoint) {
+        this.getDatasetList({ route })
+        this.shouldCallEndpoint = false
+      }
     }
   }
 }
@@ -166,10 +189,11 @@ export default {
   .no-result {
     margin-top: toRem(10);
   }
-  .result a {
+  .result {
     display: flex;
     border-bottom: 1px solid $athensGray;
     padding: toRem(16) 0 toRem(11) 0;
+    cursor: pointer;
   }
   .card-img {
     border-radius: 50%;

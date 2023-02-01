@@ -32,7 +32,12 @@
         "label": "Login",
         "tooltip": "coming soon"
       }
-    ]
+    ],
+    "mobileNavFilter": {
+      "datasets": "Datasets",
+      "noResults": "There are no projects matching this search, please try again.",
+      "storage": "Storage Providers"
+    }
   },
   "footer": {
     "heading": "Access humanity's most important data",

@@ -5,7 +5,8 @@
       <Searchbar
         v-if="showSearch"
         :placeholder="`Search ${basicStats.count__datasets__total || '...'} datasets`"
-        theme="solid" />
+        theme="solid"
+        v-on="$listeners" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">

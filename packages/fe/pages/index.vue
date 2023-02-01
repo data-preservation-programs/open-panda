@@ -226,7 +226,6 @@ export default {
   watch: {
     '$route' (route) {
       this.callGetDatasetList(route)
-      // this.getDatasetList({ route })
     },
     datasetList () {
       this.stopLoading()
