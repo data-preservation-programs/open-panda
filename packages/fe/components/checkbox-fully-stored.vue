@@ -1,19 +1,18 @@
 <template>
   <Filterer
-    filter-key="limit"
+    filter-key="fullyStored"
     :is-single-option="true"
     :filters="options"
     v-on="$listeners">
     <div slot-scope="{ applyFilter, originalSelected }">
       <FieldContainer
-        field-key="results_per_page"
+        field-key="toggle_fully_stored"
         reset-group-id="filters"
         :scaffold="{
-          type: 'select',
+          type: 'checkbox',
           required: false,
-          label: 'Results per page',
-          options,
-          defaultValue: originalSelected || 0 /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+          options: options,
+          defaultValue: originalSelected
         }"
         @updateValue="applyFilter" />
     </div>
@@ -27,7 +26,7 @@ import FieldContainer from '@/components/form/field-container'
 
 // ====================================================================== Export
 export default {
-  name: 'ResultsPerPage',
+  name: 'CheckboxFullyStored',
 
   components: {
     Filterer,
@@ -42,9 +41,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-:deep(.field-select) {
-  width: toRem(66);
-}
-</style>

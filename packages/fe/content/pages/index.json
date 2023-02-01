@@ -99,6 +99,7 @@
   "datasets_content": {
     "explore": "Explore datasets",
     "empty": "There are no projects matching this search, please try again.",
+    "clearAllFilters": "Clear all filters",
     "gridLayout": {
       "labels1": {
         "cid": "CID",

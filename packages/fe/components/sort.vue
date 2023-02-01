@@ -1,22 +1,22 @@
 <template>
   <Filterer
-    filter-key="limit"
+    filter-key="sort"
     :is-single-option="true"
     :filters="options"
     v-on="$listeners">
-    <div slot-scope="{ applyFilter, originalSelected }">
+    <span slot-scope="{ applyFilter, originalSelected }">
       <FieldContainer
-        field-key="results_per_page"
+        field-key="sort_by"
         reset-group-id="filters"
         :scaffold="{
           type: 'select',
           required: false,
-          label: 'Results per page',
-          options,
-          defaultValue: originalSelected || 0 /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+          label: 'Sort by',
+          options: options,
+          defaultValue: originalSelected || 0
         }"
         @updateValue="applyFilter" />
-    </div>
+    </span>
   </Filterer>
 </template>
 
@@ -27,7 +27,7 @@ import FieldContainer from '@/components/form/field-container'
 
 // ====================================================================== Export
 export default {
-  name: 'ResultsPerPage',
+  name: 'Sort',
 
   components: {
     Filterer,
@@ -42,9 +42,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-:deep(.field-select) {
-  width: toRem(66);
-}
-</style>
