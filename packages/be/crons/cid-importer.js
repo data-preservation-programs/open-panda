@@ -50,16 +50,14 @@ const CidImporter = async () => {
   console.log('CID import started')
   try {
     const client = new Web3Storage({ token: apiToken })
-    // console.log(client.list())
-    // const res = await client.list() // Web3Response
-    // console.log(res.cid)
-    // const cids = client.list()
     const d = new Date()
     const before = d.toISOString()
-    const maxResults = 10
+    const maxResults = 200
+    const manifestList = []
     for await (const upload of client.list({ before, maxResults })) {
-      console.log(upload)
+      manifestList.push(upload)
     }
+    console.log(manifestList.length)
     process.exit(0)
   } catch (e) {
     console.log('===================================== [Function: CidImporter]')
