@@ -1,12 +1,29 @@
 <template>
-  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch ? 'has-search' : 'no-search', `theme-${theme}`]">
+  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
         v-if="showSearch"
-        :placeholder="`Search ${basicStats.count__datasets__total || '...'} datasets`"
+        :placeholder="`Search ${datasetListTypeahead.length || '...'} datasets`"
         theme="solid"
         v-on="$listeners" />
+      
+      <FieldContainer
+        v-if="showTypeahead"
+        field-key="typeahead"
+        :scaffold="{
+          type: 'typeahead',
+          inputType: 'text',
+          label: `Search ${datasetListTypeahead.length || '...'} datasets`,
+          modelKey: 'typeahead',
+          placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
+          required: false,
+          autocomplete: 'none',
+          optionDisplayKey: 'name',
+          optionReturnKey: 'slug',
+          options: datasetListTypeahead
+        }"
+        @optionSelected="goToDatasetPage" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
@@ -72,7 +89,7 @@
 
 <script>
 // ===================================================================== Imports
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
@@ -82,6 +99,7 @@ import CardCutout from '@/components/card-cutout'
 import FiltersIcon from '@/components/icons/filter'
 import IconClose from '@/components/icons/close'
 import Searchbar from '@/components/searchbar'
+import FieldContainer from '@/components/form/field-container'
 
 // ====================================================================== Export
 export default {
@@ -95,7 +113,8 @@ export default {
     CardCutout,
     FiltersIcon,
     IconClose,
-    Searchbar
+    Searchbar,
+    FieldContainer
   },
 
   props: {
@@ -110,6 +129,11 @@ export default {
       default: 'solid'
     },
     showSearch: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    showTypeahead: {
       type: Boolean,
       required: false,
       default: false
@@ -142,8 +166,8 @@ export default {
     ...mapGetters({
       filters: 'datasets/filters',
       siteContent: 'general/siteContent',
-      basicStats: 'datasets/basicStats',
-      selectedFilters: 'search/filters'
+      selectedFilters: 'search/filters',
+      datasetListTypeahead: 'datasets/datasetListTypeahead'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -151,9 +175,6 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      getDatasetList: 'datasets/getDatasetList'
-    }),
     togglePanel () {
       this.open = !this.open
     },
@@ -171,10 +192,18 @@ export default {
     onSearch () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
+      // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
+      // go to home page and scroll to dataset section
       this.$router.push({
         path: '/#datasets',
         query: this.$route.query
+      })
+    },
+    goToDatasetPage (slug) {
+      console.log(slug)
+      this.$router.push({
+        path: `/dataset/${slug}`
       })
     }
   }

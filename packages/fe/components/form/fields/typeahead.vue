@@ -53,6 +53,39 @@
 </template>
 
 <script>
+/**
+ * Here's an example of a typeahead data structure
+ *
+ * "country": {
+ *   "type": "typeahead",
+ *   "inputType": "text",
+ *   "modelKey": "country",
+ *   "label": "Country",
+ *   "placeholder": "Country",
+ *   "description": "Where are you located?",
+ *   "required": true,
+ *   "autocomplete": "none",
+ *   "pre": "[^\\u0000-\\u00ff]",
+ *   "validationMessage": {
+ *     "required": "This field is required"
+ *   },
+ *   "optionDisplayKey": "name",
+ *   "optionReturnKey": "code",
+ *   "options": [{"name":"Afghanistan","code":"AF"},{"name":"Åland Islands","code":"AX"}]
+ * }
+ *
+ * Note the optionDisplayKey and optionReturnKey.
+ * You can pass in any data structure (array of objects) as options and then use
+ * optionDisplayKey to define which key in that data structure to match your
+ * input text to. Then when an item in the dropdown is clicked, it uses the
+ * optionReturnKey to to return the value you want. So for a dataset structure like this:
+ *
+ * {
+ *  "name": "Foo", ← "optionDisplayKey": "name"
+ *  "slug": "bar" ← "optionReturnKey": "slug"
+ * }
+ */
+
 // ===================================================================== Imports
 import Select from '@/modules/form/components/select'
 
@@ -173,6 +206,7 @@ export default {
     },
     optionSelected (index) {
       this.selectedOption = index
+      this.$emit('optionSelected', this.options[index][this.optionReturnKey])
       this.$emit('updateValue', this.options[index][this.optionReturnKey])
     },
     optionIncludedInSearch (option) {

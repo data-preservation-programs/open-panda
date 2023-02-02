@@ -2,7 +2,7 @@
   <div>
     <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
     <header class="grid-middle-center-spaceBetween-noGutter">
-      <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
+      <Filters class="show-desktop-only" open-direction="right" :show-typeahead="true" />
 
       <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
         <SiteLogo class="logo-big" />
