@@ -2,7 +2,27 @@
   <div class="card-cutout-wrapper">
 
     <svg
-      v-if="topTab"
+      v-if="topTab && backgroundImage"
+      width="104px"
+      height="9px"
+      viewBox="0 0 104 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="svg-clip-path">
+      <defs>
+        <clipPath id="corner-clip-path">
+          <path d="M 104 9 H 104 C 103 9 103 9 102 9 L 88 0 C 88 0 87 0 87 0 H 9 C 4 0 0 4 0 9 V 9 Z" />
+        </clipPath>
+      </defs>
+    </svg>
+
+    <img
+      v-if="topTab && backgroundImage"
+      class="tab-before clipped"
+      :src="backgroundImage" />
+
+    <svg
+      v-if="topTab && !backgroundImage"
       width="104px"
       height="11.5px"
       viewBox="0 0 104 9"
@@ -53,6 +73,11 @@ export default {
       type: Boolean,
       required: false,
       default: true
+    },
+    backgroundImage: {
+      type: String,
+      required: false,
+      default: ''
     }
   }
 }
@@ -69,6 +94,12 @@ svg {
   background-color: none;
 }
 
+.svg-clip-path {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
 .tab-before,
 .tab-after,
 .bg-left,
@@ -79,10 +110,16 @@ svg {
 .tab-before {
   top: -0.625rem;
   left: 0;
-  @include medium {
-    width: 62px;
-    height: 0.375rem;
-    top: -0.34375rem;
+  &:not(.clipped) {
+    @include medium {
+      width: 62px;
+      height: 0.375rem;
+      top: -0.34375rem;
+    }
+  }
+  &.clipped {
+    clip-path: url(#corner-clip-path);
+    top: -8.5px;
   }
 }
 
