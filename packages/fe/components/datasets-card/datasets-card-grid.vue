@@ -1,9 +1,12 @@
 <template>
   <div class="col card">
-    <CardCutout :backgroundImage="`/images/datasets/${data.slug}.jpg`">
+    <CardCutout :background-image="`/images/datasets/${data.slug}.jpg`">
       <div
-        class="card-img"
-        :style="{ 'background-image': `url('/images/datasets/${data.slug}.jpg')` }">
+        class="card-img-wrapper">
+        <div
+          class="card-img"
+          :style="{ 'background-image': `url('/images/datasets/${data.slug}.jpg')` }">
+        </div>
       </div>
 
       <!-- heading -->
@@ -113,14 +116,23 @@ export default {
 .card {
   margin-bottom: toRem(10);
 }
+.card-img-wrapper {
+  height: toRem(113);
+  overflow: hidden;
+  border-top-right-radius: toRem(10);
+}
 .card-img {
   background-color: $tasman;
-  height: toRem(125);
+  height: toRem(122);
   object-fit: cover;
-  border-top-right-radius: toRem(10);
   background-repeat: no-repeat;
-  background-size: 100%;
-  background-position: left 0 top -9px;
+  background-size: cover;
+  background-position: center center;
+  transform: translateY(-9px);
+  @include medium {
+    height: toRem(118);
+    transform: translateY(-4.5px);
+  }
 }
 .card-heading,
 .card-details {
