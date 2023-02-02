@@ -1,6 +1,8 @@
 <template>
   <div>
+
     <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
+
     <header class="grid-middle-center-spaceBetween-noGutter">
       <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
 
@@ -29,6 +31,13 @@
         </div>
       </div>
     </header>
+
+    <div class="grid">
+      <div class="col">
+        <Breadcrumbs />
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -43,6 +52,7 @@ import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
 import IconSearch from '@/components/icons/search'
 import NavMobile from '@/components/nav-mobile'
+import Breadcrumbs from '@/components/breadcrumbs'
 
 // ====================================================================== Export
 export default {
@@ -54,7 +64,8 @@ export default {
     SiteLogoSmall,
     Filters,
     IconSearch,
-    NavMobile
+    NavMobile,
+    Breadcrumbs
   },
 
   computed: {

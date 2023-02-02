@@ -39,6 +39,14 @@
       "storage": "Storage Providers"
     }
   },
+  "breadcrumbs_mapping": {
+    "index": "Home",
+    "about": "About",
+    "how-to-download": "How to Download",
+    "terms": "Terms of Use",
+    "privacy": "Privacy",
+    "dataset": "Dataset"
+  },
   "footer": {
     "heading": "Access humanity's most important data",
     "copyright": "Lorem ipsum 2023",
