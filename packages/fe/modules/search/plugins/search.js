@@ -36,7 +36,7 @@ class Search {
       this.store.dispatch(term.storeAction, value)
     } else {
       this.query.search = value === '' ? undefined : value
-      this.app.router.push({ query: this.query })
+      this.app.router.push({ query: this.query, hash: term.hash })
     }
   }
 }

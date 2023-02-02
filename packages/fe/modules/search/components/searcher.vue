@@ -68,6 +68,8 @@ export default {
         instance: this,
         action,
         storeAction: this.storeAction,
+        // need to pass this in to retain the current url hash
+        hash: this.$route.hash || '',
         value
       })
       this.$emit('searchbarUpdated')

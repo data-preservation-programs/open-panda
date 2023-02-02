@@ -108,6 +108,7 @@ export default {
         storeAction: this.storeAction,
         value,
         filterKey: this.filterKey,
+        hash: this.$route.hash,
         isSingleOption: this.isSingleOption
       })
       this.$emit('filterApplied')

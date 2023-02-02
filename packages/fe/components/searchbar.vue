@@ -8,28 +8,32 @@
     v-on="$listeners">
     <div
       slot-scope="{ value, updateValue, empty }"
-      :class="['searchbar', `theme__${theme}`, { focused, empty, loading }]">
+      :class="['searchbar', showTypeahead ? 'has-typeahead' : 'no-typeahead', `theme__${theme}`, { empty, loading }]">
 
-      <div class="input-wrapper">
+      <FieldContainer
+        field-key="typeahead"
+        reset-group-id="filters"
+        :scaffold="{
+          type: 'typeahead',
+          inputType: 'text',
+          modelKey: 'typeahead',
+          placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
+          required: false,
+          autocomplete: 'none',
+          optionDisplayKey: 'name',
+          optionReturnKey: 'slug',
+          options: datasetListTypeahead,
+          defaultValue: value || ''
+        }"
+        @input="updateValue"
+        @optionSelected="goToDatasetPage" />
 
-        <button
-          :class="['search-button', { loading }]"
-          @click="focusInput">
-          <Spinner />
-          <IconSearch />
-        </button>
-
-        <input
-          ref="input"
-          :value="value"
-          :placeholder="placeholder"
-          type="text"
-          class="input"
-          @input="updateValue"
-          @focus="focused = true"
-          @blur="focused = false">
-
-      </div>
+      <button
+        :class="['search-button', { loading }]"
+        @click="searchbarSearch">
+        <Spinner />
+        <IconSearch />
+      </button>
 
     </div>
   </Searcher>
@@ -37,9 +41,10 @@
 
 <script>
 // ===================================================================== Imports
+import { mapGetters } from 'vuex'
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
-
+import FieldContainer from '@/components/form/field-container'
 import IconSearch from '@/components/icons/search'
 
 // ====================================================================== Export
@@ -49,7 +54,8 @@ export default {
   components: {
     Searcher,
     Spinner,
-    IconSearch
+    IconSearch,
+    FieldContainer
   },
 
   props: {
@@ -87,6 +93,11 @@ export default {
       type: String, // 'line' or 'solid'
       required: false,
       default: 'line'
+    },
+    showTypeahead: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 
@@ -96,15 +107,24 @@ export default {
     }
   },
 
-  watch: {
-    focused () {
-      this.$emit('inputFocused')
-    }
+  computed: {
+    ...mapGetters({
+      datasetListTypeahead: 'datasets/datasetListTypeahead'
+    })
   },
 
   methods: {
-    focusInput () {
-      this.$refs.input.focus()
+    searchbarSearch () {
+      this.$router.push({
+        path: '/',
+        query: this.$route.query,
+        hash: '#datasets'
+      })
+    },
+    goToDatasetPage (slug) {
+      this.$router.push({
+        path: `/dataset/${slug}`
+      })
     }
   }
 }
@@ -112,14 +132,18 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.input-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.no-typeahead {
+  :deep(.select-container) {
+    display: none !important;
+  }
 }
-
 .searchbar {
-  width: 100%;
+  display: flex;
+  padding-left: toRem(20);
+  flex-grow: 1;
+  :deep(.field-container) {
+    width: 100%;
+  }
 }
 
 .input {
@@ -143,8 +167,8 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  margin-right: toRem(10);
-  margin-left: toRem(20);
+  margin-right: toRem(20);
+  margin-left: toRem(10);
   cursor: pointer;
   &.loading {
     .spinner {
@@ -170,23 +194,6 @@ export default {
 .icon-search {
   display: block;
   width: 1rem;
-}
-
-::v-deep .clear-button {
-  &:hover {
-    .svg-icon path {
-      transition: 150ms ease-in;
-      fill: tomato;
-    }
-  }
-  .svg-icon {
-    width: 8px;
-    margin-right: 0.25rem;
-    path {
-      transition: 150ms ease-out;
-      fill: teal;
-    }
-  }
 }
 
 // ////////////////////////////////////////////////////////////////////// Themes

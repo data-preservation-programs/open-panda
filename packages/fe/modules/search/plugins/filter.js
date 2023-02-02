@@ -74,7 +74,7 @@ class Filter {
       }
       this.query[term.filterKey] = (!join || join.length === 0) ? undefined : join
     }
-    this.app.router.push({ query: this.query })
+    this.app.router.push({ query: this.query, hash: term.hash })
   }
 }
 

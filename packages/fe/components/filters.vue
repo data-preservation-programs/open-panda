@@ -3,27 +3,11 @@
 
     <div class="button-c">
       <Searchbar
-        v-if="showSearch"
+        v-if="showSearch || showTypeahead"
+        :show-typeahead="showTypeahead"
         :placeholder="`Search ${datasetListTypeahead.length || '...'} datasets`"
         theme="solid"
         v-on="$listeners" />
-      
-      <FieldContainer
-        v-if="showTypeahead"
-        field-key="typeahead"
-        :scaffold="{
-          type: 'typeahead',
-          inputType: 'text',
-          label: `Search ${datasetListTypeahead.length || '...'} datasets`,
-          modelKey: 'typeahead',
-          placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
-          required: false,
-          autocomplete: 'none',
-          optionDisplayKey: 'name',
-          optionReturnKey: 'slug',
-          options: datasetListTypeahead
-        }"
-        @optionSelected="goToDatasetPage" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
@@ -33,63 +17,64 @@
       </button>
     </div>
 
-    <CardCutout v-if="open" class="filter-panel">
-      <section class="grid-noGutter-middle-spaceBetween">
-        <h5>{{ filterPanelData.labels.add }}</h5>
-        <button class="circle-border" @click="togglePanel">
-          <IconClose :width="13" :height="13" />
-        </button>
-      </section>
-      <Filterer
-        v-for="(parentItem, parentIndex) in parentItems"
-        :key="parentItem.id"
-        :filter-key="parentItem.id"
-        :filters="filters[parentItem.id]">
-        <section
-          slot-scope="{ applyFilter, isSelected }"
-          class="grid-noGutter">
-          <div class="filters-label col-12">
-            <span>{{ parentItem.label }}</span>
-          </div>
-
-          <span
-            v-for="(childItem, childIndex) in filters[parentItem.id]"
-            :key="`${filters[parentIndex.id]}-${childIndex}`">
-            <ButtonFilters
-              v-if="childIndex < parentItem.limit"
-              :selected="isSelected(childIndex)"
-              class="filter-button"
-              @clicked="applyFilter(childIndex)">
-              {{ childItem.label }}
-              <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
-            </ButtonFilters>
-          </span>
-
-          <ButtonToggle
-            theme="light"
-            :class="[{ active: parentItem.showMore }]"
-            @click="toggleLimit(parentIndex, filters[parentItem.id])">
-            {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
-          </ButtonToggle>
-
+    <div v-if="open" class="filter-panel">
+      <CardCutout>
+        <section class="grid-noGutter-middle-spaceBetween">
+          <h5>{{ filterPanelData.labels.add }}</h5>
+          <button class="circle-border" @click="togglePanel">
+            <IconClose :width="13" :height="13" />
+          </button>
         </section>
-      </Filterer>
-
-      <section class="grid-noGutter-right filter-button">
-        <Button :button="{type: 'default'}" @click.native="clearAll">
-          {{ filterPanelData.labels.clear }}
-        </Button>
-        <Button :button="{type:'solid'}" @click.native="onSearch">
-          {{ filterPanelData.labels.search }}
-        </Button>
-      </section>
-    </CardCutout>
+        <Filterer
+          v-for="(parentItem, parentIndex) in parentItems"
+          :key="parentItem.id"
+          :filter-key="parentItem.id"
+          :filters="filters[parentItem.id]">
+          <section
+            slot-scope="{ applyFilter, isSelected }"
+            class="grid-noGutter">
+            <div class="filters-label col-12">
+              <span>{{ parentItem.label }}</span>
+            </div>
+  
+            <span
+              v-for="(childItem, childIndex) in filters[parentItem.id]"
+              :key="`${filters[parentIndex.id]}-${childIndex}`">
+              <ButtonFilters
+                v-if="childIndex < parentItem.limit"
+                :selected="isSelected(childIndex)"
+                class="filter-button"
+                @clicked="applyFilter(childIndex)">
+                {{ childItem.label }}
+                <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
+              </ButtonFilters>
+            </span>
+  
+            <ButtonToggle
+              theme="light"
+              :class="[{ active: parentItem.showMore }]"
+              @click="toggleLimit(parentIndex, filters[parentItem.id])">
+              {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
+            </ButtonToggle>
+  
+          </section>
+        </Filterer>
+        <section class="grid-noGutter-right filter-button">
+          <Button :button="{type: 'default'}" @click.native="clearAll">
+            {{ filterPanelData.labels.clear }}
+          </Button>
+          <Button :button="{type:'solid'}" @click.native="onSearch">
+            {{ filterPanelData.labels.search }}
+          </Button>
+        </section>
+      </CardCutout>
+    </div>
   </div>
 </template>
 
 <script>
 // ===================================================================== Imports
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
@@ -99,7 +84,6 @@ import CardCutout from '@/components/card-cutout'
 import FiltersIcon from '@/components/icons/filter'
 import IconClose from '@/components/icons/close'
 import Searchbar from '@/components/searchbar'
-import FieldContainer from '@/components/form/field-container'
 
 // ====================================================================== Export
 export default {
@@ -113,8 +97,7 @@ export default {
     CardCutout,
     FiltersIcon,
     IconClose,
-    Searchbar,
-    FieldContainer
+    Searchbar
   },
 
   props: {
@@ -175,6 +158,9 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
     togglePanel () {
       this.open = !this.open
     },
@@ -196,14 +182,9 @@ export default {
       this.$emit('filterPanelOnSearch')
       // go to home page and scroll to dataset section
       this.$router.push({
-        path: '/#datasets',
+        path: '/',
+        hash: '#datasets',
         query: this.$route.query
-      })
-    },
-    goToDatasetPage (slug) {
-      console.log(slug)
-      this.$router.push({
-        path: `/dataset/${slug}`
       })
     }
   }
@@ -245,7 +226,7 @@ export default {
     }
     .has-search & {
       padding-left: toRem(20);
-      border-left: 1px solid $grayNurse;
+      border-left: 1px solid $tasman;
     }
     .icon {
       margin-right: toRem(15);
@@ -276,17 +257,13 @@ export default {
       box-shadow: none;
     }
   }
-  .button-c {
-    .button-filter {
-      border: none;
-    }
-  }
 }
 
 // panel
 .filter-panel {
   position: absolute;
   width: 70vw;
+  max-width: toRem(800);
   right: 0;
   top: 120%;
   z-index: 100;
