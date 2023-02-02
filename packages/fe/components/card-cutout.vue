@@ -16,11 +16,6 @@
       </defs>
     </svg>
 
-    <!-- <img
-      v-if="topTab && backgroundImage"
-      class="clipped-background-image"
-      :src="backgroundImage" /> -->
-
     <div
       v-if="topTab && backgroundImage"
       class="clipped-background-image"
