@@ -1,7 +1,10 @@
 <template>
   <div class="col card">
     <CardCutout :backgroundImage="`/images/datasets/${data.slug}.jpg`">
-      <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
+      <div
+        class="card-img"
+        :style="{ 'background-image': `url('/images/datasets/${data.slug}.jpg')` }">
+      </div>
 
       <!-- heading -->
       <div class="card-heading grid-noGutter">
@@ -115,6 +118,9 @@ export default {
   height: toRem(125);
   object-fit: cover;
   border-top-right-radius: toRem(10);
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-position: left 0 top -9px;
 }
 .card-heading,
 .card-details {

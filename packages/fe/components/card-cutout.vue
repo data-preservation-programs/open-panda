@@ -4,14 +4,14 @@
     <svg
       v-if="topTab && backgroundImage"
       width="104px"
-      height="11.5px"
+      height="9px"
       viewBox="0 0 104 9"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       class="svg-clip-path">
       <defs>
         <clipPath id="corner-clip-path">
-          <path d="M 104 9 H 104 C 103 9 103 9 101.815 8.8108 L 88.368 0.3095 C 88.048 0.1073 87.678 0 87.299 0 H 9 C 4.0294 0 0 4.0294 0 9 V 9 Z" />
+          <path d="M 104 9 H 104 C 103 9 103 9 102 9 L 88 0 C 88 0 87 0 87 0 H 9 C 4 0 0 4 0 9 V 9 Z" />
         </clipPath>
       </defs>
     </svg>
@@ -110,14 +110,16 @@ svg {
 .tab-before {
   top: -0.625rem;
   left: 0;
-  @include medium {
-    width: 62px;
-    height: 0.375rem;
-    top: -0.34375rem;
+  &:not(.clipped) {
+    @include medium {
+      width: 62px;
+      height: 0.375rem;
+      top: -0.34375rem;
+    }
   }
   &.clipped {
     clip-path: url(#corner-clip-path);
-    top: -9px;
+    top: -8.5px;
   }
 }
 
