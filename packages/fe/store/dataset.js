@@ -134,6 +134,7 @@ const actions = {
 const mutations = {
   SET_DATASET (state, payload) {
     state.dataset = payload.dataset
+    console.log(state.dataset)
   },
   SET_CID_LIST (state, payload) {
     state.cidList = payload.cids

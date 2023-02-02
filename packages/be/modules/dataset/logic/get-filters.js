@@ -29,7 +29,7 @@ const processCategories = async (datasets) => {
 
 // /////////////////////////////////////////////////////// processFileExtensions
 const processFileExtensions = async (datasets) => {
-  let extensions = datasets.map(dataset => dataset.file_extensions)
+  const extensions = datasets.map(dataset => dataset.file_extensions)
     .flat()
     .map(ext => ext.trim().toLowerCase())
     .filter(ext => !ext.includes('various'))
