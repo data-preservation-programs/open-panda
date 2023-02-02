@@ -1,6 +1,6 @@
 <template>
   <div class="col card">
-    <CardCutout :backgroundImage="`/images/datasets/${data.slug}.jpg`">
+    <CardCutout :background-image="`/images/datasets/${data.slug}.jpg`">
       <div
         class="card-img"
         :style="{ 'background-image': `url('/images/datasets/${data.slug}.jpg')` }">

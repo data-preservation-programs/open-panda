@@ -9,7 +9,6 @@
         :button="link"
         tabindex="0"
         class="breadcrumb link">
-        {{ link.text }}
       </Button>
 
       <div
@@ -17,7 +16,7 @@
         :key="`text-${index}`"
         class="breadcrumb text">
         <span class="slug">{{ limitChars(50, link.text) }}</span>
-        <span class="mobile-slug">{{ limitChars(30, link.text) }}</span>
+        <span class="mobile-slug">{{ limitChars(20, link.text) }}</span>
       </div>
 
       <div
@@ -35,14 +34,19 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
+import Button from '@/components/buttons/button'
+
 // ====================================================================== Export
 export default {
   name: 'Breadcrumbs',
 
+  components: {
+    Button
+  },
+
   data () {
     return {
-      links: false,
-      hidden: false
+      links: false
     }
   },
 
@@ -56,12 +60,18 @@ export default {
         return this.siteContent.general.breadcrumbs_mapping
       }
       return false
+    },
+    hidden () {
+      return this.links.length < 2
     }
   },
 
   watch: {
     '$route' () {
       this.setBreadcrumbLinks()
+    },
+    hidden (val) {
+      this.$emit('visibility-changed', val)
     }
   },
 
@@ -96,7 +106,6 @@ export default {
           }
         })
         this.links = links
-        console.log(this.links)
       }
     },
     limitChars (amt, text) {
@@ -115,10 +124,25 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
-  // margin-left: 2.4375rem;
-  @include small {
-    padding: 0 1rem;
+  padding-bottom: 1.25rem;
+}
+
+.breadcrumb {
+  white-space: nowrap;
+  &.link {
+    &:hover {
+      text-decoration: underline;
+    }
   }
+}
+
+.link,
+.text,
+.divider {
+  @include fontSize_14;
+  @include fontWeight_Regular;
+  line-height: leading(21, 14);
+  margin-right: 0.25rem;
 }
 
 .divider {

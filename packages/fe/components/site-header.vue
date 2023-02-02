@@ -3,7 +3,7 @@
 
     <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
 
-    <header class="grid-middle-center-spaceBetween-noGutter">
+    <header :class="['grid-middle-center-spaceBetween-noGutter', { 'has-breadcrumbs': hasBreadcrumbs }]">
       <Filters class="show-desktop-only" open-direction="right" :show-search="true" />
 
       <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
@@ -34,7 +34,7 @@
 
     <div class="grid">
       <div class="col">
-        <Breadcrumbs />
+        <Breadcrumbs @visibility-hidden="toggleBreadcrumbs" />
       </div>
     </div>
 
@@ -66,6 +66,12 @@ export default {
     IconSearch,
     NavMobile,
     Breadcrumbs
+  },
+
+  data () {
+    return {
+      hasBreadcrumbs: true
+    }
   },
 
   computed: {
@@ -102,6 +108,9 @@ export default {
       } else {
         this.setNavigationOpen(true)
       }
+    },
+    toggleBreadcrumbs (val) {
+      this.hasBreadcrumbs = val
     }
   }
 }
@@ -114,6 +123,9 @@ header {
   @include medium {
     padding-top: toRem(10);
     padding-bottom: toRem(10);
+  }
+  &.has-breadcrumbs {
+    padding-bottom: 0.875rem;
   }
 }
 
