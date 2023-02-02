@@ -52,7 +52,7 @@ const getValue = (app, scaffold, form, resetTo, groupIndex) => {
   } else if (type === 'checkbox') {
     value = getCheckboxRadioFormFieldValue(value, scaffold)
   }
-  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined) { return value }
+  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined && value !== '') { return value }
   // If this is just a reset to the nullState, then grab and return the null state
   if (resetTo && resetTo !== '' && resetTo === 'nullState') {
     return getNullStateValue(type)
