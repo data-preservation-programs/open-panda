@@ -16,10 +16,11 @@
       </defs>
     </svg>
 
-    <img
+    <div
       v-if="topTab && backgroundImage"
-      class="tab-before clipped"
-      :src="backgroundImage" />
+      class="clipped-background-image"
+      :style="{ 'background-image': `url('${backgroundImage}')` }">
+    </div>
 
     <svg
       v-if="topTab && !backgroundImage"
@@ -120,6 +121,31 @@ svg {
   &.clipped {
     clip-path: url(#corner-clip-path);
     top: -8.5px;
+  }
+}
+
+.clipped-background-image {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: toRem(122);
+  clip-path: url(#corner-clip-path);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  transform: translateY(-8.5px);
+  @include medium {
+    transform: translateY(-4.5px);
+    height: toRem(118);
+  }
+}
+
+#corner-clip-path {
+  path {
+    @include medium {
+      d: path('M 61 5 H 61 C 61 5 61 5 60 5 L 52 0 C 52 0 51 0 51 0 H 5 C 2 0 0 2 0 5 V 5 Z');
+    }
   }
 }
 

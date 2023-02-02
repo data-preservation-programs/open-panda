@@ -7,8 +7,8 @@
     "dev": "../../node_modules/.bin/nuxt",
     "start": "../../node_modules/.bin/nuxt start",
     "build": "../../node_modules/.bin/nuxt build",
-    "launch": "../../node_modules/.bin/nuxt build && pm2 restart fp-fe",
-    "launch-stable": "../../node_modules/.bin/nuxt build && pm2 restart fp-ST-fe",
+    "launch": "../../node_modules/.bin/nuxt build && pm2 restart op-fe",
+    "launch-stable": "../../node_modules/.bin/nuxt build && pm2 restart op-ST-fe",
     "lint": "eslint . --ext .js,.vue",
     "storybook": "../../node_modules/.bin/nuxt storybook",
     "storybook-build": "../../node_modules/.bin/nuxt storybook build"

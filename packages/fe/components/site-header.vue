@@ -1,7 +1,9 @@
 <template>
   <div>
+
     <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
-    <header class="grid-middle-center-spaceBetween-noGutter">
+
+    <header :class="['grid-middle-center-spaceBetween-noGutter', { 'has-breadcrumbs': hasBreadcrumbs }]">
       <Filters class="show-desktop-only" open-direction="right" :show-typeahead="true" />
 
       <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
@@ -29,6 +31,13 @@
         </div>
       </div>
     </header>
+
+    <div class="grid">
+      <div class="col">
+        <Breadcrumbs @visibility-hidden="toggleBreadcrumbs" />
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -43,6 +52,7 @@ import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
 import IconSearch from '@/components/icons/search'
 import NavMobile from '@/components/nav-mobile'
+import Breadcrumbs from '@/components/breadcrumbs'
 
 // ====================================================================== Export
 export default {
@@ -54,7 +64,14 @@ export default {
     SiteLogoSmall,
     Filters,
     IconSearch,
-    NavMobile
+    NavMobile,
+    Breadcrumbs
+  },
+
+  data () {
+    return {
+      hasBreadcrumbs: true
+    }
   },
 
   computed: {
@@ -91,6 +108,9 @@ export default {
       } else {
         this.setNavigationOpen(true)
       }
+    },
+    toggleBreadcrumbs (val) {
+      this.hasBreadcrumbs = val
     }
   }
 }
@@ -103,6 +123,9 @@ header {
   @include medium {
     padding-top: toRem(10);
     padding-bottom: toRem(10);
+  }
+  &.has-breadcrumbs {
+    padding-bottom: 0.875rem;
   }
 }
 
