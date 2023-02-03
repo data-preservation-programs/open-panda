@@ -125,6 +125,7 @@ svg {
 }
 
 .clipped-background-image {
+  background-color: $tasman;
   position: absolute;
   left: 0;
   top: 0;

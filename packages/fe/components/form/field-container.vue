@@ -16,7 +16,8 @@
             :is="type"
             :field="field"
             :field-key="fieldKey"
-            @updateValue="pushValue($event, updateValue)" />
+            @updateValue="pushValue($event, updateValue)"
+            v-on="$listeners" />
 
           <slot />
 
@@ -77,6 +78,11 @@ export default {
     fieldKey: {
       type: String,
       required: true
+    },
+    resetGroupId: {
+      type: String,
+      required: false,
+      default: ''
     },
     groupIndex: {
       type: [Number, Boolean],

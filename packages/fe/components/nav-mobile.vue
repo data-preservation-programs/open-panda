@@ -182,6 +182,10 @@ export default {
     :deep(.filters) {
       width: calc(100% - 50px);
       flex-grow: 1;
+      // dont make search button clickable on mobile
+      .search-button {
+        pointer-events: none;
+      }
     }
   }
   .heading {

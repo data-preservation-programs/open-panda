@@ -55,6 +55,8 @@ export default async function ({ app, store, route }, inject) {
         query[key] = undefined
       }
     })
-    app.router.push({ query })
+    // need to pass this in to retain the current url hash
+    // not sure why $route is not picking it up so assigning manually
+    app.router.push({ query, hash: location.hash })
   })
 }

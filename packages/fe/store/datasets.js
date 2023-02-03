@@ -6,6 +6,7 @@ import CloneDeep from 'lodash/cloneDeep'
 // -----------------------------------------------------------------------------
 const state = () => ({
   datasetList: false,
+  datasetListTypeahead: false,
   metadata: {
     page: 1,
     limit: 12,
@@ -24,6 +25,7 @@ const state = () => ({
 // -----------------------------------------------------------------------------
 const getters = {
   datasetList: state => state.datasetList,
+  datasetListTypeahead: state => state.datasetListTypeahead,
   metadata: state => state.metadata,
   loading: state => state.loading,
   basicStats: state => state.basicStats,
@@ -87,7 +89,7 @@ const actions = {
     }
   },
   // //////////////////////////////////////////////////////////////// getFilters
-  async getFilters ({ commit }) {
+  async getFiltersAndTypeahead ({ commit }) {
     try {
       const filters = await this.dispatch('general/getCachedFile', 'filters.json')
       if (filters) {
@@ -95,8 +97,25 @@ const actions = {
         commit('SET_LIMIT_OPTIONS', filters.limit)
         commit('SET_FILTERS', filters.filters)
       }
+      const response = await this.$axiosAuth.get('/get-cached-file', {
+        params: { path: 'typeahead-dataset-search-data.json' }
+      })
+      commit('SET_DATASET_LIST_TYPEAHEAD', response.data.payload)
     } catch (e) {
       console.log('======================= [Store Action: datasets/getFilters]')
+      console.log(e)
+      return false
+    }
+  },
+  // ///////////////////////////////////////////////////////////// getBasicStats
+  async getBasicStats ({ commit, getters, dispatch }) {
+    try {
+      const response = await this.$axiosAuth.get('/get-cached-file', {
+        params: { path: 'basic-stats.json' }
+      })
+      commit('SET_BASIC_STATS', response.data.payload)
+    } catch (e) {
+      console.log('==================== [Store Action: datasets/getBasicStats]')
       console.log(e)
       return false
     }
@@ -121,19 +140,6 @@ const actions = {
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
-  },
-  // ///////////////////////////////////////////////////////////// getBasicStats
-  async getBasicStats ({ commit, getters, dispatch }) {
-    try {
-      const response = await this.$axiosAuth.get('/get-cached-file', {
-        params: { path: 'basic-stats.json' }
-      })
-      commit('SET_BASIC_STATS', response.data.payload)
-    } catch (e) {
-      console.log('==================== [Store Action: datasets/getBasicStats]')
-      console.log(e)
-      return false
-    }
   }
 }
 
@@ -147,6 +153,9 @@ const mutations = {
       state.metadata.totalPages = metadata.totalPages
       state.metadata.count = metadata.count
     }
+  },
+  SET_DATASET_LIST_TYPEAHEAD (state, payload) {
+    state.datasetListTypeahead = payload
   },
   SET_PAGE (state, payload) {
     state.metadata.page = payload.page
