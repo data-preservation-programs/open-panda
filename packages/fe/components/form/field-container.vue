@@ -79,6 +79,11 @@ export default {
       type: String,
       required: true
     },
+    resetGroupId: {
+      type: String,
+      required: false,
+      default: ''
+    },
     groupIndex: {
       type: [Number, Boolean],
       required: false,
