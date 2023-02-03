@@ -247,6 +247,7 @@ $height: 3.125rem;
 .input-container,
 .input {
   height: 100%;
+  width: 100%;
 }
 
 .input {

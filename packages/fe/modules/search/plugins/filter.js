@@ -74,7 +74,9 @@ class Filter {
       }
       this.query[term.filterKey] = (!join || join.length === 0) ? undefined : join
     }
-    this.app.router.push({ query: this.query, hash: term.hash })
+    // need to pass this in to retain the current url hash
+    // not sure why $route is not picking it up so assigning manually
+    this.app.router.push({ query: this.query, hash: location.hash })
   }
 }
 
