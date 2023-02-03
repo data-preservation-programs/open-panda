@@ -63,8 +63,16 @@ $duration: 300ms;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: 250ms;
   path {
     fill: $rangoonGreen;
+  }
+  &:hover {
+    background-color: $rangoonGreen;
+    path {
+      transition: 250ms;
+      fill: white;
+    }
   }
 }
 
