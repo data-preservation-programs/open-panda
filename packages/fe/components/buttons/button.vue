@@ -150,8 +150,8 @@ export default {
     padding: toRem(4) toRem(10);
   }
   &:hover {
-    background-color: $athensGray;
-    color: $rangoonGreen;
+    background-color: $rangoonGreen;
+    color: white;
   }
 }
 </style>
