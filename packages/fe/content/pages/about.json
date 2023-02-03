@@ -48,7 +48,7 @@
         "description": "Open Panda is a platform for data researchers, analysts, students and enthusiasts to interact with the largest open datasets in the world. Data available through our platform is stored on Filecoin, a decentralized storage network comprised of thousands of independent Storage Providers around the world.",
         "ctas": [
           {
-            "type": "solid",
+            "type": "solid-tear",
             "text": "Start your search",
             "url": "/"
           }

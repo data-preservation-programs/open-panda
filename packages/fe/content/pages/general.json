@@ -24,7 +24,7 @@
         "label": "FAQ"
       },
       {
-        "href": "/add",
+        "href": "https://protocol.ai/",
         "label": "Add a Dataset"
       },
       {
@@ -53,7 +53,7 @@
     "image": "/images/footer.png",
     "nav_1": [
       {
-        "href": "/add",
+        "href": "https://protocol.ai/",
         "label": "Add a Dataset"
       },
       {

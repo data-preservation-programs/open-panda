@@ -32,7 +32,7 @@
         "description": "At this time, downloading from Open Panda does require some specialized command line tooling. However, we’re working on new features that will mitigate this need very soon. In the mean time, follow the steps below to download one or more CIDs from a dataset.",
         "ctas": [
           {
-            "type": "solid",
+            "type": "solid-tear",
             "text": "Find a Dataset",
             "url": "/"
           }
