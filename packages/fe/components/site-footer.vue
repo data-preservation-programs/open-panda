@@ -36,8 +36,7 @@
     </div>
 
     <div class="grid-1-right">
-      <div class="col copyright">
-        {{ footerData.copyright }}
+      <div class="col copyright" v-html="footerData.copyright">
       </div>
     </div>
 
