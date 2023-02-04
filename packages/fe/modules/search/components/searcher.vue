@@ -26,6 +26,13 @@ export default {
       type: String,
       required: false,
       default: 'general/setSearchValue'
+    },
+    // retain hash on url
+    // this enables auto scroll on the page or retaining spot on page
+    urlHash: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
 
@@ -68,7 +75,8 @@ export default {
         instance: this,
         action,
         storeAction: this.storeAction,
-        value
+        value,
+        hash: this.urlHash
       })
       this.$emit('searchbarUpdated')
     }, 200)

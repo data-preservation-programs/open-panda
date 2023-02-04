@@ -4,6 +4,7 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
+    :url-hash="showTypeahead ? '' : $route.hash "
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
@@ -26,7 +27,8 @@
           defaultValue: value || ''
         }"
         @input="updateValue"
-        @optionSelected="goToDatasetPage" />
+        @optionSelected="goToDatasetPage"
+        @typeaheadOnEnter="searchbarSearch" />
 
       <button
         :class="['search-button', { loading }]"

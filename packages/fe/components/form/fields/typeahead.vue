@@ -23,6 +23,8 @@
         @focus="focusHandler"
         @blur="focused = false"
         @input="$emit('updateValue', $event.target.value)"
+        @keyup.enter="$emit('typeaheadOnEnter')"
+        @submit.prevent
         v-on="$listeners" />
       <div v-if="typeof chars === 'number'" class="char-validation">
         {{ chars }}
@@ -208,8 +210,10 @@ export default {
     },
     optionSelected (index) {
       this.selectedOption = index
-      this.$emit('optionSelected', this.options[index][this.optionReturnKey])
-      this.$emit('updateValue', this.options[index][this.optionReturnKey])
+      if (index && this.options[index] && this.options[index][this.optionReturnKey]) {
+        this.$emit('optionSelected', this.options[index][this.optionReturnKey])
+        this.$emit('updateValue', this.options[index][this.optionReturnKey])
+      }
     },
     optionIncludedInSearch (option) {
       const value = option[this.optionDisplayKey]
