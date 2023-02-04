@@ -10,8 +10,8 @@
         v-on="$listeners" />
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
+        <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
         <div class="button-content">
-          <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
           <span>{{ filterPanelData.labels.buttonText }}</span>
         </div>
       </button>
@@ -231,8 +231,6 @@ export default {
     .icon {
       margin-right: toRem(15);
     }
-  }
-  .button-content {
     position: relative;
     .has-filters-dot {
       background-color: $dodgerBlue;
@@ -240,8 +238,8 @@ export default {
       position: absolute;
       width: toRem(10);
       height: toRem(10);
-      top: toRem(-5);
-      right: toRem(-12);
+      top: toRem(10);
+      right: toRem(15);
     }
   }
 }

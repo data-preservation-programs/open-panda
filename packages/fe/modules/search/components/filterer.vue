@@ -32,6 +32,13 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    // retain hash on url
+    // this enables auto scroll on the page or retaining spot on page
+    urlHash: {
+      type: String,
+      required: false,
+      default: ''
     }
     // storeGetter: {
     //   type: String,
@@ -107,6 +114,7 @@ export default {
         action,
         storeAction: this.storeAction,
         value,
+        hash: this.urlHash,
         filterKey: this.filterKey,
         isSingleOption: this.isSingleOption
       })

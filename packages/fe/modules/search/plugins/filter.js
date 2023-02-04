@@ -76,7 +76,7 @@ class Filter {
     }
     // need to pass this in to retain the current url hash
     // not sure why $route is not picking it up so assigning manually
-    this.app.router.push({ query: this.query, hash: location.hash })
+    this.app.router.push({ query: this.query, hash: term.hash })
   }
 }
 

@@ -143,7 +143,7 @@ header {
 
 @include large {
   .show-desktop-only {
-    :deep(.button-filter span) {
+    :deep(.button-filter .button-content) {
       display: none;
     }
     :deep(.button-filter .icon) {

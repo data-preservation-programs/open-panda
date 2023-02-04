@@ -4,7 +4,7 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
-    :url-hash="showTypeahead ? '' : $route.hash "
+    :url-hash="showTypeahead ? '' : $route.hash"
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
