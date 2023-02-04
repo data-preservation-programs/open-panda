@@ -40,13 +40,6 @@ export default {
   },
 
   async mounted () {
-    const hash = this.$route.hash.replace('#', '')
-    if (hash) {
-      const element = document.getElementById(hash) || document.querySelector(`[data-id='${hash}']`)
-      if (element) {
-        this.$scrollToElement(element, 200, -100)
-      }
-    }
     await this.$connectWebsocket(this, () => {
       this.socket.emit('join-room', 'global')
       this.socket.on('cron|app-version-changed|payload', (message) => {
