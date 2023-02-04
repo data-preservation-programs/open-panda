@@ -1,5 +1,5 @@
 <template>
-  <div :class="['field field-typeahead', state, { focused, empty, 'dropdown-open': dropdownOpen }]">
+  <div ref="typeaheadContainer" :class="['field field-typeahead', state, { focused, empty, 'dropdown-open': dropdownOpen }]">
 
     <label v-if="label" :for="fieldKey" class="label floating">
       <span class="text">{{ label }}</span>
@@ -183,6 +183,7 @@ export default {
   watch: {
     value (value) {
       preValidate(this, value, this.pre)
+      this.displayFolderNotch()
     }
   },
 
@@ -200,6 +201,7 @@ export default {
     },
     openDropdown () {
       this.dropdown.openDropdown()
+      this.displayFolderNotch()
     },
     closeDropdown () {
       this.dropdown.closeDropdown()
@@ -218,6 +220,25 @@ export default {
       const optionValue = option[this.optionDisplayKey]
       if (inputValue === '') { return optionValue }
       return optionValue.replace(this.valueMatchRegExp, '<span class="highlight">$1</span>')
+    },
+    // very hacky check to see if there are results
+    // add the folder notch if there is
+    displayFolderNotch () {
+      this.$nextTick(() => {
+        const elements = document.querySelectorAll('.field-typeahead .dropdown .option-wrapper .option')
+        let i = 0
+        while (i < elements.length) {
+          const element = elements[i]
+          if (element.classList.contains('display')) {
+            this.$refs.typeaheadContainer.classList.add('display-top-notch')
+            break
+          }
+          i++
+        }
+        if (i === elements.length) {
+          this.$refs.typeaheadContainer.classList.remove('display-top-notch')
+        }
+      })
     }
   }
 }
@@ -231,12 +252,6 @@ $height: 3.125rem;
   height: $height;
   display: flex;
   align-items: center;
-
-  &.dropdown-open {
-    .select-container {
-      display: block;
-    }
-  }
 }
 
 .input-container {
@@ -285,15 +300,21 @@ $height: 3.125rem;
   left: -20px;
   width: 200%;
   z-index: 5;
-  &:before {
-    content: '';
-    position: absolute;
-    width: 104px;
-    height: 11px;
-    top: 0;
-    left: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='104px' height='11.5px' viewBox='0 0 104 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 104 9 H 104 C 103 9 103 9 101.815 8.8108 L 88.368 0.3095 C 88.048 0.1073 87.678 0 87.299 0 H 9 C 4.0294 0 0 4.0294 0 9 V 9 Z' fill='white' /%3E%3C/svg%3E");
-    z-index: 100;
+}
+
+.display-top-notch .dropdown-open.select-container {
+  display: block;
+  :deep(.select.custom) {
+    &:before {
+      content: '';
+      position: absolute;
+      width: 104px;
+      height: 11px;
+      top: 0;
+      left: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='104px' height='11.5px' viewBox='0 0 104 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 104 9 H 104 C 103 9 103 9 101.815 8.8108 L 88.368 0.3095 C 88.048 0.1073 87.678 0 87.299 0 H 9 C 4.0294 0 0 4.0294 0 9 V 9 Z' fill='white' /%3E%3C/svg%3E");
+      z-index: 100;
+    }
   }
 }
 
