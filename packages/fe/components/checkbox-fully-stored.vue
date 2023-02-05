@@ -3,6 +3,7 @@
     filter-key="fullyStored"
     :is-single-option="true"
     :filters="options"
+    :url-hash="$route.hash"
     v-on="$listeners">
     <div slot-scope="{ applyFilter, originalSelected }">
       <FieldContainer

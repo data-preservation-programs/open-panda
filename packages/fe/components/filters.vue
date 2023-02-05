@@ -29,7 +29,8 @@
           v-for="(parentItem, parentIndex) in parentItems"
           :key="parentItem.id"
           :filter-key="parentItem.id"
-          :filters="filters[parentItem.id]">
+          :filters="filters[parentItem.id]"
+          :url-hash="showTypeahead ? '' : $route.hash">
           <section
             slot-scope="{ applyFilter, isSelected }"
             class="grid-noGutter">

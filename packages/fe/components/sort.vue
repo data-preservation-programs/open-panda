@@ -3,6 +3,7 @@
     filter-key="sort"
     :is-single-option="true"
     :filters="options"
+    :url-hash="$route.hash"
     v-on="$listeners">
     <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort">
       <FieldContainer

@@ -24,7 +24,6 @@
         @blur="focused = false"
         @input="$emit('updateValue', $event.target.value)"
         @keyup.enter="$emit('typeaheadOnEnter')"
-        @submit.prevent
         v-on="$listeners" />
       <div v-if="typeof chars === 'number'" class="char-validation">
         {{ chars }}
@@ -209,6 +208,7 @@ export default {
       this.dropdown.closeDropdown()
     },
     optionSelected (index) {
+      console.log(index)
       this.selectedOption = index
       if (index && this.options[index] && this.options[index][this.optionReturnKey]) {
         this.$emit('optionSelected', this.options[index][this.optionReturnKey])
