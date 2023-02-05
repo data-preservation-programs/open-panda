@@ -208,7 +208,6 @@ export default {
       this.dropdown.closeDropdown()
     },
     optionSelected (index) {
-      console.log(index)
       this.selectedOption = index
       if (index && this.options[index] && this.options[index][this.optionReturnKey]) {
         this.$emit('optionSelected', this.options[index][this.optionReturnKey])
@@ -256,6 +255,12 @@ $height: 3.125rem;
   height: $height;
   display: flex;
   align-items: center;
+
+  &.dropdown-open {
+    .select-container {
+      display: block;
+    }
+  }
 }
 
 .input-container {
