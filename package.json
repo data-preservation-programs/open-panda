@@ -9,7 +9,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev-fe": "npm run dev -w fe",
-    "dev-be": "npm run dev -w be"
+    "dev-be": "npm run dev -w be",
+    "dev": "concurrently \"npm run dev -w fe\" \"npm run dev -w be\""
   },
   "repository": {
     "type": "git",
@@ -26,5 +27,8 @@
   "workspaces": [
     "packages/fe",
     "packages/be"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
 }
