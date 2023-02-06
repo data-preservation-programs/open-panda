@@ -1,7 +1,31 @@
+<template>
+  <FieldConditional
+    v-slot="{ displayField }"
+    :scaffold="scaffold"
+    :parent-field="field"
+    :id-suffix="idSuffix">
+
+    <slot
+      v-if="displayField"
+      :field="field"
+      :type="type"
+      :update-value="updateValue"
+      :validation-message="validationMessage" />
+
+  </FieldConditional>
+</template>
+
 <script>
+// ===================================================================== Imports
+import FieldConditional from '@/modules/form/components/field-conditional'
+
 // ====================================================================== Export
 export default {
-  name: 'Field',
+  name: 'FieldStandalone',
+
+  components: {
+    FieldConditional
+  },
 
   props: {
     scaffold: {
@@ -45,14 +69,16 @@ export default {
   },
 
   data () {
-    let fieldKey = this.fieldKey
+    const fieldKey = this.fieldKey
     const formId = this.formId
+    let idSuffix = formId || ''
     if (this.scaffold.hasOwnProperty('parentModelKey')) {
-      fieldKey = `${fieldKey}|${this.groupIndex}`
+      idSuffix = `${this.groupIndex}|${formId}`
     }
-    const id = fieldKey !== '' && formId ? `${fieldKey}|${formId}` : fieldKey
+    const id = formId ? `${fieldKey}|${idSuffix}` : fieldKey
     return {
-      id
+      id,
+      idSuffix
     }
   },
 
@@ -107,7 +133,9 @@ export default {
     if (!this.field) {
       await this.$field(this.id).register(this.formId, this.groupIndex, this.fieldKey, this.scaffold)
     } else {
-      await this.$field(this.id).update({ validate: true })
+      if (this.field.includeInFormSubmission) {
+        await this.$field(this.id).update({ validate: true })
+      }
     }
   },
 

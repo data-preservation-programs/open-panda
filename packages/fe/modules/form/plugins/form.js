@@ -38,6 +38,7 @@ const compileArray = (arrayField, fields) => {
 
 // ================================================================ extractModel
 const extractModel = async (scaffold, fields) => {
+  console.log(scaffold)
   try {
     const len = fields.length
     for (let i = 0; i < len; i++) {
@@ -48,6 +49,7 @@ const extractModel = async (scaffold, fields) => {
       const mirror = fieldScaffold.mirror
       const type = fieldScaffold.type
       let value = field.value
+      console.log(modelKey, type, value)
       if (!field.hasOwnProperty('parentModelKey') && field.validate && ((mirror && mirror.primary) || !mirror)) {
         if (type === 'array') {
           value = await compileArray(field, fields)

@@ -1,34 +1,32 @@
 <template>
-  <div class="field-container">
-    <FieldStandalone v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }" :class="`field-wrapper field-wrapper-${scaffold.type}`">
-        <template v-if="field">
+  <FieldStandalone
+    v-slot="{ updateValue, field, type, validationMessage }"
+    v-bind="$props"
+    :class="`field-wrapper field-wrapper-${scaffold.type}`"
+    v-on="$listeners">
 
-          <label v-if="scaffold.label" :for="fieldKey" class="field-label">
-            {{ scaffold.label }}
-          </label>
+    <label v-if="scaffold.label" :for="fieldKey" class="field-label">
+      {{ scaffold.label }}
+    </label>
 
-          <div v-if="scaffold.description" class="description">
-            {{ scaffold.description }}
-          </div>
+    <div v-if="scaffold.description" class="description">
+      {{ scaffold.description }}
+    </div>
 
-          <component
-            :is="type"
-            :field="field"
-            :field-key="fieldKey"
-            @updateValue="pushValue($event, updateValue)"
-            v-on="$listeners" />
+    <component
+      :is="type"
+      :field="field"
+      :field-key="fieldKey"
+      @updateValue="pushValue($event, updateValue)"
+      v-on="$listeners" />
 
-          <slot />
+    <slot />
 
-          <div v-if="validationMessage" class="validation-message">
-            {{ validationMessage }}
-          </div>
+    <div v-if="validationMessage" class="validation-message">
+      {{ validationMessage }}
+    </div>
 
-        </template>
-      </div>
-    </FieldStandalone>
-  </div>
+  </FieldStandalone>
 </template>
 
 <script>
@@ -78,11 +76,6 @@ export default {
     fieldKey: {
       type: String,
       required: true
-    },
-    resetGroupId: {
-      type: String,
-      required: false,
-      default: ''
     },
     groupIndex: {
       type: [Number, Boolean],

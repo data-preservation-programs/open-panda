@@ -18,13 +18,15 @@ const getArrayFormFieldValue = (form, scaffold, groupIndex) => {
   return entry[scaffold.modelKey]
 }
 
-// ============================================== getCheckboxRadioFormFieldValue
-const getCheckboxRadioFormFieldValue = (value, scaffold) => {
+// =================================================== getCheckboxFormFieldValue
+const getCheckboxFormFieldValue = (value, scaffold) => {
   const isSingleOption = scaffold.options.length === 1
   if (isSingleOption) {
     return value === true ? 0 : -1
   } else {
-    console.log('TODO: Wire up multi-option radios/checkboxes. Remember to keep values index-based for interoperability with the search/filters module.')
+    if (process.env.SERVER_ENV === 'development') {
+      console.log('TODO: Wire up multi-option checkboxes. Remember to keep values index-based for interoperability with the search/filters module.')
+    }
     return value
   }
 }
@@ -34,6 +36,7 @@ const getNullStateValue = (type) => {
   let value
   switch (type) {
     case 'checkbox' : value = -1; break
+    case 'radio' : value = -1; break
     case 'select' : value = -1; break
     case 'range' : value = scaffold.min; break
     case 'array' : value = []; break
@@ -50,9 +53,9 @@ const getValue = (app, scaffold, form, resetTo, groupIndex) => {
   if (type === 'array') {
     value.map(entry => (Object.assign(entry, { groupId: Uuid.v4() })))
   } else if (type === 'checkbox') {
-    value = getCheckboxRadioFormFieldValue(value, scaffold)
+    value = getCheckboxFormFieldValue(value, scaffold)
   }
-  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined && value !== '') { return value }
+  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined && value !== null && value !== '') { return value }
   // If this is just a reset to the nullState, then grab and return the null state
   if (resetTo && resetTo !== '' && resetTo === 'nullState') {
     return getNullStateValue(type)
@@ -196,7 +199,7 @@ const updateLocalStorageSavedField = (ctx, store, formId) => {
 // -----------------------------------------------------------------------------
 const Field = (app, store, id) => {
   let field = store.getters['form/fields'].find(field => field.id === id)
-  let formId, form, value, scaffold, type, inputType, required, pattern, chars, min, max, mirror, react
+  let formId, form, value, scaffold, type, inputType, required, pattern, chars, min, max, mirror, react, conditions
   if (field) {
     formId = field.formId
     value = field.value
@@ -210,6 +213,7 @@ const Field = (app, store, id) => {
     max = scaffold.max
     mirror = scaffold.mirror
     react = scaffold.react
+    conditions = scaffold.conditions
   }
   if (formId) {
     form = store.$form(formId).get()
@@ -227,6 +231,7 @@ const Field = (app, store, id) => {
           formId,
           ...(typeof groupIndex === 'number' && { groupIndex }),
           value,
+          includeInFormSubmission: true, // used to keep "validate" disabled in field-standalone component
           originalValue: value,
           state: 'valid',
           validate: true,
