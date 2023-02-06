@@ -3,7 +3,8 @@
     v-slot="{ displayField }"
     :scaffold="scaffold"
     :parent-field="field"
-    :id-suffix="idSuffix">
+    :id-suffix="idSuffix"
+    :root-html-tag="rootHtmlTag">
 
     <slot
       v-if="displayField"
@@ -45,6 +46,17 @@ export default {
       type: String,
       required: false,
       default: ''
+    },
+    /**
+     * On occasions where the final root element in field-conditional.vue render
+     * must be something specific. Such as when wrapping a <tbody> in a field-standalone,
+     * it cannot be a div as the wrapper. It must be <tbody> at the root to prevent
+     * SSR hydration errors.
+     */
+    rootHtmlTag: {
+      type: String,
+      required: false,
+      default: 'div'
     },
     groupIndex: {
       type: [Number, Boolean],
@@ -168,15 +180,6 @@ export default {
     updateValue (value) {
       this.$field(this.id).updateValue(value)
     }
-  },
-
-  render () {
-    return this.$scopedSlots.default({
-      updateValue: this.updateValue,
-      field: this.field,
-      type: this.type,
-      validationMessage: this.validationMessage
-    })
   }
 }
 </script>
