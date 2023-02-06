@@ -145,7 +145,6 @@ const Form = (app, store, id) => {
 
     // ================================================================ validate
     async validate () {
-      const fields = store.getters['form/fields'].filter(field => field.formId === id)
       const len = fields.length
       if (len === 0) { return false }
       let state = 'valid'
@@ -162,6 +161,14 @@ const Form = (app, store, id) => {
       if (state === 'error') { return false }
       resetFields(app, fields)
       return await extractModel(CloneDeep(form.scaffold), compiled)
+    },
+
+    // =================================================================== reset
+    reset () {
+      const len = fields.length
+      for (let i = 0; i < len; i++) {
+        app.$field(fields[i].id).reset()
+      }
     }
 
   }
