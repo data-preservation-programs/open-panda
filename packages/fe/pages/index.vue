@@ -18,12 +18,18 @@
           class="datasets-searchbar"
           @searchbarUpdated="shouldCallEndpoint = true" />
         <!-- ============================================== desktop checkbox -->
-        <CheckboxFullyStored :options="filters.fullyStored" class="datasets-checkbox show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
+        <CheckboxFullyStored
+          :options="filters.fullyStored"
+          class="datasets-checkbox show-desktop-only"
+          @filterApplied="shouldCallEndpoint = true" />
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
         <!-- ================================================== desktop sort -->
-        <Sort :options="sortOptions" class="show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
+        <Sort
+          :options="sortOptions"
+          class="show-desktop-only"
+          @filterApplied="shouldCallEndpoint = true" />
         <Filters />
       </div>
     </div>
@@ -31,9 +37,15 @@
     <!-- =========================== filter row2 mobile only: checkbox, sort -->
     <div class="grid-noGutter-middle-spaceBetween show-mobile-only filter-row2-mobile">
       <!-- ================================================= mobile checkbox -->
-      <CheckboxFullyStored :options="filters.fullyStored" class="col-6_mi-12 datasets-checkbox" @filterApplied="shouldCallEndpoint = true" />
+      <CheckboxFullyStored
+        :options="filters.fullyStored"
+        class="col-6_mi-12 datasets-checkbox"
+        @filterApplied="shouldCallEndpoint = true" />
       <!-- ===================================================== mobile sort -->
-      <Sort :options="sortOptions" class="col-6_mi-12" @filterApplied="shouldCallEndpoint = true" />
+      <Sort
+        :options="sortOptions"
+        class="col-6_mi-12"
+        @filterApplied="shouldCallEndpoint = true" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -67,10 +79,14 @@
         <Button :button="{type: 'outline'}" @click.native="$clearSearchFilterSortAndLimit">
           {{ datasetContent.clearAllFilters }}
         </Button>
-        <button :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']" @click="updateLayout('grid')">
+        <button
+          :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']"
+          @click="updateLayout('grid')">
           <GridIcon />
         </button>
-        <button :class="['button-layout button-layout-list', layout === 'list' ? 'selected' : '']" @click="updateLayout('list')">
+        <button
+          :class="['button-layout button-layout-list', layout === 'list' ? 'selected' : '']"
+          @click="updateLayout('list')">
           <ListIcon />
         </button>
       </div>
@@ -114,7 +130,10 @@
           store-key="datasets" />
       </div>
       <div class="col-5_md-12 flex-end">
-        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" @filterApplied="shouldCallEndpoint = true" />
+        <ResultsPerPage
+          v-if="totalPages > 1"
+          :options="limitOptions"
+          @filterApplied="shouldCallEndpoint = true" />
       </div>
     </div>
 

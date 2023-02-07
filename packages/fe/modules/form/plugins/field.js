@@ -18,19 +18,6 @@ const getArrayFormFieldValue = (form, scaffold, groupIndex) => {
   return entry[scaffold.modelKey]
 }
 
-// =================================================== getCheckboxFormFieldValue
-const getCheckboxFormFieldValue = (value, scaffold) => {
-  const isSingleOption = scaffold.options.length === 1
-  if (isSingleOption) {
-    return value === true ? 0 : -1
-  } else {
-    if (process.env.SERVER_ENV === 'development') {
-      console.log('TODO: Wire up multi-option checkboxes. Remember to keep values index-based for interoperability with the search/filters module.')
-    }
-    return value
-  }
-}
-
 // =========================================================== getNullStateValue
 const getNullStateValue = (type) => {
   let value
@@ -46,16 +33,20 @@ const getNullStateValue = (type) => {
 }
 
 // ==================================================================== getValue
-const getValue = (app, scaffold, form, resetTo, groupIndex) => {
-  const dualValueFields = ['select', 'radio', 'checkbox']
+const getValue = (app, scaffold, form, formId, resetTo, groupIndex) => {
+  const dualValueFields = ['select', 'radio', 'checkbox'] // fields that can contain both a String and an Index (number) as the value/defaultValue
   const type = scaffold.type
+  const defaultValue = scaffold.defaultValue
+  const options = scaffold.options
+  const isSingleOption = options ? options.length === 1 : undefined
   let value = form ? form.scaffold[scaffold.modelKey] : undefined // First grab the value found in the form
   if (type === 'array') {
     value.map(entry => (Object.assign(entry, { groupId: Uuid.v4() })))
-  } else if (type === 'checkbox') {
-    value = getCheckboxFormFieldValue(value, scaffold)
   }
-  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined && value !== null && value !== '') { return value }
+  if (!scaffold.hasOwnProperty('parentModelKey') && value !== undefined && value !== null && value !== '' && formId) {
+    if (isSingleOption) { return value === true ? 0 : -1 } // convert truthy value to index
+    return value
+  }
   // If this is just a reset to the nullState, then grab and return the null state
   if (resetTo && resetTo !== '' && resetTo === 'nullState') {
     return getNullStateValue(type)
@@ -65,11 +56,18 @@ const getValue = (app, scaffold, form, resetTo, groupIndex) => {
     value = getArrayFormFieldValue(form, scaffold, groupIndex)
   }
   // If a default value is set in the field scaffold, grab that instead (both for regular getValue calls as well as if it's a reset)
-  if (scaffold.hasOwnProperty('defaultValue') && scaffold.defaultValue !== '') {
-    const defaultValue = scaffold.defaultValue
+  if (scaffold.hasOwnProperty('defaultValue') && defaultValue !== '') {
     value = defaultValue
-    if ((dualValueFields.includes(type)) && typeof defaultValue === 'string') {
-      value = scaffold.options.findIndex(option => option.label === defaultValue)
+    // defaultValue can be an array of indexes, a single index Number, an array of labels or a single label String
+    if (dualValueFields.includes(type)) {
+      if (isSingleOption && Array.isArray(defaultValue)) { // if single option and an array of index Number(s) or String(s), grab the first item
+        value = defaultValue[0]
+      }
+      // extract index of label if String or array of Strings
+      const found = options.findIndex(option => option.label === value)
+      if (found !== -1) {
+        value = found
+      }
     }
   // Otherwise set a null state default value, except for array field values
   } else if (!scaffold.hasOwnProperty('parentModelKey')) {
@@ -221,10 +219,10 @@ const Field = (app, store, id) => {
   return {
 
     // ================================================================ register
-    async register (formId, groupIndex, fieldKey, scaffold) {
+    async register (formId, groupIndex, fieldKey, scaffold, resetTo) {
       if (!field) {
         const form = app.$form(formId).get()
-        const value = getValue(app, scaffold, form, false, groupIndex)
+        const value = getValue(app, scaffold, form, formId, false, groupIndex)
         await store.dispatch('form/setField', {
           id,
           fieldKey,
@@ -236,6 +234,7 @@ const Field = (app, store, id) => {
           state: 'valid',
           validate: true,
           validation: false,
+          resetTo,
           scaffold
         })
       }
@@ -301,7 +300,7 @@ const Field = (app, store, id) => {
 
     // =================================================================== reset
     reset (resetTo) {
-      const value = getValue(app, scaffold, form, resetTo)
+      const value = getValue(app, scaffold, form, formId, resetTo)
       this.update({
         value,
         originalValue: value,

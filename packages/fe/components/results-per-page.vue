@@ -7,13 +7,13 @@
     <div slot-scope="{ applyFilter, originalSelected }">
       <FieldContainer
         field-key="results_per_page"
-        reset-group-id="filters"
         :scaffold="{
           type: 'select',
           required: false,
           label: 'Results per page',
           options,
-          defaultValue: originalSelected || 0 /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+          defaultValue: originalSelected || 0, /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+          resetGroupId: 'filters'
         }"
         @updateValue="applyFilter" />
     </div>

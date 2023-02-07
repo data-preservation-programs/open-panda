@@ -7,12 +7,13 @@
     <div slot-scope="{ applyFilter, originalSelected }">
       <FieldContainer
         field-key="toggle_fully_stored"
-        reset-group-id="filters"
         :scaffold="{
           type: 'checkbox',
           required: false,
           options: options,
-          defaultValue: originalSelected
+          defaultValue: originalSelected,
+          resetGroupId: 'filters',
+          resetTo: 'nullState'
         }"
         @updateValue="applyFilter" />
     </div>

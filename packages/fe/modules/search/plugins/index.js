@@ -36,10 +36,12 @@ export default async function ({ app, store, route }, inject) {
     /**
       * This event is caught by the form module's field.vue component in its mounted() hook.
       * Params are outlined there.
+      * @arg {object} payload
+      *   @param {string} id This id is passed to <FieldContainer> as a "reset-group-id" prop. All fields with this id will be reset.
+      *   @param {string} resetTo 'nullState' or 'defaultValue'. Setting this will override the field-level resetTo value. DO NOT leave as an empty string.
       */
     window.$nuxt.$emit('resetFormFields', {
-      id: 'filters',
-      resetTo: 'nullState' // 'nullState' or 'defaultValue'
+      id: 'filters'
     })
     /**
       * Unfortunately we can't call the search/filter clear methods individually

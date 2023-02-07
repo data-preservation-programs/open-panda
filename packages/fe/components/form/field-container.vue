@@ -57,12 +57,6 @@ export default {
     FieldChiclet
   },
 
-  /**
-   * props:
-   *
-   * @updateValue - triggers when field has changed
-   * :resetGroupId - if this prop matches ID passed to 'resetFormFields' global bus event, then reset the field value
-   */
   props: {
     scaffold: {
       type: Object,
@@ -79,6 +73,11 @@ export default {
     },
     groupIndex: {
       type: [Number, Boolean],
+      required: false,
+      default: false
+    },
+    validateOnEntry: {
+      type: Boolean,
       required: false,
       default: false
     },

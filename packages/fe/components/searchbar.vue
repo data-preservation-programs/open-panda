@@ -12,7 +12,6 @@
 
       <FieldContainer
         field-key="typeahead"
-        reset-group-id="filters"
         :scaffold="{
           type: 'typeahead',
           inputType: 'text',
@@ -23,7 +22,8 @@
           optionDisplayKey: 'name',
           optionReturnKey: 'slug',
           options: datasetListTypeahead,
-          defaultValue: value || ''
+          defaultValue: value || '',
+          resetGroupId: 'filters'
         }"
         @input="updateValue"
         @optionSelected="goToDatasetPage" />

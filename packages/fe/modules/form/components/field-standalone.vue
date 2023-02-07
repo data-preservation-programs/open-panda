@@ -42,22 +42,6 @@ export default {
       type: String,
       required: true
     },
-    resetGroupId: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    /**
-     * On occasions where the final root element in field-conditional.vue render
-     * must be something specific. Such as when wrapping a <tbody> in a field-standalone,
-     * it cannot be a div as the wrapper. It must be <tbody> at the root to prevent
-     * SSR hydration errors.
-     */
-    rootHtmlTag: {
-      type: String,
-      required: false,
-      default: 'div'
-    },
     groupIndex: {
       type: [Number, Boolean],
       required: false,
@@ -77,6 +61,17 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    /**
+     * On occasions where the final root element in field-conditional.vue render
+     * must be something specific. Such as when wrapping a <tbody> in a field-standalone,
+     * it cannot be a div as the wrapper. It must be <tbody> at the root to prevent
+     * SSR hydration errors.
+     */
+    rootHtmlTag: {
+      type: String,
+      required: false,
+      default: 'div'
     }
   },
 
@@ -143,7 +138,7 @@ export default {
 
   async created () {
     if (!this.field) {
-      await this.$field(this.id).register(this.formId, this.groupIndex, this.fieldKey, this.scaffold)
+      await this.$field(this.id).register(this.formId, this.groupIndex, this.fieldKey, this.scaffold, this.resetTo)
     } else {
       if (this.field.includeInFormSubmission) {
         await this.$field(this.id).update({ validate: true })
@@ -160,8 +155,15 @@ export default {
       *  @param {string} payload.resetTo 'nullState' (nothing selected) or 'defaultValue' (back to default value as often set in JSON)
       */
     this.$nuxt.$on('resetFormFields', (payload) => {
-      if (this.resetGroupId === payload.id) {
-        this.$field(this.id).reset(payload.resetTo)
+      /**
+       * resetGroupId: All fields with the same scaffold.resetGroupId will be reset when the
+       * 'resetFormFields' global emitter (in search/plugins/index.js) is triggered
+       *
+       * resetTo: If the field is reset, should it rest to its default value or
+       * completely wiped back to its null state?
+       */
+      if (this.scaffold.resetGroupId === payload.id) {
+        this.$field(this.id).reset(payload.resetTo || this.scaffold.resetTo)
       }
     })
     this.$emit('fieldRegistered', this.id)
