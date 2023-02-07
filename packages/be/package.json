@@ -39,6 +39,7 @@
     "filesize": "^8.0.7",
     "fs-extra": "^10.1.0",
     "helmet": "^5.0.2",
+    "ipfs-car": "^0.9.1",
     "lodash": "^4.17.20",
     "mime": "^3.0.0",
     "minimist": "^1.2.5",
