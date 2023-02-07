@@ -15,21 +15,18 @@
           :placeholder="`Search ${count || '...'} datasets`"
           :loading="dataLoading"
           theme="line"
-          class="datasets-searchbar"
-          @searchbarUpdated="shouldCallEndpoint = true" />
+          class="datasets-searchbar" />
         <!-- ============================================== desktop checkbox -->
         <CheckboxFullyStored
           :options="filters.fullyStored"
-          class="datasets-checkbox show-desktop-only"
-          @filterApplied="shouldCallEndpoint = true" />
+          class="datasets-checkbox show-desktop-only" />
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
         <!-- ================================================== desktop sort -->
         <Sort
           :options="sortOptions"
-          class="show-desktop-only"
-          @filterApplied="shouldCallEndpoint = true" />
+          class="show-desktop-only" />
         <Filters />
       </div>
     </div>
@@ -39,13 +36,11 @@
       <!-- ================================================= mobile checkbox -->
       <CheckboxFullyStored
         :options="filters.fullyStored"
-        class="col-6_mi-12 datasets-checkbox"
-        @filterApplied="shouldCallEndpoint = true" />
+        class="col-6_mi-12 datasets-checkbox" />
       <!-- ===================================================== mobile sort -->
       <Sort
         :options="sortOptions"
-        class="col-6_mi-12"
-        @filterApplied="shouldCallEndpoint = true" />
+        class="col-6_mi-12" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -132,8 +127,7 @@
       <div class="col-5_md-12 flex-end">
         <ResultsPerPage
           v-if="totalPages > 1"
-          :options="limitOptions"
-          @filterApplied="shouldCallEndpoint = true" />
+          :options="limitOptions" />
       </div>
     </div>
 
@@ -184,8 +178,7 @@ export default {
   data () {
     return {
       tag: 'index',
-      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid',
-      shouldCallEndpoint: false
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
     }
   },
 
@@ -243,7 +236,7 @@ export default {
 
   watch: {
     '$route' (route) {
-      this.callGetDatasetList(route)
+      this.getDatasetList({ route })
     },
     datasetList () {
       this.stopLoading()
@@ -270,16 +263,6 @@ export default {
     updateLayout (layout) {
       this.$ls.set('layout', layout)
       this.layout = layout
-    },
-    callGetDatasetList (route) {
-      /**
-       * this.shouldCallEndpoint flag is here because @filterApplied gets triggered before the route has been registered
-       * so we need to watch the route first and then call the endpoint if flag is true
-       */
-      if (this.shouldCallEndpoint) {
-        this.getDatasetList({ route })
-        this.shouldCallEndpoint = false
-      }
     }
   }
 }
