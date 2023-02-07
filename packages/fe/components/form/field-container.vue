@@ -2,7 +2,7 @@
   <FieldStandalone
     v-slot="{ updateValue, field, type, validationMessage }"
     v-bind="$props"
-    :class="`field-wrapper field-wrapper-${scaffold.type}`"
+    :class="['field-wrapper', scaffold.type]"
     v-on="$listeners">
 
     <label v-if="scaffold.label" :for="fieldKey" class="field-label">
@@ -191,12 +191,14 @@ export default {
   }
 }
 
-// custom
-.field-wrapper-select {
-  display: flex;
-  align-items: center;
-  .field-label {
-    margin-right: toRem(24);
+// ////////////////////////////////////////////////////////////////////// Custom
+.field-wrapper {
+  &.select {
+    display: flex;
+    align-items: center;
+    .field-label {
+      margin-right: toRem(24);
+    }
   }
 }
 

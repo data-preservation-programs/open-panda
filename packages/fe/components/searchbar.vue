@@ -141,8 +141,8 @@ export default {
   display: flex;
   padding-left: toRem(20);
   flex-grow: 1;
-  :deep(.field-container) {
-    width: 100%;
+  :deep(.field-wrapper) {
+    flex: 1;
   }
 }
 
