@@ -29,9 +29,6 @@ export default async function ({ app, store, route }, inject) {
     app.$search.clearSearchQuery()
     app.$filter.clearAll()
   })
-  inject('clearAllFilters', (exception) => {
-    app.$filter.clearAll(exception)
-  })
   inject('clearSearchFilterSortAndLimit', () => {
     /**
       * This event is caught by the form module's field.vue component in its mounted() hook.

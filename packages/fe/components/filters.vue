@@ -36,7 +36,7 @@
             <div class="filters-label col-12">
               <span>{{ parentItem.label }}</span>
             </div>
-  
+
             <span
               v-for="(childItem, childIndex) in filters[parentItem.id]"
               :key="`${filters[parentIndex.id]}-${childIndex}`">
@@ -49,14 +49,14 @@
                 <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
               </ButtonFilters>
             </span>
-  
+
             <ButtonToggle
               theme="light"
               :class="[{ active: parentItem.showMore }]"
               @click="toggleLimit(parentIndex, filters[parentItem.id])">
               {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
             </ButtonToggle>
-  
+
           </section>
         </Filterer>
         <section class="grid-noGutter-right filter-button">
@@ -169,7 +169,7 @@ export default {
     },
     clearAll () {
       // do not clear fullyStored because that's outside the filter dropdown
-      this.$clearAllFilters('fullyStored')
+      this.$filter.clearAll('fullyStored')
     },
     toggleLimit (index, child) {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
