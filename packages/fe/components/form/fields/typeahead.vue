@@ -29,7 +29,8 @@
         :value="value"
         :autocomplete="autocomplete"
         :class="['input', state]"
-        @focus="focusHandler"
+        @focus="focusAndClickHandler"
+        @click="focusAndClickHandler"
         @blur="focused = false"
         @input="$emit('updateValue', $event.target.value)"
         v-on="$listeners" />
@@ -206,9 +207,11 @@ export default {
   },
 
   methods: {
-    focusHandler () {
-      this.focused = true
-      this.openDropdown()
+    focusAndClickHandler () {
+      if (!this.dropdownOpen) {
+        this.focused = true
+        this.openDropdown()
+      }
     },
     dropdownToggled (state) {
       this.dropdownOpen = state
@@ -223,9 +226,11 @@ export default {
       this.highlightedOption = index
     },
     optionSelected (index) {
-      this.selectedOption = index
-      this.$emit('optionSelected', this.options[index][this.optionReturnKey])
-      this.$emit('updateValue', this.options[index][this.optionReturnKey])
+      if (index !== -1) {
+        this.selectedOption = index
+        this.$emit('optionSelected', this.options[index][this.optionReturnKey])
+        this.$emit('updateValue', this.options[index][this.optionReturnKey])
+      }
     },
     optionIncludedInSearch (option) {
       const value = option[this.optionDisplayKey]
@@ -332,13 +337,9 @@ $height: 3.125rem;
   }
 }
 
-:deep(div.select) {
+:deep(select.select) {
   &.native {
     height: 0;
-    border-radius: 0.25rem;
-    &:focus-visible {
-      @include focusBoxShadow;
-    }
   }
 }
 

@@ -155,10 +155,9 @@ export default {
         const keyCode = e.keyCode
         const code = e.keyCode
         const key = e.key
-        // TODO: key and code should not both be strings, this is a bug!
-        const down = keyCode === 40 || key === 'ArrowDown' || code === 'ArrowDown'
-        const up = keyCode === 38 || key === 'ArrowUp' || code === 'ArrowUp'
-        const submit = keyCode === 32 || key === ' ' || code === 'Space' || keyCode === 13 || key === 'Enter' || code === 'Enter'
+        const down = keyCode === 40 || code === 40 || key === 'ArrowDown'
+        const up = keyCode === 38 || code === 38 || key === 'ArrowUp'
+        const submit = keyCode === 13 || code === 13 || key === 'Enter'
         if (down || up || submit) {
           e.preventDefault()
         }

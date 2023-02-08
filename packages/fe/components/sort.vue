@@ -49,13 +49,13 @@ export default {
   @include medium {
     margin-right: 0;
   }
-  :deep(.field-select) {
-    width: toRem(140);
-  }
   @include large {
     :deep(.field-label) {
       display: none;
     }
+  }
+  :deep(.field-select) {
+    width: toRem(140);
   }
 }
 </style>
