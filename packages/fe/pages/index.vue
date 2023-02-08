@@ -71,7 +71,9 @@
       </div>
 
       <div class="col-4 flex-end">
-        <Button :button="{type: 'outline'}" @click.native="$clearSearchFilterSortAndLimit">
+        <Button
+          :button="{type: 'outline'}"
+          @click.native="$clearSearchFilterSortAndLimit">
           {{ datasetContent.clearAllFilters }}
         </Button>
         <button

@@ -169,7 +169,7 @@ export default {
     },
     clearAll () {
       // do not clear fullyStored because that's outside the filter dropdown
-      this.$filter.clearAll('fullyStored')
+      this.$filter.clearAll(['fullyStored'])
     },
     toggleLimit (index, child) {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
