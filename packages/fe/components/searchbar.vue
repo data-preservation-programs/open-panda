@@ -114,7 +114,8 @@ export default {
   },
 
   methods: {
-    searchbarSearch () {
+    async searchbarSearch () {
+      await this.$scrollToHash({ hash: '#datasets' })
       this.$router.push({
         path: '/',
         query: this.$route.query,

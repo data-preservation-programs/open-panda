@@ -404,16 +404,30 @@ const GetPrettyNameFromUrl = (url) => {
   return url ? url.split('/').pop().replaceAll('-', ' ').replace(/\.[^/.]+$/, '') : ''
 }
 
+// //////////////////////////////////////////////////////////// GetTagBasedOnUrl
 const GetTagBasedOnUrl = (url) => {
   return url ? url.includes('http') || url.includes('mailto') || url.includes('tel') ? 'a' : 'nuxt-link' : 'button'
 }
 
+// ///////////////////////////////////////////////////////// GetTargetBasedOnUrl
 const GetTargetBasedOnUrl = (url) => {
   return url ? url.includes('http') ? '_blank' : '' : false
 }
 
+// ////////////////////////////////////////////////////////////// IsRouteCurrent
 const IsRouteCurrent = (route, href) => {
   return route.fullPath === href
+}
+
+// //////////////////////////////////////////////////////////////// ScrollToHash
+const ScrollToHash = (app, route, element) => {
+  const hash = route.hash.replace('#', '')
+  if (hash) {
+    const element = document.getElementById(hash) || document.querySelector(`[data-id='${hash}']`)
+    if (element) {
+      app.$scrollToElement(element, 200, -50)
+    }
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////// Export
@@ -448,4 +462,5 @@ export default ({ $config, app }, inject) => {
   inject('GetTagBasedOnUrl', GetTagBasedOnUrl)
   inject('GetTargetBasedOnUrl', GetTargetBasedOnUrl)
   inject('GetPrettyNameFromUrl', GetPrettyNameFromUrl)
+  inject('scrollToHash', (route, element) => ScrollToHash(app, route, element))
 }
