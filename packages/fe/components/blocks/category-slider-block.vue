@@ -182,30 +182,29 @@ export default {
     display: flex;
     justify-content: center;
   }
-}
-
-:deep(.slide-selector) {
-  justify-content: space-between;
-  padding: 0 2.25rem;
-  @include medium {
-    padding: 0;
-    margin: 0 -1rem;
-    width: calc(100% + 2rem);
-  }
-  @include small {
-    width: toRem(112);
-  }
-  .slider-button {
-    @include circleBorder;
-  }
-  .previous-button {
-    svg {
-      transform: rotate(90deg) scale(0.4);
+  .slide-selector {
+    justify-content: space-between;
+    padding: 0 2.25rem;
+    @include medium {
+      padding: 0;
+      margin: 0 -1rem;
+      width: calc(100% + 2rem);
     }
-  }
-  .next-button {
-    svg {
-      transform: rotate(-90deg) scale(0.4);
+    @include small {
+      width: toRem(112);
+    }
+    .slider-button {
+      @include circleBorder;
+    }
+    .previous-button {
+      svg {
+        transform: rotate(90deg) scale(0.4);
+      }
+    }
+    .next-button {
+      svg {
+        transform: rotate(-90deg) scale(0.4);
+      }
     }
   }
 }
