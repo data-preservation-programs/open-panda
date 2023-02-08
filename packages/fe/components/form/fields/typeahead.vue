@@ -261,14 +261,14 @@ $height: 3.125rem;
   display: flex;
   align-items: center;
   &.no-results {
-    .select-container {
+    :deep(.select-container) {
       &:before {
         display: none;
       }
     }
   }
   &.dropdown-open {
-    .select-container {
+    :deep(.select-container) {
       display: block;
     }
   }
@@ -360,7 +360,7 @@ $height: 3.125rem;
   z-index: 10;
 }
 
-.selection-window {
+:deep(.selection-window) {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -370,7 +370,7 @@ $height: 3.125rem;
   transition: 150ms ease-out;
 }
 
-.option {
+:deep(.option) {
   padding: 0.5rem 0.75rem;
   transition: 150ms ease-out;
   &.highlighted {
