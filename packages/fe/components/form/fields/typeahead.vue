@@ -64,7 +64,7 @@
  *   "placeholder": "Country",
  *   "description": "Where are you located?",
  *   "required": true,
- *   "autocomplete": "none",
+ *   "autocomplete": "off",
  *   "pre": "[^\\u0000-\\u00ff]",
  *   "validationMessage": {
  *     "required": "This field is required"

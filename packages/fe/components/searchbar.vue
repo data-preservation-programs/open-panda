@@ -18,7 +18,7 @@
           modelKey: 'typeahead',
           placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
           required: false,
-          autocomplete: 'none',
+          autocomplete: 'off',
           optionDisplayKey: 'name',
           optionReturnKey: 'slug',
           options: datasetListTypeahead,
