@@ -200,9 +200,8 @@ export default {
       margin-right: toRem(24);
     }
   }
-}
-
-.field-wrapper-checkbox {
-  @include fontSize_14;
+  &.checkbox {
+    @include fontSize_14;
+  }
 }
 </style>
