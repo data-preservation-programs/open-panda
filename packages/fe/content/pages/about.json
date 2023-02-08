@@ -101,7 +101,7 @@
       }
     },
     "faq": {
-      "slug": "faq",
+      "id": "section-faq",
       "col_1": {
         "type": "text_block",
         "cols": {

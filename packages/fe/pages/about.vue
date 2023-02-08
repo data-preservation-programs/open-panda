@@ -94,6 +94,7 @@ export default {
     }
   }
 }
+
 :deep(.about-intro-1) {
   padding-bottom: toRem(280);
   @include large {
