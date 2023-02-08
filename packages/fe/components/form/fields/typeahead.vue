@@ -261,14 +261,14 @@ $height: 3.125rem;
   display: flex;
   align-items: center;
   &.no-results {
-    :deep(.select-container) {
+    :deep(div.select-container) {
       &:before {
         display: none;
       }
     }
   }
   &.dropdown-open {
-    :deep(.select-container) {
+    :deep(div.select-container) {
       display: block;
     }
   }
@@ -313,7 +313,7 @@ $height: 3.125rem;
 }
 
 // //////////////////////////////////////////////////////////////////// Dropdown
-:deep(.select-container) {
+:deep(div.select-container) {
   display: none;
   position: absolute;
   top: 120%;
@@ -332,7 +332,7 @@ $height: 3.125rem;
   }
 }
 
-:deep(.select) {
+:deep(div.select) {
   &.native {
     height: 0;
     border-radius: 0.25rem;
@@ -342,7 +342,7 @@ $height: 3.125rem;
   }
 }
 
-:deep(.dropdown) {
+:deep(div.dropdown) {
   @include shadow1;
   top: 10px;
   max-height: $height * 5.5;
@@ -352,7 +352,7 @@ $height: 3.125rem;
   border-bottom-left-radius: 0.625rem;
 }
 
-:deep(.selection-window-wrapper) {
+:deep(div.selection-window-wrapper) {
   display: none;
 }
 
@@ -360,7 +360,7 @@ $height: 3.125rem;
   z-index: 10;
 }
 
-:deep(.selection-window) {
+:deep(div.selection-window) {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -370,7 +370,7 @@ $height: 3.125rem;
   transition: 150ms ease-out;
 }
 
-:deep(.option) {
+:deep(div.option) {
   padding: 0.5rem 0.75rem;
   transition: 150ms ease-out;
   &.highlighted {
@@ -380,7 +380,7 @@ $height: 3.125rem;
   &:not(.display) {
     display: none;
   }
-  :deep(span) {
+  span {
     font-weight: 700;
     text-decoration: underline;
   }
