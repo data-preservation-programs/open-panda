@@ -34,11 +34,12 @@ class Filter {
   }
 
   // =================================================================== isEmpty
-  isEmpty () {
+  isEmpty (limit = []) {
     const filters = this.store.getters['search/filters']
     const query = this.query
+    let keys = limit.length > 0 ? limit : Object.keys(query)
     let empty = true
-    Object.keys(query).forEach((key) => {
+    keys.forEach((key) => {
       if (filters.includes(key) && query[key] !== undefined) {
         empty = false
       }

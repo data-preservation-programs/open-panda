@@ -11,7 +11,7 @@
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
-          <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
+          <span v-if="filterSelectionsExist" class="has-filters-dot"></span>
           <span>{{ filterPanelData.labels.buttonText }}</span>
         </div>
       </button>
@@ -141,7 +141,8 @@ export default {
         label: 'File Types',
         limit: 10,
         showMore: false
-      }]
+      }],
+      filterSelectionsExist: false
     }
   },
 
@@ -154,6 +155,12 @@ export default {
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
+    }
+  },
+
+  watch: {
+    '$route' () {
+      this.filterSelectionsExist = !this.$filter.isEmpty(['categories', 'licenses', 'fileTypes'])
     }
   },
 
