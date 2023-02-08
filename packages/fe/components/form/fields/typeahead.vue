@@ -1,5 +1,14 @@
 <template>
-  <div :class="['field field-typeahead', state, { focused, empty, 'dropdown-open': dropdownOpen }]">
+  <div
+    :class="[
+      'field field-typeahead',
+      state, {
+        focused,
+        empty,
+        'dropdown-open': dropdownOpen,
+        'first-option-highlighted': firstOptionHighlighted,
+        'no-results': noOptionsMatchSearch
+      }]">
 
     <label v-if="label" :for="fieldKey" class="label floating">
       <span class="text">{{ label }}</span>
@@ -36,7 +45,8 @@
       :selected-option="selectedOption"
       :handle-click-outside="false"
       @dropdownToggled="dropdownToggled"
-      @optionSelected="optionSelected">
+      @optionSelected="optionSelected"
+      @optionHighlighted="optionHighlighted">
 
       <template #option-native-text="{ option }">
         {{ option[optionDisplayKey] }}
@@ -118,7 +128,8 @@ export default {
     return {
       focused: false,
       dropdownOpen: false,
-      selectedOption: -1
+      selectedOption: -1,
+      noOptionsMatchSearch: false
     }
   },
 
@@ -177,12 +188,16 @@ export default {
     },
     optionReturnKey () {
       return this.scaffold.optionReturnKey
+    },
+    firstOptionHighlighted () {
+      return this.highlightedOption === 0
     }
   },
 
   watch: {
     value (value) {
       preValidate(this, value, this.pre)
+      this.checkIfNoResultsMatchSearch()
     }
   },
 
@@ -204,6 +219,9 @@ export default {
     closeDropdown () {
       this.dropdown.closeDropdown()
     },
+    optionHighlighted (index) {
+      this.highlightedOption = index
+    },
     optionSelected (index) {
       this.selectedOption = index
       this.$emit('optionSelected', this.options[index][this.optionReturnKey])
@@ -218,6 +236,17 @@ export default {
       const optionValue = option[this.optionDisplayKey]
       if (inputValue === '') { return optionValue }
       return optionValue.replace(this.valueMatchRegExp, '<span class="highlight">$1</span>')
+    },
+    checkIfNoResultsMatchSearch () {
+      const options = this.options
+      const len = options.length
+      let noOptionsMatch = true
+      for (let i = 0; i < len; i++) {
+        if (this.optionIncludedInSearch(options[i])) {
+          noOptionsMatch = false
+        }
+      }
+      this.noOptionsMatchSearch = noOptionsMatch
     }
   }
 }
@@ -231,7 +260,13 @@ $height: 3.125rem;
   height: $height;
   display: flex;
   align-items: center;
-
+  &.no-results {
+    .select-container {
+      &:before {
+        display: none;
+      }
+    }
+  }
   &.dropdown-open {
     .select-container {
       display: block;

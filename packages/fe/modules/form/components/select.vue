@@ -100,6 +100,9 @@ export default {
   watch: {
     dropdownOpen (state) {
       this.$emit('dropdownToggled', state)
+    },
+    currentOptionHighlighted (index) {
+      this.$emit('optionHighlighted', index)
     }
   },
 
