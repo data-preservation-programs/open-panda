@@ -313,7 +313,7 @@ $height: 3.125rem;
 }
 
 // //////////////////////////////////////////////////////////////////// Dropdown
-.select-container {
+:deep(.select-container) {
   display: none;
   position: absolute;
   top: 120%;
