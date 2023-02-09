@@ -2,7 +2,7 @@
   <div class="col card">
     <CardCutout>
       <div class="card-inner">
-        <img class="card-img" :src="`/images/datasets/${data.slug}.jpg`" />
+        <img class="card-img" :src="data.img_url" />
         <div class="card-details">
           <div class="card-details-row title" :title="data.name">
             {{ data.name }}
