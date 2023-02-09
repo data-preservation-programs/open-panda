@@ -238,6 +238,13 @@ export default {
     .icon {
       margin-right: toRem(15);
     }
+    &:hover {
+      background-color: $rangoonGreen;
+      color: white;
+      :deep(.icon path) {
+        fill: white;
+      }
+    }
   }
   .button-content {
     position: relative;
