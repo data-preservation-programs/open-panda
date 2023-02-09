@@ -26,10 +26,10 @@
     <template #button="{ button, incrementPage }">
       <button
         v-if="button.display"
-        :key="`page-${button.num}`"
+        :key="`page-${button.value}`"
         :class="['page-button', { current: button.current }]"
-        @click="incrementPage(button.num)">
-        {{ button.num }}
+        @click="incrementPage(button.value)">
+        {{ button.value }}
       </button>
     </template>
 
