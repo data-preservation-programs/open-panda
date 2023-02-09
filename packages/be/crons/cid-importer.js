@@ -13,13 +13,12 @@ const Path = require('path')
 const Axios = require('axios')
 const Fs = require('fs-extra')
 const Express = require('express')
-const IPFSCar = require('ipfs-car/unpack/fs')
-const unpackToFs = IPFSCar.unpackToFs
-const unpackStreamToFs = IPFSCar.unpackStreamToFs
+const Zstd = require ('node-zstandard')
+// const { GetFileFromDisk } = require('@Module_Utilities')
 require('dotenv').config({ path: Path.resolve(__dirname, '../.env') })
 
 const MC = require('../config')
-console.log(IPFSCar)
+
 // ////////////////////////////////////////////////////////////////// Initialize
 MC.app = Express()
 
@@ -45,36 +44,33 @@ try {
 
 // ///////////////////////////////////////////////////////////////////// Modules
 require('@Module_Database')
-require('@Module_Dataset')
+require('@Module_Cid')
 
 // /////////////////////////////////////////////////////////////////// Functions
-// ////////////////////////////////////////////////////////////////// unpackCids
-const retrieveCidCarFiles = async (uploads) => {
+// ------------------------------------------------------------ retrieveCidFiles
+const retrieveCidFiles = async (uploads) => {
   try {
     const len = uploads.length
-    const data = []
+    const cidFileRefs = []
     for (let i = 0; i < len; i++) {
-      const cid = uploads[i].cid
-      const url = `https://api.web3.storage/car/${cid}`
-      const upload = await Axios.get(url, {
-        headers: {
-          Accept: 'application/vnd.ipld.car',
-          Authorization: `Bearer ${process.env.WEB3STORAGE_TEST_TOKEN}`
-        }
+      const upload = uploads[i]
+      console.log(upload)
+      Axios({
+          method: 'get',
+          url: `https://${upload.cid}.ipfs.w3s.link/`,
+          responseType: 'stream'
+      }).then(function (response) {
+          response.data.pipe(Fs.createWriteStream(`${MC.packageRoot}/tmp/cid-files/${upload.name}`))
       })
-      const tmpCarPath = `${MC.packageRoot}/tmp/cid-files/${cid}.json.zst.car`
-      await Fs.writeFile(tmpCarPath, upload.data)
-
-      const input = Fs.createReadStream(tmpCarPath)
-      await unpackStreamToFs({
-        input: input,
-        output: `${MC.packageRoot}/tmp/cid-files/${cid}`
-      })
-      // console.log(upload.data)
-      // console.log(i)
-      // files.push(upload.data)
+      // const file = await Axios.get(`https://${upload.cid}.ipfs.w3s.link/`, { responseType: 'blob' })
+      // await Fs.writeFile(`${MC.packageRoot}/tmp/cid-files/${upload.name}`, file.data)
+      // return await 
     }
-    return data.flat()
+    // cidFileRefs.push({
+    //         cid: upload.cid,
+    //         name: upload.name
+    //       })
+    //       unpackRetrievedFiles(cidFileRefs)
   } catch (e) {
     console.log('====================================== [Function: unpackCids]')
     console.log(e)
@@ -82,23 +78,111 @@ const retrieveCidCarFiles = async (uploads) => {
   }
 }
 
-// ////////////////////////////////////////////////////// GetCidsFromWeb3Storage
-const getCidsFromWeb3Storage = async (search) => {
+// -------------------------------------------------------- unpackRetrievedFiles
+const unpackRetrievedFiles = async (cidFileRefs) => {
   try {
-    const params = Object.keys(search).map((item) => `${item}=${search[item]}`).join('&')
+    const len = cidFileRefs.length
+    const jsonFileNames = []
+    for (let i = 0; i < len; i++) {
+      const cid = cidFileRefs[i].cid
+      // await Zstd.decompressFileToFile(`${MC.packageRoot}/tmp/cid-files/${cid}.json.zst`, `${MC.packageRoot}/tmp/cid-files/${cid}.json`, (err, result) => {
+      //   if (err) { throw err }
+      //     console.log (result)
+      //   }
+      // )
+      // if (Fs.existsSync(`${MC.packageRoot}/tmp/cid-files/${cid}.json.zst`)) {
+      //   Fs.unlink(`${MC.packageRoot}/tmp/cid-files/${cid}.json.zst`)
+      // }
+      jsonFileNames.push(`${cid}.json`)
+    }
+    /* 
+     *
+     * DO SOMETHING WITH JSON FILES HERE AND REPLACE CIDFILEREFS RETURN STATEMENT
+     *
+     */
+    return cidFileRefs
+    process.exit(0)
+  } catch (e) {
+    console.log('================================== [Function: unpackZstFiles]')
+    console.log(e)
+    process.exit(0)
+  }
+}
+
+// ----------------------------------------------- deleteJsonFilesFromTempFolder
+const deleteJsonFilesFromTempFolder = async (files) => {
+  try {
+    const len = files.length
+    for (let i = 0; i < len; i++) {
+      const file = files[i]
+      if (Fs.existsSync(`${MC.packageRoot}/tmp/cid-files/${file.cid}.json`)) {
+        Fs.unlink(`${MC.packageRoot}/tmp/cid-files/${file.cid}.json`)
+      }
+    }
+  } catch (e) {
+    console.log('=================== [Function: deleteJsonFilesFromTempFolder]')
+    console.log(e)
+    process.exit(0)
+  }
+}
+
+// ----------------------------------------------------- writeCidFilesToDatabase
+const writeCidFilesToDatabase = async (files) => {
+  try {
+    const operations = []
+    const len = files.length
+    for (let i = 0; i < len; i++) {
+      const file = files[i]
+      operations.push({
+        updateOne: {
+          filter: { cid: file.cid },
+          update: { $set: file },
+          upsert: true
+        }
+      })
+    }
+    console.log(operations)
+    // const response = await MC.model.Cid.bulkWrite(operations, { ordered: false })
+    // const result = response.result
+    const result = { nUpserted: len, nModified: len }
+    console.log(`→ Total: ${len} | New: ${result.nUpserted} | Updated: ${result.nModified}`)
+    // if (result) {
+    //   await deleteJsonFilesFromTempFolder(files)
+    // }
+    return result
+  } catch (e) {
+    console.log('========================= [Function: writeCidFilesToDatabase]')
+    console.log(e)
+    process.exit(0)
+  }
+}
+
+// ------------------------------------------------------ GetCidsFromWeb3Storage
+const getCidsFromWeb3Storage = async (searchParams, incrementPage, pageLimit) => {
+  try {
+    if (incrementPage) {
+      searchParams.page = searchParams.page + 1
+    }
+    const params = Object.keys(searchParams).map((item) => `${item}=${searchParams[item]}`).join('&')
     const options = { 
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.WEB3STORAGE_TEST_TOKEN}` 
-      } 
+        Accept: 'application/json',
+        Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}` 
+      }
     }
-    const url = `https://api.web3.storage/user/uploads?${params}` // 
-    // console.log(url)
+    const url = `https://api.web3.storage/user/uploads?${params}`
     const response = await Axios.get(url, options)
-    // console.log(response.data)
-    const unpackedCidListChunk = await retrieveCidCarFiles(response.data)
-    // console.log(unpackedCidListChunk)
-    // console.log(unpackedCidListChunk.length)
+    await retrieveCidFiles(response.data)
+    // const retrievedFiles = await retrieveCidFiles(response.data)
+    // const completed = await writeCidFilesToDatabase(retrievedFiles)
+    // if (completed && response.data.length === searchParams.size) {
+    //   if (pageLimit) {
+    //     if (searchParams.page < pageLimit) {
+    //       await getCidsFromWeb3Storage(searchParams, true, pageLimit)
+    //     }
+    //   }
+    // }
+    process.exit(0)
   } catch (e) {
     console.log('========================== [Function: getCidsFromWeb3Storage]')
     console.log(e)
@@ -106,38 +190,11 @@ const getCidsFromWeb3Storage = async (search) => {
   }
 }
 
-// const writeDatasetsToDatabase = async (datasetList) => {
-//   try {
-//     const operations = []
-//     const len = datasetList.length
-//     for (let i = 0; i < len; i++) {
-//       const dataset = datasetList[i]
-//       delete dataset._id
-//       delete dataset.new
-//       delete dataset.locked
-//       delete dataset.priority
-//       operations.push({
-//         updateOne: {
-//           filter: { slug: dataset.slug },
-//           update: { $set: dataset },
-//           upsert: true
-//         }
-//       })
-//     }
-//     const response = await MC.model.Dataset.bulkWrite(operations, { ordered: false })
-//     const result = response.result
-//     console.log(`→ Total: ${len} | New: ${result.nUpserted} | Updated: ${result.nModified}`)
-//   } catch (e) {
-//     console.log('========================= [Function: writeDatasetsToDatabase]')
-//     throw e
-//   }
-// }
-
 // ///////////////////////////////////////////////////////////////// CidImporter
 const CidImporter = async () => {
   console.log('CID import started')
   try {
-    await getCidsFromWeb3Storage({ size: 10, page: 1, sortBy: 'Date', sortOrder: 'Asc' })
+    await getCidsFromWeb3Storage({ size: 3, page: 1, sortBy: 'Date', sortOrder: 'Desc' }, false, 1)
     process.exit(0)
   } catch (e) {
     console.log('===================================== [Function: CidImporter]')
