@@ -65,6 +65,11 @@ const getMockCids = () => {
   for (let i = 0; i < 6; i++) {
     const cid = CloneDeep(mockCid)
     cid.title = `Genome in a Bottle 00${i}`
+    cid.hash = Math.floor(Math.random() * 9999998873867900).toString()
+    for (let j = 0; j < 4; j++) {
+      cid.storage_providers[j].id = Math.floor(Math.random() * 9000).toString()
+      cid.storage_providers[j].dealId = Math.floor(Math.random() * 10000).toString()
+    }
     mockCids.push(cid)
   }
   return {

@@ -403,10 +403,10 @@ p, .p1 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px solid tomato;
-  background-color: teal;
+  background-color: white;
   padding: 1rem;
-  border-radius: 3rem;
+  border-radius: 0 toRem(30) toRem(30) toRem(30);
+  @include shadow3;
   .icon {
     display: none;
   }

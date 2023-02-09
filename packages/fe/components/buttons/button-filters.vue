@@ -64,6 +64,11 @@ export default {
   white-space: nowrap;
   cursor: pointer;
   margin-right: toRem(8);
+  margin-bottom: toRem(9);
+  &:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+
   &[disabled] {
     box-shadow: none;
     cursor: no-drop;

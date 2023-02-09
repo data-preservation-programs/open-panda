@@ -114,6 +114,7 @@
 
           <CIDSlider
             v-if="storageProviders.length && !mobile"
+            :slider-id="hash"
             :storage-providers="storageProviders"
             @slide-changed="changeBottomPanelHeight" />
 
