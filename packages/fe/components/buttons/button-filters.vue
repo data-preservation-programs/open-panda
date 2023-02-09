@@ -84,7 +84,7 @@ export default {
       fill: white;
     }
   }
-  &:hover {
+  &:not(.selected):hover {
     background-color: $athensGray;
     color: $rangoonGreen;
     &:hover {

@@ -3,7 +3,7 @@
     <section class="content">
       <div class="grid">
 
-        <div class="col-5_sm-hidden">
+        <div class="col-5_sm-12_sm-last">
           <ImageBlock :block="imageLeft" />
         </div>
 
