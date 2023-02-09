@@ -1,5 +1,5 @@
 <template>
-  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
+  <div v-click-outside="closePanel" :class="['filters', open ? 'open' : '', `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
@@ -235,14 +235,21 @@ export default {
       padding-left: toRem(20);
       border-left: 1px solid $tasman;
     }
-    .icon {
+    :deep(.icon) {
       margin-right: toRem(15);
+      .path {
+        transition: 250ms;
+      }
     }
+    .open &,
     &:hover {
       background-color: $rangoonGreen;
       color: white;
-      :deep(.icon path) {
-        fill: white;
+      :deep(.icon) {
+        path {
+          transition: 250ms;
+          fill: white;
+        }
       }
     }
   }
