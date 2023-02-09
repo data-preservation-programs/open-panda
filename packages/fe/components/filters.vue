@@ -305,17 +305,6 @@ export default {
     margin-bottom: toRem(15);
     @include fontSize_20;
   }
-  .filter-button {
-    margin-bottom: 0.5rem;
-    &:not(:last-child) {
-      margin-right: 0.5rem;
-    }
-  }
-  .filter-button {
-    button {
-      margin-left: toRem(30);
-    }
-  }
 }
 
 </style>
