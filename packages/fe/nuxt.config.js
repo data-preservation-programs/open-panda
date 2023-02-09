@@ -46,7 +46,7 @@ export default {
   },
   render: {
     bundleRenderer: {
-      runInNewContext: process.env.NODE_ENV === 'development' ? true : 'once' // https://v2.ssr.vuejs.org/api/#runinnewcontext
+      runInNewContext: false
     }
   },
   // /////////////////////////////////////////////////////// Headers of the Page
