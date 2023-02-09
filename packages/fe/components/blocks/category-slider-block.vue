@@ -16,9 +16,9 @@
 
     <Filterer
       filter-key="categories"
-      :filters="filters.categories">
+      :options="filters.categories">
       <CircularSlider
-        slot-scope="{ clearFilters, applyFilter }"
+        slot-scope="{ applyFilter }"
         slider-id="category-slider"
         :start-panel-index="collection.length - 1"
         :display-options="{ default: 7, xlarge: 6, large: 5, small: 4, mini: 5 }"
@@ -39,7 +39,7 @@
           <div
             :key="`slide-${i}`"
             class="category-card"
-            @click="() => { clearFilters(); applyFilter(i) }">
+            @click="() => { applyFilter(i) }">
             <div class="inner-content">
               <div
                 class="background-image"
