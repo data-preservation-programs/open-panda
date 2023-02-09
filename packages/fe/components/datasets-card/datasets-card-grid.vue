@@ -1,18 +1,18 @@
 <template>
   <div class="col card">
-    <CardCutout :background-image="`/images/datasets/${data.slug}.jpg`">
+    <CardCutout :background-image="`/images/datasets/${computedData.slug}.jpg`">
       <div
         class="card-img-wrapper">
         <div
           class="card-img"
-          :style="{ 'background-image': `url('/images/datasets/${data.slug}.jpg')` }">
+          :style="{ 'background-image': `url('/images/datasets/${computedData.slug}.jpg')` }">
         </div>
       </div>
 
       <!-- heading -->
       <div class="card-heading grid-noGutter">
-        <div class="col-12 title" :title="data.name">
-          {{ data.name }}
+        <div class="col-12 title" :title="computedData.name">
+          {{ computedData.name }}
         </div>
       </div>
 
@@ -21,46 +21,54 @@
         <div
           v-for="(label, key) in labels1"
           :key="key"
-          class="grid-noGutter card-details-row">
+          class="grid-noGutter">
           <div class="caption col-6" data-push-right="off-1">
             {{ label }}
           </div>
           <div class="card-data col-5">
-            {{ data[key] || '-' }}
+            {{ computedData[key] || '-' }}
           </div>
         </div>
       </div>
 
-      <!-- details: section 2 -->
-      <div v-if="labels2" class="card-details">
-        <div
-          v-for="(label, key) in labels2"
-          :key="key"
-          class="grid-noGutter card-details-row">
+      <!-- details: section 2 file ext -->
+      <div class="card-details">
+        <div class="grid-noGutter card-details-row">
           <div class="col-12">
             <span class="caption caption-bold">
-              {{ label }}
+              {{ labels2.file_extensions }}
             </span>
-            <span v-if="key === 'locations'">
-              <span v-if="!data[key]" class="card-data">-</span>
-              <span
-                v-for="(item, index) in data[key]"
-                :key="index">
-                <span v-if="index < 6">
-                  {{ $getFlagIcon(item.country_code) }}
-                </span>
+            <span v-if="!fileExtData" class="card-data">-</span>
+            <span v-for="(item, index) in fileExtData" :key="index">
+              <span v-if="index < computedData.limit" class="file-item">
+                {{ item }}
               </span>
             </span>
-            <span v-if="key === 'file_extensions'">
-              <span v-if="!data[key]" class="card-data">-</span>
-              <span
-                v-for="(item, index) in data[key]"
-                :key="index">
-                <span v-if="index < 3" class="file-item">
-                  {{ item }}
-                </span>
+            <span>
+              <button
+                v-if="fileExtData.length > 1"
+                class="file-item"
+                @click="toggleLimit()">
+                {{ computedData.showMore ? `-` : `+` }} {{ fileExtData.length - 1 }}
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <!-- details: section 2 locations -->
+        <div class="grid-noGutter card-details-row">
+          <div class="col-12">
+            <span class="caption caption-bold">
+              {{ labels2.locations }}
+            </span>
+
+            <span v-if="!locationsData" class="card-data">-</span>
+            <span v-for="(item, index) in locationsData" :key="index">
+              <span v-if="index < 6">
+                {{ $getFlagIcon(item.country_code) }}
               </span>
             </span>
+
           </div>
         </div>
       </div>
@@ -70,7 +78,7 @@
         <Button
           :button="{
             type: 'solid',
-            url: `/dataset/${data.slug}`,
+            url: `/dataset/${computedData.slug}`,
             text: 'View dataset',
             icon: 'arrow'
           }">
@@ -82,6 +90,7 @@
 
 <script>
 // ===================================================================== Imports
+import { cloneDeep } from 'lodash'
 import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
 
@@ -108,7 +117,31 @@ export default {
       required: false,
       default: () => {}
     }
+  },
+
+  computed: {
+    computedData () {
+      const data = cloneDeep(this.data)
+      data.limit = 1
+      data.showMore = false
+      return data
+    },
+    fileExtData () {
+      return this.computedData.file_extensions
+    },
+    locationsData () {
+      return this.computedData.locations
+    }
+  },
+
+  methods: {
+    toggleLimit () {
+      this.computedData.limit = this.computedData.showMore ? 1 : this.fileExtData.length
+      this.computedData.showMore = !this.computedData.showMore
+      this.$forceUpdate()
+    }
   }
+
 }
 </script>
 
@@ -155,6 +188,9 @@ export default {
   border-top: 1px solid $athensGray;
   .card-details-row {
     margin-bottom: toRem(12);
+  }
+  .file-item {
+    margin-bottom: toRem(9);
   }
 }
 </style>
