@@ -1,6 +1,6 @@
 <template>
   <TabbedSlider
-    slider-id="cid-card-slider"
+    :slider-id="sliderId"
     @slide-changed="handleSlideChange">
 
     <template #before-tabs>
@@ -98,6 +98,11 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    sliderId: {
+      type: String,
+      required: true,
+      default: ''
     }
   },
 
