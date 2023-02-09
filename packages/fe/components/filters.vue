@@ -60,7 +60,7 @@
           </section>
         </Filterer>
         <section class="grid-noGutter-right filter-button">
-          <Button :button="{type: 'default'}" @click.native="clearAll">
+          <Button class="btn-clear" :button="{type: 'default'}" @click.native="clearAll">
             {{ filterPanelData.labels.clear }}
           </Button>
           <Button :button="{type:'solid'}" @click.native="onSearch">
@@ -305,6 +305,10 @@ export default {
     margin-bottom: toRem(15);
     @include fontSize_20;
   }
+}
+
+.btn-clear {
+  margin-right: toRem(30);
 }
 
 </style>
