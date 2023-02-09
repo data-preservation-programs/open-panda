@@ -1,15 +1,8 @@
-/*
- * This store is only used to maintain a list of all registered filters and the
- * search term that is applied to the ?search=<VALUE> query param. These records
- * are primarily used to detect if the search and filter states have changed and
- * to present a "Clear All" type of button
- */
-
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
-const state = {
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
+const state = () => ({
   filters: []
-}
+})
 
 // ///////////////////////////////////////////////////////////////////// Getters
 // -----------------------------------------------------------------------------
@@ -20,25 +13,34 @@ const getters = {
 // ///////////////////////////////////////////////////////////////////// Actions
 // -----------------------------------------------------------------------------
 const actions = {
-  // ////////////////////////////////////////////////////////////// recordFilter
-  recordFilter ({ commit, getters }, filterKey) {
-    if (!getters.filters.includes(filterKey)) {
-      commit('RECORD_FILTER', filterKey)
-    }
+  // ///////////////////////////////////////////////////////////////// setFilter
+  setFilter ({ commit, getters }, payload) {
+    const index = getters.filters.findIndex(filter => filter.filterKey === payload.filterKey)
+    commit('SET_FILTER', { index, filter: payload })
   },
-  // ///////////////////////////////////////////////////////// clearFilterRecord
-  clearFilterRecord ({ commit }) {
-    commit('CLEAR_FILTER_RECORD')
+  // /////////////////////////////////////////////////////////////////// removeFilter
+  removeFilter ({ commit, getters }, filterKey) {
+    const index = getters.filters.findIndex(filter => filter.filterKey === filterKey)
+    commit('REMOVE_FILTER', index)
+  },
+  // ////////////////////////////////////////////////////////////// clearFilters
+  clearFilters ({ commit }) {
+    commit('CLEAR_FILTERS')
   }
 }
 
 // /////////////////////////////////////////////////////////////////// Mutations
 // -----------------------------------------------------------------------------
 const mutations = {
-  RECORD_FILTER (state, filterKey) {
-    state.filters.push(filterKey)
+  SET_FILTER (state, payload) {
+    const index = payload.index
+    const filter = payload.filter
+    index === -1 ? state.filters.push(filter) : state.filters.splice(index, 1, filter)
   },
-  CLEAR_FILTER_RECORD (state) {
+  REMOVE_FILTER (state, index) {
+    state.filters.splice(index, 1)
+  },
+  CLEAR_FILTERS (state) {
     state.filters = []
   }
 }

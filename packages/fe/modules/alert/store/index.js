@@ -1,7 +1,7 @@
 import CloneDeep from 'lodash/cloneDeep'
 
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   baseAlert: {
     isOpen: false, // boolean

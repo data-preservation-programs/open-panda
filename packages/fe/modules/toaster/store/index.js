@@ -5,7 +5,7 @@ import { uuid } from 'vue-uuid'
 import Config from '@/nuxt.config'
 
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   messages: []
 })

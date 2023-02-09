@@ -26,8 +26,11 @@ const registerStore = (store, next) => {
 export default async function ({ app, store, route }, inject) {
   await registerStore(store)
   inject('clearSearchAndFilters', () => {
+    const filters = ['categories', 'licenses', 'fileTypes']
+    filters.forEach((filterKey) => {
+      app.$filter(filterKey).clear()
+    })
     app.$search.clearSearchQuery()
-    app.$filter.clearAll()
   })
   inject('clearSearchFilterSortAndLimit', () => {
     /**
@@ -40,22 +43,10 @@ export default async function ({ app, store, route }, inject) {
     window.$nuxt.$emit('resetFormFields', {
       id: 'filters'
     })
-    /**
-      * Unfortunately we can't call the search/filter clear methods individually
-      * because it leads to the route being updated twice and thus 2 database
-      * calls to update data. Instead, we clear all search/filter query params
-      * here in one fell swoop
-      */
-    const query = route.query
-    query.search = undefined
-    const filters = store.getters['search/filters']
-    Object.keys(query).forEach((key) => {
-      if (filters.includes(key) && query[key] !== undefined) {
-        query[key] = undefined
-      }
+    const filters = ['categories', 'licenses', 'fileTypes', 'sort', 'limit', 'fullyStored']
+    filters.forEach((filterKey) => {
+      app.$filter(filterKey).clear()
     })
-    // need to pass this in to retain the current url hash
-    // not sure why $route is not picking it up so assigning manually
-    app.router.push({ query, hash: location.hash })
+    app.$search.clearSearchQuery()
   })
 }

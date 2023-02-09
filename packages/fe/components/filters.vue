@@ -1,5 +1,7 @@
 <template>
-  <div v-click-outside="closePanel" :class="['filters', open ? 'open' : '', `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
+  <div
+    v-click-outside="closePanel"
+    :class="['filters', { open }, `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
@@ -11,13 +13,15 @@
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
-          <span v-if="filterSelectionsExist" class="has-filters-dot"></span>
+          <client-only>
+            <span v-if="filterSelectionsExist" class="has-filters-dot" />
+          </client-only>
           <span>{{ filterPanelData.labels.buttonText }}</span>
         </div>
       </button>
     </div>
 
-    <div v-if="open" class="filter-panel">
+    <div :class="['filter-panel', { open }]">
       <CardCutout>
         <section class="grid-noGutter-middle-spaceBetween">
           <h5>{{ filterPanelData.labels.add }}</h5>
@@ -29,14 +33,13 @@
           v-for="(parentItem, parentIndex) in parentItems"
           :key="parentItem.id"
           :filter-key="parentItem.id"
-          :filters="filters[parentItem.id]">
+          :options="filters[parentItem.id]">
           <section
             slot-scope="{ applyFilter, isSelected }"
             class="grid-noGutter">
             <div class="filters-label col-12">
               <span>{{ parentItem.label }}</span>
             </div>
-
             <span
               v-for="(childItem, childIndex) in filters[parentItem.id]"
               :key="`${filters[parentIndex.id]}-${childIndex}`">
@@ -141,8 +144,7 @@ export default {
         label: 'File Types',
         limit: 10,
         showMore: false
-      }],
-      filterSelectionsExist: false
+      }]
     }
   },
 
@@ -155,12 +157,16 @@ export default {
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
-    }
-  },
-
-  watch: {
-    '$route' () {
-      this.filterSelectionsExist = !this.$filter.isEmpty(['categories', 'licenses', 'fileTypes'])
+    },
+    filterSelectionsExist () {
+      const filters = ['categories', 'licenses', 'fileTypes']
+      let selelectionsExist = false
+      filters.forEach((filterKey) => {
+        if (!this.$filter(filterKey).isEmpty()) {
+          selelectionsExist = true
+        }
+      })
+      return selelectionsExist
     }
   },
 
@@ -175,8 +181,10 @@ export default {
       this.open = false
     },
     clearAll () {
-      // do not clear fullyStored because that's outside the filter dropdown
-      this.$filter.clearAll(['fullyStored'])
+      const filters = ['categories', 'licenses', 'fileTypes']
+      filters.forEach((filterKey) => {
+        this.$filter(filterKey).clear()
+      })
     },
     toggleLimit (index, child) {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
@@ -280,8 +288,9 @@ export default {
   }
 }
 
-// panel
+// //////////////////////////////////////////////////////////////// Filter Panel
 .filter-panel {
+  display: none;
   position: absolute;
   width: 70vw;
   max-width: toRem(800);
@@ -290,6 +299,9 @@ export default {
   z-index: 100;
   @include medium {
     width: 88vw;
+  }
+  &.open {
+    display: block;
   }
   .direction-right & {
     left: 0;

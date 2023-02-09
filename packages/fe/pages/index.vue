@@ -46,28 +46,17 @@
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
     <div class="grid-middle-noGutter-spaceBetween filter-row2 show-desktop-only">
       <div class="col-8">
-        <span class="datasets-results">{{ resultCount }}</span>
-        <Filterer
-          v-for="(item, key) in filterPanelData.keys"
-          :key="key"
-          :filter-key="key"
-          :filters="filters[key]">
-          <span
-            slot-scope="{ applyFilter, isSelected }"
-            class="button-list">
-            <span
-              v-for="(item2, index2) in filters[key]"
-              :key="`${filters[key]}-${index2}`">
-              <ButtonFilters
-                v-if="isSelected(index2)"
-                :selected="isSelected(index2)"
-                class="filter-button"
-                @clicked="applyFilter(index2)">
-                {{ item2.label }}
-              </ButtonFilters>
-            </span>
-          </span>
-        </Filterer>
+        <div class="button-list-panel">
+          <span class="datasets-results">{{ resultCount }}</span>
+          <ButtonFilters
+            v-for="(option, index) in selectedFilterOptions"
+            :key="`${option.value}-${index}`"
+            :selected="true"
+            class="filter-button"
+            @clicked="deselectFilterOption(option)">
+            {{ option.label }}
+          </ButtonFilters>
+        </div>
       </div>
 
       <div class="col-4 flex-end">
@@ -149,7 +138,6 @@ import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
 import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
-import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
 import GridIcon from '@/components/icons/grid'
@@ -168,7 +156,6 @@ export default {
     Button,
     Searchbar,
     PaginationControls,
-    Filterer,
     ResultsPerPage,
     ButtonFilters,
     GridIcon,
@@ -232,6 +219,17 @@ export default {
     },
     noResults () {
       return !this.count
+    },
+    selectedFilterOptions () {
+      const filters = ['categories', 'licenses', 'fileTypes']
+      const len = filters.length
+      let selected = []
+      for (let i = 0; i < len; i++) {
+        selected = selected.concat(
+          this.$filter(filters[i]).getSelectionOptions()
+        )
+      }
+      return selected
     }
   },
 
@@ -264,6 +262,11 @@ export default {
     updateLayout (layout) {
       this.$ls.set('layout', layout)
       this.layout = layout
+    },
+    deselectFilterOption (option) {
+      this.$filter(option.filterKey).toggleTerm({
+        value: option.value
+      })
     }
   }
 }
@@ -428,4 +431,14 @@ export default {
   }
 }
 
+.button-list-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-button {
+  margin-bottom: 0.5rem;
+}
 </style>

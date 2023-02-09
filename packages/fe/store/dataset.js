@@ -80,7 +80,7 @@ const getMockCids = () => {
 }
 
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   dataset: false,
   cidList: false
