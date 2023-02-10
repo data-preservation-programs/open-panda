@@ -39,7 +39,6 @@
     "filesize": "^8.0.7",
     "fs-extra": "^10.1.0",
     "helmet": "^5.0.2",
-    "ipfs-car": "^0.9.1",
     "lodash": "^4.17.20",
     "mime": "^3.0.0",
     "minimist": "^1.2.5",
@@ -53,7 +52,6 @@
     "socket.io": "^4.5.2",
     "socket.io-client": "^4.5.2",
     "uuid": "^8.3.1",
-    "uuid-apikey": "^1.5.1",
-    "web3.storage": "^4.4.0"
+    "uuid-apikey": "^1.5.1"
   }
 }
