@@ -88,13 +88,13 @@ const Search = (app, store, route, searchKey) => {
 
     // ================================================================= isEmpty
     isEmpty () {
-      let value
+      let empty
       switch (action) {
-        case 'emit' : value = ''; break
-        case 'store' : value = store.getters[storeGetter]; break
-        case 'query' : value = !query.search || query.search === ''; break
+        case 'emit' : empty === ''; break
+        case 'store' : empty = store.getters[storeGetter] === ''; break
+        case 'query' : empty = !query.search || query.search === ''; break
       }
-      return value === ''
+      return empty
     }
   }
 }

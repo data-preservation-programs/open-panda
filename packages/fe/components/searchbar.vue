@@ -119,14 +119,16 @@ export default {
     ...mapActions({
       getDatasetList: 'datasets/getDatasetList'
     }),
-    async fetchNewData () {
-      await this.$scrollToHash({ hash: '#datasets' })
-      this.$router.push({
-        path: '/',
-        query: this.$route.query,
-        hash: '#datasets'
-      })
+    fetchNewData () {
       this.getDatasetList({ route: this.$route })
+      if (this.$route.path !== '/') {
+        this.$router.push({
+          path: '/',
+          query: this.$route.query
+        })
+      } else {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     },
     goToDatasetPage (slug) {
       this.$router.push({

@@ -191,11 +191,14 @@ export default {
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
       // go to home page and scroll to dataset section
-      this.$router.push({
-        path: '/',
-        hash: '#datasets',
-        query: this.$route.query
-      })
+      if (this.$route.path !== '/') {
+        this.$router.push({
+          path: '/',
+          query: this.$route.query
+        })
+      } else {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     }
   }
 }

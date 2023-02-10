@@ -269,9 +269,11 @@ export default {
      * If search and filters are not empty, scroll to the results section
      */
     scrollToResultList () {
-      // const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes', 'fullyStored'])
-      // const searchExists = !this.$search.isEmpty()
-      // console.log(filterSelectionsExist, searchExists)
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes', 'fullyStored'])
+      const searchExists = !this.$search('search').isEmpty()
+      if (filterSelectionsExist || searchExists) {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     }
   }
 }
