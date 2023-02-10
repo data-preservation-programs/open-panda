@@ -17,9 +17,9 @@
           theme="line"
           class="datasets-searchbar" />
         <!-- ============================================== desktop checkbox -->
-        <CheckboxFullyStored
+        <!-- <CheckboxFullyStored
           :options="filters.fullyStored"
-          class="datasets-checkbox show-desktop-only" />
+          class="datasets-checkbox show-desktop-only" /> -->
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
@@ -34,9 +34,9 @@
     <!-- =========================== filter row2 mobile only: checkbox, sort -->
     <div class="grid-noGutter-middle-spaceBetween show-mobile-only filter-row2-mobile">
       <!-- ================================================= mobile checkbox -->
-      <CheckboxFullyStored
+      <!-- <CheckboxFullyStored
         :options="filters.fullyStored"
-        class="col-6_mi-12 datasets-checkbox" />
+        class="col-6_mi-12 datasets-checkbox" /> -->
       <!-- ===================================================== mobile sort -->
       <Sort
         :options="sortOptions"
@@ -136,7 +136,7 @@ import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
-import CheckboxFullyStored from '@/components/checkbox-fully-stored'
+// import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
@@ -151,7 +151,7 @@ export default {
     BlockBuilder,
     DatasetsCardGrid,
     DatasetsCardList,
-    CheckboxFullyStored,
+    // CheckboxFullyStored,
     Filters,
     Button,
     Searchbar,
@@ -385,6 +385,7 @@ export default {
 .filter-row2 {
   .datasets-results {
     margin-right: toRem(20);
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -443,6 +444,7 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  margin-top: 0.25rem;
 }
 
 .filter-button {
