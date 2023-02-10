@@ -241,6 +241,7 @@ export default {
 
   mounted () {
     this.stopLoading()
+    this.scrollToResultList()
   },
 
   methods: {
@@ -263,6 +264,14 @@ export default {
       this.$filter(option.filterKey).toggleTerm({
         value: option.value
       })
+    },
+    /**
+     * If search and filters are not empty, scroll to the results section
+     */
+    scrollToResultList () {
+      // const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes', 'fullyStored'])
+      // const searchExists = !this.$search.isEmpty()
+      // console.log(filterSelectionsExist, searchExists)
     }
   }
 }

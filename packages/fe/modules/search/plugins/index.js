@@ -30,7 +30,7 @@ export default async function ({ app, store, route }, inject) {
     filters.forEach((filterKey) => {
       app.$filter(filterKey).clear()
     })
-    app.$search.clearSearchQuery()
+    app.$search('search').clear()
   })
   inject('clearSearchFilterSortAndLimit', () => {
     /**
@@ -47,6 +47,15 @@ export default async function ({ app, store, route }, inject) {
     filters.forEach((filterKey) => {
       app.$filter(filterKey).clear()
     })
-    app.$search.clearSearchQuery()
+    app.$search('search').clear()
+  })
+  inject('checkIfFilterSelectionsExist', (filters) => {
+    let selelectionsExist = false
+    filters.forEach((filterKey) => {
+      if (!app.$filter(filterKey).isEmpty()) {
+        selelectionsExist = true
+      }
+    })
+    return selelectionsExist
   })
 }

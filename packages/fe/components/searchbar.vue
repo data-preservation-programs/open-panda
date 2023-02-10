@@ -4,6 +4,7 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
+    search-key="search"
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
@@ -25,7 +26,7 @@
           defaultValue: value || '',
           resetGroupId: 'filters'
         }"
-        @input="updateValue"
+        @updateValue="updateValue"
         @optionSelected="goToDatasetPage" />
 
       <button

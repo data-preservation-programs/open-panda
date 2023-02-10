@@ -161,14 +161,7 @@ export default {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
     },
     filterSelectionsExist () {
-      const filters = ['categories', 'licenses', 'fileTypes']
-      let selelectionsExist = false
-      filters.forEach((filterKey) => {
-        if (!this.$filter(filterKey).isEmpty()) {
-          selelectionsExist = true
-        }
-      })
-      return selelectionsExist
+      return this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
     }
   },
 
