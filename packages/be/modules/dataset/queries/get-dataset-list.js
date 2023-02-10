@@ -1,4 +1,4 @@
-module.exports = (search = '', page = 1, limit = 10, sort = {}) => {
+module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
   const skip = (page - 1) * limit
   return [
 
@@ -15,6 +15,62 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}) => {
           ]
         }
       }
+    },
+
+    {
+      /**
+       * Concatenate all the categories ['Healthcare', 'Astronomy'] into a string
+       * with output: ',Healthcare,Atronomy'
+       */
+      $addFields: {
+        categories_concatenated_to_string: {
+          $reduce: {
+            input: '$categories',
+            initialValue: '',
+            in: {
+              $concat: ['$$value', ',', '$$this']
+            }
+          }
+        }
+      }
+    },
+
+    {
+      $addFields: {
+        category_matched: {
+          /**
+           * Loop filters.categories, which is an array of strings and attempt to
+           * partially match each value to the concatenated string from the db.
+           * If the returned filtered array size is > 0, then return true
+           */
+          $gt: [
+            {
+              $size: {
+                $filter: {
+                  input: filters.categories,
+                  cond: {
+                    $eq: [
+                      {
+                        $regexMatch: {
+                          input: '$categories_concatenated_to_string',
+                          regex: '$$this',
+                          options: 'i'
+                        }
+                      },
+                      true
+                    ]
+                  }
+                }
+              }
+            },
+            0
+          ]
+        }
+      }
+    },
+
+    {
+      $match: { $expr: { $eq: ['$category_matched', true] } }
     },
 
     {

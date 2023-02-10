@@ -2,7 +2,7 @@ console.log('💡 [endpoint] /get-dataset-list')
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-const { SendData, ParseQuerySearch, ParseQuerySort } = require('@Module_Utilities')
+const { SendData, ParseQuerySearch, ParseQuerySort, ParseQueryFilters } = require('@Module_Utilities')
 const GetDatasetListQuery = require('@Module_Dataset/queries/get-dataset-list')
 
 const MC = require('@Root/config')
@@ -30,11 +30,11 @@ const process = async (data) => {
 }
 
 // ---------------------------------------------------------------- findDatasets
-const findDatasets = async (search = '', page = 1, limit = 10, sort = {}) => {
+const findDatasets = async (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
   try {
     return process(
       await MC.model.Dataset.aggregate(
-        GetDatasetListQuery(search, page, limit, sort)
+        GetDatasetListQuery(search, page, limit, sort, filters)
       )
     )
   } catch (e) {
@@ -47,13 +47,15 @@ const findDatasets = async (search = '', page = 1, limit = 10, sort = {}) => {
 // //////////////////////////////////////////////////////////////////// Endpoint
 // -----------------------------------------------------------------------------
 MC.app.get('/get-dataset-list', async (req, res) => {
+  console.log('======================================================== SEARCH')
   try {
     const query = req.query
     const search = await ParseQuerySearch(query.search)
     const page = await parseNumber(query.page)
     const limit = await parseNumber(query.limit)
     const sort = await ParseQuerySort(query.sort)
-    const payload = await findDatasets(search, page, limit, sort)
+    const filters = await ParseQueryFilters(query.filter, true)
+    const payload = await findDatasets(search, page, limit, sort, filters)
     SendData(res, 200, 'Datasets retrieved succesfully', payload)
   } catch (e) {
     console.log('=============================== [Endpoint: /get-dataset-list]')
