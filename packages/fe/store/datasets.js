@@ -143,7 +143,6 @@ const mutations = {
   SET_DATASET_LIST (state, payload) {
     state.datasetList = payload.datasetList
     const metadata = payload.metadata
-    console.log(state.datasetList)
     if (metadata) {
       state.metadata.totalPages = metadata.totalPages
       state.metadata.count = metadata.count
