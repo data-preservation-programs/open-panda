@@ -67,7 +67,7 @@
             {{ filterPanelData.labels.clear }}
           </Button>
           <Button
-            :button="{type:'solid'}"
+            :button="{ type: 'solid', disabled: disableSearchButton }"
             @clicked="fetchNewData">
             {{ filterPanelData.labels.search }}
           </Button>
@@ -162,6 +162,11 @@ export default {
     },
     filterSelectionsExist () {
       return this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+    },
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
     }
   },
 

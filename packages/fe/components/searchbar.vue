@@ -29,12 +29,13 @@
         @updateValue="updateValue"
         @optionSelected="goToDatasetPage" />
 
-      <button
+      <ButtonX
         :class="['search-button', { loading }]"
-        @click="fetchNewData">
+        :disabled="disableSearchButton"
+        @clicked="fetchNewData">
         <Spinner />
         <IconSearch />
-      </button>
+      </ButtonX>
 
     </div>
   </Searcher>
@@ -47,6 +48,7 @@ import { mapGetters, mapActions } from 'vuex'
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
 import FieldContainer from '@/components/form/field-container'
+import ButtonX from '@/components/buttons/button-x'
 import IconSearch from '@/components/icons/search'
 
 // ====================================================================== Export
@@ -57,6 +59,7 @@ export default {
     Searcher,
     Spinner,
     IconSearch,
+    ButtonX,
     FieldContainer
   },
 
@@ -112,7 +115,12 @@ export default {
   computed: {
     ...mapGetters({
       datasetListTypeahead: 'datasets/datasetListTypeahead'
-    })
+    }),
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
+    }
   },
 
   methods: {
