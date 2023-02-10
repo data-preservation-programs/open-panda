@@ -1,10 +1,10 @@
 {
   "seo": {
-    "title": "OpenPanda",
-    "description": "OpenPanda"
+    "title": "Open Panda",
+    "description": "Open Panda"
   },
   "og": {
-    "site_name": "OpenPanda",
+    "site_name": "Open Panda",
     "url": "",
     "type": "website",
     "image": "/open-graph-image.jpg"
@@ -64,7 +64,7 @@
                 "description": "Interact with tamper-proof open datasets on the decentralized web",
                 "ctas": [{
                   "type": "solid-tear",
-                  "text": "About OpenPanda",
+                  "text": "About Open Panda",
                   "url": "/about"
                 }]
               }
