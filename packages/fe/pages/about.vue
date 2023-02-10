@@ -126,12 +126,6 @@ export default {
       @include small {
         margin-top: toRem(42);
       }
-      .label {
-        @include h5;
-        @include small {
-          @include fontSize_20;
-        }
-      }
       .description {
         @include small {
           padding-bottom: 1rem;

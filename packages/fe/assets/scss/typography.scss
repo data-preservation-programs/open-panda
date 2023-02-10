@@ -69,7 +69,7 @@ $letterSpacing_Large: 0.03em;
   @include fontWeight_Medium;
   font-family: $font_Primary;
   @include fontSize_24;
-  line-height: leading(35, 24);
+  line-height: leading(36, 24);
 }
 
 @mixin h6 {
