@@ -78,7 +78,7 @@ export default {
     position: absolute;
     top: 1.8125rem;
     left: 0;
-    @include fontSize_28;
+    font-size: toRem(28);
     line-height: leading(32, 28);
   }
 }
