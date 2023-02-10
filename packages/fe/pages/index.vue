@@ -234,9 +234,6 @@ export default {
   },
 
   watch: {
-    '$route' (route) {
-      this.getDatasetList({ route })
-    },
     datasetList () {
       this.stopLoading()
     }
@@ -249,8 +246,7 @@ export default {
   methods: {
     ...mapActions({
       resetStore: 'datasets/resetStore',
-      setLoadingStatus: 'datasets/setLoadingStatus',
-      getDatasetList: 'datasets/getDatasetList'
+      setLoadingStatus: 'datasets/setLoadingStatus'
     }),
     stopLoading () {
       this.$nextTick(() => {

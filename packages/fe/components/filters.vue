@@ -66,7 +66,9 @@
           <Button class="btn-clear" :button="{type: 'default'}" @click.native="clearAll">
             {{ filterPanelData.labels.clear }}
           </Button>
-          <Button :button="{type:'solid'}" @click.native="onSearch">
+          <Button
+            :button="{type:'solid'}"
+            @clicked="fetchNewData">
             {{ filterPanelData.labels.search }}
           </Button>
         </section>
@@ -190,7 +192,7 @@ export default {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
       this.parentItems[index].showMore = !this.parentItems[index].showMore
     },
-    onSearch () {
+    fetchNewData () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
       // need to emit this to close the modal

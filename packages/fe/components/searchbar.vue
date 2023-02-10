@@ -30,7 +30,7 @@
 
       <button
         :class="['search-button', { loading }]"
-        @click="searchbarSearch">
+        @click="fetchNewData">
         <Spinner />
         <IconSearch />
       </button>
@@ -41,7 +41,8 @@
 
 <script>
 // ===================================================================== Imports
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
 import FieldContainer from '@/components/form/field-container'
@@ -114,13 +115,17 @@ export default {
   },
 
   methods: {
-    async searchbarSearch () {
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
+    async fetchNewData () {
       await this.$scrollToHash({ hash: '#datasets' })
       this.$router.push({
         path: '/',
         query: this.$route.query,
         hash: '#datasets'
       })
+      this.getDatasetList({ route: this.$route })
     },
     goToDatasetPage (slug) {
       this.$router.push({
