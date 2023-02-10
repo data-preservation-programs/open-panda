@@ -265,14 +265,15 @@ $height: 3.125rem;
   height: $height;
   display: flex;
   align-items: center;
-  &.no-results {
-    :deep(div.select-container) {
-      &:before {
+  &.dropdown-open {
+    &.no-results {
+      :deep(div.select-container) {
         display: none;
+        &:before {
+          display: none;
+        }
       }
     }
-  }
-  &.dropdown-open {
     :deep(div.select-container) {
       display: block;
     }
