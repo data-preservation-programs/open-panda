@@ -13,8 +13,10 @@ const Path = require('path')
 const Axios = require('axios')
 const Fs = require('fs-extra')
 const Express = require('express')
-const Zstd = require ('node-zstandard')
-// const { GetFileFromDisk } = require('@Module_Utilities')
+const Util = require('util')
+const Stream = require('stream')
+const Pipeline = Util.promisify(Stream.pipeline)
+const Spawn = require('child_process').spawn
 require('dotenv').config({ path: Path.resolve(__dirname, '../.env') })
 
 const MC = require('../config')
@@ -45,6 +47,7 @@ try {
 // ///////////////////////////////////////////////////////////////////// Modules
 require('@Module_Database')
 require('@Module_Cid')
+const { GetFileFromDisk } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------------ retrieveCidFiles
@@ -54,23 +57,20 @@ const retrieveCidFiles = async (uploads) => {
     const cidFileRefs = []
     for (let i = 0; i < len; i++) {
       const upload = uploads[i]
-      console.log(upload)
-      Axios({
-          method: 'get',
-          url: `https://${upload.cid}.ipfs.w3s.link/`,
-          responseType: 'stream'
-      }).then(function (response) {
-          response.data.pipe(Fs.createWriteStream(`${MC.packageRoot}/tmp/cid-files/${upload.name}`))
+      // if a file already exists with this name in the temp folder, 
+      // delete it to make way for an updated version
+      await deleteTemporaryFile(upload.name) 
+      // fetch file using upload cid
+      const response = await Axios.get(`https://${upload.cid}.ipfs.w3s.link/`, {
+        responseType: 'stream'
       })
-      // const file = await Axios.get(`https://${upload.cid}.ipfs.w3s.link/`, { responseType: 'blob' })
-      // await Fs.writeFile(`${MC.packageRoot}/tmp/cid-files/${upload.name}`, file.data)
-      // return await 
+      await Pipeline(response.data, Fs.createWriteStream(`${MC.packageRoot}/tmp/cid-files/${upload.name}`))
+      cidFileRefs.push({
+        cid: upload.cid,
+        name: upload.name
+      })
     }
-    // cidFileRefs.push({
-    //         cid: upload.cid,
-    //         name: upload.name
-    //       })
-    //       unpackRetrievedFiles(cidFileRefs)
+    return await unpackRetrievedFiles(cidFileRefs)
   } catch (e) {
     console.log('====================================== [Function: unpackCids]')
     console.log(e)
@@ -78,56 +78,63 @@ const retrieveCidFiles = async (uploads) => {
   }
 }
 
+// --------------------------------------------------------------- unpackZstFile
+const unpackZstFile = (file) => {
+  return new Promise((resolve, reject) => {
+    const unzstd = Spawn('unzstd', [`../tmp/cid-files/${file.name}`])
+    const errors = []
+    unzstd.stderr.on('data', (msg) => {
+      errors.push(`Error unpacking ${file.name}: ${msg.toString()}`)
+    })
+    unzstd.on('exit', (code) => {
+      const err = errors.length > 0 && code !== 0
+      if (err) {
+        console.log(errors.join('\n\n'))
+      }
+      resolve()
+    })
+  })
+}
+
 // -------------------------------------------------------- unpackRetrievedFiles
 const unpackRetrievedFiles = async (cidFileRefs) => {
   try {
-    const len = cidFileRefs.length
-    const jsonFileNames = []
+    let len = cidFileRefs.length
+    const unpacked = []
     for (let i = 0; i < len; i++) {
-      const cid = cidFileRefs[i].cid
-      // await Zstd.decompressFileToFile(`${MC.packageRoot}/tmp/cid-files/${cid}.json.zst`, `${MC.packageRoot}/tmp/cid-files/${cid}.json`, (err, result) => {
-      //   if (err) { throw err }
-      //     console.log (result)
-      //   }
-      // )
-      // if (Fs.existsSync(`${MC.packageRoot}/tmp/cid-files/${cid}.json.zst`)) {
-      //   Fs.unlink(`${MC.packageRoot}/tmp/cid-files/${cid}.json.zst`)
-      // }
-      jsonFileNames.push(`${cid}.json`)
-    }
-    /* 
-     *
-     * DO SOMETHING WITH JSON FILES HERE AND REPLACE CIDFILEREFS RETURN STATEMENT
-     *
-     */
-    return cidFileRefs
-    process.exit(0)
-  } catch (e) {
-    console.log('================================== [Function: unpackZstFiles]')
-    console.log(e)
-    process.exit(0)
-  }
-}
-
-// ----------------------------------------------- deleteJsonFilesFromTempFolder
-const deleteJsonFilesFromTempFolder = async (files) => {
-  try {
-    const len = files.length
-    for (let i = 0; i < len; i++) {
-      const file = files[i]
-      if (Fs.existsSync(`${MC.packageRoot}/tmp/cid-files/${file.cid}.json`)) {
-        Fs.unlink(`${MC.packageRoot}/tmp/cid-files/${file.cid}.json`)
+      const file = cidFileRefs[i]
+      if (file.name.endsWith('.zst')) {
+        const jsonFilename = file.name.substring(0, file.name.length - 4)
+        await deleteTemporaryFile(jsonFilename)
+        await unpackZstFile(file)
+        unpacked.push(jsonFilename)
       }
+      await deleteTemporaryFile(file.name)
     }
+    len = unpacked.length
+    const filesMetadata = []
+    for (let i = 0; i < len; i++) {
+      const jsonFilename = unpacked[i]
+      const json = await GetFileFromDisk(`${MC.packageRoot}/tmp/cid-files/${jsonFilename}`, true)
+      filesMetadata.push({
+        piece_cid: json.piece_cid,
+        payload_cid: json.payload_cid,
+        raw_car_file_size: json.raw_car_file_size,
+        dataset_slug: json.dataset
+      })
+      await deleteTemporaryFile(jsonFilename)
+    }
+    return filesMetadata
+    process.exit(0)
   } catch (e) {
-    console.log('=================== [Function: deleteJsonFilesFromTempFolder]')
+    console.log('============================ [Function: unpackRetrievedFiles]')
     console.log(e)
     process.exit(0)
   }
 }
 
-// ----------------------------------------------------- writeCidFilesToDatabase
-const writeCidFilesToDatabase = async (files) => {
+// ------------------------------------------------- writeFileMetadataToDatabase
+const writeFileMetadataToDatabase = async (files) => {
   try {
     const operations = []
     const len = files.length
@@ -135,23 +142,31 @@ const writeCidFilesToDatabase = async (files) => {
       const file = files[i]
       operations.push({
         updateOne: {
-          filter: { cid: file.cid },
+          filter: { payload_cid: file.payload_cid },
           update: { $set: file },
           upsert: true
         }
       })
     }
-    console.log(operations)
-    // const response = await MC.model.Cid.bulkWrite(operations, { ordered: false })
-    // const result = response.result
-    const result = { nUpserted: len, nModified: len }
-    console.log(`→ Total: ${len} | New: ${result.nUpserted} | Updated: ${result.nModified}`)
-    // if (result) {
-    //   await deleteJsonFilesFromTempFolder(files)
-    // }
+    const response = await MC.model.Cid.bulkWrite(operations, { ordered: false })
+    const result = response.result
+    console.log(`${len} CIDs imported/updated | New: ${result.nUpserted} | Updated: ${result.nModified}`)
     return result
   } catch (e) {
     console.log('========================= [Function: writeCidFilesToDatabase]')
+    console.log(e)
+    process.exit(0)
+  }
+}
+
+// --------------------------------------------------------- deleteTemporaryFile
+const deleteTemporaryFile = async (filename) => {
+  try {
+    if (Fs.existsSync(`${MC.packageRoot}/tmp/cid-files/${filename}`)) {
+      Fs.unlinkSync(`${MC.packageRoot}/tmp/cid-files/${filename}`)
+    }
+  } catch (e) {
+    console.log('============================ [Function: deleteTemporaryFile ]')
     console.log(e)
     process.exit(0)
   }
@@ -172,16 +187,17 @@ const getCidsFromWeb3Storage = async (searchParams, incrementPage, pageLimit) =>
     }
     const url = `https://api.web3.storage/user/uploads?${params}`
     const response = await Axios.get(url, options)
-    await retrieveCidFiles(response.data)
-    // const retrievedFiles = await retrieveCidFiles(response.data)
-    // const completed = await writeCidFilesToDatabase(retrievedFiles)
-    // if (completed && response.data.length === searchParams.size) {
-    //   if (pageLimit) {
-    //     if (searchParams.page < pageLimit) {
-    //       await getCidsFromWeb3Storage(searchParams, true, pageLimit)
-    //     }
-    //   }
-    // }
+    const retrievedFileMetadata = await retrieveCidFiles(response.data)
+    const completed = await writeFileMetadataToDatabase(retrievedFileMetadata)
+    if (completed && response.data.length === searchParams.size) {
+      if (pageLimit) {
+        if (searchParams.page < pageLimit) {
+          await getCidsFromWeb3Storage(searchParams, true, pageLimit)
+        }
+      } else {
+        await getCidsFromWeb3Storage(searchParams, true, null)
+      }
+    }
     process.exit(0)
   } catch (e) {
     console.log('========================== [Function: getCidsFromWeb3Storage]')
@@ -192,9 +208,16 @@ const getCidsFromWeb3Storage = async (searchParams, incrementPage, pageLimit) =>
 
 // ///////////////////////////////////////////////////////////////// CidImporter
 const CidImporter = async () => {
-  console.log('CID import started')
+  console.log('📖 CID import started')
   try {
-    await getCidsFromWeb3Storage({ size: 3, page: 1, sortBy: 'Date', sortOrder: 'Desc' }, false, 1)
+    /*
+     * args: 
+     *  params passed to the initial api upload list request
+     *  increment the page param by 1 - true | false
+     *  limit number of pages retrieved. If null, all CIDs will be retrieved
+     */
+    await getCidsFromWeb3Storage({ size: 100, page: 1, sortBy: 'Date', sortOrder: 'Desc' }, false, 5)
+    console.log('📒 CID import finished')
     process.exit(0)
   } catch (e) {
     console.log('===================================== [Function: CidImporter]')
