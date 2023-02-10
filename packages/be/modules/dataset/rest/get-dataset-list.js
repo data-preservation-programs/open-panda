@@ -47,16 +47,13 @@ const findDatasets = async (search = '', page = 1, limit = 10, sort = {}, filter
 // //////////////////////////////////////////////////////////////////// Endpoint
 // -----------------------------------------------------------------------------
 MC.app.get('/get-dataset-list', async (req, res) => {
-  console.log('======================================================== SEARCH')
   try {
     const query = req.query
-    console.log(query)
     const search = await ParseQuerySearch(query.search)
     const page = await parseNumber(query.page)
     const limit = await parseNumber(query.limit)
     const sort = await ParseQuerySort(query.sort)
     const filters = await ParseQueryFilters(query.filter, true)
-    console.log(filters)
     const payload = await findDatasets(search, page, limit, sort, filters)
     SendData(res, 200, 'Datasets retrieved succesfully', payload)
   } catch (e) {
