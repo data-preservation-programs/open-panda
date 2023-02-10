@@ -30,8 +30,7 @@ export default {
   },
 
   async asyncData ({ $content, store }) {
-    await store.dispatch('datasets/getBasicStats')
-    await store.dispatch('datasets/getFilters')
+    await store.dispatch('datasets/getFiltersAndTypeahead')
     const termsContent = await $content('markdown/terms').fetch()
     return { termsContent }
   },

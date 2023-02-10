@@ -29,17 +29,16 @@ export default async function ({ app, store, route }, inject) {
     app.$search.clearSearchQuery()
     app.$filter.clearAll()
   })
-  inject('clearAllFilters', (exception) => {
-    app.$filter.clearAll(exception)
-  })
   inject('clearSearchFilterSortAndLimit', () => {
     /**
       * This event is caught by the form module's field.vue component in its mounted() hook.
       * Params are outlined there.
+      * @arg {object} payload
+      *   @param {string} id This id is passed to <FieldContainer> as a "reset-group-id" prop. All fields with this id will be reset.
+      *   @param {string} resetTo 'nullState' or 'defaultValue'. Setting this will override the field-level resetTo value. DO NOT leave as an empty string.
       */
     window.$nuxt.$emit('resetFormFields', {
-      id: 'filters',
-      resetTo: 'nullState' // 'nullState' or 'defaultValue'
+      id: 'filters'
     })
     /**
       * Unfortunately we can't call the search/filter clear methods individually
@@ -55,6 +54,8 @@ export default async function ({ app, store, route }, inject) {
         query[key] = undefined
       }
     })
-    app.router.push({ query })
+    // need to pass this in to retain the current url hash
+    // not sure why $route is not picking it up so assigning manually
+    app.router.push({ query, hash: location.hash })
   })
 }

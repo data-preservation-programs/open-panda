@@ -15,15 +15,18 @@
           :placeholder="`Search ${count || '...'} datasets`"
           :loading="dataLoading"
           theme="line"
-          class="datasets-searchbar"
-          @searchbarUpdated="shouldCallEndpoint = true" />
+          class="datasets-searchbar" />
         <!-- ============================================== desktop checkbox -->
-        <CheckboxFullyStored :options="filters.fullyStored" class="datasets-checkbox show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
+        <CheckboxFullyStored
+          :options="filters.fullyStored"
+          class="datasets-checkbox show-desktop-only" />
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
         <!-- ================================================== desktop sort -->
-        <Sort :options="sortOptions" class="show-desktop-only" @filterApplied="shouldCallEndpoint = true" />
+        <Sort
+          :options="sortOptions"
+          class="show-desktop-only" />
         <Filters />
       </div>
     </div>
@@ -31,9 +34,13 @@
     <!-- =========================== filter row2 mobile only: checkbox, sort -->
     <div class="grid-noGutter-middle-spaceBetween show-mobile-only filter-row2-mobile">
       <!-- ================================================= mobile checkbox -->
-      <CheckboxFullyStored :options="filters.fullyStored" class="col-6_mi-12 datasets-checkbox" @filterApplied="shouldCallEndpoint = true" />
+      <CheckboxFullyStored
+        :options="filters.fullyStored"
+        class="col-6_mi-12 datasets-checkbox" />
       <!-- ===================================================== mobile sort -->
-      <Sort :options="sortOptions" class="col-6_mi-12" @filterApplied="shouldCallEndpoint = true" />
+      <Sort
+        :options="sortOptions"
+        class="col-6_mi-12" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -64,13 +71,19 @@
       </div>
 
       <div class="col-4 flex-end">
-        <Button :button="{type: 'outline'}" @click.native="$clearSearchFilterSortAndLimit">
+        <Button
+          :button="{type: 'outline'}"
+          @click.native="$clearSearchFilterSortAndLimit">
           {{ datasetContent.clearAllFilters }}
         </Button>
-        <button :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']" @click="updateLayout('grid')">
+        <button
+          :class="['button-layout button-layout-grid', layout === 'grid' ? 'selected' : '']"
+          @click="updateLayout('grid')">
           <GridIcon />
         </button>
-        <button :class="['button-layout button-layout-list', layout === 'list' ? 'selected' : '']" @click="updateLayout('list')">
+        <button
+          :class="['button-layout button-layout-list', layout === 'list' ? 'selected' : '']"
+          @click="updateLayout('list')">
           <ListIcon />
         </button>
       </div>
@@ -110,11 +123,12 @@
           v-if="totalPages > 1"
           :page="page"
           :total-pages="totalPages"
-          :loading="dataLoading"
-          store-key="datasets" />
+          :loading="dataLoading" />
       </div>
       <div class="col-5_md-12 flex-end">
-        <ResultsPerPage v-if="totalPages > 1" :options="limitOptions" @filterApplied="shouldCallEndpoint = true" />
+        <ResultsPerPage
+          v-if="totalPages > 1"
+          :options="limitOptions" />
       </div>
     </div>
 
@@ -165,16 +179,14 @@ export default {
   data () {
     return {
       tag: 'index',
-      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid',
-      shouldCallEndpoint: false
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
     }
   },
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
-    await store.dispatch('datasets/getFilters')
     await store.dispatch('datasets/getDatasetList', { route })
-    await store.dispatch('datasets/getBasicStats')
+    await store.dispatch('datasets/getFiltersAndTypeahead')
   },
 
   head () {
@@ -225,7 +237,7 @@ export default {
 
   watch: {
     '$route' (route) {
-      this.callGetDatasetList(route)
+      this.getDatasetList({ route })
     },
     datasetList () {
       this.stopLoading()
@@ -252,16 +264,6 @@ export default {
     updateLayout (layout) {
       this.$ls.set('layout', layout)
       this.layout = layout
-    },
-    callGetDatasetList (route) {
-      /**
-       * this.shouldCallEndpoint flag is here because @filterApplied gets triggered before the route has been registered
-       * so we need to watch the route first and then call the endpoint if flag is true
-       */
-      if (this.shouldCallEndpoint) {
-        this.getDatasetList({ route })
-        this.shouldCallEndpoint = false
-      }
     }
   }
 }

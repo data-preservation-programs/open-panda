@@ -1,59 +1,70 @@
 <template>
-  <section id="pagination-controls">
+  <Paginator v-bind="$props" id="pagination-controls">
 
-    <div class="inner-wrapper">
+    <template #first="{ incrementPage }">
+      <button
+        class="control-button first"
+        @click="incrementPage(1)">
+        First
+      </button>
+    </template>
 
-      <template v-if="page !== 1">
-        <button
-          class="control-button first"
-          @click="incrementPage(1)">
-          First
-        </button>
-        <button
-          class="control-button prev"
-          @click="incrementPage(page - 1)">
-          Prev
-        </button>
-        <div class="breaker">
-          {{ breaker }}
-        </div>
-      </template>
+    <template #prev="{ incrementPage }">
+      <button
+        class="control-button prev"
+        @click="incrementPage(page - 1)">
+        Prev
+      </button>
+    </template>
 
-      <template v-for="pageButton in pages">
-        <button
-          v-if="pageButton.display"
-          :key="`page-${pageButton.num}`"
-          :class="['page-button', { current: pageButton.current }]"
-          @click="incrementPage(pageButton.num)">
-          {{ pageButton.num }}
-        </button>
-      </template>
+    <template #breaker-left>
+      <div class="breaker">
+        ⋯
+      </div>
+    </template>
 
-      <template v-if="page !== totalPages">
-        <div class="breaker">
-          {{ breaker }}
-        </div>
-        <button
-          class="control-button next"
-          @click="incrementPage(page + 1)">
-          Next
-        </button>
-        <button
-          class="control-button last"
-          @click="incrementPage(totalPages)">
-          Last
-        </button>
-      </template>
+    <template #button="{ button, incrementPage }">
+      <button
+        v-if="button.display"
+        :key="`page-${button.num}`"
+        :class="['page-button', { current: button.current }]"
+        @click="incrementPage(button.num)">
+        {{ button.num }}
+      </button>
+    </template>
 
-    </div>
+    <template #breaker-right>
+      <div class="breaker">
+        ⋯
+      </div>
+    </template>
 
-    <Spinner v-if="loading" />
+    <template #next="{ incrementPage }">
+      <button
+        class="control-button next"
+        @click="incrementPage(page + 1)">
+        Next
+      </button>
+    </template>
 
-  </section>
+    <template #last="{ incrementPage }">
+      <button
+        class="control-button last"
+        @click="incrementPage(totalPages)">
+        Last
+      </button>
+    </template>
+
+    <template #after>
+      <Spinner v-if="loading" />
+    </template>
+
+  </Paginator>
 </template>
 
 <script>
 // ===================================================================== Imports
+import Paginator from '@/modules/search/components/paginator'
 import Spinner from '@/components/spinners/material-circle'
 
 // ====================================================================== Export
@@ -61,15 +72,26 @@ export default {
   name: 'PaginationControls',
 
   components: {
+    Paginator,
     Spinner
   },
 
   props: {
-    breaker: {
+    action: { // 'query', 'emit', 'store'
       type: String,
       required: false,
-      default: '⋯'
+      default: 'query'
     },
+    // storeGetter: {
+    //   type: String,
+    //   required: false,
+    //   default: 'general/filterValue'
+    // },
+    // storeAction: {
+    //   type: String,
+    //   required: false,
+    //   default: 'general/setFilterValue'
+    // }
     page: {
       type: Number,
       required: true
@@ -78,37 +100,10 @@ export default {
       type: Number,
       required: true
     },
-    storeKey: {
-      type: String,
-      required: true
-    },
     loading: {
       type: Boolean,
       required: false,
       default: false
-    }
-  },
-
-  computed: {
-    pages () {
-      const total = this.totalPages
-      const current = this.page
-      const buffer = 2
-      const compiled = []
-      for (let i = 0; i < total; i++) {
-        compiled.push({
-          num: i + 1,
-          display: i >= current - buffer - 1 && i <= current + buffer - 1,
-          current: i + 1 === current
-        })
-      }
-      return compiled
-    }
-  },
-
-  methods: {
-    incrementPage (page) {
-      this.$store.dispatch(`${this.storeKey}/incrementPage`, { route: this.$route, page })
     }
   }
 }

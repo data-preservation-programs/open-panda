@@ -27,8 +27,7 @@ export default {
   },
 
   async fetch ({ store, error }) {
-    await store.dispatch('datasets/getBasicStats')
-    await store.dispatch('datasets/getFilters')
+    await store.dispatch('datasets/getFiltersAndTypeahead')
     await store.dispatch('general/getBaseData', { key: 'how-to-download', data: HowToDownloadPageData })
   },
 

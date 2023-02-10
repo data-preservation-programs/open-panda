@@ -4,7 +4,7 @@
     :to="to"
     :href="href"
     :target="target"
-    :class="[`button type__${button.type || ''} ${button.selected ? 'selected' : ''}`]"
+    :class="['button', `type__${button.type || ''}`, button.selected ? 'selected' : '', button.icon ? 'has-icon' : '']"
     :disabled="button.disabled">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
@@ -126,7 +126,7 @@ export default {
   &[disabled] {
     background-color: gray;
   }
-  &:hover {
+  &:not(.has-icon):hover {
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 4px;
@@ -137,7 +137,7 @@ export default {
   @extend .type__solid;
   border-radius: toRem(2) toRem(30) toRem(30) toRem(30);
   &:hover {
-    text-decoration: none;
+    text-decoration: none !important;
     border-radius: toRem(30) toRem(30) toRem(2) toRem(30);
   }
 }
@@ -150,8 +150,8 @@ export default {
     padding: toRem(4) toRem(10);
   }
   &:hover {
-    background-color: $athensGray;
-    color: $rangoonGreen;
+    background-color: $rangoonGreen;
+    color: white;
   }
 }
 </style>

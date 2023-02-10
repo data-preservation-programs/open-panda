@@ -6,6 +6,7 @@ import CloneDeep from 'lodash/cloneDeep'
 // -----------------------------------------------------------------------------
 const state = () => ({
   datasetList: false,
+  datasetListTypeahead: false,
   metadata: {
     page: 1,
     limit: 12,
@@ -24,6 +25,7 @@ const state = () => ({
 // -----------------------------------------------------------------------------
 const getters = {
   datasetList: state => state.datasetList,
+  datasetListTypeahead: state => state.datasetListTypeahead,
   metadata: state => state.metadata,
   loading: state => state.loading,
   basicStats: state => state.basicStats,
@@ -38,8 +40,12 @@ const getters = {
 const actions = {
   // //////////////////////////////////////////////////////////////// resetStore
   resetStore ({ commit, getters, dispatch }, formId) {
-    dispatch('setPage', { page: 1 })
-    commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
+    commit('SET_DATASET_LIST', {
+      datasetList: false,
+      page: 1,
+      totalPages: 1,
+      count: false
+    })
     commit('SET_FILTERS', false)
     commit('SET_LAYOUT', 'grid')
   },
@@ -47,8 +53,8 @@ const actions = {
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
     try {
       const route = metadata.route
-      const page = getters.metadata.page
       const query = route.query
+      const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
       const limit = query.limit || getters.metadata.limit
       const sort = query.sort
@@ -87,40 +93,19 @@ const actions = {
     }
   },
   // //////////////////////////////////////////////////////////////// getFilters
-  async getFilters ({ commit }) {
+  async getFiltersAndTypeahead ({ commit }) {
     try {
       const filters = await this.dispatch('general/getCachedFile', 'filters.json')
-      if (filters) {
-        commit('SET_SORT_OPTIONS', filters.sort)
-        commit('SET_LIMIT_OPTIONS', filters.limit)
-        commit('SET_FILTERS', filters.filters)
-      }
+      const typeahead = await this.dispatch('general/getCachedFile', 'typeahead-dataset-search-data.json')
+      commit('SET_SORT_OPTIONS', filters.sort)
+      commit('SET_LIMIT_OPTIONS', filters.limit)
+      commit('SET_FILTERS', filters.filters)
+      commit('SET_DATASET_LIST_TYPEAHEAD', typeahead)
     } catch (e) {
       console.log('======================= [Store Action: datasets/getFilters]')
       console.log(e)
       return false
     }
-  },
-  // //////////////////////////////////////////////////////////// setDatasetList
-  setDatasetList ({ commit }, payload) {
-    commit('SET_DATASET_LIST', payload)
-  },
-  // ///////////////////////////////////////////////////////////////// setLayout
-  setLayout ({ commit }, payload) {
-    commit('SET_LAYOUT', payload)
-  },
-  // /////////////////////////////////////////////////////////////////// setPage
-  setPage ({ commit }, payload) {
-    commit('SET_PAGE', payload)
-  },
-  // ///////////////////////////////////////////////////////////// incrementPage
-  incrementPage ({ commit, dispatch }, payload) {
-    dispatch('setPage', { page: payload.page })
-    dispatch('getDatasetList', { route: payload.route })
-  },
-  // ////////////////////////////////////////////////////////// setLoadingStatus
-  setLoadingStatus ({ commit }, payload) {
-    commit('SET_LOADING_STATUS', payload)
   },
   // ///////////////////////////////////////////////////////////// getBasicStats
   async getBasicStats ({ commit, getters, dispatch }) {
@@ -134,6 +119,22 @@ const actions = {
       console.log(e)
       return false
     }
+  },
+  // //////////////////////////////////////////////////////////// setDatasetList
+  setDatasetList ({ commit }, payload) {
+    commit('SET_DATASET_LIST', payload)
+  },
+  // ///////////////////////////////////////////////////////////////// setLayout
+  setLayout ({ commit }, payload) {
+    commit('SET_LAYOUT', payload)
+  },
+  // ///////////////////////////////////////////////////////////// incrementPage
+  incrementPage ({ commit, dispatch }, payload) {
+    dispatch('getDatasetList', { route: payload.route })
+  },
+  // ////////////////////////////////////////////////////////// setLoadingStatus
+  setLoadingStatus ({ commit }, payload) {
+    commit('SET_LOADING_STATUS', payload)
   }
 }
 
@@ -146,10 +147,11 @@ const mutations = {
     if (metadata) {
       state.metadata.totalPages = metadata.totalPages
       state.metadata.count = metadata.count
+      state.metadata.page = metadata.page
     }
   },
-  SET_PAGE (state, payload) {
-    state.metadata.page = payload.page
+  SET_DATASET_LIST_TYPEAHEAD (state, payload) {
+    state.datasetListTypeahead = payload
   },
   SET_LOADING_STATUS (state, payload) {
     state.loading = payload.status

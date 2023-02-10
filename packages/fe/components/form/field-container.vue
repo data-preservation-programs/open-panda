@@ -1,33 +1,32 @@
 <template>
-  <div class="field-container">
-    <FieldStandalone v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }" :class="`field-wrapper field-wrapper-${scaffold.type}`">
-        <template v-if="field">
+  <FieldStandalone
+    v-slot="{ updateValue, field, type, validationMessage }"
+    v-bind="$props"
+    :class="['field-wrapper', scaffold.type]"
+    v-on="$listeners">
 
-          <label v-if="scaffold.label" :for="fieldKey" class="field-label">
-            {{ scaffold.label }}
-          </label>
+    <label v-if="scaffold.label" :for="fieldKey" class="field-label">
+      {{ scaffold.label }}
+    </label>
 
-          <div v-if="scaffold.description" class="description">
-            {{ scaffold.description }}
-          </div>
+    <div v-if="scaffold.description" class="description">
+      {{ scaffold.description }}
+    </div>
 
-          <component
-            :is="type"
-            :field="field"
-            :field-key="fieldKey"
-            @updateValue="pushValue($event, updateValue)" />
+    <component
+      :is="type"
+      :field="field"
+      :field-key="fieldKey"
+      @updateValue="pushValue($event, updateValue)"
+      v-on="$listeners" />
 
-          <slot />
+    <slot />
 
-          <div v-if="validationMessage" class="validation-message">
-            {{ validationMessage }}
-          </div>
+    <div v-if="validationMessage" class="validation-message">
+      {{ validationMessage }}
+    </div>
 
-        </template>
-      </div>
-    </FieldStandalone>
-  </div>
+  </FieldStandalone>
 </template>
 
 <script>
@@ -58,12 +57,6 @@ export default {
     FieldChiclet
   },
 
-  /**
-   * props:
-   *
-   * @updateValue - triggers when field has changed
-   * :resetGroupId - if this prop matches ID passed to 'resetFormFields' global bus event, then reset the field value
-   */
   props: {
     scaffold: {
       type: Object,
@@ -83,6 +76,11 @@ export default {
       required: false,
       default: false
     },
+    validateOnEntry: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     forceDisableFields: {
       type: Boolean,
       required: false,
@@ -92,6 +90,17 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    /**
+     * On occasions where the final root element in field-conditional.vue render
+     * must be something specific. Such as when wrapping a <tbody> in a field-standalone,
+     * it cannot be a div as the wrapper. It must be <tbody> at the root to prevent
+     * SSR hydration errors.
+     */
+    rootHtmlTag: {
+      type: String,
+      required: false,
+      default: 'div'
     }
   },
 
@@ -182,12 +191,14 @@ export default {
   }
 }
 
-// custom
-.field-wrapper-select {
-  display: flex;
-  align-items: center;
-  .field-label {
-    margin-right: toRem(24);
+// ////////////////////////////////////////////////////////////////////// Custom
+.field-wrapper {
+  &.select {
+    display: flex;
+    align-items: center;
+    .field-label {
+      margin-right: toRem(24);
+    }
   }
 }
 

@@ -36,7 +36,9 @@ class Search {
       this.store.dispatch(term.storeAction, value)
     } else {
       this.query.search = value === '' ? undefined : value
-      this.app.router.push({ query: this.query })
+      // need to pass this in to retain the current url hash
+      // not sure why $route is not picking it up so assigning manually
+      this.app.router.push({ query: this.query, hash: location.hash })
     }
   }
 }

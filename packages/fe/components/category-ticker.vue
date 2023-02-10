@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Filters class="show-mobile-only" open-direction="right" :show-search="true" />
+    <Filters class="show-mobile-only" open-direction="right" :show-typeahead="true" />
     <div class="category-ticker">
       <img :src="block.image" class="img" />
       <Filterer

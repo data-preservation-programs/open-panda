@@ -2,7 +2,28 @@
   <div class="card-cutout-wrapper">
 
     <svg
-      v-if="topTab"
+      v-if="topTab && backgroundImage"
+      width="104px"
+      height="9px"
+      viewBox="0 0 104 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="svg-clip-path">
+      <defs>
+        <clipPath id="corner-clip-path">
+          <path d="M 104 9 H 104 C 103 9 103 9 102 9 L 88 0 C 88 0 87 0 87 0 H 9 C 4 0 0 4 0 9 V 9 Z" />
+        </clipPath>
+      </defs>
+    </svg>
+
+    <div
+      v-if="topTab && backgroundImage"
+      class="clipped-background-image"
+      :style="{ 'background-image': `url('${backgroundImage}')` }">
+    </div>
+
+    <svg
+      v-if="topTab && !backgroundImage"
       width="104px"
       height="11.5px"
       viewBox="0 0 104 9"
@@ -53,6 +74,11 @@ export default {
       type: Boolean,
       required: false,
       default: true
+    },
+    backgroundImage: {
+      type: String,
+      required: false,
+      default: ''
     }
   }
 }
@@ -69,6 +95,12 @@ svg {
   background-color: none;
 }
 
+.svg-clip-path {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
 .tab-before,
 .tab-after,
 .bg-left,
@@ -79,10 +111,42 @@ svg {
 .tab-before {
   top: -0.625rem;
   left: 0;
+  &:not(.clipped) {
+    @include medium {
+      width: 62px;
+      height: 0.375rem;
+      top: -0.34375rem;
+    }
+  }
+  &.clipped {
+    clip-path: url(#corner-clip-path);
+    top: -8.5px;
+  }
+}
+
+.clipped-background-image {
+  background-color: $tasman;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: toRem(122);
+  clip-path: url(#corner-clip-path);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  transform: translateY(-8.5px);
   @include medium {
-    width: 62px;
-    height: 0.375rem;
-    top: -0.34375rem;
+    transform: translateY(-4.5px);
+    height: toRem(118);
+  }
+}
+
+#corner-clip-path {
+  path {
+    @include medium {
+      d: path('M 61 5 H 61 C 61 5 61 5 60 5 L 52 0 C 52 0 51 0 51 0 H 5 C 2 0 0 2 0 5 V 5 Z');
+    }
   }
 }
 

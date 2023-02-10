@@ -22,14 +22,12 @@ class Filter {
   }
 
   // ================================================================== clearAll
-  clearAll (exception) {
+  clearAll (exceptions = []) {
     const filters = this.store.getters['search/filters']
     const query = this.query
     Object.keys(query).forEach((key) => {
-      if (key !== exception) {
-        if (filters.includes(key) && query[key] !== undefined) {
-          this.query[key] = undefined
-        }
+      if (!exceptions.includes(key) && filters.includes(key) && query[key] !== undefined) {
+        this.query[key] = undefined
       }
     })
     this.app.router.push({ query: this.query })
@@ -74,7 +72,9 @@ class Filter {
       }
       this.query[term.filterKey] = (!join || join.length === 0) ? undefined : join
     }
-    this.app.router.push({ query: this.query })
+    // need to pass this in to retain the current url hash
+    // not sure why $route is not picking it up so assigning manually
+    this.app.router.push({ query: this.query, hash: location.hash })
   }
 }
 

@@ -22,7 +22,8 @@
         :class="['input', state]"
         @focus="focusHandler"
         @blur="focused = false"
-        @input="$emit('updateValue', $event.target.value)" />
+        @input="$emit('updateValue', $event.target.value)"
+        v-on="$listeners" />
       <div v-if="typeof chars === 'number'" class="char-validation">
         {{ chars }}
       </div>
@@ -46,13 +47,45 @@
           :class="['option', { highlighted, selected, display: optionIncludedInSearch(option) }]"
           v-html="highlightText(option)" />
       </template>
-
     </Select>
 
   </div>
 </template>
 
 <script>
+/**
+ * Here's an example of a typeahead data structure
+ *
+ * "country": {
+ *   "type": "typeahead",
+ *   "inputType": "text",
+ *   "modelKey": "country",
+ *   "label": "Country",
+ *   "placeholder": "Country",
+ *   "description": "Where are you located?",
+ *   "required": true,
+ *   "autocomplete": "none",
+ *   "pre": "[^\\u0000-\\u00ff]",
+ *   "validationMessage": {
+ *     "required": "This field is required"
+ *   },
+ *   "optionDisplayKey": "name",
+ *   "optionReturnKey": "code",
+ *   "options": [{"name":"Afghanistan","code":"AF"},{"name":"Åland Islands","code":"AX"}]
+ * }
+ *
+ * Note the optionDisplayKey and optionReturnKey.
+ * You can pass in any data structure (array of objects) as options and then use
+ * optionDisplayKey to define which key in that data structure to match your
+ * input text to. Then when an item in the dropdown is clicked, it uses the
+ * optionReturnKey to to return the value you want. So for a dataset structure like this:
+ *
+ * {
+ *  "name": "Foo", ← "optionDisplayKey": "name"
+ *  "slug": "bar" ← "optionReturnKey": "slug"
+ * }
+ */
+
 // ===================================================================== Imports
 import Select from '@/modules/form/components/select'
 
@@ -173,6 +206,7 @@ export default {
     },
     optionSelected (index) {
       this.selectedOption = index
+      this.$emit('optionSelected', this.options[index][this.optionReturnKey])
       this.$emit('updateValue', this.options[index][this.optionReturnKey])
     },
     optionIncludedInSearch (option) {
@@ -190,11 +224,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$height: 2.5rem;
+$height: 3.125rem;
 
 // ///////////////////////////////////////////////////////////////////// General
 .field-typeahead {
   height: $height;
+  display: flex;
+  align-items: center;
+
   &.dropdown-open {
     .select-container {
       display: block;
@@ -210,6 +247,7 @@ $height: 2.5rem;
 .input-container,
 .input {
   height: 100%;
+  width: 100%;
 }
 
 .input {
@@ -217,12 +255,8 @@ $height: 2.5rem;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  border-bottom: 2px solid tomato;
   appearance: none;
   transition: 150ms ease-in-out;
-  @include placeholder {
-    opacity: 0;
-  }
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     margin: 0;
@@ -238,16 +272,29 @@ $height: 2.5rem;
     cursor: no-drop;
     border-bottom-color: rgba(227, 211, 192, 0.25);
   }
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 // //////////////////////////////////////////////////////////////////// Dropdown
 .select-container {
   display: none;
   position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
+  top: 120%;
+  left: -20px;
+  width: 200%;
   z-index: 5;
+  &:before {
+    content: '';
+    position: absolute;
+    width: 104px;
+    height: 11px;
+    top: 0;
+    left: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='104px' height='11.5px' viewBox='0 0 104 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 104 9 H 104 C 103 9 103 9 101.815 8.8108 L 88.368 0.3095 C 88.048 0.1073 87.678 0 87.299 0 H 9 C 4.0294 0 0 4.0294 0 9 V 9 Z' fill='white' /%3E%3C/svg%3E");
+    z-index: 100;
+  }
 }
 
 :deep(.select) {
@@ -262,10 +309,12 @@ $height: 2.5rem;
 
 :deep(.dropdown) {
   @include shadow1;
-  top: 0;
+  top: 10px;
   max-height: $height * 5.5;
-  background-color: teal;
-  border-radius: 0 0 0.5rem 0.5rem;
+  background-color: white;
+  border-top-right-radius: 0.625rem;
+  border-bottom-right-radius: 0.625rem;
+  border-bottom-left-radius: 0.625rem;
 }
 
 :deep(.selection-window-wrapper) {
@@ -291,7 +340,7 @@ $height: 2.5rem;
   transition: 150ms ease-out;
   &.highlighted {
     transition: 150ms ease-in;
-    background-color: teal;
+    background-color: $grayNurse2;
   }
   &:not(.display) {
     display: none;

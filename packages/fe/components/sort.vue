@@ -7,13 +7,13 @@
     <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort">
       <FieldContainer
         field-key="sort_by"
-        reset-group-id="filters"
         :scaffold="{
           type: 'select',
           required: false,
           label: 'Sort by',
           options: options,
-          defaultValue: originalSelected || 0
+          defaultValue: originalSelected || 0, /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+          resetGroupId: 'filters'
         }"
         @updateValue="applyFilter" />
     </span>
