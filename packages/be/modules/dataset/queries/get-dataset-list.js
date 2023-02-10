@@ -1,5 +1,6 @@
 module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
   const skip = (page - 1) * limit
+  const categories = filters.categories
   return [
 
     {
@@ -43,28 +44,34 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
            * partially match each value to the concatenated string from the db.
            * If the returned filtered array size is > 0, then return true
            */
-          $gt: [
-            {
-              $size: {
-                $filter: {
-                  input: filters.categories,
-                  cond: {
-                    $eq: [
-                      {
-                        $regexMatch: {
-                          input: '$categories_concatenated_to_string',
-                          regex: '$$this',
-                          options: 'i'
-                        }
-                      },
-                      true
-                    ]
+          $cond: {
+            if: categories && categories.length > 0,
+            then: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: filters.categories || [],
+                      cond: {
+                        $eq: [
+                          {
+                            $regexMatch: {
+                              input: '$categories_concatenated_to_string',
+                              regex: '$$this',
+                              options: 'i'
+                            }
+                          },
+                          true
+                        ]
+                      }
+                    }
                   }
-                }
-              }
+                },
+                0
+              ]
             },
-            0
-          ]
+            else: true
+          }
         }
       }
     },
