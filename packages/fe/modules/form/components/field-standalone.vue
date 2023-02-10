@@ -159,7 +159,7 @@ export default {
        * resetGroupId: All fields with the same scaffold.resetGroupId will be reset when the
        * 'resetFormFields' global emitter (in search/plugins/index.js) is triggered
        *
-       * resetTo: If the field is reset, should it rest to its default value or
+       * resetTo: If the field is reset, should it reset to its default value or
        * completely wiped back to its null state?
        */
       if (this.scaffold.resetGroupId === payload.id) {

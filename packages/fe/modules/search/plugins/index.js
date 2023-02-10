@@ -43,6 +43,10 @@ export default async function ({ app, store, route }, inject) {
     window.$nuxt.$emit('resetFormFields', {
       id: 'filters'
     })
+    window.$nuxt.$emit('resetFormFields', {
+      id: 'search',
+      resetTo: 'nullState'
+    })
     const filters = ['categories', 'licenses', 'fileTypes', 'sort', 'limit', 'fullyStored']
     filters.forEach((filterKey) => {
       app.$filter(filterKey).clear()

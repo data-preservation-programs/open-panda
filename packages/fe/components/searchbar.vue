@@ -24,7 +24,7 @@
           optionReturnKey: 'slug',
           options: datasetListTypeahead,
           defaultValue: value || '',
-          resetGroupId: 'filters'
+          resetGroupId: 'search'
         }"
         @updateValue="updateValue"
         @optionSelected="goToDatasetPage" />

@@ -85,6 +85,7 @@ export default {
   methods: {
     clear () {
       this.$search(this.searchKey).clear(this)
+      this.$emit('searchbarUpdated')
     },
     updateValue (value) {
       if (this.debounceValueUpdate) {
