@@ -1,11 +1,11 @@
 {
   "seo": {
     "title": "Open Panda",
-    "description": "Open Panda"
+    "description": "Explore the world's largest open datasets. Open Panda is a platform where you can interact with tamper-proof datasets stored on the decentralized web."
   },
   "og": {
     "site_name": "Open Panda",
-    "url": "",
+    "url": "https://openpanda.io",
     "type": "website",
     "image": "/open-graph-image.jpg"
   },
