@@ -1,6 +1,6 @@
 # Open Panda
 
-![Open Panda graph image](static/open-graph-image.jpg)
+![Open Panda graph image](packages/fe/static/open-graph-image.jpg)
 
 The repository for the Open Panda application's frontend and backend. Open Panda is a platform for data researchers, analysts, students, and enthusiasts to interact with the largest open datasets in the world, stored on Filecoin's decentralized network.
 
