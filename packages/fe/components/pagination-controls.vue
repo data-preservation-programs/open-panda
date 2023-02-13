@@ -1,5 +1,8 @@
 <template>
-  <Paginator v-bind="$props" id="pagination-controls">
+  <Paginator
+    v-bind="$props"
+    id="pagination-controls"
+    v-on="$listeners">
 
     <template #first="{ incrementPage }">
       <button
@@ -26,10 +29,10 @@
     <template #button="{ button, incrementPage }">
       <button
         v-if="button.display"
-        :key="`page-${button.num}`"
+        :key="`page-${button.value}`"
         :class="['page-button', { current: button.current }]"
-        @click="incrementPage(button.num)">
-        {{ button.num }}
+        @click="incrementPage(button.value)">
+        {{ button.value }}
       </button>
     </template>
 

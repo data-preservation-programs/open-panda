@@ -2,7 +2,7 @@
   <Filterer
     filter-key="limit"
     :is-single-option="true"
-    :filters="options"
+    :options="options"
     v-on="$listeners">
     <div slot-scope="{ applyFilter, originalSelected }">
       <FieldContainer

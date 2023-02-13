@@ -94,6 +94,7 @@ export default {
     }
   }
 }
+
 :deep(.about-intro-1) {
   padding-bottom: toRem(280);
   @include large {
@@ -124,12 +125,6 @@ export default {
       }
       @include small {
         margin-top: toRem(42);
-      }
-      .label {
-        @include h5;
-        @include small {
-          @include fontSize_20;
-        }
       }
       .description {
         @include small {

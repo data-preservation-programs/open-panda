@@ -1,5 +1,7 @@
 <template>
-  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
+  <div
+    v-click-outside="closePanel"
+    :class="['filters', { open }, `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
@@ -11,13 +13,15 @@
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
-          <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
+          <client-only>
+            <span v-if="filterSelectionsExist" class="has-filters-dot" />
+          </client-only>
           <span>{{ filterPanelData.labels.buttonText }}</span>
         </div>
       </button>
     </div>
 
-    <div v-if="open" class="filter-panel">
+    <div :class="['filter-panel', { open }]">
       <CardCutout>
         <section class="grid-noGutter-middle-spaceBetween">
           <h5>{{ filterPanelData.labels.add }}</h5>
@@ -29,14 +33,13 @@
           v-for="(parentItem, parentIndex) in parentItems"
           :key="parentItem.id"
           :filter-key="parentItem.id"
-          :filters="filters[parentItem.id]">
+          :options="filters[parentItem.id]">
           <section
             slot-scope="{ applyFilter, isSelected }"
             class="grid-noGutter">
             <div class="filters-label col-12">
               <span>{{ parentItem.label }}</span>
             </div>
-
             <span
               v-for="(childItem, childIndex) in filters[parentItem.id]"
               :key="`${filters[parentIndex.id]}-${childIndex}`">
@@ -60,10 +63,12 @@
           </section>
         </Filterer>
         <section class="grid-noGutter-right filter-button">
-          <Button :button="{type: 'default'}" @click.native="clearAll">
+          <Button class="btn-clear" :button="{type: 'default'}" @click.native="clearAll">
             {{ filterPanelData.labels.clear }}
           </Button>
-          <Button :button="{type:'solid'}" @click.native="onSearch">
+          <Button
+            :button="{ type: 'solid', disabled: disableSearchButton }"
+            @clicked="fetchNewData">
             {{ filterPanelData.labels.search }}
           </Button>
         </section>
@@ -154,6 +159,14 @@ export default {
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
+    },
+    filterSelectionsExist () {
+      return this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+    },
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
     }
   },
 
@@ -167,25 +180,28 @@ export default {
     closePanel () {
       this.open = false
     },
-    clearAll () {
-      // do not clear fullyStored because that's outside the filter dropdown
-      this.$filter.clearAll(['fullyStored'])
+    async clearAll () {
+      await this.$clearFilters(['categories', 'licenses', 'fileTypes'])
+      this.getDatasetList({ route: this.$route })
     },
     toggleLimit (index, child) {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
       this.parentItems[index].showMore = !this.parentItems[index].showMore
     },
-    onSearch () {
+    fetchNewData () {
       this.closePanel()
       this.getDatasetList({ route: this.$route })
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
       // go to home page and scroll to dataset section
-      this.$router.push({
-        path: '/',
-        hash: '#datasets',
-        query: this.$route.query
-      })
+      if (this.$route.path !== '/') {
+        this.$router.push({
+          path: '/',
+          query: this.$route.query
+        })
+      } else {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     }
   }
 }
@@ -228,8 +244,22 @@ export default {
       padding-left: toRem(20);
       border-left: 1px solid $tasman;
     }
-    .icon {
+    :deep(.icon) {
       margin-right: toRem(15);
+      .path {
+        transition: 250ms;
+      }
+    }
+    .open &,
+    &:hover {
+      background-color: $rangoonGreen;
+      color: white;
+      :deep(.icon) {
+        path {
+          transition: 250ms;
+          fill: white;
+        }
+      }
     }
   }
   .button-content {
@@ -259,8 +289,9 @@ export default {
   }
 }
 
-// panel
+// //////////////////////////////////////////////////////////////// Filter Panel
 .filter-panel {
+  display: none;
   position: absolute;
   width: 70vw;
   max-width: toRem(800);
@@ -269,6 +300,9 @@ export default {
   z-index: 100;
   @include medium {
     width: 88vw;
+  }
+  &.open {
+    display: block;
   }
   .direction-right & {
     left: 0;
@@ -298,17 +332,10 @@ export default {
     margin-bottom: toRem(15);
     @include fontSize_20;
   }
-  .filter-button {
-    margin-bottom: 0.5rem;
-    &:not(:last-child) {
-      margin-right: 0.5rem;
-    }
-  }
-  .filter-button {
-    button {
-      margin-left: toRem(30);
-    }
-  }
+}
+
+.btn-clear {
+  margin-right: toRem(30);
 }
 
 </style>

@@ -4,10 +4,16 @@
 
       <!-- ====================================================== filter bar -->
       <div class="grid-noGutter-middle mobile-nav-searchbar">
-        <button v-if="$route.query.search" class="circle-border" @click="$clearSearchAndFilters">
+        <button
+          v-if="$route.query.search"
+          class="circle-border"
+          @click="clearSearchAndFilters">
           <ArrowLeftIcon :width="20" :height="14" />
         </button>
-        <Filters :show-search="true" theme="line" @searchbarUpdated="shouldCallEndpoint = true" @filterPanelOnSearch="setNavigationOpen(false)" />
+        <Filters
+          :show-search="true"
+          theme="line"
+          @filterPanelOnSearch="setNavigationOpen(false)" />
       </div>
 
       <!-- ============================================================= nav -->
@@ -94,12 +100,6 @@ export default {
     }
   },
 
-  data () {
-    return {
-      shouldCallEndpoint: false
-    }
-  },
-
   computed: {
     ...mapGetters({
       datasetList: 'datasets/datasetList',
@@ -108,9 +108,6 @@ export default {
   },
 
   watch: {
-    '$route' (route) {
-      this.callGetDatasetList(route)
-    },
     datasetList () {
       this.stopLoading()
     }
@@ -138,15 +135,8 @@ export default {
         path: `/dataset/${slug}`
       }, this.setNavigationOpen(false))
     },
-    callGetDatasetList (route) {
-      /**
-       * this.shouldCallEndpoint flag is here because @filterApplied gets triggered before the route has been registered
-       * so we need to watch the route first and then call the endpoint if flag is true
-       */
-      if (this.shouldCallEndpoint) {
-        this.getDatasetList({ route })
-        this.shouldCallEndpoint = false
-      }
+    clearSearchAndFilters () {
+      this.$clearSearchAndFilters(['categories', 'licenses', 'fileTypes'])
     }
   }
 }

@@ -4,6 +4,7 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
+    search-key="search"
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
@@ -18,22 +19,23 @@
           modelKey: 'typeahead',
           placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
           required: false,
-          autocomplete: 'none',
+          autocomplete: 'off',
           optionDisplayKey: 'name',
           optionReturnKey: 'slug',
           options: datasetListTypeahead,
           defaultValue: value || '',
-          resetGroupId: 'filters'
+          resetGroupId: 'search'
         }"
-        @input="updateValue"
+        @updateValue="updateValue"
         @optionSelected="goToDatasetPage" />
 
-      <button
+      <ButtonX
         :class="['search-button', { loading }]"
-        @click="searchbarSearch">
+        :disabled="disableSearchButton"
+        @clicked="fetchNewData">
         <Spinner />
         <IconSearch />
-      </button>
+      </ButtonX>
 
     </div>
   </Searcher>
@@ -41,10 +43,12 @@
 
 <script>
 // ===================================================================== Imports
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
 import FieldContainer from '@/components/form/field-container'
+import ButtonX from '@/components/buttons/button-x'
 import IconSearch from '@/components/icons/search'
 
 // ====================================================================== Export
@@ -55,6 +59,7 @@ export default {
     Searcher,
     Spinner,
     IconSearch,
+    ButtonX,
     FieldContainer
   },
 
@@ -110,16 +115,28 @@ export default {
   computed: {
     ...mapGetters({
       datasetListTypeahead: 'datasets/datasetListTypeahead'
-    })
+    }),
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
+    }
   },
 
   methods: {
-    searchbarSearch () {
-      this.$router.push({
-        path: '/',
-        query: this.$route.query,
-        hash: '#datasets'
-      })
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
+    fetchNewData () {
+      this.getDatasetList({ route: this.$route })
+      if (this.$route.path !== '/') {
+        this.$router.push({
+          path: '/',
+          query: this.$route.query
+        })
+      } else {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     },
     goToDatasetPage (slug) {
       this.$router.push({

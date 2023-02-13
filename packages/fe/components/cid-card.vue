@@ -114,6 +114,7 @@
 
           <CIDSlider
             v-if="storageProviders.length && !mobile"
+            :slider-id="hash"
             :storage-providers="storageProviders"
             @slide-changed="changeBottomPanelHeight" />
 
@@ -266,7 +267,7 @@ export default {
       this.open = !this.open
     },
     changeBottomPanelHeight (height) {
-      this.bottomPanelHeight = height + 80
+      this.bottomPanelHeight = height + 100
     },
     shortenHashString (string) {
       const len = string.length

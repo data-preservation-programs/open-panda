@@ -73,6 +73,11 @@ footer {
 }
 .copyright {
   text-align: right;
+  :deep(a) {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 .right {
   background-color: $rangoonGreen;

@@ -5,18 +5,18 @@
       <img :src="block.image" class="img" />
       <Filterer
         filter-key="categories"
-        :filters="filters.categories">
+        :options="filters.categories">
         <div
-          slot-scope="{ clearFilters, applyFilter }"
+          slot-scope="{ applyFilter }"
           class="text-wrapper">
-  
+
           <div class="message">
             {{ message }}
           </div>
-  
+
           <div
             class="ticker"
-            @click="() => { clearFilters(); applyFilter(categoryIndex) }">
+            @click="applyFilter(categoryIndex)">
             <span
               v-for="(category, i) in categories"
               :key="category"
@@ -24,7 +24,7 @@
               {{ category }}
             </span>
           </div>
-  
+
         </div>
       </Filterer>
     </div>

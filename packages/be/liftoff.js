@@ -48,3 +48,17 @@ try {
 } catch (e) {
   console.log(e)
 }
+
+// ///////////////////////////////////////////////////////////// Test operations
+// -----------------------------------------------------------------------------
+const loopDatasets = async () => { /* eslint-disable-line */
+  const datasets = await MC.model.Dataset.find({ new: false, categories: { $in: ['Astronomy'] } })
+  console.log(datasets.length)
+  console.log(datasets.map(dataset => (dataset.name)))
+  // const len = datasets.length
+  // for (let i = 0; i < len; i++) {
+  //   const dataset = datasets[i]
+  //   console.log(dataset.name)
+  //   console.log(dataset.categories)
+  // }
+} // loopDatasets()

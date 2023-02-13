@@ -49,11 +49,11 @@
   },
   "footer": {
     "heading": "Access humanity's most important data",
-    "copyright": "<a href='https://github.com/data-preservation-programs' target='_blank'>Data Preservation Programs</a>",
+    "copyright": "2023 <a href='https://github.com/data-preservation-programs' target='_blank'>Data Preservation Programs</a>",
     "image": "/images/footer.png",
     "nav_1": [
       {
-        "href": "https://protocol.ai/",
+        "href": "https://github.com/data-preservation-programs/slingshot/issues/new/choose",
         "label": "Add a Dataset"
       },
       {

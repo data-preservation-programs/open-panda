@@ -268,8 +268,14 @@ export default {
       return ''
     },
     headerImage () {
-      const slug = this.dataset.slug
-      return { 'background-image': `url('/images/datasets/${slug}.jpg')` }
+      let imgUrl = this.dataset.slug
+      if (this.dataset.slug.includes('common-crawl')) {
+        imgUrl = 'common-crawl'
+      }
+      if (this.dataset.slug.includes('sloan-digital-sky-survey-release')) {
+        imgUrl = 'sloan-digital-sky-survey-release'
+      }
+      return { 'background-image': `url('/images/datasets/${imgUrl}.jpg')` }
     },
     heading () {
       return this.dataset.name
@@ -373,6 +379,7 @@ export default {
 .background-image {
   position: absolute;
   top: 0;
+  background-color: $tasman;
   left: 0;
   bottom: 0;
   right: 0;

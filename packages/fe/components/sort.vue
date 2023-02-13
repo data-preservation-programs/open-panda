@@ -2,7 +2,7 @@
   <Filterer
     filter-key="sort"
     :is-single-option="true"
-    :filters="options"
+    :options="options"
     v-on="$listeners">
     <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort">
       <FieldContainer
@@ -49,13 +49,13 @@ export default {
   @include medium {
     margin-right: 0;
   }
-  :deep(.field-select) {
-    width: toRem(140);
-  }
   @include large {
     :deep(.field-label) {
       display: none;
     }
+  }
+  :deep(.field-select) {
+    width: toRem(140);
   }
 }
 </style>

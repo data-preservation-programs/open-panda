@@ -17,7 +17,7 @@
       :is="type"
       :field="field"
       :field-key="fieldKey"
-      @updateValue="pushValue($event, updateValue)"
+      @updateValue="updateValue"
       v-on="$listeners" />
 
     <slot />
@@ -101,13 +101,6 @@ export default {
       type: String,
       required: false,
       default: 'div'
-    }
-  },
-
-  methods: {
-    pushValue (value, updateValue) {
-      updateValue(value)
-      this.$emit('updateValue', value)
     }
   }
 }
@@ -200,9 +193,8 @@ export default {
       margin-right: toRem(24);
     }
   }
-}
-
-.field-wrapper-checkbox {
-  @include fontSize_14;
+  &.checkbox {
+    @include fontSize_14;
+  }
 }
 </style>

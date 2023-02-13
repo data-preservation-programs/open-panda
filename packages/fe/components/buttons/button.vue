@@ -5,7 +5,8 @@
     :href="href"
     :target="target"
     :class="['button', `type__${button.type || ''}`, button.selected ? 'selected' : '', button.icon ? 'has-icon' : '']"
-    :disabled="button.disabled">
+    :disabled="button.disabled"
+    @click="$emit('clicked')">
     <span v-if="button.text" class="text">{{ button.text }}</span>
     <slot />
     <div v-if="button.tooltip" class="tooltip">
@@ -123,13 +124,16 @@ export default {
   @include fontSize_16;
   line-height: leading(24, 16);
   color: $grayNurse;
-  &[disabled] {
-    background-color: gray;
+  &:not([disabled]) {
+    &:not(.has-icon):hover {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
   }
-  &:not(.has-icon):hover {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
+  &[disabled] {
+    opacity: 0.5;
+    cursor: no-drop;
   }
 }
 

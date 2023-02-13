@@ -4,41 +4,109 @@
  *
  */
 
+// ///////////////////////////////////////////////////////////////////// Imports
+// -----------------------------------------------------------------------------
+import CloneDeep from 'lodash/cloneDeep'
+
 // ////////////////////////////////////////////////////////////// [Class] Search
 // -----------------------------------------------------------------------------
-class Search {
-  // =============================================================== constructor
-  constructor (app, store, route) {
-    this.app = app
-    this.store = store
-    this.route = route
-    this.query = route.query
+const Search = (app, store, route, searchKey) => {
+  const query = route.query
+  const searcher = store.getters['search/searchers'].find(searcher => searcher.searchKey === searchKey)
+  let value, action, searchValue, storeGettter, storeAction
+  if (searcher) {
+    value = searcher.value
+    action = searcher.action
+    searchValue = searcher.searchValue
+    storeGettter = searcher.storeGettter
+    storeAction = searcher.storeAction
   }
+  return {
+    // ================================================================ register
+    async register (searchKey, action, searchValue, storeGettter, storeAction) {
+      if (!searcher) {
+        switch (action) {
+          case 'emit' : value = searchValue; break
+          case 'store' : value = store.getters[storeGetter]; break
+          case 'query' : value = query[searchKey]; break
+        }
+        await store.dispatch('search/setSearcher', {
+          searchKey,
+          action,
+          value,
+          storeGettter,
+          storeAction
+        })
+      }
+    },
 
-  // ========================================================== clearSearchQuery
-  clearSearchQuery () {
-    this.query.search = undefined
-    this.app.router.push({ query: this.query })
-  }
+    // ============================================================== deregister
+    async deregister () {
+      if (searcher) {
+        await store.dispatch('search/removeSearcher', searchKey)
+      }
+    },
 
-  // =================================================================== isEmpty
-  isEmpty () {
-    return !this.query.search
-  }
+    // ===================================================================== get
+    get () {
+      return searcher
+    },
 
-  // ================================================================ toggleTerm
-  for (term) {
-    const action = term.action
-    const value = term.value
-    if (action === 'emit') {
-      term.instance.$emit('setSearchValue', value)
-    } else if (action === 'store') {
-      this.store.dispatch(term.storeAction, value)
-    } else {
-      this.query.search = value === '' ? undefined : value
-      // need to pass this in to retain the current url hash
-      // not sure why $route is not picking it up so assigning manually
-      this.app.router.push({ query: this.query, hash: location.hash })
+    // ============================================================= updateQuery
+    updateQuery (filterKey, value) {
+      return new Promise((resolve) => {
+        const queryBefore = query
+        query[filterKey] = value === '' ? undefined : value
+        // need to pass this in to retain the current url hash
+        // not sure why $route is not picking it up so assigning manually
+        app.router.push({ query: query, hash: location.hash })
+        /**
+         * TODO: refactor this so it's not a timeout. We need this so that the
+         * query updates BEFORE moving on to doing things like refreshing data.
+         * Look up the '$route' watcher function in Nuxt src
+         */
+        const timeout = setTimeout(() => {
+          resolve()
+          clearTimeout(timeout)
+        }, 10)
+      })
+    },
+
+    // ================================================================== update
+    for (payload) {
+      const value = payload.value
+      store.dispatch('search/setSearcher', Object.assign(CloneDeep(searcher), {
+        value
+      }))
+      switch (action) {
+        case 'emit' : payload.instance.$emit(value); break
+        case 'store' : store.dispatch(storeAction, value); break
+        case 'query' : this.updateQuery(searchKey, value); break
+      }
+    },
+
+    // =================================================================== clear
+    async clear (instance) {
+      const value = ''
+      store.dispatch('search/setSearcher', Object.assign(CloneDeep(searcher), {
+        value
+      }))
+      switch (action) {
+        case 'emit' : instance.$emit(value); break
+        case 'store' : await store.dispatch(storeAction, value); break
+        case 'query' : await this.updateQuery(searchKey, value); break
+      }
+    },
+
+    // ================================================================= isEmpty
+    isEmpty () {
+      let empty
+      switch (action) {
+        case 'emit' : empty === ''; break
+        case 'store' : empty = store.getters[storeGetter] === ''; break
+        case 'query' : empty = !query.search || query.search === ''; break
+      }
+      return empty
     }
   }
 }
@@ -46,5 +114,5 @@ class Search {
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default async function ({ app, store, route }, inject) {
-  inject('search', new Search(app, store, route))
+  inject('search', (searchKey) => Search(app, store, route, searchKey))
 }

@@ -1,7 +1,4 @@
 <script>
-// ===================================================================== Imports
-import { mapActions } from 'vuex'
-
 // ====================================================================== Export
 export default {
   name: 'Filterer',
@@ -16,19 +13,24 @@ export default {
       type: String,
       required: true
     },
-    filters: {
+    options: {
       type: Array,
       required: true
     },
-    // search by multiple filters or just 1 at a time
-    multiple: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    // for filters with boolean or single-select value
+    // search by multiple options or just 1 at a time
+    // multiple: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: true
+    // },
+    // for options with boolean or single-select value
     // ie. checkboxes or select
     isSingleOption: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    deregisterOnDestroy: {
       type: Boolean,
       required: false,
       default: false
@@ -45,70 +47,41 @@ export default {
     // }
   },
 
-  data () {
-    const action = this.action
-    let selected = []
-    switch (action) {
-      // case 'emit' : selected = this.filterValue; break
-      // case 'store' : selected = this.$store.getters[this.storeGetter]; break
-      case 'query' : selected = this.getCurrentFilterIndexes(this.$route); break
-    }
-    return {
-      selected,
-      originalSelected: selected // lock in the filters on page load
-    }
-  },
-
   computed: {
+    filter () {
+      return this.$filter(this.filterKey).get()
+    },
+    selected () {
+      const filter = this.filter
+      return filter ? filter.selected : []
+    },
+    originalSelected () {
+      const filter = this.filter
+      return filter ? filter.originalSelected : []
+    },
     empty () {
       return this.selected.length === 0
     }
   },
 
-  watch: {
-    '$route' (route) {
-      this.selected = this.getCurrentFilterIndexes(route)
+  async created () {
+    if (!this.filter) {
+      await this.$filter(this.filterKey).register(this.filterKey, this.options, this.isSingleOption, this.action)
     }
   },
 
-  created () {
-    this.recordFilter(this.filterKey)
+  beforeDestroy () {
+    if (this.deregisterOnDestroy) {
+      this.$filter(this.filterKey).deregister()
+    }
   },
 
   methods: {
-    ...mapActions({
-      recordFilter: 'search/recordFilter'
-    }),
-    /**
-     * returns array of filter indexes
-     *
-     * route example: /?new=true&region=us,ca
-     * returns: [0] and [2, 6]
-     * @param {*} route
-     */
-    getCurrentFilterIndexes (route) {
-      const isSingleOption = this.isSingleOption
-      let query = route.query[this.filterKey]
-      if (!query) { return [] }
-      query = isSingleOption ? [query] : query.split(',')
-      const filters = this.filters
-      return query.reduce((acc, item) => {
-        acc.push(filters.findIndex((filter) => {
-          return item === `${filter.value}`
-        }))
-        return acc
-      }, [])
-    },
-    applyFilter (index) {
-      const action = this.action
-      const value = index === -1 ? undefined : `${this.filters[index].value}`
-      this.$filter.toggleTerm({
+    async applyFilter (index) {
+      const value = index === -1 ? undefined : `${this.options[index].value}`
+      await this.$filter(this.filterKey).toggleTerm({
         instance: this,
-        action,
-        storeAction: this.storeAction,
-        value,
-        filterKey: this.filterKey,
-        isSingleOption: this.isSingleOption
+        value
       })
       this.$emit('filterApplied')
       // if (action === 'emit') {
@@ -123,7 +96,7 @@ export default {
       return this.selected.includes(index)
     },
     clearFilters () {
-      this.$filter.clear(this.filterKey)
+      this.$filter(this.filterKey).clear()
     }
   },
 
