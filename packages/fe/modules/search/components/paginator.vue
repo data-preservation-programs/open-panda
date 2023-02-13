@@ -98,6 +98,7 @@ export default {
 
   methods: {
     async incrementPage (page) {
+      if (page === this.page) { return }
       await this.$filter('page').toggleTerm({
         instance: this,
         value: page
