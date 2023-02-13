@@ -47,7 +47,7 @@ try {
 // ///////////////////////////////////////////////////////////////////// Modules
 require('@Module_Database')
 require('@Module_Cid')
-const { GetFileFromDisk } = require('@Module_Utilities')
+const { GetFileFromDisk, SecondsToHms } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------------ retrieveCidFiles
@@ -57,9 +57,9 @@ const retrieveCidFiles = async (uploads) => {
     const cidFileRefs = []
     for (let i = 0; i < len; i++) {
       const upload = uploads[i]
-      // if a file already exists with this name in the temp folder, 
+      // if a file already exists with this name in the temp folder,
       // delete it to make way for an updated version
-      await deleteTemporaryFile(upload.name) 
+      await deleteTemporaryFile(upload.name)
       // fetch file using upload cid
       const response = await Axios.get(`https://${upload.cid}.ipfs.w3s.link/`, {
         responseType: 'stream'
@@ -125,7 +125,6 @@ const unpackRetrievedFiles = async (cidFileRefs) => {
       await deleteTemporaryFile(jsonFilename)
     }
     return filesMetadata
-    process.exit(0)
   } catch (e) {
     console.log('============================ [Function: unpackRetrievedFiles]')
     console.log(e)
@@ -178,13 +177,8 @@ const getCidsFromWeb3Storage = async (searchParams, incrementPage, pageLimit) =>
     if (incrementPage) {
       searchParams.page = searchParams.page + 1
     }
+    const options = { headers: { Accept: 'application/json', Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}` } }
     const params = Object.keys(searchParams).map((item) => `${item}=${searchParams[item]}`).join('&')
-    const options = { 
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}` 
-      }
-    }
     const url = `https://api.web3.storage/user/uploads?${params}`
     const response = await Axios.get(url, options)
     const retrievedFileMetadata = await retrieveCidFiles(response.data)
@@ -210,14 +204,16 @@ const getCidsFromWeb3Storage = async (searchParams, incrementPage, pageLimit) =>
 const CidImporter = async () => {
   console.log('📖 CID import started')
   try {
-    /*
-     * args: 
+    const start = process.hrtime()[0]
+    /**
+     * args:
      *  params passed to the initial api upload list request
      *  increment the page param by 1 - true | false
      *  limit number of pages retrieved. If null, all CIDs will be retrieved
      */
     await getCidsFromWeb3Storage({ size: 100, page: 1, sortBy: 'Date', sortOrder: 'Desc' }, false, 5)
-    console.log('📒 CID import finished')
+    const end = process.hrtime()[0]
+    console.log(`📒 CID import finished | took ${SecondsToHms(end - start)}`)
     process.exit(0)
   } catch (e) {
     console.log('===================================== [Function: CidImporter]')
