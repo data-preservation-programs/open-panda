@@ -77,9 +77,9 @@ export default {
   },
 
   methods: {
-    applyFilter (index) {
+    async applyFilter (index) {
       const value = index === -1 ? undefined : `${this.options[index].value}`
-      this.$filter(this.filterKey).toggleTerm({
+      await this.$filter(this.filterKey).toggleTerm({
         instance: this,
         value
       })

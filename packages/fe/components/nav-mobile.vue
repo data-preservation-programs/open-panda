@@ -7,7 +7,7 @@
         <button
           v-if="$route.query.search"
           class="circle-border"
-          @click="$clearSearchAndFilters">
+          @click="clearSearchAndFilters">
           <ArrowLeftIcon :width="20" :height="14" />
         </button>
         <Filters
@@ -134,6 +134,9 @@ export default {
       this.$router.push({
         path: `/dataset/${slug}`
       }, this.setNavigationOpen(false))
+    },
+    clearSearchAndFilters () {
+      this.$clearSearchAndFilters(['categories', 'licenses', 'fileTypes'])
     }
   }
 }

@@ -17,16 +17,18 @@
           theme="line"
           class="datasets-searchbar" />
         <!-- ============================================== desktop checkbox -->
-        <!-- <CheckboxFullyStored
+        <CheckboxFullyStored
           :options="filters.fullyStored"
-          class="datasets-checkbox show-desktop-only" /> -->
+          class="datasets-checkbox show-desktop-only"
+          @filterApplied="refreshDatasetList" />
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
         <!-- ================================================== desktop sort -->
         <Sort
           :options="sortOptions"
-          class="show-desktop-only" />
+          class="show-desktop-only"
+          @filterApplied="refreshDatasetList" />
         <Filters />
       </div>
     </div>
@@ -40,7 +42,8 @@
       <!-- ===================================================== mobile sort -->
       <Sort
         :options="sortOptions"
-        class="col-6_mi-12" />
+        class="col-6_mi-12"
+        @filterApplied="refreshDatasetList" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -62,7 +65,7 @@
       <div class="col-4 flex-end">
         <Button
           :button="{type: 'outline'}"
-          @click.native="$clearSearchFilterSortAndLimit">
+          @clicked="clearAllFilters">
           {{ datasetContent.clearAllFilters }}
         </Button>
         <button
@@ -117,7 +120,8 @@
       <div class="col-5_md-12 flex-end">
         <ResultsPerPage
           v-if="totalPages > 1"
-          :options="limitOptions" />
+          :options="limitOptions"
+          @filterApplied="refreshDatasetList" />
       </div>
     </div>
 
@@ -136,7 +140,7 @@ import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
-// import CheckboxFullyStored from '@/components/checkbox-fully-stored'
+import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
@@ -151,7 +155,7 @@ export default {
     BlockBuilder,
     DatasetsCardGrid,
     DatasetsCardList,
-    // CheckboxFullyStored,
+    CheckboxFullyStored,
     Filters,
     Button,
     Searchbar,
@@ -247,7 +251,8 @@ export default {
   methods: {
     ...mapActions({
       resetStore: 'datasets/resetStore',
-      setLoadingStatus: 'datasets/setLoadingStatus'
+      setLoadingStatus: 'datasets/setLoadingStatus',
+      getDatasetList: 'datasets/getDatasetList'
     }),
     stopLoading () {
       this.$nextTick(() => {
@@ -260,10 +265,18 @@ export default {
       this.$ls.set('layout', layout)
       this.layout = layout
     },
-    deselectFilterOption (option) {
-      this.$filter(option.filterKey).toggleTerm({
+    async deselectFilterOption (option) {
+      await this.$filter(option.filterKey).toggleTerm({
         value: option.value
       })
+      this.refreshDatasetList()
+    },
+    refreshDatasetList () {
+      this.getDatasetList({ route: this.$route })
+    },
+    async clearAllFilters () {
+      await this.$clearSearchAndFilters(['categories', 'licenses', 'fileTypes', 'sort', 'limit', 'fullyStored'])
+      this.refreshDatasetList()
     },
     /**
      * If search and filters are not empty, scroll to the results section

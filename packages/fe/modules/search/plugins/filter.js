@@ -101,10 +101,21 @@ const Filter = (app, store, route, filterKey) => {
 
     // ============================================================= updateQuery
     updateQuery (filterKey, value) {
-      query[filterKey] = value
-      // need to pass this in to retain the current url hash
-      // not sure why $route is not picking it up so assigning manually
-      app.router.push({ query: query, hash: location.hash })
+      return new Promise((resolve) => {
+        query[filterKey] = value
+        // need to pass this in to retain the current url hash
+        // not sure why $route is not picking it up so assigning manually
+        app.router.push({ query: query, hash: location.hash })
+        /**
+         * TODO: refactor this so it's not a timeout. We need this so that the
+         * query updates BEFORE moving on to doing things like refreshing data.
+         * Look up the '$route' watcher function in Nuxt src
+         */
+        const timeout = setTimeout(() => {
+          resolve()
+          clearTimeout(timeout)
+        }, 1)
+      })
     },
 
     // ================================================================== update
@@ -123,10 +134,10 @@ const Filter = (app, store, route, filterKey) => {
 
     // =================================================================== clear
     async clear () {
-      await store.dispatch('search/setFilter', Object.assign(CloneDeep(filter), {
+      store.dispatch('search/setFilter', Object.assign(CloneDeep(filter), {
         selected: []
       }))
-      this.updateQuery(filterKey, undefined)
+      await this.updateQuery(filterKey, undefined)
     },
 
     // ================================================================= isEmpty
@@ -140,7 +151,7 @@ const Filter = (app, store, route, filterKey) => {
       const selected = await this.update(term.value)
       if (action === 'query') {
         const converted = convertSelectedIndexesToQueryString(selected, options)
-        this.updateQuery(filterKey, converted)
+        await this.updateQuery(filterKey, converted)
       }
     }
   }

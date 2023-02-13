@@ -25,14 +25,15 @@ const registerStore = (store, next) => {
 // -----------------------------------------------------------------------------
 export default async function ({ app, store, route }, inject) {
   await registerStore(store)
-  inject('clearSearchAndFilters', () => {
-    const filters = ['categories', 'licenses', 'fileTypes']
-    filters.forEach((filterKey) => {
-      app.$filter(filterKey).clear()
-    })
-    app.$search('search').clear()
+  inject('clearFilters', async (filters) => {
+    const len = filters.length
+    for (let i = 0; i < len; i++) {
+      await app.$filter(filters[i]).clear()
+    }
   })
-  inject('clearSearchFilterSortAndLimit', () => {
+  inject('clearSearchAndFilters', async (filters) => {
+    await app.$search('search').clear()
+    await app.$clearFilters(filters)
     /**
       * This event is caught by the form module's field.vue component in its mounted() hook.
       * Params are outlined there.
@@ -47,11 +48,6 @@ export default async function ({ app, store, route }, inject) {
       id: 'search',
       resetTo: 'nullState'
     })
-    const filters = ['categories', 'licenses', 'fileTypes', 'sort', 'limit', 'fullyStored']
-    filters.forEach((filterKey) => {
-      app.$filter(filterKey).clear()
-    })
-    app.$search('search').clear()
   })
   inject('checkIfFilterSelectionsExist', (filters) => {
     let selelectionsExist = false

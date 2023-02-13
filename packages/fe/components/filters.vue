@@ -180,11 +180,9 @@ export default {
     closePanel () {
       this.open = false
     },
-    clearAll () {
-      const filters = ['categories', 'licenses', 'fileTypes']
-      filters.forEach((filterKey) => {
-        this.$filter(filterKey).clear()
-      })
+    async clearAll () {
+      await this.$clearFilters(['categories', 'licenses', 'fileTypes'])
+      this.getDatasetList({ route: this.$route })
     },
     toggleLimit (index, child) {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length

@@ -54,10 +54,22 @@ const Search = (app, store, route, searchKey) => {
 
     // ============================================================= updateQuery
     updateQuery (filterKey, value) {
-      query[filterKey] = value === '' ? undefined : value
-      // need to pass this in to retain the current url hash
-      // not sure why $route is not picking it up so assigning manually
-      app.router.push({ query: query, hash: location.hash })
+      return new Promise((resolve) => {
+        const queryBefore = query
+        query[filterKey] = value === '' ? undefined : value
+        // need to pass this in to retain the current url hash
+        // not sure why $route is not picking it up so assigning manually
+        app.router.push({ query: query, hash: location.hash })
+        /**
+         * TODO: refactor this so it's not a timeout. We need this so that the
+         * query updates BEFORE moving on to doing things like refreshing data.
+         * Look up the '$route' watcher function in Nuxt src
+         */
+        const timeout = setTimeout(() => {
+          resolve()
+          clearTimeout(timeout)
+        }, 10)
+      })
     },
 
     // ================================================================== update
@@ -74,15 +86,15 @@ const Search = (app, store, route, searchKey) => {
     },
 
     // =================================================================== clear
-    clear (instance) {
+    async clear (instance) {
       const value = ''
       store.dispatch('search/setSearcher', Object.assign(CloneDeep(searcher), {
         value
       }))
       switch (action) {
         case 'emit' : instance.$emit(value); break
-        case 'store' : store.dispatch(storeAction, value); break
-        case 'query' : this.updateQuery(searchKey, value); break
+        case 'store' : await store.dispatch(storeAction, value); break
+        case 'query' : await this.updateQuery(searchKey, value); break
       }
     },
 
