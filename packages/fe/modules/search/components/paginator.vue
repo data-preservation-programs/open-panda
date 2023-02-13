@@ -97,8 +97,8 @@ export default {
   },
 
   methods: {
-    incrementPage (page) {
-      this.$filter('page').toggleTerm({
+    async incrementPage (page) {
+      await this.$filter('page').toggleTerm({
         instance: this,
         value: page
       })

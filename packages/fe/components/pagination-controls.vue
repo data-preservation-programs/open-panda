@@ -1,5 +1,8 @@
 <template>
-  <Paginator v-bind="$props" id="pagination-controls">
+  <Paginator
+    v-bind="$props"
+    id="pagination-controls"
+    v-on="$listeners">
 
     <template #first="{ incrementPage }">
       <button
