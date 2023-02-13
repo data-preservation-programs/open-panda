@@ -30,7 +30,7 @@ export default {
     githubOAuthLink: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_ID}&scope=user:email`,
     serverFlag: env,
     seo: {
-      siteName: 'OpenPanda'
+      siteName: 'Open Panda'
     },
     socketOptions: {
       withCredentials: true
@@ -52,11 +52,11 @@ export default {
   // /////////////////////////////////////////////////////// Headers of the Page
   // ---------------------------------------------------------------------------
   head: {
-    title: 'OpenPanda',
+    title: 'Open Panda',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'OpenPanda' }
+      { hid: 'description', name: 'description', content: 'Open Panda' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon-96x96.png' }

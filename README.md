@@ -1,11 +1,18 @@
-# OpenPanda
+# Open Panda
 
-Monorepo with FE and BE.
-Home and single pages are SSR with data coming from BE thru endpoints.
+![Open Panda graph image](static/open-graph-image.jpg)
+
+The repository for the Open Panda application's frontend and backend. Open Panda is a platform for data researchers, analysts, students, and enthusiasts to interact with the largest open datasets in the world, stored on Filecoin's decentralized network.
+
+This is a monorepo with two workspaces, `fe` (frontend) and `be` (backend). It conforms to [npm's workspace architecture](https://docs.npmjs.com/cli/v7/using-npm/workspaces) (available in npm 7+).
+
+The frontend is a collection SSR pages, built with Vue/Nuxt. Data is connected via backend endpoints.
+
+> _Documentation will be expanded upon release_
 
 ## Setup
 
-1) Get env and crt files from dev lead (Nauras or Orun)
+1) Get env and crt files from a development lead (@timelytree or @orvn)
 
 - dpp-mongodb-client.pem
 - dpp-ca.crt
