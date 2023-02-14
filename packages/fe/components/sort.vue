@@ -1,22 +1,23 @@
 <template>
   <Filterer
+    v-slot="{ applyFilter, originalSelected }"
     filter-key="sort"
     :is-single-option="true"
     :options="options"
+    class="datasets-sort"
     v-on="$listeners">
-    <span slot-scope="{ applyFilter, originalSelected }" class="datasets-sort">
-      <FieldContainer
-        field-key="sort_by"
-        :scaffold="{
-          type: 'select',
-          required: false,
-          label: 'Sort by',
-          options: options,
-          defaultValue: originalSelected || 0, /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
-          resetGroupId: 'filters'
-        }"
-        @updateValue="applyFilter" />
-    </span>
+    <FieldContainer
+      field-key="sort_by"
+      :scaffold="{
+        type: 'select',
+        required: false,
+        label: 'Sort by',
+        options,
+        defaultValue: originalSelected.length > 0 ? originalSelected : [0], /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+        resetGroupId: 'filters',
+        isSingleOption: true
+      }"
+      @updateValue="applyFilter" />
   </Filterer>
 </template>
 
@@ -44,6 +45,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// ///////////////////////////////////////////////////////////////////// General
 .datasets-sort {
   margin-right: toRem(30);
   @include medium {

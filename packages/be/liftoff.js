@@ -52,7 +52,7 @@ try {
 // ///////////////////////////////////////////////////////////// Test operations
 // -----------------------------------------------------------------------------
 const loopDatasets = async () => { /* eslint-disable-line */
-  const datasets = await MC.model.Dataset.find({ new: false, categories: { $in: ['Astronomy'] } })
+  const datasets = await MC.model.Dataset.find({ new: false, slug: { $in: ['noaa-global-surface-summary-of-day'] } })
   console.log(datasets)
   // console.log(datasets.length)
   // console.log(datasets.map(dataset => (dataset.name)))
@@ -62,4 +62,4 @@ const loopDatasets = async () => { /* eslint-disable-line */
   //   console.log(dataset.name)
   //   console.log(dataset.categories)
   // }
-}; loopDatasets()
+} // loopDatasets()

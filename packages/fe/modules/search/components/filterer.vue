@@ -78,10 +78,9 @@ export default {
 
   methods: {
     async applyFilter (index) {
-      const value = index === -1 ? undefined : `${this.options[index].value}`
       await this.$filter(this.filterKey).toggleTerm({
         instance: this,
-        value
+        index
       })
       this.$emit('filterApplied')
       // if (action === 'emit') {
@@ -101,11 +100,9 @@ export default {
   },
 
   render () {
-    const isSingleOption = this.isSingleOption
-    const originalSelected = this.originalSelected
     return this.$scopedSlots.default({
       applyFilter: this.applyFilter,
-      originalSelected: isSingleOption ? originalSelected[0] : originalSelected,
+      originalSelected: this.originalSelected,
       selected: this.selected,
       isSelected: this.isSelected,
       clearFilters: this.clearFilters,

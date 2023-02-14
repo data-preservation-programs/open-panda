@@ -119,12 +119,12 @@ const Filter = (app, store, route, filterKey) => {
     },
 
     // ================================================================== update
-    async update (value) {
-      const index = options.findIndex(option => `${option.value}` === `${value}`)
-      const alreadySelectedIndex = selected.findIndex(option => option === index)
-      alreadySelectedIndex === -1 ? selected.push(index) : selected.splice(alreadySelectedIndex, 1)
+    async update (incoming) { // incoming refers to the newly selected index
+      const existing = selected.findIndex(option => option === incoming) // incoming index is already selected (if not -1)
       if (isSingleOption) {
-        selected = value === undefined ? [] : [selected.pop()]
+        selected = incoming === -1 ? [] : [incoming]
+      } else {
+        existing === -1 ? selected.push(incoming) : selected.splice(existing, 1)
       }
       await store.dispatch('search/setFilter', Object.assign(CloneDeep(filter), {
         selected
@@ -148,7 +148,7 @@ const Filter = (app, store, route, filterKey) => {
 
     // ============================================================== toggleTerm
     async toggleTerm (term) {
-      const selected = await this.update(term.value)
+      const selected = await this.update(term.index)
       if (action === 'query') {
         const converted = convertSelectedIndexesToQueryString(selected, options)
         await this.updateQuery(filterKey, converted)
