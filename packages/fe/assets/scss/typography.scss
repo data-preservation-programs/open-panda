@@ -20,6 +20,7 @@ $letterSpacing_Large: 0.03em;
 @mixin fontSize_14 { font-size: toRem(14) }
 @mixin fontSize_16 { font-size: clamp(toRem(14), vw(16px), toRem(16)) }
 @mixin fontSize_17 { font-size: toRem(17) }
+@mixin fontSize_18 { font-size: clamp(toRem(14), vw(18px), toRem(18)) }
 @mixin fontSize_20 { font-size: clamp(toRem(14), vw(20px), toRem(20)) }
 @mixin fontSize_24 { font-size: clamp(toRem(20), vw(24px), toRem(24)) }
 @mixin fontSize_28 { font-size: clamp(toRem(20), vw(28px), toRem(28)) }
