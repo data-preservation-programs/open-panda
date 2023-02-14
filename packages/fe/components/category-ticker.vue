@@ -1,11 +1,19 @@
 <template>
-  <div>
-    <Filters class="show-mobile-only" open-direction="right" :show-typeahead="true" />
+  <div class="category-ticker">
+
+    <Filters
+      class="show-mobile-only"
+      open-direction="right"
+      :show-typeahead="true" />
+
     <div class="category-ticker">
+
       <img :src="block.image" class="img" />
+
       <Filterer
         filter-key="categories"
-        :options="filters.categories">
+        :options="filters.categories"
+        @filterApplied="getDatasetList({ route: $route })">
         <div
           slot-scope="{ applyFilter }"
           class="text-wrapper">
@@ -26,14 +34,18 @@
           </div>
 
         </div>
+
       </Filterer>
+
     </div>
+
   </div>
 </template>
 
 <script>
 // ====================================================================== Import
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 import Filterer from '@/modules/search/components/filterer'
 import Filters from '@/components/filters'
 
@@ -88,6 +100,9 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
     increment () {
       this.categoryIndex = (this.categoryIndex + 1) % this.categories.length
     }

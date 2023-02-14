@@ -32,8 +32,6 @@ const getFilterIndexesFromQuery = (route, filterKey, options, isSingleOption) =>
 
 // ========================================= convertSelectedIndexesToQueryString
 const convertSelectedIndexesToQueryString = (selected, options) => {
-  console.log(selected)
-  console.log(options)
   const len = selected.length
   let query = ''
   for (let i = 0; i < len; i++) {

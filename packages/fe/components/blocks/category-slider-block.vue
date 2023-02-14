@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-if="collection"
-    class="slider-block">
+  <div v-if="collection" class="slider-block">
 
     <svg
       class="clip-path-svg"
@@ -16,7 +14,8 @@
 
     <Filterer
       filter-key="categories"
-      :options="filters.categories">
+      :options="filters.categories"
+      @filterApplied="getDatasetList({ route: $route })">
       <CircularSlider
         slot-scope="{ applyFilter }"
         slider-id="category-slider"
@@ -62,7 +61,8 @@
 
 <script>
 // ====================================================================== Import
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 import Filterer from '@/modules/search/components/filterer'
 import CircularSlider from '@/modules/slider/components/circular-slider'
 import ChevronDownIcon from '@/components/icons/chevron-down'
@@ -95,6 +95,12 @@ export default {
     sliderGrid () {
       return this.block.sliderGrid
     }
+  },
+
+  methods: {
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    })
   }
 }
 </script>
