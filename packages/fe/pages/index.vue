@@ -268,7 +268,7 @@ export default {
     },
     async deselectFilterOption (option) {
       await this.$filter(option.filterKey).toggleTerm({
-        value: option.value
+        index: option.index
       })
       this.refreshDatasetList()
     },

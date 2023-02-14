@@ -32,6 +32,8 @@ const getFilterIndexesFromQuery = (route, filterKey, options, isSingleOption) =>
 
 // ========================================= convertSelectedIndexesToQueryString
 const convertSelectedIndexesToQueryString = (selected, options) => {
+  console.log(selected)
+  console.log(options)
   const len = selected.length
   let query = ''
   for (let i = 0; i < len; i++) {
@@ -93,7 +95,8 @@ const Filter = (app, store, route, filterKey) => {
       for (let i = 0; i < len; i++) {
         const index = selected[i]
         compiled.push(Object.assign(options[index], {
-          filterKey
+          filterKey,
+          index
         }))
       }
       return compiled
@@ -134,6 +137,7 @@ const Filter = (app, store, route, filterKey) => {
 
     // =================================================================== clear
     async clear () {
+      if (!filter) { return }
       store.dispatch('search/setFilter', Object.assign(CloneDeep(filter), {
         selected: []
       }))

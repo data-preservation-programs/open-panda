@@ -98,10 +98,9 @@ export default {
 
   methods: {
     async incrementPage (page) {
-      if (page === this.page) { return }
       await this.$filter('page').toggleTerm({
         instance: this,
-        value: page
+        index: await this.pages.findIndex(item => item.value === page)
       })
       this.$emit('filterApplied')
     }
