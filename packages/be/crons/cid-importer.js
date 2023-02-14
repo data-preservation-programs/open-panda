@@ -172,8 +172,9 @@ const getCidFilesFromManifestList = async (params) => {
     })
     let i = 1
     const retrieved = []
+    const limit = params.limitEntries ? params.limitEntries : Infinity
     for await (const line of rl) {
-      if (i <= params.limitEntries) {
+      if (i <= limit) {
         console.log(`Retrieving file ${i} from the CID manifest list.`)
         retrieved.push(await retrieveCidFile(line))
         i++
