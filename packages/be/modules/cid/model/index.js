@@ -24,9 +24,21 @@ const CIDSchema = new Schema({
 	dataset_slug: {
 		type: String,
 		required: true
+	},
+	created: {
+		type: Date,
+		required: true
+	},
+	updated: {
+		type: Date,
+		required: true
+	},
+	name: {
+		type: String,
+		required: true
 	}
 }, {
-  timestamps: true
+	timestamps: false
 })
 
 // ////////////////////////////////////////////////////////////////////// Export
