@@ -116,13 +116,13 @@
           :page="page"
           :total-pages="totalPages"
           :loading="dataLoading"
-          @filterApplied="refreshDatasetList" />
+          @filterApplied="getDatasetList({ route: $route, resetPage: false })" />
       </div>
       <div class="col-5_md-12 flex-end">
         <ResultsPerPage
           v-if="totalPages > 1"
           :options="limitOptions"
-          @filterApplied="refreshDatasetList" />
+          @filterApplied="getDatasetList({ route: $route, resetPage: false })" />
       </div>
     </div>
 
@@ -273,7 +273,7 @@ export default {
       this.refreshDatasetList()
     },
     refreshDatasetList () {
-      this.getDatasetList({ route: this.$route })
+      this.getDatasetList({ route: this.$route, resetPage: true })
     },
     async clearAllFilters () {
       await this.$clearSearchAndFilters(['categories', 'licenses', 'fileTypes', 'sort', 'limit', 'fullyStored'])

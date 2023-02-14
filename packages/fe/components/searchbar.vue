@@ -128,7 +128,7 @@ export default {
       getDatasetList: 'datasets/getDatasetList'
     }),
     fetchNewData () {
-      this.getDatasetList({ route: this.$route })
+      this.getDatasetList({ route: this.$route, resetPage: true })
       if (this.$route.path !== '/') {
         this.$router.push({
           path: '/',

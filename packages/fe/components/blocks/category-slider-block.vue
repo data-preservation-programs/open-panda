@@ -15,7 +15,7 @@
     <Filterer
       filter-key="categories"
       :options="filters.categories"
-      @filterApplied="getDatasetList({ route: $route })">
+      @filterApplied="getDatasetList({ route: $route, resetPage: true })">
       <CircularSlider
         slot-scope="{ applyFilter }"
         slider-id="category-slider"

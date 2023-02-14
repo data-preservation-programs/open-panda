@@ -51,7 +51,12 @@ const actions = {
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
     try {
       const route = metadata.route
-      const query = route.query
+      let query = route.query
+      const resetPage = metadata.resetPage
+      if (resetPage && process.client) {
+        await this.$filter('page').toggleTerm({ index: 0 })
+        query = this.$router.history.current.query
+      }
       const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
       const limit = query.limit || getters.metadata.limit
@@ -137,7 +142,7 @@ const actions = {
   },
   // ///////////////////////////////////////////////////////////// incrementPage
   incrementPage ({ commit, dispatch }, payload) {
-    dispatch('getDatasetList', { route: payload.route })
+    dispatch('getDatasetList', { route: payload.route, resetPage: false })
   },
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
@@ -177,6 +182,9 @@ const mutations = {
   },
   SET_LAYOUT (state, layout) {
     state.layout = layout
+  },
+  SET_PAGE (state, page) {
+    state.metadata.page = page
   }
 }
 

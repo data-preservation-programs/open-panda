@@ -182,7 +182,7 @@ export default {
     },
     async clearAll () {
       await this.$clearFilters(['categories', 'licenses', 'fileTypes'])
-      this.getDatasetList({ route: this.$route })
+      this.getDatasetList({ route: this.$route, resetPage: true })
     },
     toggleLimit (index, child) {
       this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
@@ -190,7 +190,7 @@ export default {
     },
     fetchNewData () {
       this.closePanel()
-      this.getDatasetList({ route: this.$route })
+      this.getDatasetList({ route: this.$route, resetPage: true })
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
       // go to home page and scroll to dataset section
