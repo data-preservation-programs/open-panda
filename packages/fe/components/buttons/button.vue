@@ -104,8 +104,7 @@ export default {
 .type__footerNav {
   font-family: $font_Secondary;
   @include fontWeight_Bold;
-  @include fontSize_24;
-  line-height: leading(30, 24);
+  @include fontSize_18;
   @include medium {
     @include fontSize_14;
     line-height: leading(21, 14);

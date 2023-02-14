@@ -10,7 +10,7 @@
         <div class="right">
           <h3>{{ footerData.heading }}</h3>
           <div class="grid-spaceBetween-noGutter">
-            <nav class="col-6">
+            <nav class="col-5_ti-12">
               <Button
                 v-for="(link, index) in footerData.nav_1"
                 :key="index"
@@ -20,9 +20,19 @@
                   url: link.href
                 }" />
             </nav>
-            <nav class="col-5">
+            <nav class="col-3_ti-12">
               <Button
                 v-for="(link, index) in footerData.nav_2"
+                :key="index"
+                :button="{
+                  type: 'footerNav',
+                  text: link.label,
+                  url: link.href
+                }" />
+            </nav>
+            <nav class="col-3_ti-12">
+              <Button
+                v-for="(link, index) in footerData.nav_3"
                 :key="index"
                 :button="{
                   type: 'footerNav',
@@ -93,19 +103,24 @@ footer {
     border-bottom-left-radius: toRem(50);
   }
   :deep(h3) {
-    margin-bottom: toRem(70);
+    margin-bottom: toRem(40);
     @include medium {
       margin-bottom: toRem(20);
     }
   }
   :deep(.button) {
     display: block;
-    margin-bottom: toRem(40);
+    margin-bottom: toRem(20);
     @include medium {
       margin-bottom: toRem(16);
     }
     &:last-child {
       margin-bottom: 0;
+    }
+  }
+  nav {
+    @include tiny {
+      margin-bottom: toRem(20);
     }
   }
 }
