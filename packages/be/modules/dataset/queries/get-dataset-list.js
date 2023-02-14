@@ -1,6 +1,8 @@
 module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
   const skip = (page - 1) * limit
   const categories = filters.categories
+  const fileTypes = filters.fileTypes
+  const licenses = filters.licenses
   return [
 
     {
@@ -19,14 +21,27 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
     },
 
     {
-      /**
-       * Concatenate all the categories ['Healthcare', 'Astronomy'] into a string
-       * with output: ',Healthcare,Atronomy'
-       */
       $addFields: {
+        /**
+         * Concatenate all the categories ['Healthcare', 'Astronomy'] into a
+         * string with output: ',Healthcare,Atronomy'
+         */
         categories_concatenated_to_string: {
           $reduce: {
             input: '$categories',
+            initialValue: '',
+            in: {
+              $concat: ['$$value', ',', '$$this']
+            }
+          }
+        },
+        /**
+         * Concatenate all the fileTypes ['.csv', '.html'] into a
+         * string with output: ',.csv,.html'
+         */
+        filetypes_concatenated_to_string: {
+          $reduce: {
+            input: '$file_extensions',
             initialValue: '',
             in: {
               $concat: ['$$value', ',', '$$this']
@@ -40,7 +55,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
       $addFields: {
         category_matched: {
           /**
-           * Loop filters.categories, which is an array of strings and attempt to
+           * Loop filters.fileTypes, which is an array of strings and attempt to
            * partially match each value to the concatenated string from the db.
            * If the returned filtered array size is > 0, then return true
            */
@@ -70,6 +85,76 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
                 0
               ]
             },
+            else: false
+          }
+        },
+        filetypes_matched: {
+          /**
+           * Loop filters.categories, which is an array of strings and attempt to
+           * partially match each value to the concatenated string from the db.
+           * If the returned filtered array size is > 0, then return true
+           */
+          $cond: {
+            if: fileTypes && fileTypes.length > 0,
+            then: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: filters.fileTypes || [],
+                      cond: {
+                        $eq: [
+                          {
+                            $regexMatch: {
+                              input: '$filetypes_concatenated_to_string',
+                              regex: '$$this',
+                              options: 'i'
+                            }
+                          },
+                          true
+                        ]
+                      }
+                    }
+                  }
+                },
+                0
+              ]
+            },
+            else: false
+          }
+        },
+        license_tag_matched: {
+          /**
+           * Loop filters.licenses, which is an array of strings and attempt to
+           * partially match each value to the string from the db.
+           * If the returned filtered array size is > 0, then return true
+           */
+          $cond: {
+            if: licenses && licenses.length > 0,
+            then: {
+              $gt: [
+                {
+                  $size: {
+                    $filter: {
+                      input: filters.licenses || [],
+                      cond: {
+                        $eq: [
+                          {
+                            $regexMatch: {
+                              input: '$license_tag',
+                              regex: '$$this',
+                              options: 'i'
+                            }
+                          },
+                          true
+                        ]
+                      }
+                    }
+                  }
+                },
+                0
+              ]
+            },
             else: true
           }
         }
@@ -77,11 +162,20 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
     },
 
     {
-      $match: { $expr: { $eq: ['$category_matched', true] } }
+      $match: {
+        $expr: {
+          $or: [
+            { $eq: ['$category_matched', true] },
+            { $eq: ['$filetypes_matched', true] },
+            { $eq: ['$license_tag_matched', true] }
+          ]
+        }
+      }
     },
 
     {
       $project: {
+        licenses_matched: 1,
         name: 1,
         description: 1,
         description_short: 1,
@@ -93,6 +187,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
         slug: 1,
         bucket: 1,
         license: 1,
+        license_tag: 1,
         region: 1,
         file_extensions: 1,
         categories: 1,
