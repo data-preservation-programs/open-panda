@@ -17,10 +17,10 @@
           theme="line"
           class="datasets-searchbar" />
         <!-- ============================================== desktop checkbox -->
-        <CheckboxFullyStored
+        <!-- <CheckboxFullyStored
           :options="filters.fullyStored"
           class="datasets-checkbox show-desktop-only"
-          @filterApplied="refreshDatasetList" />
+          @filterApplied="refreshDatasetList" /> -->
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
@@ -141,7 +141,7 @@ import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
-import CheckboxFullyStored from '@/components/checkbox-fully-stored'
+// import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
@@ -156,7 +156,7 @@ export default {
     BlockBuilder,
     DatasetsCardGrid,
     DatasetsCardList,
-    CheckboxFullyStored,
+    // CheckboxFullyStored,
     Filters,
     Button,
     Searchbar,
