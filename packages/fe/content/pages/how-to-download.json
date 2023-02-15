@@ -1,11 +1,11 @@
 {
   "seo": {
     "title": "How to download - Open Panda",
-    "description": "How to download - Open Panda"
+    "description": "Learn how to download files from a decentralized storage network using Open Panda. We're currently in a state of rapid iteration to further improve the download experience."
   },
   "og": {
     "site_name": "Open Panda",
-    "url": "",
+    "url": "https://openpanda.io/how-to-download",
     "type": "website",
     "image": "/open-graph-image.jpg"
   },

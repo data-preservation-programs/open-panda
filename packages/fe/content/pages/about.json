@@ -1,11 +1,11 @@
 {
   "seo": {
     "title": "About - Open Panda",
-    "description": "About - Open Panda"
+    "description": "Learn about Open Panda, a platform for the largest open datasets in the world, stored on Filecoin, a decentralized storage network."
   },
   "og": {
     "site_name": "Open Panda",
-    "url": "",
+    "url": "https://openpanda.io/about",
     "type": "website",
     "image": "/open-graph-image.jpg"
   },
