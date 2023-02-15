@@ -1,3 +1,24 @@
+// ////////////////////////////////////////////////////////////////////// Export
+// -----------------------------------------------------------------------------
+// ///////////////////////////////////////////////////// conditionalMatchFilters
+const conditionalMatchFilters = (categories, fileExtensions, licenses) => {
+  const $match = {
+    ...((categories || fileExtensions || licenses) && { $expr: { $or: [] } })
+  }
+  if (categories) {
+    $match.$expr.$or.push({ $eq: ['$category_matched', true] })
+  }
+  if (fileExtensions) {
+    $match.$expr.$or.push({ $eq: ['$file_extensions_matched', true] })
+  }
+  if (licenses) {
+    $match.$expr.$or.push({ $eq: ['$license_tag_matched', true] })
+  }
+  return { $match }
+}
+
+// ////////////////////////////////////////////////////////////////////// Export
+// -----------------------------------------------------------------------------
 module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
   const skip = (page - 1) * limit
   const categories = filters.categories
@@ -39,7 +60,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
          * Concatenate all the fileExtensions ['.csv', '.html'] into a
          * string with output: ',.csv,.html'
          */
-        fileExtensions_concatenated_to_string: {
+        file_extensions_concatenated_to_string: {
           $reduce: {
             input: '$file_extensions',
             initialValue: '',
@@ -66,7 +87,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
                 {
                   $size: {
                     $filter: {
-                      input: filters.categories || [],
+                      input: categories || [],
                       cond: {
                         $eq: [
                           {
@@ -88,7 +109,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
             else: false
           }
         },
-        fileExtensions_matched: {
+        file_extensions_matched: {
           /**
            * Loop filters.categories, which is an array of strings and attempt to
            * partially match each value to the concatenated string from the db.
@@ -101,12 +122,12 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
                 {
                   $size: {
                     $filter: {
-                      input: filters.fileExtensions || [],
+                      input: fileExtensions || [],
                       cond: {
                         $eq: [
                           {
                             $regexMatch: {
-                              input: '$fileExtensions_concatenated_to_string',
+                              input: '$file_extensions_concatenated_to_string',
                               regex: '$$this',
                               options: 'i'
                             }
@@ -136,7 +157,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
                 {
                   $size: {
                     $filter: {
-                      input: filters.licenses || [],
+                      input: licenses || [],
                       cond: {
                         $eq: [
                           {
@@ -155,27 +176,19 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
                 0
               ]
             },
-            else: true
+            else: false
           }
         }
       }
     },
 
-    {
-      $match: {
-        $expr: {
-          $or: [
-            { $eq: ['$category_matched', true] },
-            { $eq: ['$fileExtensions_matched', true] },
-            { $eq: ['$license_tag_matched', true] }
-          ]
-        }
-      }
-    },
+    conditionalMatchFilters(categories, fileExtensions, licenses),
 
     {
       $project: {
-        licenses_matched: 1,
+        category_matched: 1,
+        file_extensions_matched: 1,
+        license_tag_matched: 1,
         name: 1,
         description: 1,
         description_short: 1,
