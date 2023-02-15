@@ -29,6 +29,7 @@
         :value="value"
         :autocomplete="autocomplete"
         :class="['input', state]"
+        @keydown="$emit('handleKeydown', $event)"
         @focus="focusAndClickHandler"
         @click="focusAndClickHandler"
         @blur="focused = false"

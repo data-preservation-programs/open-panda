@@ -27,6 +27,7 @@
           resetGroupId: 'search'
         }"
         @updateValue="updateValue"
+        @handleKeydown="handleKeydown"
         @optionSelected="goToDatasetPage" />
 
       <ButtonX
@@ -142,6 +143,15 @@ export default {
       this.$router.push({
         path: `/dataset/${slug}`
       })
+    },
+    handleKeydown (e) {
+      const keyCode = e.keyCode
+      const code = e.keyCode
+      const key = e.key
+      const submit = keyCode === 13 || code === 13 || key === 'Enter'
+      if (submit) {
+        this.fetchNewData()
+      }
     }
   }
 }
