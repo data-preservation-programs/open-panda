@@ -60,7 +60,7 @@ const actions = {
       const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
       const limit = query.limit || getters.metadata.limit
-      const sort = query.sort
+      const sort = query.sort || 'data_size,1'
       const filters = {}
       dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
