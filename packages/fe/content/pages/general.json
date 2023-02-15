@@ -115,7 +115,7 @@
     "keys": {
       "categories": "Categories",
       "licenses": "Licenses",
-      "fileTypes": "File Type"
+      "fileExtensions": "File Type"
     }
   }
 }

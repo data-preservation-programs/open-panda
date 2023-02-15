@@ -117,7 +117,7 @@ export default {
       datasetListTypeahead: 'datasets/datasetListTypeahead'
     }),
     disableSearchButton () {
-      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
       const searchExists = !this.$search('search').isEmpty()
       return !filterSelectionsExist && !searchExists
     }

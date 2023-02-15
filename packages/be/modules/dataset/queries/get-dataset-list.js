@@ -1,7 +1,7 @@
 module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
   const skip = (page - 1) * limit
   const categories = filters.categories
-  const fileTypes = filters.fileTypes
+  const fileExtensions = filters.fileExtensions
   const licenses = filters.licenses
   return [
 
@@ -36,10 +36,10 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
           }
         },
         /**
-         * Concatenate all the fileTypes ['.csv', '.html'] into a
+         * Concatenate all the fileExtensions ['.csv', '.html'] into a
          * string with output: ',.csv,.html'
          */
-        filetypes_concatenated_to_string: {
+        fileExtensions_concatenated_to_string: {
           $reduce: {
             input: '$file_extensions',
             initialValue: '',
@@ -55,7 +55,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
       $addFields: {
         category_matched: {
           /**
-           * Loop filters.fileTypes, which is an array of strings and attempt to
+           * Loop filters.fileExtensions, which is an array of strings and attempt to
            * partially match each value to the concatenated string from the db.
            * If the returned filtered array size is > 0, then return true
            */
@@ -88,25 +88,25 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
             else: false
           }
         },
-        filetypes_matched: {
+        fileExtensions_matched: {
           /**
            * Loop filters.categories, which is an array of strings and attempt to
            * partially match each value to the concatenated string from the db.
            * If the returned filtered array size is > 0, then return true
            */
           $cond: {
-            if: fileTypes && fileTypes.length > 0,
+            if: fileExtensions && fileExtensions.length > 0,
             then: {
               $gt: [
                 {
                   $size: {
                     $filter: {
-                      input: filters.fileTypes || [],
+                      input: filters.fileExtensions || [],
                       cond: {
                         $eq: [
                           {
                             $regexMatch: {
-                              input: '$filetypes_concatenated_to_string',
+                              input: '$fileExtensions_concatenated_to_string',
                               regex: '$$this',
                               options: 'i'
                             }
@@ -166,7 +166,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
         $expr: {
           $or: [
             { $eq: ['$category_matched', true] },
-            { $eq: ['$filetypes_matched', true] },
+            { $eq: ['$fileExtensions_matched', true] },
             { $eq: ['$license_tag_matched', true] }
           ]
         }

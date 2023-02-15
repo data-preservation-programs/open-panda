@@ -142,7 +142,7 @@ export default {
         limit: 10,
         showMore: false
       }, {
-        id: 'fileTypes',
+        id: 'fileExtensions',
         label: 'File Types',
         limit: 10,
         showMore: false
@@ -161,10 +161,10 @@ export default {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
     },
     filterSelectionsExist () {
-      return this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      return this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
     },
     disableSearchButton () {
-      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes'])
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
       const searchExists = !this.$search('search').isEmpty()
       return !filterSelectionsExist && !searchExists
     }
@@ -181,7 +181,7 @@ export default {
       this.open = false
     },
     async clearAll () {
-      await this.$clearFilters(['categories', 'licenses', 'fileTypes'])
+      await this.$clearFilters(['categories', 'licenses', 'fileExtensions'])
       this.getDatasetList({ route: this.$route, resetPage: true })
     },
     toggleLimit (index, child) {

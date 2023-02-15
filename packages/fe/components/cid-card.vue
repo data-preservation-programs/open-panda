@@ -43,10 +43,10 @@
             </div>
             <div class="file-types">
               <div
-                v-for="filetype in filetypes"
-                :key="filetype"
+                v-for="fileExtension in fileExtensions"
+                :key="fileExtension"
                 class="file-extension">
-                {{ filetype }}
+                {{ fileExtension }}
               </div>
             </div>
           </div>
@@ -245,8 +245,8 @@ export default {
     hash () {
       return this.cidData.hash
     },
-    filetypes () {
-      return this.cidData.filetypes.split(',').map(ext => ext.replaceAll(' ', ''))
+    fileExtensions () {
+      return this.cidData.fileExtensions.split(',').map(ext => ext.replaceAll(' ', ''))
     },
     size () {
       return this.$formatBytes(this.cidData.size)
@@ -406,7 +406,7 @@ export default {
   }
 }
 
-.filetypes,
+.fileExtensions,
 .replica-list {
   display: flex;
 }

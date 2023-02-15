@@ -8,7 +8,7 @@ const getMockCids = () => {
   const mockCid = {
     title: 'Genome in a Bottle 001',
     hash: 'baga6ea4seaqih7gfqvkpvez3qlbajjolszk7vfqaatt5m2rdef52p3fq4jfpigi',
-    filetypes: 'xml, txt, csv',
+    fileExtensions: 'xml, txt, csv',
     size: 32000000000,
     expires: 'Feb 27 2023',
     storage_providers: [

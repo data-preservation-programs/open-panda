@@ -318,7 +318,7 @@ export default {
     resources () {
       return this.dataset.resources
     },
-    fileTypes () {
+    fileExtensions () {
       return this.dataset.file_extensions
     },
     infoItems () {
@@ -326,7 +326,7 @@ export default {
         { label: 'Author', value: this.dataset.authors },
         { label: 'Date Created', value: this.dateCreated },
         { label: 'Funders', value: this.dataset.funders },
-        { label: 'File Types', value: this.fileTypes },
+        { label: 'File Types', value: this.fileExtensions },
         { label: 'Data Stored', value: this.dataStored },
         { label: 'Storage Providers', value: this.storageProviderCount },
         { label: 'Locations', value: this.locations }

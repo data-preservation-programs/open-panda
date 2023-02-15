@@ -226,7 +226,7 @@ export default {
       return !this.count
     },
     selectedFilterOptions () {
-      const filters = ['categories', 'licenses', 'fileTypes']
+      const filters = ['categories', 'licenses', 'fileExtensions']
       const len = filters.length
       let selected = []
       for (let i = 0; i < len; i++) {
@@ -276,14 +276,14 @@ export default {
       this.getDatasetList({ route: this.$route, resetPage: true })
     },
     async clearAllFilters () {
-      await this.$clearSearchAndFilters(['categories', 'licenses', 'fileTypes', 'sort', 'limit', 'fullyStored'])
+      await this.$clearSearchAndFilters(['categories', 'licenses', 'fileExtensions', 'sort', 'limit', 'fullyStored'])
       this.refreshDatasetList()
     },
     /**
      * If search and filters are not empty, scroll to the results section
      */
     scrollToResultList () {
-      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileTypes', 'fullyStored'])
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions', 'fullyStored'])
       const searchExists = !this.$search('search').isEmpty()
       if (filterSelectionsExist || searchExists) {
         this.$scrollToElement(document.getElementById('datasets'), 200, -50)
