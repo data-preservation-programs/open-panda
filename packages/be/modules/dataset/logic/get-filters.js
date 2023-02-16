@@ -33,9 +33,9 @@ const processFileExtensions = async (datasets) => {
     .flat()
     .map(ext => ext.trim().toLowerCase())
     .filter(ext => !ext.includes('various'))
-  return [...new Set(extensions)].map(filetype => ({
-    value: filetype,
-    label: filetype
+  return [...new Set(extensions)].map(fileExtension => ({
+    value: fileExtension,
+    label: fileExtension
   }))
 }
 
@@ -52,7 +52,7 @@ module.exports = async () => {
       limit: staticFilters.limit,
       filters: Object.assign({
         categories: await processCategories(datasets),
-        fileTypes: await processFileExtensions(datasets)
+        fileExtensions: await processFileExtensions(datasets)
       }, staticFilters.filters)
     }
   } catch (e) {

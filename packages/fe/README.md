@@ -1,4 +1,4 @@
-# OpenPanda Frontend
+# Open Panda Frontend
 
 
 ## Storybook

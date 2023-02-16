@@ -1,22 +1,22 @@
 <template>
   <Filterer
+    v-slot="{ applyFilter, originalSelected }"
     filter-key="limit"
     :is-single-option="true"
-    :filters="options"
+    :options="options"
     v-on="$listeners">
-    <div slot-scope="{ applyFilter, originalSelected }">
-      <FieldContainer
-        field-key="results_per_page"
-        :scaffold="{
-          type: 'select',
-          required: false,
-          label: 'Results per page',
-          options,
-          defaultValue: originalSelected || 0, /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
-          resetGroupId: 'filters'
-        }"
-        @updateValue="applyFilter" />
-    </div>
+    <FieldContainer
+      field-key="results_per_page"
+      :scaffold="{
+        type: 'select',
+        required: false,
+        label: 'Results per page',
+        options,
+        defaultValue: originalSelected.length > 0 ? originalSelected : [0], /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
+        resetGroupId: 'filters',
+        isSingleOption: true
+      }"
+      @updateValue="applyFilter" />
   </Filterer>
 </template>
 
@@ -44,6 +44,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// ///////////////////////////////////////////////////////////////////// General
 :deep(.field-select) {
   width: toRem(66);
 }

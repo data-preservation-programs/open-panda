@@ -8,7 +8,7 @@ const getMockCids = () => {
   const mockCid = {
     title: 'Genome in a Bottle 001',
     hash: 'baga6ea4seaqih7gfqvkpvez3qlbajjolszk7vfqaatt5m2rdef52p3fq4jfpigi',
-    filetypes: 'xml, txt, csv',
+    fileExtensions: 'xml, txt, csv',
     size: 32000000000,
     expires: 'Feb 27 2023',
     storage_providers: [
@@ -65,6 +65,11 @@ const getMockCids = () => {
   for (let i = 0; i < 6; i++) {
     const cid = CloneDeep(mockCid)
     cid.title = `Genome in a Bottle 00${i}`
+    cid.hash = Math.floor(Math.random() * 9999998873867900).toString()
+    for (let j = 0; j < 4; j++) {
+      cid.storage_providers[j].id = Math.floor(Math.random() * 9000).toString()
+      cid.storage_providers[j].dealId = Math.floor(Math.random() * 10000).toString()
+    }
     mockCids.push(cid)
   }
   return {
@@ -75,7 +80,7 @@ const getMockCids = () => {
 }
 
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   dataset: false,
   cidList: false

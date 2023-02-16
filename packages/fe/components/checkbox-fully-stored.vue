@@ -1,22 +1,22 @@
 <template>
   <Filterer
+    v-slot="{ applyFilter, originalSelected }"
     filter-key="fullyStored"
     :is-single-option="true"
-    :filters="options"
+    :options="options"
     v-on="$listeners">
-    <div slot-scope="{ applyFilter, originalSelected }">
-      <FieldContainer
-        field-key="toggle_fully_stored"
-        :scaffold="{
-          type: 'checkbox',
-          required: false,
-          options: options,
-          defaultValue: originalSelected,
-          resetGroupId: 'filters',
-          resetTo: 'nullState'
-        }"
-        @updateValue="applyFilter" />
-    </div>
+    <FieldContainer
+      field-key="toggle_fully_stored"
+      :scaffold="{
+        type: 'checkbox',
+        required: false,
+        options: options,
+        defaultValue: originalSelected,
+        resetGroupId: 'filters',
+        resetTo: 'nullState',
+        isSingleOption: true
+      }"
+      @updateValue="applyFilter" />
   </Filterer>
 </template>
 

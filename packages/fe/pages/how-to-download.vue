@@ -85,20 +85,5 @@ export default {
       margin-bottom: 1.125rem;
     }
   }
-  .text-block {
-    .label {
-      @include small {
-        @include fontSize_20;
-        margin-bottom: 0.625rem;
-      }
-    }
-    .description {
-      p {
-        @include small {
-          @include fontSize_14;
-        }
-      }
-    }
-  }
 }
 </style>

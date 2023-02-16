@@ -1,10 +1,10 @@
 {
   "seo": {
-    "title": "How to download - OpenPanda",
-    "description": "How to download - OpenPanda"
+    "title": "How to download - Open Panda",
+    "description": "How to download - Open Panda"
   },
   "og": {
-    "site_name": "OpenPanda",
+    "site_name": "Open Panda",
     "url": "",
     "type": "website",
     "image": "/open-graph-image.jpg"
@@ -28,7 +28,7 @@
           "push_left": "off-1_lg-1_md-1_sm-1_mi-0",
           "push_right": "off-0_lg-0_md-1_sm-1_mi-0"
         },
-        "heading": "How to download data from OpenPanda",
+        "heading": "How to download data from Open Panda",
         "description": "At this time, downloading from Open Panda does require some specialized command line tooling. However, we’re working on new features that will mitigate this need very soon. In the mean time, follow the steps below to download one or more CIDs from a dataset.",
         "ctas": [
           {

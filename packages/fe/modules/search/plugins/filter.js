@@ -4,82 +4,163 @@
  *
  */
 
+// ///////////////////////////////////////////////////////////////////// Imports
+// -----------------------------------------------------------------------------
+import CloneDeep from 'lodash/cloneDeep'
+
+// /////////////////////////////////////////////////////////////////// Functions
+// -----------------------------------------------------------------------------
+// ===================================================== getCurrentFilterIndexes
+/**
+ * returns array of filter indexes
+ *
+ * route example: /?new=true&region=us,ca
+ * returns: [0] and [2, 6]
+ * @param {*} route
+ */
+const getFilterIndexesFromQuery = (route, filterKey, options, isSingleOption) => {
+  let query = route.query[filterKey]
+  if (!query) { return [] }
+  query = isSingleOption ? [query] : query.split(',')
+  return query.reduce((acc, item) => {
+    acc.push(options.findIndex((option) => {
+      return item === `${option.value}`
+    }))
+    return acc
+  }, [])
+}
+
+// ========================================= convertSelectedIndexesToQueryString
+const convertSelectedIndexesToQueryString = (selected, options) => {
+  const len = selected.length
+  let query = ''
+  for (let i = 0; i < len; i++) {
+    const value = options[selected[i]].value
+    query += i === 0 ? value : `,${value}`
+  }
+  return query !== '' ? query : undefined
+}
+
 // ////////////////////////////////////////////////////////////// [Class] Filter
 // -----------------------------------------------------------------------------
-class Filter {
-  // =============================================================== constructor
-  constructor (app, store, route) {
-    this.app = app
-    this.store = store
-    this.route = route
-    this.query = route.query
+const Filter = (app, store, route, filterKey) => {
+  const query = route.query
+  const filter = store.getters['search/filters'].find(filter => filter.filterKey === filterKey)
+  let options, selected, isSingleOption, action
+  if (filter) {
+    options = CloneDeep(filter.options)
+    selected = CloneDeep(filter.selected)
+    isSingleOption = filter.isSingleOption
+    action = filter.action
   }
-
-  // ===================================================================== clear
-  clear (filterKey) {
-    this.query[filterKey] = undefined
-    this.app.router.push({ query: this.query })
-  }
-
-  // ================================================================== clearAll
-  clearAll (exceptions = []) {
-    const filters = this.store.getters['search/filters']
-    const query = this.query
-    Object.keys(query).forEach((key) => {
-      if (!exceptions.includes(key) && filters.includes(key) && query[key] !== undefined) {
-        this.query[key] = undefined
-      }
-    })
-    this.app.router.push({ query: this.query })
-  }
-
-  // =================================================================== isEmpty
-  isEmpty () {
-    const filters = this.store.getters['search/filters']
-    const query = this.query
-    let empty = true
-    Object.keys(query).forEach((key) => {
-      if (filters.includes(key) && query[key] !== undefined) {
-        empty = false
-      }
-    })
-    return empty
-  }
-
-  // ================================================================ toggleTerm
-  toggleTerm (term) {
-    const filterKey = term.filterKey
-    const isSingleOption = term.isSingleOption
-    const value = term.value
-    const current = this.query[filterKey]
-    if (!current) {
-      this.query[term.filterKey] = value
-    } else {
-      let join
-      // If single option, replace entire value of query param
-      if (isSingleOption) {
-        join = value
-      // Otherwise, add or remove to query param
-      } else {
-        const selected = current.split(',')
-        const index = selected.findIndex(item => item === value)
-        if (!value || index !== -1) {
-          selected.splice(index, 1)
-        } else {
-          selected.push(value)
+  return {
+    // ================================================================ register
+    async register (filterKey, options, isSingleOption, action) {
+      if (!filter) {
+        switch (action) {
+          // case 'emit' : selected = this.filterValue; break
+          // case 'store' : selected = this.$store.getters[this.storeGetter]; break
+          case 'query' : selected = getFilterIndexesFromQuery(route, filterKey, options, isSingleOption); break
         }
-        join = selected.join(',')
+        await store.dispatch('search/setFilter', {
+          filterKey,
+          options,
+          isSingleOption,
+          action,
+          selected,
+          originalSelected: selected // lock in the original selection upon registration
+        })
       }
-      this.query[term.filterKey] = (!join || join.length === 0) ? undefined : join
+    },
+
+    // ============================================================== deregister
+    async deregister () {
+      if (filter) {
+        await store.dispatch('search/removeFilter', filterKey)
+      }
+    },
+
+    // ===================================================================== get
+    get () {
+      return filter
+    },
+
+    // ===================================================================== get
+    getSelectionOptions () {
+      if (!filter) { return [] }
+      const len = selected.length
+      const compiled = []
+      for (let i = 0; i < len; i++) {
+        const index = selected[i]
+        compiled.push(Object.assign(options[index], {
+          filterKey,
+          index
+        }))
+      }
+      return compiled
+    },
+
+    // ============================================================= updateQuery
+    updateQuery (filterKey, value) {
+      return new Promise((resolve) => {
+        query[filterKey] = value
+        // need to pass this in to retain the current url hash
+        // not sure why $route is not picking it up so assigning manually
+        app.router.push({ query: query, hash: location.hash })
+        /**
+         * TODO: refactor this so it's not a timeout. We need this so that the
+         * query updates BEFORE moving on to doing things like refreshing data.
+         * Look up the '$route' watcher function in Nuxt src
+         */
+        const timeout = setTimeout(() => {
+          resolve()
+          clearTimeout(timeout)
+        }, 1)
+      })
+    },
+
+    // ================================================================== update
+    async update (incoming) { // incoming refers to the newly selected index
+      const existing = selected.findIndex(option => option === incoming) // incoming index is already selected (if not -1)
+      if (isSingleOption) {
+        selected = incoming === -1 ? [] : [incoming]
+      } else {
+        existing === -1 ? selected.push(incoming) : selected.splice(existing, 1)
+      }
+      await store.dispatch('search/setFilter', Object.assign(CloneDeep(filter), {
+        selected
+      }))
+      return selected
+    },
+
+    // =================================================================== clear
+    async clear () {
+      if (!filter) { return }
+      store.dispatch('search/setFilter', Object.assign(CloneDeep(filter), {
+        selected: []
+      }))
+      await this.updateQuery(filterKey, undefined)
+    },
+
+    // ================================================================= isEmpty
+    isEmpty () {
+      if (!filter) { return true }
+      return selected.length === 0
+    },
+
+    // ============================================================== toggleTerm
+    async toggleTerm (term) {
+      const selected = await this.update(term.index)
+      if (action === 'query') {
+        const converted = convertSelectedIndexesToQueryString(selected, options)
+        await this.updateQuery(filterKey, converted)
+      }
     }
-    // need to pass this in to retain the current url hash
-    // not sure why $route is not picking it up so assigning manually
-    this.app.router.push({ query: this.query, hash: location.hash })
   }
 }
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default function ({ app, store, route }, inject) {
-  inject('filter', new Filter(app, store, route))
+  inject('filter', (filterKey) => Filter(app, store, route, filterKey))
 }

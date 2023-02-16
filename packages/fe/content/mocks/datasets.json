@@ -8,7 +8,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -31,7 +31,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml", "json"],
+      "fileExtensions": ["xml", "json"],
       "locations": []
     },
     {
@@ -42,7 +42,7 @@
       "size": 143254216451,
       "total": 0,
       "storage": 0,
-      "filetypes": ["csv"],
+      "fileExtensions": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -62,7 +62,7 @@
       "size": 563452416451,
       "total": 3333432,
       "storage": 24,
-      "filetypes": ["pdf"],
+      "fileExtensions": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -79,7 +79,7 @@
       "size": 987,
       "total": 124685412,
       "storage": 552,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"
@@ -111,7 +111,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -134,7 +134,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml", "json"],
+      "fileExtensions": ["xml", "json"],
       "locations": []
     },
     {
@@ -145,7 +145,7 @@
       "size": 143254216451,
       "total": 0,
       "storage": 0,
-      "filetypes": ["csv"],
+      "fileExtensions": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -165,7 +165,7 @@
       "size": 563452416451,
       "total": 3333432,
       "storage": 24,
-      "filetypes": ["pdf"],
+      "fileExtensions": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -182,7 +182,7 @@
       "size": 987,
       "total": 124685412,
       "storage": 552,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"
@@ -214,7 +214,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -237,7 +237,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml", "json"],
+      "fileExtensions": ["xml", "json"],
       "locations": []
     },
     {
@@ -248,7 +248,7 @@
       "size": 143254216451,
       "total": 0,
       "storage": 0,
-      "filetypes": ["csv"],
+      "fileExtensions": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -268,7 +268,7 @@
       "size": 563452416451,
       "total": 3333432,
       "storage": 24,
-      "filetypes": ["pdf"],
+      "fileExtensions": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -285,7 +285,7 @@
       "size": 987,
       "total": 124685412,
       "storage": 552,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"
@@ -317,7 +317,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "Japan",
         "country_code": "JP"
@@ -340,7 +340,7 @@
       "size": 143254216451,
       "total": 124685412,
       "storage": 86,
-      "filetypes": ["xml", "json"],
+      "fileExtensions": ["xml", "json"],
       "locations": []
     },
     {
@@ -351,7 +351,7 @@
       "size": 143254216451,
       "total": 0,
       "storage": 0,
-      "filetypes": ["csv"],
+      "fileExtensions": ["csv"],
       "locations": [{
         "full": "",
         "country_code": "NO"
@@ -371,7 +371,7 @@
       "size": 563452416451,
       "total": 3333432,
       "storage": 24,
-      "filetypes": ["pdf"],
+      "fileExtensions": ["pdf"],
       "locations": [{
         "full": "",
         "country_code": "PK"
@@ -388,7 +388,7 @@
       "size": 987,
       "total": 124685412,
       "storage": 552,
-      "filetypes": ["xml"],
+      "fileExtensions": ["xml"],
       "locations": [{
         "full": "",
         "country_code": "AZ"

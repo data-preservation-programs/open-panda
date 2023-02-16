@@ -5,7 +5,7 @@ import CloneDeep from 'lodash/cloneDeep'
 import GeneralSiteData from '@/content/pages/general.json'
 
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   siteContent: {},
   navigationOpen: false,

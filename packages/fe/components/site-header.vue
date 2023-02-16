@@ -154,19 +154,13 @@ header {
 
 .logo-link {
   z-index: 101;
-  width: 10vw;
-  @include large {
-    width: 4vw;
-  }
-  @include medium {
-    width: toRem(121);
-  }
   svg {
     width: 100%;
   }
   .logo-small {
     display: none;
     @include large {
+      width: 4vw;
       display: inline-block;
     }
     @include medium {
@@ -179,6 +173,7 @@ header {
       display: none;
     }
     @include medium {
+      width: toRem(121);
       display: inline-block;
     }
   }

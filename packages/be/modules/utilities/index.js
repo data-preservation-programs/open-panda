@@ -153,6 +153,20 @@ const ParseQuerySort = (sort) => {
   })
 }
 
+// /////////////////////////////////////////////////////////// ParseQueryFilters
+const ParseQueryFilters = (filters, split = false) => {
+  return new Promise((resolve) => {
+    if (!filters) { resolve({}) }
+    filters = JSON.parse(filters)
+    if (split) {
+      Object.keys(filters).forEach((filterKey) => {
+        filters[filterKey] = filters[filterKey].split(',')
+      })
+    }
+    resolve(filters)
+  })
+}
+
 // ///////////////////////////////////////////////////////////// IsValidObjectId
 const IsValidObjectId = (incoming) => {
   try {
@@ -238,6 +252,7 @@ module.exports = {
   GetFileFromDisk,
   ParseQuerySearch,
   ParseQuerySort,
+  ParseQueryFilters,
   GenerateWebsocketClient,
   GetSocket,
   IsValidObjectId,

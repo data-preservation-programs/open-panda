@@ -64,7 +64,16 @@ export default {
     }
   },
 
+  data () {
+    return {
+      filterKey: 'page'
+    }
+  },
+
   computed: {
+    filter () {
+      return this.$filter(this.filterKey).get()
+    },
     pages () {
       const total = this.totalPages
       const current = this.page
@@ -72,7 +81,7 @@ export default {
       const compiled = []
       for (let i = 0; i < total; i++) {
         compiled.push({
-          num: i + 1,
+          value: i + 1,
           display: i >= current - buffer - 1 && i <= current + buffer - 1,
           current: i + 1 === current
         })
@@ -81,19 +90,19 @@ export default {
     }
   },
 
+  async created () {
+    if (!this.filter) {
+      await this.$filter(this.filterKey).register(this.filterKey, this.pages, true, 'query')
+    }
+  },
+
   methods: {
-    incrementPage (page) {
-      if (this.action === 'query') {
-        this.$filter.toggleTerm({
-          instance: this,
-          action: this.action,
-          storeAction: this.storeAction,
-          value: page,
-          filterKey: 'page',
-          isSingleOption: true
-        })
-        this.$emit('filterApplied')
-      }
+    async incrementPage (page) {
+      await this.$filter('page').toggleTerm({
+        instance: this,
+        index: await this.pages.findIndex(item => item.value === page)
+      })
+      this.$emit('filterApplied')
     }
   }
 }

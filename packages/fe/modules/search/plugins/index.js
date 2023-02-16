@@ -25,11 +25,15 @@ const registerStore = (store, next) => {
 // -----------------------------------------------------------------------------
 export default async function ({ app, store, route }, inject) {
   await registerStore(store)
-  inject('clearSearchAndFilters', () => {
-    app.$search.clearSearchQuery()
-    app.$filter.clearAll()
+  inject('clearFilters', async (filters) => {
+    const len = filters.length
+    for (let i = 0; i < len; i++) {
+      await app.$filter(filters[i]).clear()
+    }
   })
-  inject('clearSearchFilterSortAndLimit', () => {
+  inject('clearSearchAndFilters', async (filters) => {
+    await app.$search('search').clear()
+    await app.$clearFilters(filters)
     /**
       * This event is caught by the form module's field.vue component in its mounted() hook.
       * Params are outlined there.
@@ -40,22 +44,18 @@ export default async function ({ app, store, route }, inject) {
     window.$nuxt.$emit('resetFormFields', {
       id: 'filters'
     })
-    /**
-      * Unfortunately we can't call the search/filter clear methods individually
-      * because it leads to the route being updated twice and thus 2 database
-      * calls to update data. Instead, we clear all search/filter query params
-      * here in one fell swoop
-      */
-    const query = route.query
-    query.search = undefined
-    const filters = store.getters['search/filters']
-    Object.keys(query).forEach((key) => {
-      if (filters.includes(key) && query[key] !== undefined) {
-        query[key] = undefined
+    window.$nuxt.$emit('resetFormFields', {
+      id: 'search',
+      resetTo: 'nullState'
+    })
+  })
+  inject('checkIfFilterSelectionsExist', (filters) => {
+    let selelectionsExist = false
+    filters.forEach((filterKey) => {
+      if (!app.$filter(filterKey).isEmpty()) {
+        selelectionsExist = true
       }
     })
-    // need to pass this in to retain the current url hash
-    // not sure why $route is not picking it up so assigning manually
-    app.router.push({ query, hash: location.hash })
+    return selelectionsExist
   })
 }
