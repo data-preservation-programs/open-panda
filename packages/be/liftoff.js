@@ -48,3 +48,16 @@ try {
 } catch (e) {
   console.log(e)
 }
+
+// ////////////////////////////////////////////////////////////// Test Functions
+// const dropCidDatabaseCollection = async () => {
+//   try {
+//     // delete all documents from the Cid table in the database
+//     await MC.model.Cid.collection.drop()
+//     const cids = await MC.model.Cid.find()
+//     console.log(cids)
+//   } catch (e) {
+//     console.log(e)
+//   }
+// }
+// dropCidDatabaseCollection()
