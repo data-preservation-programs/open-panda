@@ -14,6 +14,7 @@
         options,
         defaultValue: originalSelected.length > 0 ? originalSelected : [0], /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
         resetGroupId: 'results-per-page',
+        updateGroupId: 'results-per-page',
         isSingleOption: true
       }"
       @updateValue="initializeFilter($event, applyFilter)" />

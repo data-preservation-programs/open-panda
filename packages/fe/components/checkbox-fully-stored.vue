@@ -13,6 +13,7 @@
         options: options,
         defaultValue: originalSelected,
         resetGroupId: 'fully-stored',
+        updateGroupId: 'fully-stored',
         resetTo: 'nullState',
         isSingleOption: true
       }"

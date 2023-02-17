@@ -62,6 +62,11 @@ export default {
     '$route' (route) {
       if (this.action === 'query') {
         this.$filter(this.filterKey).refresh(route)
+        const selected = this.filter.selected
+        window.$nuxt.$emit('updateFormField', {
+          id: this.filterKey,
+          value: this.isSingleOption ? selected[0] : selected // this.$filter(this.searchKey).get().value
+        })
       }
     }
   },

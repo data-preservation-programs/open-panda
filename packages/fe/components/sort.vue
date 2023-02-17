@@ -15,6 +15,7 @@
         options,
         defaultValue: originalSelected.length > 0 ? originalSelected : [0], /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
         resetGroupId: 'sort',
+        updateGroupId: 'sort',
         isSingleOption: true
       }"
       @updateValue="initializeFilter($event, applyFilter)" />
