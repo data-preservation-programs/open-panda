@@ -108,7 +108,7 @@ export default {
     async initializeFilter (index, applyFilter) {
       await applyFilter({ index, live: false })
       await this.$filter('page').for({ index: 0, live: false })
-      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
+      await this.$applyMultipleFiltersToQuery({ filters: ['page', 'categories'] })
     }
   }
 }

@@ -291,7 +291,9 @@ export default {
     async deselectFilterOption (option) {
       await this.$filter(option.filterKey).for({ index: option.index, live: false })
       await this.$filter('page').for({ index: 0, live: false })
-      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
+      await this.$applyMultipleFiltersToQuery({
+        filters: ['page', 'categories']
+      })
     },
     async clearAllFilters () {
       await this.$filter('page').for({ index: 0, live: false })
