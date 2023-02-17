@@ -60,10 +60,8 @@ export default {
   @include medium {
     margin-right: 0;
   }
-  @include large {
-    :deep(.field-label) {
-      display: none;
-    }
+  :deep(.field-label) {
+    white-space: nowrap;
   }
   :deep(.field-select) {
     width: toRem(140);
