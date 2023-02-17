@@ -73,6 +73,14 @@ const actions = {
         }
       })
       const payload = response.data.payload
+      const totalPages = payload.metadata.totalPages
+      if (payload.metadata.page > totalPages) {
+        query.page = totalPages
+        return {
+          fail: true,
+          route: { path: '/', query }
+        }
+      }
       const datasetListOriginal = CloneDeep(payload.results)
       const datasetList = datasetListOriginal
       datasetList.forEach((item) => {

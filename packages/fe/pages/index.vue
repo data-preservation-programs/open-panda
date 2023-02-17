@@ -187,10 +187,13 @@ export default {
     }
   },
 
-  async fetch ({ app, store, route, error }) {
+  async fetch ({ app, store, route, redirect }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFiltersAndTypeahead')
-    await store.dispatch('datasets/getDatasetList', { route })
+    const response = await store.dispatch('datasets/getDatasetList', { route })
+    if (response.fail) {
+      return redirect(response.route)
+    }
   },
 
   head () {
