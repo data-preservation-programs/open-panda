@@ -6,7 +6,7 @@
       open-direction="right"
       :show-typeahead="true" />
 
-    <div class="category-ticker">
+    <div class="inner-content">
 
       <img :src="block.image" class="img" />
 
@@ -120,11 +120,15 @@ export default {
   margin-bottom: toRem(20);
 }
 
-.category-ticker {
+.inner-content {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   width: 100%;
   position: relative;
+  // @include mini {
+  //   flex-direction: column;
+  // }
 }
 
 .text-wrapper {

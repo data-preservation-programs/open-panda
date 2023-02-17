@@ -578,14 +578,14 @@ p, .p1 {
 .show-desktop-only {
   display: flex;
   @include medium {
-    display: none;
+    display: none !important;
   }
 }
 
 .show-mobile-only {
   display: none;
   @include medium {
-    display: flex;
+    display: flex !important;
   }
 }
 

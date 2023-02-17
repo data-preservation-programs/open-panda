@@ -22,12 +22,14 @@
           class="datasets-checkbox show-desktop-only" /> -->
       </div>
 
-      <div class="col-4_mi-12 datasets-sort-c">
+      <div class="col-4_mi-12">
         <!-- ================================================== desktop sort -->
-        <Sort
-          :options="sortOptions"
-          class="show-desktop-only" />
-        <Filters />
+        <div class="desktop-sort-c">
+          <Sort
+            :options="sortOptions"
+            class="show-desktop-only" />
+          <Filters />
+        </div>
       </div>
     </div>
 
@@ -479,5 +481,20 @@ export default {
 
 .filter-button {
   margin-bottom: 0.5rem;
+}
+
+.desktop-sort-c {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  @include mini {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  :deep(.button-c) {
+    @include mini {
+      width: 9rem;
+    }
+  }
 }
 </style>
