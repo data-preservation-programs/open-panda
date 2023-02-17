@@ -141,8 +141,7 @@ const writeFileMetadataToDatabase = async (retrievedFiles) => {
       })
     }
     const response = await MC.model.Cid.bulkWrite(operations, { ordered: false })
-    const result = response.result
-    console.log(`${len} CIDs imported/updated | New: ${result.nUpserted} | Updated: ${result.nModified}`)
+    return response.result
   } catch (e) {
     console.log('========================= [Function: writeCidFilesToDatabase]')
     console.log(e)
@@ -172,18 +171,35 @@ const getCidFilesFromManifestList = async (importMax) => {
         input: manifest,
         crlfDelay: Infinity
       })
-      let i = 1
-      const retrievedFiles = []
+      // import all lines from the manifest to an array
+      const manifestCidLines = []
       for await (const line of rl) {
-        if (i <= importMax) {
-          console.log(`Retrieving file ${i} from the CID manifest list.`)
+        manifestCidLines.push(line)
+      }
+      // reverse the array to import oldest CIDs first
+      // begin writing to the database in batches
+      manifestCidLines.reverse()
+      let retrievedFiles = []
+      let total = 0
+      const len = manifestCidLines.length
+      for (let i = 0; i < len; i++) {
+        if (i < importMax) {
+          const line = manifestCidLines[i]
+          console.log(`Retrieving file ${i + 1} from the CID manifest list.`)
           retrievedFiles.push(await retrieveCidFile(line))
-          i++
+          // write retrieved file data to the database in batches of 1000
+          if ((i + 1) % argv.pagesize === 0) {
+            const result = await writeFileMetadataToDatabase(retrievedFiles)
+            total = total + result.nUpserted + result.nModified
+            console.log(`${result.nUpserted} new CIDs imported in this batch | ${result.nModified} CIDs updated in this batch | A total of ${total} CIDs imported/updated so far.`)
+            retrievedFiles = []
+          }
         } else {
           break
         }
       }
-      await writeFileMetadataToDatabase(retrievedFiles)
+      const result = await writeFileMetadataToDatabase(retrievedFiles)
+      console.log(`${result.nUpserted} new CIDs imported in this batch | ${result.nModified} CIDs updated in this batch | A total of ${total + result.nUpserted + result.nModified} CIDs were imported/updated to the database.`)
     }
   } catch (e) {
     console.log('===================== [Function: getCidFilesFromManifestList]')
@@ -241,12 +257,11 @@ const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSav
 
 // ///////////////////////////////////////////////////////////////// CidImporter
 const CidImporter = async () => {
-  console.log('📖 CID import started')
   try {
-    // begin
     const start = process.hrtime()[0]
     const limit = argv.pagesize || 1000
     const maxPages = argv.maxpages || Infinity
+    console.log(`📖 CID import started | page size of ${limit} and page maximum ${maxPages}.`)
     // Get the latest upload entry from the database
     const mostRecentCid = await MC.model.Cid.find().sort({ web3storageCreatedAt: -1 }).limit(1)
     const mostRecentDocument = mostRecentCid[0]
