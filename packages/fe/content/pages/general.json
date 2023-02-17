@@ -86,6 +86,10 @@
     ],
     "nav_3": [
       {
+        "href": "/alpha",
+        "label": "Alpha"
+      },
+      {
         "href": "/terms",
         "label": "Terms"
       },

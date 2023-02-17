@@ -127,11 +127,18 @@ export default {
         margin-top: toRem(42);
       }
       .description {
+        margin-bottom: 2rem;
         @include small {
           padding-bottom: 1rem;
+          margin-bottom: 0;
         }
         p {
           @include p2;
+        }
+      }
+      .button-row {
+        @include small {
+          margin-bottom: 2.5rem;
         }
       }
     }
