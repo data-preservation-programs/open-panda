@@ -8,7 +8,7 @@
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
-      slot-scope="{ value, updateValue, empty }"
+      slot-scope="{ value, applySearch, empty }"
       :class="['searchbar', showTypeahead ? 'has-typeahead' : 'no-typeahead', `theme__${theme}`, { empty, loading }]">
 
       <FieldContainer
@@ -24,9 +24,10 @@
           optionReturnKey: 'slug',
           options: datasetListTypeahead,
           defaultValue: value || '',
-          resetGroupId: 'search'
+          resetGroupId: 'search',
+          updateGroupId: 'search'
         }"
-        @updateValue="updateValue"
+        @updateValue="applySearch({ value: $event, live: false })"
         @handleKeydown="handleKeydown"
         @optionSelected="goToDatasetPage" />
 
@@ -128,14 +129,13 @@ export default {
     ...mapActions({
       getDatasetList: 'datasets/getDatasetList'
     }),
-    fetchNewData () {
-      this.getDatasetList({ route: this.$route, resetPage: true })
-      if (this.$route.path !== '/') {
-        this.$router.push({
-          path: '/',
-          query: this.$route.query
-        })
-      } else {
+    async fetchNewData () {
+      await this.$search('search').for({
+        instance: this,
+        live: true,
+        redirect: this.$route.path !== '/' ? '/' : undefined
+      })
+      if (this.$route.path === '/') {
         this.$scrollToElement(document.getElementById('datasets'), 200, -50)
       }
     },

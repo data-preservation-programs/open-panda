@@ -1,37 +1,64 @@
 <template>
-  <div class="paginator">
+  <Filterer
+    v-slot="{ applyFilter }"
+    filter-key="page"
+    :is-single-option="true"
+    :options="pages"
+    v-on="$listeners">
+    <div class="paginator">
 
-    <slot name="before" />
+      <slot name="before" />
 
-    <template v-if="page !== 1">
-      <slot name="first" :increment-page="incrementPage" />
-      <slot name="prev" :increment-page="incrementPage" />
-      <slot name="breaker-left" />
-    </template>
+      <template v-if="page !== 1">
+        <slot
+          name="first"
+          :increment-page="applyFilter"
+          :get-index="getIndex" />
+        <slot
+          name="prev"
+          :increment-page="applyFilter"
+          :get-index="getIndex" />
+        <slot name="breaker-left" />
+      </template>
 
-    <template v-for="pageButton in pages">
-      <slot
-        v-if="pageButton.display"
-        name="button"
-        :button="pageButton"
-        :increment-page="incrementPage" />
-    </template>
+      <template v-for="pageButton in pages">
+        <slot
+          v-if="pageButton.display"
+          name="button"
+          :button="pageButton"
+          :increment-page="applyFilter"
+          :get-index="getIndex" />
+      </template>
 
-    <template v-if="page !== totalPages">
-      <slot name="breaker-right" />
-      <slot name="next" :increment-page="incrementPage" />
-      <slot name="last" :increment-page="incrementPage" />
-    </template>
+      <template v-if="page !== totalPages">
+        <slot name="breaker-right" />
+        <slot
+          name="next"
+          :increment-page="applyFilter"
+          :get-index="getIndex" />
+        <slot
+          name="last"
+          :increment-page="applyFilter"
+          :get-index="getIndex" />
+      </template>
 
-    <slot name="after" />
+      <slot name="after" />
 
-  </div>
+    </div>
+  </Filterer>
 </template>
 
 <script>
+// ===================================================================== Imports
+import Filterer from '@/modules/search/components/filterer'
+
 // ====================================================================== Export
 export default {
   name: 'Paginator',
+
+  components: {
+    Filterer
+  },
 
   props: {
     action: { // 'query', 'emit', 'store'
@@ -39,16 +66,6 @@ export default {
       required: false,
       default: 'query'
     },
-    // storeGetter: {
-    //   type: String,
-    //   required: false,
-    //   default: 'general/filterValue'
-    // },
-    // storeAction: {
-    //   type: String,
-    //   required: false,
-    //   default: 'general/setFilterValue'
-    // }
     page: {
       type: Number,
       required: true
@@ -64,16 +81,7 @@ export default {
     }
   },
 
-  data () {
-    return {
-      filterKey: 'page'
-    }
-  },
-
   computed: {
-    filter () {
-      return this.$filter(this.filterKey).get()
-    },
     pages () {
       const total = this.totalPages
       const current = this.page
@@ -90,19 +98,9 @@ export default {
     }
   },
 
-  async created () {
-    if (!this.filter) {
-      await this.$filter(this.filterKey).register(this.filterKey, this.pages, true, 'query')
-    }
-  },
-
   methods: {
-    async incrementPage (page) {
-      await this.$filter('page').toggleTerm({
-        instance: this,
-        index: await this.pages.findIndex(item => item.value === page)
-      })
-      this.$emit('filterApplied')
+    getIndex (page) {
+      return this.pages.findIndex(item => item.value === page)
     }
   }
 }

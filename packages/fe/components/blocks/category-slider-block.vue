@@ -14,8 +14,7 @@
 
     <Filterer
       filter-key="categories"
-      :options="filters.categories"
-      @filterApplied="getDatasetList({ route: $route, resetPage: true })">
+      :options="filters.categories">
       <CircularSlider
         slot-scope="{ applyFilter }"
         slider-id="category-slider"
@@ -38,7 +37,7 @@
           <div
             :key="`slide-${i}`"
             class="category-card"
-            @click="() => { applyFilter(i) }">
+            @click="initializeFilter(i, applyFilter)">
             <div class="inner-content">
               <div
                 class="background-image"
@@ -61,7 +60,7 @@
 
 <script>
 // ====================================================================== Import
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import CircularSlider from '@/modules/slider/components/circular-slider'
@@ -98,9 +97,11 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      getDatasetList: 'datasets/getDatasetList'
-    })
+    async initializeFilter (index, applyFilter) {
+      await applyFilter({ index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
+    }
   }
 }
 </script>

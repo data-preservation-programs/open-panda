@@ -11,30 +11,23 @@ import CloneDeep from 'lodash/cloneDeep'
 // ////////////////////////////////////////////////////////////// [Class] Search
 // -----------------------------------------------------------------------------
 const Search = (app, store, route, searchKey) => {
-  const query = route.query
   const searcher = store.getters['search/searchers'].find(searcher => searcher.searchKey === searchKey)
-  let value, action, searchValue, storeGettter, storeAction
-  if (searcher) {
-    value = searcher.value
-    action = searcher.action
-    searchValue = searcher.searchValue
-    storeGettter = searcher.storeGettter
-    storeAction = searcher.storeAction
-  }
   return {
     // ================================================================ register
-    async register (searchKey, action, searchValue, storeGettter, storeAction) {
+    async register (searchKey, action, searchValue, storeGetter, storeAction) {
+      const query = CloneDeep(app.router.history.current.query)
       if (!searcher) {
+        let value
         switch (action) {
           case 'emit' : value = searchValue; break
           case 'store' : value = store.getters[storeGetter]; break
           case 'query' : value = query[searchKey]; break
         }
-        await store.dispatch('search/setSearcher', {
+        await this.set({
           searchKey,
           action,
           value,
-          storeGettter,
+          storeGetter,
           storeAction
         })
       }
@@ -52,61 +45,62 @@ const Search = (app, store, route, searchKey) => {
       return searcher
     },
 
+    // ===================================================================== set
+    async set (incoming) {
+      await store.dispatch('search/setSearcher', Object.assign(CloneDeep(searcher || {}), incoming))
+    },
+
     // ============================================================= updateQuery
-    updateQuery (filterKey, value) {
-      return new Promise((resolve) => {
-        const queryBefore = query
-        query[filterKey] = value === '' ? undefined : value
-        // need to pass this in to retain the current url hash
-        // not sure why $route is not picking it up so assigning manually
-        app.router.push({ query: query, hash: location.hash })
-        /**
-         * TODO: refactor this so it's not a timeout. We need this so that the
-         * query updates BEFORE moving on to doing things like refreshing data.
-         * Look up the '$route' watcher function in Nuxt src
-         */
-        const timeout = setTimeout(() => {
-          resolve()
-          clearTimeout(timeout)
-        }, 10)
+    async updateQuery (searchKey, value, redirect) {
+      const query = CloneDeep(app.router.history.current.query)
+      query[searchKey] = value === '' ? undefined : value
+      // need to pass location.hash in to retain the current url hash
+      app.router.push({
+        ...(redirect && { path: redirect }),
+        query,
+        hash: location.hash
+      })
+      /**
+       * TODO: refactor this so it's not a timeout. We need this so that the
+       * query updates BEFORE moving on to doing things like refreshing data.
+       * Look up the '$route' watcher function in Nuxt src
+       */
+      await app.$delay(10)
+    },
+
+    // ===================================================================== for
+    async for (term) {
+      const value = term.hasOwnProperty('value') ? term.value : searcher.value
+      await this.set({ value })
+      if (term.live) {
+        switch (searcher.action) {
+          case 'emit' : term.instance.$emit(value); break
+          case 'store' : await store.dispatch(storeAction, value); break
+          case 'query' : await this.updateQuery(searchKey, value, term.redirect); break
+        }
+      }
+    },
+
+    // ================================================================= refresh
+    async refresh (route) {
+      const query = CloneDeep(app.router.history.current.query)
+      const value = query[searchKey]
+      await this.set({
+        value: value === undefined ? '' : value
       })
     },
 
-    // ================================================================== update
-    for (payload) {
-      const value = payload.value
-      store.dispatch('search/setSearcher', Object.assign(CloneDeep(searcher), {
-        value
-      }))
-      switch (action) {
-        case 'emit' : payload.instance.$emit(value); break
-        case 'store' : store.dispatch(storeAction, value); break
-        case 'query' : this.updateQuery(searchKey, value); break
-      }
-    },
-
     // =================================================================== clear
-    async clear (instance) {
-      const value = ''
-      store.dispatch('search/setSearcher', Object.assign(CloneDeep(searcher), {
-        value
-      }))
-      switch (action) {
-        case 'emit' : instance.$emit(value); break
-        case 'store' : await store.dispatch(storeAction, value); break
-        case 'query' : await this.updateQuery(searchKey, value); break
-      }
+    async clear () {
+      if (!searcher) { return }
+      this.for({ value: '' })
     },
 
     // ================================================================= isEmpty
     isEmpty () {
-      let empty
-      switch (action) {
-        case 'emit' : empty === ''; break
-        case 'store' : empty = store.getters[storeGetter] === ''; break
-        case 'query' : empty = !query.search || query.search === ''; break
-      }
-      return empty
+      if (!searcher) { return true }
+      const value = searcher.value
+      return !value || value === ''
     }
   }
 }

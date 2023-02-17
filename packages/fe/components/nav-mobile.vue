@@ -136,7 +136,10 @@ export default {
       }, this.setNavigationOpen(false))
     },
     clearSearchAndFilters () {
-      this.$clearSearchAndFilters(['categories', 'licenses', 'fileExtensions'])
+      this.$clearSearchAndFilters({
+        searchers: ['search'],
+        filters: ['categories', 'licenses', 'fileExtensions']
+      })
     }
   }
 }

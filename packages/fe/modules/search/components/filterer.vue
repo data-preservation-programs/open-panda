@@ -17,12 +17,6 @@ export default {
       type: Array,
       required: true
     },
-    // search by multiple options or just 1 at a time
-    // multiple: {
-    //   type: Boolean,
-    //   required: false,
-    //   default: true
-    // },
     // for options with boolean or single-select value
     // ie. checkboxes or select
     isSingleOption: {
@@ -64,32 +58,43 @@ export default {
     }
   },
 
+  watch: {
+    '$route' (route) {
+      if (this.action === 'query') {
+        this.$filter(this.filterKey).refresh(route)
+      }
+    }
+  },
+
   async created () {
     if (!this.filter) {
-      await this.$filter(this.filterKey).register(this.filterKey, this.options, this.isSingleOption, this.action)
+      await this.$filter(this.filterKey).register(
+        this.filterKey,
+        this.options,
+        this.isSingleOption,
+        this.action
+      )
     }
   },
 
   beforeDestroy () {
+    this.$filter(this.filterKey).clear()
     if (this.deregisterOnDestroy) {
       this.$filter(this.filterKey).deregister()
     }
   },
 
   methods: {
-    async applyFilter (index) {
-      await this.$filter(this.filterKey).toggleTerm({
+    async applyFilter (payload) {
+      if (!payload.hasOwnProperty('live')) {
+        throw new Error('Forgot to specify { live: true|false }')
+      }
+      await this.$filter(this.filterKey).for({
         instance: this,
-        index
+        index: payload.index,
+        live: payload.live
       })
       this.$emit('filterApplied')
-      // if (action === 'emit') {
-      //   // this.$emit('setFilterValue', value)
-      // } else if (action === 'store') {
-      //   // this.$store.dispatch(this.storeAction, value)
-      // } else {
-      //   // this.$search.applyFilter(filter)
-      // }
     },
     isSelected (index) {
       return this.selected.includes(index)

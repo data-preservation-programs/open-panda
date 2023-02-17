@@ -12,8 +12,7 @@
 
       <Filterer
         filter-key="categories"
-        :options="filters.categories"
-        @filterApplied="getDatasetList({ route: $route, resetPage: true })">
+        :options="filters.categories">
         <div
           slot-scope="{ applyFilter }"
           class="text-wrapper">
@@ -24,7 +23,7 @@
 
           <div
             class="ticker"
-            @click="applyFilter(categoryIndex)">
+            @click="initializeFilter(categoryIndex, applyFilter)">
             <span
               v-for="(category, i) in categories"
               :key="category"
@@ -105,6 +104,11 @@ export default {
     }),
     increment () {
       this.categoryIndex = (this.categoryIndex + 1) % this.categories.length
+    },
+    async initializeFilter (index, applyFilter) {
+      await applyFilter({ index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
     }
   }
 }

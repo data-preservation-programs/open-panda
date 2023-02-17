@@ -166,6 +166,19 @@ export default {
         this.$field(this.id).reset(payload.resetTo || this.scaffold.resetTo)
       }
     })
+    /**
+      * This event is emitted in @/modules/search/components/searcher in the
+      * '$route' watcher
+      * @param {object} payload contains id and value keys
+      *  @param {string} payload.id If the field.vue prop (updateGroupId) matches this ID, then its value will be updated
+      *  @param {string} payload.value
+      */
+    this.$nuxt.$on('updateFormField', (payload) => {
+      const value = payload.value
+      if (this.scaffold.updateGroupId === payload.id && this.value !== value) {
+        this.updateValue(payload.value)
+      }
+    })
     this.$emit('fieldRegistered', this.id)
   },
 

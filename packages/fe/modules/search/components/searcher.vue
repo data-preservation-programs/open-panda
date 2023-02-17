@@ -58,21 +58,33 @@ export default {
     }
   },
 
+  watch: {
+    async '$route' (route) {
+      if (this.action === 'query') {
+        await this.$search(this.searchKey).refresh(route)
+        window.$nuxt.$emit('updateFormField', {
+          id: 'search',
+          value: this.$search(this.searchKey).get().value
+        })
+      }
+    }
+  },
+
   async created () {
     if (!this.searcher) {
       await this.$search(this.searchKey).register(
         this.searchKey,
         this.action,
         this.searchValue,
-        this.storeGettter,
+        this.storeGetter,
         this.storeAction
       )
     }
   },
 
   mounted () {
-    this.debounce = Debounce((value) => {
-      this.submitSearchTerm(value)
+    this.debounce = Debounce((payload) => {
+      this.submitSearchTerm(payload)
     }, 200)
   },
 
@@ -87,16 +99,20 @@ export default {
       this.$search(this.searchKey).clear(this)
       this.$emit('searchbarUpdated')
     },
-    updateValue (value) {
+    applySearch (payload) {
       if (this.debounceValueUpdate) {
-        return this.debounce(value)
+        return this.debounce(payload)
       }
-      this.submitSearchTerm(value)
+      this.submitSearchTerm(payload)
     },
-    submitSearchTerm (value) {
+    submitSearchTerm (payload) {
+      if (!payload.hasOwnProperty('live')) {
+        throw new Error('Forgot to specify { live: true|false }')
+      }
       this.$search(this.searchKey).for({
         instance: this,
-        value
+        value: payload.value,
+        live: payload.live
       })
       this.$emit('searchbarUpdated')
     }
@@ -106,7 +122,7 @@ export default {
     return this.$scopedSlots.default({
       value: this.value,
       empty: this.empty,
-      updateValue: this.updateValue,
+      applySearch: this.applySearch,
       clear: this.clear
     })
   }

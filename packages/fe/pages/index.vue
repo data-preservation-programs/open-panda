@@ -19,16 +19,14 @@
         <!-- ============================================== desktop checkbox -->
         <!-- <CheckboxFullyStored
           :options="filters.fullyStored"
-          class="datasets-checkbox show-desktop-only"
-          @filterApplied="refreshDatasetList" /> -->
+          class="datasets-checkbox show-desktop-only" /> -->
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
         <!-- ================================================== desktop sort -->
         <Sort
           :options="sortOptions"
-          class="show-desktop-only"
-          @filterApplied="refreshDatasetList" />
+          class="show-desktop-only" />
         <Filters />
       </div>
     </div>
@@ -42,8 +40,7 @@
       <!-- ===================================================== mobile sort -->
       <Sort
         :options="sortOptions"
-        class="col-6_mi-12"
-        @filterApplied="refreshDatasetList" />
+        class="col-6_mi-12" />
     </div>
 
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
@@ -116,13 +113,13 @@
           :page="page"
           :total-pages="totalPages"
           :loading="dataLoading"
-          @filterApplied="getDatasetList({ route: $route, resetPage: false })" />
+          @filterApplied="getDatasetList({ route: $route })" />
       </div>
       <div class="col-5_md-12 flex-end">
         <ResultsPerPage
           v-if="totalPages > 1"
           :options="limitOptions"
-          @filterApplied="getDatasetList({ route: $route, resetPage: false })" />
+          @filterApplied="getDatasetList({ route: $route })" />
       </div>
     </div>
 
@@ -171,7 +168,20 @@ export default {
   data () {
     return {
       tag: 'index',
-      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid',
+      searchAndFiltersToclear: {
+        resetFormFields: [
+          { id: 'search', resetTo: 'nullState' },
+          { id: 'sort' },
+          { id: 'results-per-page' },
+          { id: 'fully-stored' }
+        ],
+        searchers: ['search'],
+        filters: {
+          clear: ['categories', 'licenses', 'fileExtensions', 'sort', 'limit', 'fullyStored'],
+          override: ['page']
+        }
+      }
     }
   },
 
@@ -239,6 +249,12 @@ export default {
   },
 
   watch: {
+    '$route' () {
+      this.$nextTick(() => {
+        this.getDatasetList({ route: this.$route })
+        this.scrollToResultList()
+      })
+    },
     datasetList () {
       this.stopLoading()
     }
@@ -247,6 +263,10 @@ export default {
   mounted () {
     this.stopLoading()
     this.scrollToResultList()
+  },
+
+  beforeDestroy () {
+    this.$clearSearchAndFilters(this.searchAndFiltersToclear)
   },
 
   methods: {
@@ -267,23 +287,19 @@ export default {
       this.layout = layout
     },
     async deselectFilterOption (option) {
-      await this.$filter(option.filterKey).toggleTerm({
-        index: option.index
-      })
-      this.refreshDatasetList()
-    },
-    refreshDatasetList () {
-      this.getDatasetList({ route: this.$route, resetPage: true })
+      await this.$filter(option.filterKey).for({ index: option.index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
     },
     async clearAllFilters () {
-      await this.$clearSearchAndFilters(['categories', 'licenses', 'fileExtensions', 'sort', 'limit', 'fullyStored'])
-      this.refreshDatasetList()
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$clearSearchAndFilters(this.searchAndFiltersToclear)
     },
     /**
      * If search and filters are not empty, scroll to the results section
      */
-    scrollToResultList () {
-      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions', 'fullyStored'])
+    async scrollToResultList () {
+      const filterSelectionsExist = await this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions', 'fullyStored'])
       const searchExists = !this.$search('search').isEmpty()
       if (filterSelectionsExist || searchExists) {
         this.$scrollToElement(document.getElementById('datasets'), 200, -50)

@@ -4,18 +4,18 @@
     id="pagination-controls"
     v-on="$listeners">
 
-    <template #first="{ incrementPage }">
+    <template #first="{ incrementPage, getIndex }">
       <button
         class="control-button first"
-        @click="incrementPage(1)">
+        @click="incrementPage({ index: getIndex(1), live: true })">
         First
       </button>
     </template>
 
-    <template #prev="{ incrementPage }">
+    <template #prev="{ incrementPage, getIndex }">
       <button
         class="control-button prev"
-        @click="incrementPage(page - 1)">
+        @click="incrementPage({ index: getIndex(page - 1), live: true })">
         Prev
       </button>
     </template>
@@ -26,12 +26,12 @@
       </div>
     </template>
 
-    <template #button="{ button, incrementPage }">
+    <template #button="{ button, incrementPage, getIndex }">
       <button
         v-if="button.display"
         :key="`page-${button.value}`"
         :class="['page-button', { current: button.current }]"
-        @click="incrementPage(button.value)">
+        @click="incrementPage({ index: getIndex(button.value), live: true })">
         {{ button.value }}
       </button>
     </template>
@@ -42,18 +42,18 @@
       </div>
     </template>
 
-    <template #next="{ incrementPage }">
+    <template #next="{ incrementPage, getIndex }">
       <button
         class="control-button next"
-        @click="incrementPage(page + 1)">
+        @click="incrementPage({ index: getIndex(page + 1), live: true })">
         Next
       </button>
     </template>
 
-    <template #last="{ incrementPage }">
+    <template #last="{ incrementPage, getIndex }">
       <button
         class="control-button last"
-        @click="incrementPage(totalPages)">
+        @click="incrementPage({ index: getIndex(totalPages), live: true })">
         Last
       </button>
     </template>
@@ -85,16 +85,6 @@ export default {
       required: false,
       default: 'query'
     },
-    // storeGetter: {
-    //   type: String,
-    //   required: false,
-    //   default: 'general/filterValue'
-    // },
-    // storeAction: {
-    //   type: String,
-    //   required: false,
-    //   default: 'general/setFilterValue'
-    // }
     page: {
       type: Number,
       required: true

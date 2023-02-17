@@ -14,10 +14,10 @@
         label: 'Sort by',
         options,
         defaultValue: originalSelected.length > 0 ? originalSelected : [0], /* manually set to 0 because default in datasets.js store corresponds with the 0'th value in limitOptions */
-        resetGroupId: 'filters',
+        resetGroupId: 'sort',
         isSingleOption: true
       }"
-      @updateValue="applyFilter" />
+      @updateValue="initializeFilter($event, applyFilter)" />
   </Filterer>
 </template>
 
@@ -39,6 +39,14 @@ export default {
     options: {
       type: Array,
       required: true
+    }
+  },
+
+  methods: {
+    async initializeFilter (index, applyFilter) {
+      await applyFilter({ index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'sort'])
     }
   }
 }

@@ -12,11 +12,11 @@
         required: false,
         options: options,
         defaultValue: originalSelected,
-        resetGroupId: 'filters',
+        resetGroupId: 'fully-stored',
         resetTo: 'nullState',
         isSingleOption: true
       }"
-      @updateValue="applyFilter" />
+      @updateValue="initializeFilter($event, applyFilter)" />
   </Filterer>
 </template>
 
@@ -38,6 +38,14 @@ export default {
     options: {
       type: Array,
       required: true
+    }
+  },
+
+  methods: {
+    async initializeFilter (index, applyFilter) {
+      await applyFilter({ index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'fullyStored'])
     }
   }
 }

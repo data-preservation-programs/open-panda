@@ -30,24 +30,24 @@
           </button>
         </section>
         <Filterer
-          v-for="(parentItem, parentIndex) in parentItems"
-          :key="parentItem.id"
-          :filter-key="parentItem.id"
-          :options="filters[parentItem.id]">
+          v-for="(filterGroup, parentIndex) in filterGroups"
+          :key="filterGroup.id"
+          :filter-key="filterGroup.id"
+          :options="filters[filterGroup.id]">
           <section
             slot-scope="{ applyFilter, isSelected }"
             class="grid-noGutter">
             <div class="filters-label col-12">
-              <span>{{ parentItem.label }}</span>
+              <span>{{ filterGroup.label }}</span>
             </div>
             <span
-              v-for="(childItem, childIndex) in filters[parentItem.id]"
+              v-for="(childItem, childIndex) in filters[filterGroup.id]"
               :key="`${filters[parentIndex.id]}-${childIndex}`">
               <ButtonFilters
-                v-if="childIndex < parentItem.limit"
+                v-if="childIndex < filterGroup.limit"
                 :selected="isSelected(childIndex)"
                 class="filter-button"
-                @clicked="applyFilter(childIndex)">
+                @clicked="applyFilter({ index: childIndex, live: false })">
                 {{ childItem.label }}
                 <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
               </ButtonFilters>
@@ -55,9 +55,9 @@
 
             <ButtonToggle
               theme="light"
-              :class="[{ active: parentItem.showMore }]"
-              @click="toggleLimit(parentIndex, filters[parentItem.id])">
-              {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
+              :class="[{ active: filterGroup.showMore }]"
+              @click="toggleLimit(parentIndex, filters[filterGroup.id])">
+              {{ filterGroup.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
             </ButtonToggle>
 
           </section>
@@ -79,7 +79,7 @@
 
 <script>
 // ===================================================================== Imports
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
@@ -131,7 +131,8 @@ export default {
   data () {
     return {
       open: false,
-      parentItems: [{
+      filterSelectionsExist: false,
+      filterGroups: [{
         id: 'categories',
         label: 'Categories',
         limit: 10,
@@ -160,20 +161,27 @@ export default {
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
     },
-    filterSelectionsExist () {
-      return this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
+    filterKeys () {
+      return this.filterGroups.map(group => (group.id))
     },
     disableSearchButton () {
-      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(this.filterKeys)
       const searchExists = !this.$search('search').isEmpty()
       return !filterSelectionsExist && !searchExists
     }
   },
 
+  watch: {
+    async '$route' () {
+      await this.checkIfFilterSelectionsExist()
+    }
+  },
+
+  async mounted () {
+    await this.checkIfFilterSelectionsExist()
+  },
+
   methods: {
-    ...mapActions({
-      getDatasetList: 'datasets/getDatasetList'
-    }),
     togglePanel () {
       this.open = !this.open
     },
@@ -181,16 +189,20 @@ export default {
       this.open = false
     },
     async clearAll () {
-      await this.$clearFilters(['categories', 'licenses', 'fileExtensions'])
-      this.getDatasetList({ route: this.$route, resetPage: true })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$clearSearchAndFilters({ filters: { clear: this.filterKeys, override: ['page'] } })
     },
     toggleLimit (index, child) {
-      this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
-      this.parentItems[index].showMore = !this.parentItems[index].showMore
+      this.filterGroups[index].limit = this.filterGroups[index].showMore ? 10 : child.length
+      this.filterGroups[index].showMore = !this.filterGroups[index].showMore
     },
-    fetchNewData () {
+    async checkIfFilterSelectionsExist () {
+      this.filterSelectionsExist = await this.$checkIfFilterSelectionsExist(this.filterKeys)
+    },
+    async fetchNewData () {
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(this.filterKeys.concat('page'))
       this.closePanel()
-      this.getDatasetList({ route: this.$route, resetPage: true })
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
       // go to home page and scroll to dataset section

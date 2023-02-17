@@ -50,19 +50,14 @@ const actions = {
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
     try {
+      dispatch('setLoadingStatus', { status: true })
       const route = metadata.route
-      let query = route.query
-      const resetPage = metadata.resetPage
-      if (resetPage && process.client) {
-        await this.$filter('page').toggleTerm({ index: 0 })
-        query = this.$router.history.current.query
-      }
+      const query = CloneDeep(route.query)
       const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
       const limit = query.limit || getters.metadata.limit
       const sort = query.sort || 'data_size,1'
       const filters = {}
-      dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
           filters[filter] = query[filter]
@@ -139,10 +134,6 @@ const actions = {
   // ///////////////////////////////////////////////////////////////// setLayout
   setLayout ({ commit }, payload) {
     commit('SET_LAYOUT', payload)
-  },
-  // ///////////////////////////////////////////////////////////// incrementPage
-  incrementPage ({ commit, dispatch }, payload) {
-    dispatch('getDatasetList', { route: payload.route, resetPage: false })
   },
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {

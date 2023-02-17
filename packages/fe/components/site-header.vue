@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div id="site-header">
 
+    <!-- ======================================================== Mobile nav -->
     <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
 
+    <!-- ============================================================ Header -->
     <header :class="['grid-middle-center-spaceBetween-noGutter', { 'has-breadcrumbs': hasBreadcrumbs }]">
       <Filters class="show-desktop-only" open-direction="right" :show-typeahead="true" />
 
@@ -13,15 +15,14 @@
 
       <nav class="desktop-nav">
         <ButtonNav
-          v-for="(link, index) in headerData.nav"
+          v-for="(link, index) in navLinks"
           :key="index"
-          :button="{
-            text: link.label,
-            selected: $isRouteCurrent($route, link.href ? link.href : null),
-            disabled: typeof link.href === 'undefined' || link.href === '',
-            url: link.href,
-            tooltip: link.tooltip || ''
-          }" />
+          :tag="link.tag"
+          :to="link.href"
+          :label="link.label"
+          :selected="$isRouteCurrent($route, link.href ? link.href : null)"
+          :disabled="link.disabled || !link.href || link.href === ''"
+          :tooltip="link.tooltip" />
       </nav>
 
       <div class="hamburger-c" @click="toggleNav">
@@ -32,6 +33,7 @@
       </div>
     </header>
 
+    <!-- ======================================================= Breadcrumbs -->
     <div class="grid">
       <div class="col">
         <Breadcrumbs @visibility-hidden="toggleBreadcrumbs" />
@@ -80,7 +82,10 @@ export default {
       navigationOpen: 'general/navigationOpen'
     }),
     headerData () {
-      return this.siteContent.general ? this.siteContent.general.header : false
+      return this.siteContent.general.header
+    },
+    navLinks () {
+      return this.headerData.nav
     }
   },
 
@@ -117,7 +122,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-header {
+#site-header {
   padding-top: toRem(50);
   padding-bottom: toRem(70);
   @include medium {
