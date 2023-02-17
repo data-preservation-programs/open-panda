@@ -118,7 +118,7 @@
           @filterApplied="getDatasetList({ route: $route })" />
       </div>
       <div class="col-5_md-12 flex-end">
-        <ResultsPerPage
+        <Limit
           v-if="totalPages > 1"
           :options="limitOptions"
           @filterApplied="getDatasetList({ route: $route })" />
@@ -139,7 +139,7 @@ import DatasetsCardList from '@/components/datasets-card/datasets-card-list'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
-import ResultsPerPage from '@/components/results-per-page'
+import Limit from '@/components/limit'
 // import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
 import ButtonFilters from '@/components/buttons/button-filters'
@@ -160,7 +160,7 @@ export default {
     Button,
     Searchbar,
     PaginationControls,
-    ResultsPerPage,
+    Limit,
     ButtonFilters,
     GridIcon,
     ListIcon,
@@ -175,7 +175,7 @@ export default {
         resetFormFields: [
           { id: 'search', resetTo: 'nullState' },
           { id: 'sort' },
-          { id: 'results-per-page' },
+          { id: 'limit' },
           { id: 'fully-stored' }
         ],
         searchers: ['search'],
