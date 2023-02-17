@@ -47,6 +47,7 @@ module.exports = {
     { type: 'dir', path: 'cache' },
     { type: 'dir', path: 'tmp' },
     { type: 'dir', path: 'tmp/uploads' },
+    { type: 'dir', path: 'tmp/cid-files' },
     { type: 'dir', path: 'public' },
     { type: 'dir', path: 'public/uploads' },
     { type: 'dir', path: 'tmp' },
