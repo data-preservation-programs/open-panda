@@ -155,9 +155,9 @@ svg {
   left: 86px;
   @include medium {
     width: 14px;
-    height: 0.375rem;
-    bottom: -0.375rem;
     left: 50px;
+    height: 0.4rem;
+    bottom: -0.375rem;
   }
 }
 

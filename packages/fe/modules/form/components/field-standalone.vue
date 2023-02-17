@@ -159,11 +159,24 @@ export default {
        * resetGroupId: All fields with the same scaffold.resetGroupId will be reset when the
        * 'resetFormFields' global emitter (in search/plugins/index.js) is triggered
        *
-       * resetTo: If the field is reset, should it rest to its default value or
+       * resetTo: If the field is reset, should it reset to its default value or
        * completely wiped back to its null state?
        */
       if (this.scaffold.resetGroupId === payload.id) {
         this.$field(this.id).reset(payload.resetTo || this.scaffold.resetTo)
+      }
+    })
+    /**
+      * This event is emitted in @/modules/search/components/searcher in the
+      * '$route' watcher
+      * @param {object} payload contains id and value keys
+      *  @param {string} payload.id If the field.vue prop (updateGroupId) matches this ID, then its value will be updated
+      *  @param {string} payload.value
+      */
+    this.$nuxt.$on('updateFormField', (payload) => {
+      const value = payload.value
+      if (this.scaffold.updateGroupId === payload.id && this.value !== value) {
+        this.updateValue(payload.value)
       }
     })
     this.$emit('fieldRegistered', this.id)

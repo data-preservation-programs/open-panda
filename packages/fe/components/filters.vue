@@ -1,5 +1,7 @@
 <template>
-  <div v-click-outside="closePanel" :class="['filters', `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
+  <div
+    v-click-outside="closePanel"
+    :class="['filters', { open }, `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
       <Searchbar
@@ -11,13 +13,15 @@
       <button class="button-filter" @click="togglePanel">
         <FiltersIcon class="icon" />
         <div class="button-content">
-          <span v-if="!$filter.isEmpty()" class="has-filters-dot"></span>
+          <client-only>
+            <span v-if="filterSelectionsExist" class="has-filters-dot" />
+          </client-only>
           <span>{{ filterPanelData.labels.buttonText }}</span>
         </div>
       </button>
     </div>
 
-    <div v-if="open" class="filter-panel">
+    <div :class="['filter-panel', { open }]">
       <CardCutout>
         <section class="grid-noGutter-middle-spaceBetween">
           <h5>{{ filterPanelData.labels.add }}</h5>
@@ -26,25 +30,24 @@
           </button>
         </section>
         <Filterer
-          v-for="(parentItem, parentIndex) in parentItems"
-          :key="parentItem.id"
-          :filter-key="parentItem.id"
-          :filters="filters[parentItem.id]">
+          v-for="(filterGroup, parentIndex) in filterGroups"
+          :key="filterGroup.id"
+          :filter-key="filterGroup.id"
+          :options="filters[filterGroup.id]">
           <section
             slot-scope="{ applyFilter, isSelected }"
             class="grid-noGutter">
             <div class="filters-label col-12">
-              <span>{{ parentItem.label }}</span>
+              <span>{{ filterGroup.label }}</span>
             </div>
-
             <span
-              v-for="(childItem, childIndex) in filters[parentItem.id]"
+              v-for="(childItem, childIndex) in filters[filterGroup.id]"
               :key="`${filters[parentIndex.id]}-${childIndex}`">
               <ButtonFilters
-                v-if="childIndex < parentItem.limit"
+                v-if="childIndex < filterGroup.limit"
                 :selected="isSelected(childIndex)"
                 class="filter-button"
-                @clicked="applyFilter(childIndex)">
+                @clicked="applyFilter({ index: childIndex, live: false })">
                 {{ childItem.label }}
                 <span v-if="childItem.count">&nbsp;({{ childItem.count }})</span>
               </ButtonFilters>
@@ -52,18 +55,20 @@
 
             <ButtonToggle
               theme="light"
-              :class="[{ active: parentItem.showMore }]"
-              @click="toggleLimit(parentIndex, filters[parentItem.id])">
-              {{ parentItem.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
+              :class="[{ active: filterGroup.showMore }]"
+              @click="toggleLimit(parentIndex, filters[filterGroup.id])">
+              {{ filterGroup.showMore ? filterPanelData.labels.seeLess : filterPanelData.labels.seeMore }}
             </ButtonToggle>
 
           </section>
         </Filterer>
         <section class="grid-noGutter-right filter-button">
-          <Button :button="{type: 'default'}" @click.native="clearAll">
+          <Button class="btn-clear" :button="{type: 'default'}" @click.native="clearAll">
             {{ filterPanelData.labels.clear }}
           </Button>
-          <Button :button="{type:'solid'}" @click.native="onSearch">
+          <Button
+            :button="{ type: 'solid', disabled: disableSearchButton }"
+            @clicked="fetchNewData">
             {{ filterPanelData.labels.search }}
           </Button>
         </section>
@@ -74,7 +79,7 @@
 
 <script>
 // ===================================================================== Imports
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
@@ -126,7 +131,8 @@ export default {
   data () {
     return {
       open: false,
-      parentItems: [{
+      filterSelectionsExist: false,
+      filterGroups: [{
         id: 'categories',
         label: 'Categories',
         limit: 10,
@@ -137,7 +143,7 @@ export default {
         limit: 10,
         showMore: false
       }, {
-        id: 'fileTypes',
+        id: 'fileExtensions',
         label: 'File Types',
         limit: 10,
         showMore: false
@@ -154,38 +160,60 @@ export default {
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
+    },
+    filterKeys () {
+      return this.filterGroups.map(group => (group.id))
+    },
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(this.filterKeys)
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
     }
   },
 
+  watch: {
+    async '$route' () {
+      await this.checkIfFilterSelectionsExist()
+    }
+  },
+
+  async mounted () {
+    await this.checkIfFilterSelectionsExist()
+  },
+
   methods: {
-    ...mapActions({
-      getDatasetList: 'datasets/getDatasetList'
-    }),
     togglePanel () {
       this.open = !this.open
     },
     closePanel () {
       this.open = false
     },
-    clearAll () {
-      // do not clear fullyStored because that's outside the filter dropdown
-      this.$filter.clearAll(['fullyStored'])
+    async clearAll () {
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$clearSearchAndFilters({ filters: { clear: this.filterKeys, override: ['page'] } })
     },
     toggleLimit (index, child) {
-      this.parentItems[index].limit = this.parentItems[index].showMore ? 10 : child.length
-      this.parentItems[index].showMore = !this.parentItems[index].showMore
+      this.filterGroups[index].limit = this.filterGroups[index].showMore ? 10 : child.length
+      this.filterGroups[index].showMore = !this.filterGroups[index].showMore
     },
-    onSearch () {
+    async checkIfFilterSelectionsExist () {
+      this.filterSelectionsExist = await this.$checkIfFilterSelectionsExist(this.filterKeys)
+    },
+    async fetchNewData () {
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(this.filterKeys.concat('page'))
       this.closePanel()
-      this.getDatasetList({ route: this.$route })
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
       // go to home page and scroll to dataset section
-      this.$router.push({
-        path: '/',
-        hash: '#datasets',
-        query: this.$route.query
-      })
+      if (this.$route.path !== '/') {
+        this.$router.push({
+          path: '/',
+          query: this.$route.query
+        })
+      } else {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     }
   }
 }
@@ -228,8 +256,22 @@ export default {
       padding-left: toRem(20);
       border-left: 1px solid $tasman;
     }
-    .icon {
+    :deep(.icon) {
       margin-right: toRem(15);
+      .path {
+        transition: 250ms;
+      }
+    }
+    .open &,
+    &:hover {
+      background-color: $rangoonGreen;
+      color: white;
+      :deep(.icon) {
+        path {
+          transition: 250ms;
+          fill: white;
+        }
+      }
     }
   }
   .button-content {
@@ -259,8 +301,9 @@ export default {
   }
 }
 
-// panel
+// //////////////////////////////////////////////////////////////// Filter Panel
 .filter-panel {
+  display: none;
   position: absolute;
   width: 70vw;
   max-width: toRem(800);
@@ -269,6 +312,9 @@ export default {
   z-index: 100;
   @include medium {
     width: 88vw;
+  }
+  &.open {
+    display: block;
   }
   .direction-right & {
     left: 0;
@@ -298,17 +344,10 @@ export default {
     margin-bottom: toRem(15);
     @include fontSize_20;
   }
-  .filter-button {
-    margin-bottom: 0.5rem;
-    &:not(:last-child) {
-      margin-right: 0.5rem;
-    }
-  }
-  .filter-button {
-    button {
-      margin-left: toRem(30);
-    }
-  }
+}
+
+.btn-clear {
+  margin-right: toRem(30);
 }
 
 </style>

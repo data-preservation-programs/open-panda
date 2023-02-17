@@ -48,3 +48,29 @@ try {
 } catch (e) {
   console.log(e)
 }
+
+// ///////////////////////////////////////////////////////////// Test operations
+// -----------------------------------------------------------------------------
+const loopDatasets = async () => { /* eslint-disable-line */
+  const datasets = await MC.model.Dataset.find({ new: false, file_extensions: { $in: ['.pdf'] } })
+  console.log(datasets.length)
+  console.log(datasets.map(dataset => (dataset.name)))
+  // const len = datasets.length
+  // for (let i = 0; i < len; i++) {
+  //   const dataset = datasets[i]
+  //   console.log(dataset.name)
+  //   console.log(dataset.categories)
+  // }
+} // loopDatasets()
+
+// const dropCidDatabaseCollection = async () => {
+//   try {
+//     // delete all documents from the Cid table in the database
+//     await MC.model.Cid.collection.drop()
+//     const cids = await MC.model.Cid.find()
+//     console.log(cids)
+//   } catch (e) {
+//     console.log(e)
+//   }
+// }
+// dropCidDatabaseCollection()

@@ -12,19 +12,23 @@
   "header": {
     "nav": [
       {
+        "tag": "nuxt-link",
         "href": "/how-to-download",
         "label": "How to Download"
       },
       {
+        "tag": "nuxt-link",
         "href": "/about",
         "label": "About"
       },
       {
+        "tag": "nuxt-link",
         "href": "/about#faq",
         "label": "FAQ"
       },
       {
-        "href": "https://protocol.ai/",
+        "tag": "a",
+        "href": "mailto:slingshot@protocol.ai?cc=slingshotprogram@protonmail.com&subject=Open%20Panda%20Dataset%20Request&body=Your%20organization%20or%20name%3A%0D%0ADescribe%20the%20dataset%20you%20would%20like%20to%20add%3A",
         "label": "Add a Dataset"
       },
       {
@@ -49,11 +53,11 @@
   },
   "footer": {
     "heading": "Access humanity's most important data",
-    "copyright": "<a href='https://github.com/data-preservation-programs' target='_blank'>Data Preservation Programs</a>",
+    "copyright": "2023 <a href='https://github.com/data-preservation-programs' target='_blank'>Data Preservation Programs</a>",
     "image": "/images/footer.png",
     "nav_1": [
       {
-        "href": "https://protocol.ai/",
+        "href": "https://github.com/data-preservation-programs/slingshot/issues/new/choose",
         "label": "Add a Dataset"
       },
       {
@@ -63,13 +67,13 @@
       {
         "href": "/about#faq",
         "label": "FAQs"
-      },
-      {
-        "href": "/about",
-        "label": "About"
       }
     ],
     "nav_2": [
+      {
+        "href": "/about",
+        "label": "About"
+      },
       {
         "href": "https://slack.com",
         "label": "Slack"
@@ -77,7 +81,9 @@
       {
         "href": "https://github.com",
         "label": "Github"
-      },
+      }
+    ],
+    "nav_3": [
       {
         "href": "/terms",
         "label": "Terms"
@@ -113,7 +119,7 @@
     "keys": {
       "categories": "Categories",
       "licenses": "Licenses",
-      "fileTypes": "File Type"
+      "fileExtensions": "File Type"
     }
   }
 }

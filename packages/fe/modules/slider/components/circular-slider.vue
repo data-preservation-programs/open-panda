@@ -17,13 +17,13 @@
 
               <button
                 class="previous-button slider-button"
-                @click="onClick(-1)">
+                @click="onClick(1)">
                 <slot name="icon-previous"></slot>
               </button>
 
               <button
                 class="next-button slider-button"
-                @click="onClick(1)">
+                @click="onClick(-1)">
                 <slot name="icon-next"></slot>
               </button>
 

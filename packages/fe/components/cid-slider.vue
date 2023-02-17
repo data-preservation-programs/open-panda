@@ -1,6 +1,6 @@
 <template>
   <TabbedSlider
-    slider-id="cid-card-slider"
+    :slider-id="sliderId"
     @slide-changed="handleSlideChange">
 
     <template #before-tabs>
@@ -98,6 +98,11 @@ export default {
       type: Array,
       required: true,
       default: () => []
+    },
+    sliderId: {
+      type: String,
+      required: true,
+      default: ''
     }
   },
 
@@ -137,19 +142,6 @@ export default {
 .headings-row {
   --tabs-panel-height: 50px;
   position: relative;
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(100% - 3.125rem);
-    height: var(--tabs-panel-height);
-    border: solid 1px $grayNurse;
-    border-radius: 0.625rem;
-    @include large {
-      width: calc(100% - 1.5rem);
-    }
-  }
   .cell {
     @include fontWeight_Medium;
     @include large {
@@ -214,6 +206,7 @@ export default {
   background-color: $grayNurse;
   border: solid 1px $tasman;
   border-radius: 0.625rem;
+  margin-top: toRem(10);
 }
 
 .command-wrapper {
@@ -248,5 +241,23 @@ export default {
 .copy-icon {
   display: block;
   fill: $grayNurse;
+}
+
+:deep(.tab-list) {
+  height: 100% !important;
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -3rem;
+    left: 0;
+    width: calc(100% - 3.125rem);
+    height: calc(100% - 2rem);
+    border: solid 1px $grayNurse;
+    border-radius: 0.625rem;
+    @include large {
+      width: calc(100% - 1.5rem);
+    }
+  }
 }
 </style>

@@ -1,9 +1,7 @@
 import CloneDeep from 'lodash/cloneDeep'
 
-// /////////////////////////////////////////////////////////////////// Functions
-// -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   datasetList: false,
   datasetListTypeahead: false,
@@ -52,14 +50,14 @@ const actions = {
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
     try {
+      dispatch('setLoadingStatus', { status: true })
       const route = metadata.route
-      const query = route.query
+      const query = CloneDeep(route.query)
       const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
       const limit = query.limit || getters.metadata.limit
-      const sort = query.sort
+      const sort = query.sort || 'data_size,1'
       const filters = {}
-      dispatch('setLoadingStatus', { status: true })
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
           filters[filter] = query[filter]
@@ -78,7 +76,16 @@ const actions = {
       const datasetListOriginal = CloneDeep(payload.results)
       const datasetList = datasetListOriginal
       datasetList.forEach((item) => {
+        let imgUrl = item.slug
+        // exceptions
+        if (item.slug.includes('common-crawl')) {
+          imgUrl = 'common-crawl'
+        }
+        if (item.slug.includes('sloan-digital-sky-survey-release')) {
+          imgUrl = 'sloan-digital-sky-survey-release'
+        }
         item.data_size = this.$formatBytes(item.data_size)
+        item.img_url = `/images/datasets/${imgUrl}.jpg`
       })
       dispatch('setDatasetList', {
         datasetList,
@@ -128,10 +135,6 @@ const actions = {
   setLayout ({ commit }, payload) {
     commit('SET_LAYOUT', payload)
   },
-  // ///////////////////////////////////////////////////////////// incrementPage
-  incrementPage ({ commit, dispatch }, payload) {
-    dispatch('getDatasetList', { route: payload.route })
-  },
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
@@ -170,6 +173,9 @@ const mutations = {
   },
   SET_LAYOUT (state, layout) {
     state.layout = layout
+  },
+  SET_PAGE (state, page) {
+    state.metadata.page = page
   }
 }
 

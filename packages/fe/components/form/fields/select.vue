@@ -6,7 +6,8 @@
       :aria-labelledby="modelKey || fieldKey"
       :selected-option="value"
       @dropdownToggled="dropdownToggled"
-      @optionSelected="optionSelected">
+      @optionSelected="optionSelected"
+      v-on="$listeners">
 
       <template #option-native-text="{ option }">
         {{ getOptionDescription(option) ? `${option.label}, ${getOptionDescription(option)}` : option.label }}

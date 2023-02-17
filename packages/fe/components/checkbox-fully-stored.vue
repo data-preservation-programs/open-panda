@@ -1,22 +1,23 @@
 <template>
   <Filterer
+    v-slot="{ applyFilter, originalSelected }"
     filter-key="fullyStored"
     :is-single-option="true"
-    :filters="options"
+    :options="options"
     v-on="$listeners">
-    <div slot-scope="{ applyFilter, originalSelected }">
-      <FieldContainer
-        field-key="toggle_fully_stored"
-        :scaffold="{
-          type: 'checkbox',
-          required: false,
-          options: options,
-          defaultValue: originalSelected,
-          resetGroupId: 'filters',
-          resetTo: 'nullState'
-        }"
-        @updateValue="applyFilter" />
-    </div>
+    <FieldContainer
+      field-key="toggle_fully_stored"
+      :scaffold="{
+        type: 'checkbox',
+        required: false,
+        options: options,
+        defaultValue: originalSelected,
+        resetGroupId: 'fully-stored',
+        updateGroupId: 'fully-stored',
+        resetTo: 'nullState',
+        isSingleOption: true
+      }"
+      @updateValue="initializeFilter($event, applyFilter)" />
   </Filterer>
 </template>
 
@@ -38,6 +39,14 @@ export default {
     options: {
       type: Array,
       required: true
+    }
+  },
+
+  methods: {
+    async initializeFilter (index, applyFilter) {
+      await applyFilter({ index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'fullyStored'])
     }
   }
 }

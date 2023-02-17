@@ -38,7 +38,7 @@ const getValue = (app, scaffold, form, formId, resetTo, groupIndex) => {
   const type = scaffold.type
   const defaultValue = scaffold.defaultValue
   const options = scaffold.options
-  const isSingleOption = options ? options.length === 1 : undefined
+  const isSingleOption = scaffold.isSingleOption
   let value = form ? form.scaffold[scaffold.modelKey] : undefined // First grab the value found in the form
   if (type === 'array') {
     value.map(entry => (Object.assign(entry, { groupId: Uuid.v4() })))

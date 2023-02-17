@@ -1,5 +1,14 @@
 <template>
-  <div :class="['field field-typeahead', state, { focused, empty, 'dropdown-open': dropdownOpen }]">
+  <div
+    :class="[
+      'field field-typeahead',
+      state, {
+        focused,
+        empty,
+        'dropdown-open': dropdownOpen,
+        'first-option-highlighted': firstOptionHighlighted,
+        'no-results': noOptionsMatchSearch
+      }]">
 
     <label v-if="label" :for="fieldKey" class="label floating">
       <span class="text">{{ label }}</span>
@@ -20,7 +29,9 @@
         :value="value"
         :autocomplete="autocomplete"
         :class="['input', state]"
-        @focus="focusHandler"
+        @keydown="$emit('handleKeydown', $event)"
+        @focus="focusAndClickHandler"
+        @click="focusAndClickHandler"
         @blur="focused = false"
         @input="$emit('updateValue', $event.target.value)"
         v-on="$listeners" />
@@ -36,7 +47,8 @@
       :selected-option="selectedOption"
       :handle-click-outside="false"
       @dropdownToggled="dropdownToggled"
-      @optionSelected="optionSelected">
+      @optionSelected="optionSelected"
+      @optionHighlighted="optionHighlighted">
 
       <template #option-native-text="{ option }">
         {{ option[optionDisplayKey] }}
@@ -64,7 +76,7 @@
  *   "placeholder": "Country",
  *   "description": "Where are you located?",
  *   "required": true,
- *   "autocomplete": "none",
+ *   "autocomplete": "off",
  *   "pre": "[^\\u0000-\\u00ff]",
  *   "validationMessage": {
  *     "required": "This field is required"
@@ -118,7 +130,8 @@ export default {
     return {
       focused: false,
       dropdownOpen: false,
-      selectedOption: -1
+      selectedOption: -1,
+      noOptionsMatchSearch: false
     }
   },
 
@@ -177,12 +190,16 @@ export default {
     },
     optionReturnKey () {
       return this.scaffold.optionReturnKey
+    },
+    firstOptionHighlighted () {
+      return this.highlightedOption === 0
     }
   },
 
   watch: {
     value (value) {
       preValidate(this, value, this.pre)
+      this.checkIfNoResultsMatchSearch()
     }
   },
 
@@ -191,9 +208,11 @@ export default {
   },
 
   methods: {
-    focusHandler () {
-      this.focused = true
-      this.openDropdown()
+    focusAndClickHandler () {
+      if (!this.dropdownOpen) {
+        this.focused = true
+        this.openDropdown()
+      }
     },
     dropdownToggled (state) {
       this.dropdownOpen = state
@@ -204,10 +223,15 @@ export default {
     closeDropdown () {
       this.dropdown.closeDropdown()
     },
+    optionHighlighted (index) {
+      this.highlightedOption = index
+    },
     optionSelected (index) {
-      this.selectedOption = index
-      this.$emit('optionSelected', this.options[index][this.optionReturnKey])
-      this.$emit('updateValue', this.options[index][this.optionReturnKey])
+      if (index !== -1) {
+        this.selectedOption = index
+        this.$emit('optionSelected', this.options[index][this.optionReturnKey])
+        this.$emit('updateValue', this.options[index][this.optionReturnKey])
+      }
     },
     optionIncludedInSearch (option) {
       const value = option[this.optionDisplayKey]
@@ -218,6 +242,17 @@ export default {
       const optionValue = option[this.optionDisplayKey]
       if (inputValue === '') { return optionValue }
       return optionValue.replace(this.valueMatchRegExp, '<span class="highlight">$1</span>')
+    },
+    checkIfNoResultsMatchSearch () {
+      const options = this.options
+      const len = options.length
+      let noOptionsMatch = true
+      for (let i = 0; i < len; i++) {
+        if (this.optionIncludedInSearch(options[i])) {
+          noOptionsMatch = false
+        }
+      }
+      this.noOptionsMatchSearch = noOptionsMatch
     }
   }
 }
@@ -231,9 +266,16 @@ $height: 3.125rem;
   height: $height;
   display: flex;
   align-items: center;
-
   &.dropdown-open {
-    .select-container {
+    &.no-results {
+      :deep(div.select-container) {
+        display: none;
+        &:before {
+          display: none;
+        }
+      }
+    }
+    :deep(div.select-container) {
       display: block;
     }
   }
@@ -278,7 +320,7 @@ $height: 3.125rem;
 }
 
 // //////////////////////////////////////////////////////////////////// Dropdown
-.select-container {
+:deep(div.select-container) {
   display: none;
   position: absolute;
   top: 120%;
@@ -297,17 +339,13 @@ $height: 3.125rem;
   }
 }
 
-:deep(.select) {
+:deep(select.select) {
   &.native {
     height: 0;
-    border-radius: 0.25rem;
-    &:focus-visible {
-      @include focusBoxShadow;
-    }
   }
 }
 
-:deep(.dropdown) {
+:deep(div.dropdown) {
   @include shadow1;
   top: 10px;
   max-height: $height * 5.5;
@@ -317,7 +355,7 @@ $height: 3.125rem;
   border-bottom-left-radius: 0.625rem;
 }
 
-:deep(.selection-window-wrapper) {
+:deep(div.selection-window-wrapper) {
   display: none;
 }
 
@@ -325,7 +363,7 @@ $height: 3.125rem;
   z-index: 10;
 }
 
-.selection-window {
+:deep(div.selection-window) {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -335,7 +373,7 @@ $height: 3.125rem;
   transition: 150ms ease-out;
 }
 
-.option {
+:deep(div.option) {
   padding: 0.5rem 0.75rem;
   transition: 150ms ease-out;
   &.highlighted {
@@ -345,7 +383,7 @@ $height: 3.125rem;
   &:not(.display) {
     display: none;
   }
-  :deep(span) {
+  span {
     font-weight: 700;
     text-decoration: underline;
   }

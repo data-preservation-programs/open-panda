@@ -17,9 +17,9 @@
           theme="line"
           class="datasets-searchbar" />
         <!-- ============================================== desktop checkbox -->
-        <CheckboxFullyStored
+        <!-- <CheckboxFullyStored
           :options="filters.fullyStored"
-          class="datasets-checkbox show-desktop-only" />
+          class="datasets-checkbox show-desktop-only" /> -->
       </div>
 
       <div class="col-4_mi-12 datasets-sort-c">
@@ -34,9 +34,9 @@
     <!-- =========================== filter row2 mobile only: checkbox, sort -->
     <div class="grid-noGutter-middle-spaceBetween show-mobile-only filter-row2-mobile">
       <!-- ================================================= mobile checkbox -->
-      <CheckboxFullyStored
+      <!-- <CheckboxFullyStored
         :options="filters.fullyStored"
-        class="col-6_mi-12 datasets-checkbox" />
+        class="col-6_mi-12 datasets-checkbox" /> -->
       <!-- ===================================================== mobile sort -->
       <Sort
         :options="sortOptions"
@@ -46,34 +46,23 @@
     <!-- filter row2 desktop only: results count, selected filters, layout button selection -->
     <div class="grid-middle-noGutter-spaceBetween filter-row2 show-desktop-only">
       <div class="col-8">
-        <span class="datasets-results">{{ resultCount }}</span>
-        <Filterer
-          v-for="(item, key) in filterPanelData.keys"
-          :key="key"
-          :filter-key="key"
-          :filters="filters[key]">
-          <span
-            slot-scope="{ applyFilter, isSelected }"
-            class="button-list">
-            <span
-              v-for="(item2, index2) in filters[key]"
-              :key="`${filters[key]}-${index2}`">
-              <ButtonFilters
-                v-if="isSelected(index2)"
-                :selected="isSelected(index2)"
-                class="filter-button"
-                @clicked="applyFilter(index2)">
-                {{ item2.label }}
-              </ButtonFilters>
-            </span>
-          </span>
-        </Filterer>
+        <div class="button-list-panel">
+          <span class="datasets-results">{{ resultCount }}</span>
+          <ButtonFilters
+            v-for="(option, index) in selectedFilterOptions"
+            :key="`${option.value}-${index}`"
+            :selected="true"
+            class="filter-button"
+            @clicked="deselectFilterOption(option)">
+            {{ option.label }}
+          </ButtonFilters>
+        </div>
       </div>
 
       <div class="col-4 flex-end">
         <Button
           :button="{type: 'outline'}"
-          @click.native="$clearSearchFilterSortAndLimit">
+          @clicked="clearAllFilters">
           {{ datasetContent.clearAllFilters }}
         </Button>
         <button
@@ -123,12 +112,14 @@
           v-if="totalPages > 1"
           :page="page"
           :total-pages="totalPages"
-          :loading="dataLoading" />
+          :loading="dataLoading"
+          @filterApplied="getDatasetList({ route: $route })" />
       </div>
       <div class="col-5_md-12 flex-end">
         <ResultsPerPage
           v-if="totalPages > 1"
-          :options="limitOptions" />
+          :options="limitOptions"
+          @filterApplied="getDatasetList({ route: $route })" />
       </div>
     </div>
 
@@ -147,9 +138,8 @@ import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
 import ResultsPerPage from '@/components/results-per-page'
-import CheckboxFullyStored from '@/components/checkbox-fully-stored'
+// import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
-import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import Button from '@/components/buttons/button'
 import GridIcon from '@/components/icons/grid'
@@ -163,12 +153,11 @@ export default {
     BlockBuilder,
     DatasetsCardGrid,
     DatasetsCardList,
-    CheckboxFullyStored,
+    // CheckboxFullyStored,
     Filters,
     Button,
     Searchbar,
     PaginationControls,
-    Filterer,
     ResultsPerPage,
     ButtonFilters,
     GridIcon,
@@ -179,14 +168,27 @@ export default {
   data () {
     return {
       tag: 'index',
-      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
+      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid',
+      searchAndFiltersToclear: {
+        resetFormFields: [
+          { id: 'search', resetTo: 'nullState' },
+          { id: 'sort' },
+          { id: 'results-per-page' },
+          { id: 'fully-stored' }
+        ],
+        searchers: ['search'],
+        filters: {
+          clear: ['categories', 'licenses', 'fileExtensions', 'sort', 'limit', 'fullyStored'],
+          override: ['page']
+        }
+      }
     }
   },
 
   async fetch ({ app, store, route, error }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
-    await store.dispatch('datasets/getDatasetList', { route })
     await store.dispatch('datasets/getFiltersAndTypeahead')
+    await store.dispatch('datasets/getDatasetList', { route })
   },
 
   head () {
@@ -232,12 +234,26 @@ export default {
     },
     noResults () {
       return !this.count
+    },
+    selectedFilterOptions () {
+      const filters = ['categories', 'licenses', 'fileExtensions']
+      const len = filters.length
+      let selected = []
+      for (let i = 0; i < len; i++) {
+        selected = selected.concat(
+          this.$filter(filters[i]).getSelectionOptions()
+        )
+      }
+      return selected
     }
   },
 
   watch: {
-    '$route' (route) {
-      this.getDatasetList({ route })
+    '$route' () {
+      this.$nextTick(() => {
+        this.getDatasetList({ route: this.$route })
+        this.scrollToResultList()
+      })
     },
     datasetList () {
       this.stopLoading()
@@ -246,6 +262,11 @@ export default {
 
   mounted () {
     this.stopLoading()
+    this.scrollToResultList()
+  },
+
+  beforeDestroy () {
+    this.$clearSearchAndFilters(this.searchAndFiltersToclear)
   },
 
   methods: {
@@ -264,6 +285,25 @@ export default {
     updateLayout (layout) {
       this.$ls.set('layout', layout)
       this.layout = layout
+    },
+    async deselectFilterOption (option) {
+      await this.$filter(option.filterKey).for({ index: option.index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
+    },
+    async clearAllFilters () {
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$clearSearchAndFilters(this.searchAndFiltersToclear)
+    },
+    /**
+     * If search and filters are not empty, scroll to the results section
+     */
+    async scrollToResultList () {
+      const filterSelectionsExist = await this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions', 'fullyStored'])
+      const searchExists = !this.$search('search').isEmpty()
+      if (filterSelectionsExist || searchExists) {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     }
   }
 }
@@ -375,6 +415,7 @@ export default {
 .filter-row2 {
   .datasets-results {
     margin-right: toRem(20);
+    margin-bottom: 0.5rem;
   }
 }
 
@@ -428,4 +469,15 @@ export default {
   }
 }
 
+.button-list-panel {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.filter-button {
+  margin-bottom: 0.5rem;
+}
 </style>

@@ -4,10 +4,11 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
+    search-key="search"
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
-      slot-scope="{ value, updateValue, empty }"
+      slot-scope="{ value, applySearch, empty }"
       :class="['searchbar', showTypeahead ? 'has-typeahead' : 'no-typeahead', `theme__${theme}`, { empty, loading }]">
 
       <FieldContainer
@@ -18,22 +19,25 @@
           modelKey: 'typeahead',
           placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
           required: false,
-          autocomplete: 'none',
+          autocomplete: 'off',
           optionDisplayKey: 'name',
           optionReturnKey: 'slug',
           options: datasetListTypeahead,
           defaultValue: value || '',
-          resetGroupId: 'filters'
+          resetGroupId: 'search',
+          updateGroupId: 'search'
         }"
-        @input="updateValue"
+        @updateValue="applySearch({ value: $event, live: false })"
+        @handleKeydown="handleKeydown"
         @optionSelected="goToDatasetPage" />
 
-      <button
+      <ButtonX
         :class="['search-button', { loading }]"
-        @click="searchbarSearch">
+        :disabled="disableSearchButton"
+        @clicked="fetchNewData">
         <Spinner />
         <IconSearch />
-      </button>
+      </ButtonX>
 
     </div>
   </Searcher>
@@ -41,10 +45,12 @@
 
 <script>
 // ===================================================================== Imports
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
 import FieldContainer from '@/components/form/field-container'
+import ButtonX from '@/components/buttons/button-x'
 import IconSearch from '@/components/icons/search'
 
 // ====================================================================== Export
@@ -55,6 +61,7 @@ export default {
     Searcher,
     Spinner,
     IconSearch,
+    ButtonX,
     FieldContainer
   },
 
@@ -110,21 +117,41 @@ export default {
   computed: {
     ...mapGetters({
       datasetListTypeahead: 'datasets/datasetListTypeahead'
-    })
+    }),
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
+    }
   },
 
   methods: {
-    searchbarSearch () {
-      this.$router.push({
-        path: '/',
-        query: this.$route.query,
-        hash: '#datasets'
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
+    async fetchNewData () {
+      await this.$search('search').for({
+        instance: this,
+        live: true,
+        redirect: this.$route.path !== '/' ? '/' : undefined
       })
+      if (this.$route.path === '/') {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
     },
     goToDatasetPage (slug) {
       this.$router.push({
         path: `/dataset/${slug}`
       })
+    },
+    handleKeydown (e) {
+      const keyCode = e.keyCode
+      const code = e.keyCode
+      const key = e.key
+      const submit = keyCode === 13 || code === 13 || key === 'Enter'
+      if (submit) {
+        this.fetchNewData()
+      }
     }
   }
 }

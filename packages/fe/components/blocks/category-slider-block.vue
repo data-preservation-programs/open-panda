@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-if="collection"
-    class="slider-block">
+  <div v-if="collection" class="slider-block">
 
     <svg
       class="clip-path-svg"
@@ -16,9 +14,9 @@
 
     <Filterer
       filter-key="categories"
-      :filters="filters.categories">
+      :options="filters.categories">
       <CircularSlider
-        slot-scope="{ clearFilters, applyFilter }"
+        slot-scope="{ applyFilter }"
         slider-id="category-slider"
         :start-panel-index="collection.length - 1"
         :display-options="{ default: 7, xlarge: 6, large: 5, small: 4, mini: 5 }"
@@ -39,7 +37,7 @@
           <div
             :key="`slide-${i}`"
             class="category-card"
-            @click="() => { clearFilters(); applyFilter(i) }">
+            @click="initializeFilter(i, applyFilter)">
             <div class="inner-content">
               <div
                 class="background-image"
@@ -63,6 +61,7 @@
 <script>
 // ====================================================================== Import
 import { mapGetters } from 'vuex'
+
 import Filterer from '@/modules/search/components/filterer'
 import CircularSlider from '@/modules/slider/components/circular-slider'
 import ChevronDownIcon from '@/components/icons/chevron-down'
@@ -94,6 +93,14 @@ export default {
     },
     sliderGrid () {
       return this.block.sliderGrid
+    }
+  },
+
+  methods: {
+    async initializeFilter (index, applyFilter) {
+      await applyFilter({ index, live: false })
+      await this.$filter('page').for({ index: 0, live: false })
+      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
     }
   }
 }
@@ -182,30 +189,29 @@ export default {
     display: flex;
     justify-content: center;
   }
-}
-
-:deep(.slide-selector) {
-  justify-content: space-between;
-  padding: 0 2.25rem;
-  @include medium {
-    padding: 0;
-    margin: 0 -1rem;
-    width: calc(100% + 2rem);
-  }
-  @include small {
-    width: toRem(112);
-  }
-  .slider-button {
-    @include circleBorder;
-  }
-  .previous-button {
-    svg {
-      transform: rotate(90deg) scale(0.4);
+  .slide-selector {
+    justify-content: space-between;
+    padding: 0 2.25rem;
+    @include medium {
+      padding: 0;
+      margin: 0 -1rem;
+      width: calc(100% + 2rem);
     }
-  }
-  .next-button {
-    svg {
-      transform: rotate(-90deg) scale(0.4);
+    @include small {
+      width: toRem(112);
+    }
+    .slider-button {
+      @include circleBorder;
+    }
+    .previous-button {
+      svg {
+        transform: rotate(90deg) scale(0.4);
+      }
+    }
+    .next-button {
+      svg {
+        transform: rotate(-90deg) scale(0.4);
+      }
     }
   }
 }

@@ -1,7 +1,4 @@
 <script>
-// ===================================================================== Imports
-import { mapActions } from 'vuex'
-
 // ====================================================================== Export
 export default {
   name: 'Filterer',
@@ -16,19 +13,18 @@ export default {
       type: String,
       required: true
     },
-    filters: {
+    options: {
       type: Array,
       required: true
     },
-    // search by multiple filters or just 1 at a time
-    multiple: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    // for filters with boolean or single-select value
+    // for options with boolean or single-select value
     // ie. checkboxes or select
     isSingleOption: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    deregisterOnDestroy: {
       type: Boolean,
       required: false,
       default: false
@@ -45,21 +41,18 @@ export default {
     // }
   },
 
-  data () {
-    const action = this.action
-    let selected = []
-    switch (action) {
-      // case 'emit' : selected = this.filterValue; break
-      // case 'store' : selected = this.$store.getters[this.storeGetter]; break
-      case 'query' : selected = this.getCurrentFilterIndexes(this.$route); break
-    }
-    return {
-      selected,
-      originalSelected: selected // lock in the filters on page load
-    }
-  },
-
   computed: {
+    filter () {
+      return this.$filter(this.filterKey).get()
+    },
+    selected () {
+      const filter = this.filter
+      return filter ? filter.selected : []
+    },
+    originalSelected () {
+      const filter = this.filter
+      return filter ? filter.originalSelected : []
+    },
     empty () {
       return this.selected.length === 0
     }
@@ -67,72 +60,59 @@ export default {
 
   watch: {
     '$route' (route) {
-      this.selected = this.getCurrentFilterIndexes(route)
+      if (this.action === 'query') {
+        this.$filter(this.filterKey).refresh(route)
+        const selected = this.filter.selected
+        window.$nuxt.$emit('updateFormField', {
+          id: this.filterKey,
+          value: this.isSingleOption ? selected[0] : selected // this.$filter(this.searchKey).get().value
+        })
+      }
     }
   },
 
-  created () {
-    this.recordFilter(this.filterKey)
+  async created () {
+    if (!this.filter) {
+      await this.$filter(this.filterKey).register(
+        this.filterKey,
+        this.options,
+        this.isSingleOption,
+        this.action
+      )
+    }
+  },
+
+  beforeDestroy () {
+    this.$filter(this.filterKey).clear()
+    if (this.deregisterOnDestroy) {
+      this.$filter(this.filterKey).deregister()
+    }
   },
 
   methods: {
-    ...mapActions({
-      recordFilter: 'search/recordFilter'
-    }),
-    /**
-     * returns array of filter indexes
-     *
-     * route example: /?new=true&region=us,ca
-     * returns: [0] and [2, 6]
-     * @param {*} route
-     */
-    getCurrentFilterIndexes (route) {
-      const isSingleOption = this.isSingleOption
-      let query = route.query[this.filterKey]
-      if (!query) { return [] }
-      query = isSingleOption ? [query] : query.split(',')
-      const filters = this.filters
-      return query.reduce((acc, item) => {
-        acc.push(filters.findIndex((filter) => {
-          return item === `${filter.value}`
-        }))
-        return acc
-      }, [])
-    },
-    applyFilter (index) {
-      const action = this.action
-      const value = index === -1 ? undefined : `${this.filters[index].value}`
-      this.$filter.toggleTerm({
+    async applyFilter (payload) {
+      if (!payload.hasOwnProperty('live')) {
+        throw new Error('Forgot to specify { live: true|false }')
+      }
+      await this.$filter(this.filterKey).for({
         instance: this,
-        action,
-        storeAction: this.storeAction,
-        value,
-        filterKey: this.filterKey,
-        isSingleOption: this.isSingleOption
+        index: payload.index,
+        live: payload.live
       })
       this.$emit('filterApplied')
-      // if (action === 'emit') {
-      //   // this.$emit('setFilterValue', value)
-      // } else if (action === 'store') {
-      //   // this.$store.dispatch(this.storeAction, value)
-      // } else {
-      //   // this.$search.applyFilter(filter)
-      // }
     },
     isSelected (index) {
       return this.selected.includes(index)
     },
     clearFilters () {
-      this.$filter.clear(this.filterKey)
+      this.$filter(this.filterKey).clear()
     }
   },
 
   render () {
-    const isSingleOption = this.isSingleOption
-    const originalSelected = this.originalSelected
     return this.$scopedSlots.default({
       applyFilter: this.applyFilter,
-      originalSelected: isSingleOption ? originalSelected[0] : originalSelected,
+      originalSelected: this.originalSelected,
       selected: this.selected,
       isSelected: this.isSelected,
       clearFilters: this.clearFilters,
