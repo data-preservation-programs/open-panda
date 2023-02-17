@@ -1,0 +1,90 @@
+{
+  "seo": {
+    "title": "How to download - Open Panda",
+    "description": "Learn how to download files from a decentralized storage network using Open Panda. We're currently in a state of rapid iteration to further improve the download experience."
+  },
+  "og": {
+    "site_name": "Open Panda",
+    "url": "https://openpanda.io/alpha",
+    "type": "website",
+    "image": "/open-graph-image.jpg"
+  },
+  "page_content": {
+    "hero": {
+      "id": "alpha-hero",
+      "grid": ["middle"],
+      "col_1": {
+        "type": "custom",
+        "cols": {
+          "num": "col-5_sm-8_mi-12",
+          "push_left": "off-0_sm-2_mi-0"
+        },
+        "customizations": {
+          "alpha-logo": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/alpha/open-panda-alpha-logo.svg"
+              }
+            }
+          },
+          "image-after": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/about/rock-over-block-shapes.png"
+              }
+            }
+          }
+        }
+      },
+      "col_2": {
+        "type": "text_block",
+        "cols": {
+          "num": "col-6_sm-10_mi-12",
+          "push_left": "off-1_sm-1_mi-0",
+          "push_right": "off-0_sm-1_mi-0"
+        },
+        "heading": "Open Panda is currently in an alpha release state",
+        "description": "This means that while it is already available for use, it is still undergoing continuous development and improvement.We are still developing aspects of the platform, and several features are actively being worked on right now.",
+        "ctas": [
+          {
+            "type": "solid-tear",
+            "text": "About OpenPanda",
+            "url": "/about"
+          }
+        ]
+      }
+    },
+    "intro-1": {
+      "id": "alpha-intro",
+      "col_0": {
+        "type": "image_block",
+        "cols": {
+          "num": "col-5_sm-8_mi-12",
+          "push_left": "off-0_sm-2_mi-0"
+        },
+        "src": "/images/about/spherical-helix-and-wave-propagation.png"
+      },
+      "col_1": {
+        "type": "text_block",
+        "cols": {
+          "num": "col-5_lg-6_sm-10_mi-12",
+          "push_left": "off-1_lg-0_sm-1_mi-0",
+          "push_right": "off-1_lg-1_sm-1_mi-0"
+        },
+        "label": "Our current focus is in two areas of the app: data listing and downloading.",
+        "description": "We’re exploring improvements to the listing process for file level data for owners and onboarders of open data on Filecoin. Secondly, at this time, downloading data found on Open Panda requires specialized command line tooling, and we’re working towards making this directly accessible from the platform.We’re operating in a rapid iteration cycle, so you’re likely to see new improvements before your next visit. To help in tracking progress in a transparent way, a public roadmap and changelog will be available on this page soon.<br><br>The Open Panda team is committed to ensuring that the platform evolves into a robust and reliable tool that can meet the needs of its users. We’re actively seeking feedback from early users of the platform to help guide future development. Please reach out to us with any suggestions and comments to <a href='mailto:support@openpanda.io'>support@openpanda.io</a>. We appreciate your patience and support as we work to make Open Panda into a robust data discoverability layer for open data stored on the Filecoin network."
+      },
+      "col_2": {
+        "type": "image_block",
+        "cols": {
+          "num": "col-5 sm-hidden",
+          "push_left": "off-0",
+          "push_right": "off-0"
+        },
+        "src": "/images/about/spherical-helix-and-wave-propagation.png"
+      }
+    }
+  }
+}
