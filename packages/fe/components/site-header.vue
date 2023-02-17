@@ -8,10 +8,18 @@
     <header :class="['grid-middle-center-spaceBetween-noGutter', { 'has-breadcrumbs': hasBreadcrumbs }]">
       <Filters class="show-desktop-only" open-direction="right" :show-typeahead="true" />
 
-      <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
-        <SiteLogo class="logo-big" />
-        <SiteLogoSmall class="logo-small" />
-      </nuxt-link>
+      <div class="logo-container">
+
+        <nuxt-link to="/" class="logo-link" @click.native="setNavigationOpen(false)">
+          <SiteLogo class="logo-big" />
+          <SiteLogoSmall class="logo-small" />
+        </nuxt-link>
+
+        <nuxt-link to="/alpha" class="alpha-tag-link" @click.native="setNavigationOpen(false)">
+          <AlphaTag class="alpha-tag" />
+        </nuxt-link>
+
+      </div>
 
       <nav class="desktop-nav">
         <ButtonNav
@@ -50,6 +58,7 @@ import Throttle from 'lodash/throttle'
 
 import ButtonNav from '@/components/buttons/button-nav'
 import SiteLogo from '@/components/icons/logo'
+import AlphaTag from '@/components/icons/alpha-tag'
 import SiteLogoSmall from '@/components/icons/logo-sm'
 import Filters from '@/components/filters'
 import IconSearch from '@/components/icons/search'
@@ -63,6 +72,7 @@ export default {
   components: {
     ButtonNav,
     SiteLogo,
+    AlphaTag,
     SiteLogoSmall,
     Filters,
     IconSearch,
@@ -157,9 +167,14 @@ export default {
   }
 }
 
+.logo-container {
+  position: relative;
+}
+
 .logo-link {
   z-index: 101;
   svg {
+    display: block;
     width: 100%;
   }
   .logo-small {
@@ -173,7 +188,7 @@ export default {
     }
   }
   .logo-big {
-    display: inline-block;
+    width: toRem(202);
     @include large {
       display: none;
     }
@@ -182,6 +197,26 @@ export default {
       display: inline-block;
     }
   }
+}
+
+.alpha-tag-link {
+  position: absolute;
+  top: calc(100% - 3px);
+  right: 0.5rem;
+  @include large {
+    right: -3px;
+  }
+  @include medium {
+    right: 0.4vw;
+    top: calc(100% - 7px);
+  }
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.alpha-tag {
+  width: toRem(55);
 }
 
 .hamburger-c {
