@@ -1,7 +1,7 @@
 {
   "name": "be",
-  "version": "1.0.0",
-  "description": "Backend",
+  "version": "0.1.0",
+  "description": "Open Panda backend",
   "main": "app.js",
   "scripts": {
     "dev": "../../node_modules/.bin/nodemon --exec 'npm run lint:staged && node app.js'",

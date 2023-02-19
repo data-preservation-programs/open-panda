@@ -1,7 +1,7 @@
 {
   "name": "fe",
-  "version": "1.0.0",
-  "description": "Frontend",
+  "version": "0.1.0",
+  "description": "Open Panda frontend",
   "main": "index.js",
   "scripts": {
     "dev": "../../node_modules/.bin/nuxt",
@@ -23,6 +23,7 @@
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/storybook": "^4.3.2",
     "@nuxtjs/style-resources": "^1.2.1",
+    "@nuxtjs/gtm": "^2.4.0",
     "core-js": "^3.27.1",
     "country-code-emoji": "^2.3.0",
     "eslint": "^8.3.0",
