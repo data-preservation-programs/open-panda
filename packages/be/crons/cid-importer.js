@@ -286,7 +286,7 @@ const CidImporter = async () => {
      * args:
      *  limit number of entries to the database (this will only be used for test)
      */
-    await getCidFilesFromManifestList(limit * maxPages)
+    await getCidFilesFromManifestList(limit)
     const end = process.hrtime()[0]
     console.log(`📒 CID import finished | took ${SecondsToHms(end - start)}`)
     process.exit(0)
