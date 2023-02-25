@@ -55,8 +55,11 @@ const { GetFileFromDisk, SecondsToHms } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------------ retrieveCidFiles
-const retrieveCidFile = async (line) => {
+const retrieveCidFile = async (line, retryNo = 0) => {
   try {
+    if (retryNo > 0) {
+      console.log(`Retry number ${retryNo}`)
+    }
     const upload = JSON.parse(line)
     // fetch file using upload cid
     const response = await Axios.get(`https://${upload.cid}.ipfs.w3s.link/`, {
@@ -77,7 +80,12 @@ const retrieveCidFile = async (line) => {
   } catch (e) {
     console.log('====================================== [Function: unpackCids]')
     console.log(e)
-    process.exit(0)
+    if (retryNo < 10) {
+      console.log(`Error retrieving CID ${JSON.parse(line).cid}. Retrying retrieval...`)
+      await retrieveCidFile(line, retryNo + 1)
+    } else {
+      console.log(`Could not retrieve CID ${JSON.parse(line).cid}. Max retries reached.`)
+    }
   }
 }
 
@@ -121,7 +129,6 @@ const unpackRetrievedFile = async (file) => {
   } catch (e) {
     console.log('============================ [Function: unpackRetrievedFiles]')
     console.log(e)
-    process.exit(0)
   }
 }
 
@@ -145,7 +152,6 @@ const writeFileMetadataToDatabase = async (retrievedFiles) => {
   } catch (e) {
     console.log('========================= [Function: writeCidFilesToDatabase]')
     console.log(e)
-    process.exit(0)
   }
 }
 
@@ -158,7 +164,6 @@ const deleteTemporaryFile = async (filename) => {
   } catch (e) {
     console.log('============================ [Function: deleteTemporaryFile ]')
     console.log(e)
-    process.exit(0)
   }
 }
 
@@ -187,7 +192,8 @@ const getCidFilesFromManifestList = async (importMax) => {
         if (i < importMax) {
           const line = manifestCidLines[i]
           console.log(`Retrieving file ${i + 1} from the CID manifest list.`)
-          retrievedFiles.push(await retrieveCidFile(line))
+          const retrieved = await retrieveCidFile(line)
+          if (retrieved) { retrievedFiles.push(retrieved) }
           // write retrieved file data to the database in batches of 1000
           if ((i + 1) % batchSize === 0) {
             const result = await writeFileMetadataToDatabase(retrievedFiles)
@@ -205,12 +211,11 @@ const getCidFilesFromManifestList = async (importMax) => {
   } catch (e) {
     console.log('===================== [Function: getCidFilesFromManifestList]')
     console.log(e)
-    process.exit(0)
   }
 }
 
 // ------------------------------------------- createManifestFromWeb3StorageCids
-const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSavedDate, count) => {
+const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSavedDate, count, retryNo = 0) => {
   try {
     const options = { headers: { Accept: 'application/json', Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}` } }
     const params = Object.keys(searchParams).map((item) => `${item}=${searchParams[item]}`).join('&')
@@ -249,7 +254,7 @@ const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSav
   } catch (e) {
     console.log('=============== [Function: createManifestFromWeb3StorageCids]')
     console.log(e)
-    if (e.response.status === 500) {
+    if (e.response && e.response.status === 500) {
       await createManifestFromWeb3StorageCids(searchParams, maxPages, lastSavedDate, count)
       console.log(`Retrying fetching uploads on page ${searchParams.page}`)
     }
