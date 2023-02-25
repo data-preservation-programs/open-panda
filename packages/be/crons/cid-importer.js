@@ -181,6 +181,7 @@ const getCidFilesFromManifestList = async (importMax) => {
       manifestCidLines.reverse()
       let retrievedFiles = []
       let total = 0
+      const batchSize = argv.pagesize || 1000
       const len = manifestCidLines.length
       for (let i = 0; i < len; i++) {
         if (i < importMax) {
@@ -188,7 +189,7 @@ const getCidFilesFromManifestList = async (importMax) => {
           console.log(`Retrieving file ${i + 1} from the CID manifest list.`)
           retrievedFiles.push(await retrieveCidFile(line))
           // write retrieved file data to the database in batches of 1000
-          if ((i + 1) % argv.pagesize === 0) {
+          if ((i + 1) % batchSize === 0) {
             const result = await writeFileMetadataToDatabase(retrievedFiles)
             total = total + result.nUpserted + result.nModified
             console.log(`${result.nUpserted} new CIDs imported in this batch | ${result.nModified} CIDs updated in this batch | A total of ${total} CIDs imported/updated so far.`)
@@ -265,6 +266,8 @@ const CidImporter = async () => {
     // Get the latest upload entry from the database
     const mostRecentCid = await MC.model.Cid.find().sort({ web3storageCreatedAt: -1 }).limit(1)
     const mostRecentDocument = mostRecentCid[0]
+    console.log('Most recent CID imported:')
+    console.log(mostRecentDocument)
     const lastSavedDate = mostRecentDocument ? new Date(mostRecentDocument.web3storageCreatedAt).getTime() : 0
     // Delete the outdated manifest file if it exists
     await deleteTemporaryFile('cid-manifest.txt')
@@ -286,7 +289,7 @@ const CidImporter = async () => {
      * args:
      *  limit number of entries to the database (this will only be used for test)
      */
-    await getCidFilesFromManifestList(limit)
+    await getCidFilesFromManifestList(limit * maxPages)
     const end = process.hrtime()[0]
     console.log(`📒 CID import finished | took ${SecondsToHms(end - start)}`)
     process.exit(0)
