@@ -215,7 +215,7 @@ const getCidFilesFromManifestList = async (importMax) => {
 }
 
 // ------------------------------------------- createManifestFromWeb3StorageCids
-const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSavedDate, count, retryNo = 0) => {
+const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSavedDate, count) => {
   try {
     const options = { headers: { Accept: 'application/json', Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}` } }
     const params = Object.keys(searchParams).map((item) => `${item}=${searchParams[item]}`).join('&')
