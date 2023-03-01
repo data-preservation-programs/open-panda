@@ -215,8 +215,12 @@ export default {
 @media (hover: hover) {
   .select {
     &.native {
-      &:focus + .custom {
-        display: none;
+      opacity: 0;
+      &:focus {
+        opacity: 1;
+        + .custom {
+          display: none;
+        }
       }
     }
     &.custom {

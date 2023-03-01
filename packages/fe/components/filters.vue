@@ -201,19 +201,13 @@ export default {
     },
     async fetchNewData () {
       await this.$filter('page').for({ index: 0, live: false })
-      await this.$applyMultipleFiltersToQuery(this.filterKeys.concat('page'))
+      await this.$applyMultipleFiltersToQuery({
+        filters: this.filterKeys.concat('page'),
+        redirect: this.$route.path !== '/' ? '/' : undefined
+      })
       this.closePanel()
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
-      // go to home page and scroll to dataset section
-      if (this.$route.path !== '/') {
-        this.$router.push({
-          path: '/',
-          query: this.$route.query
-        })
-      } else {
-        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
-      }
     }
   }
 }

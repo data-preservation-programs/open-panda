@@ -1,6 +1,6 @@
 ---
 heading: 'Privacy'
-description: 'This Privacy Policy governs all use of the datasets.filecoin.io website (the “Website”) and all content, software and products available at or through the Website, including the Dataset Explorer allowing discovery and exploration of open-access datasets stored on the Filecoin network (collectively, the “Services”).'
+description: 'This Privacy Policy governs all use of the openpanda.io website and all content, software and products available at or through the Website.'
 image: '/images/privacy/porous-cube-and-cutout-mobile.png'
 ---
 

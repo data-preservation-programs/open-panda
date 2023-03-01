@@ -22,12 +22,14 @@
           class="datasets-checkbox show-desktop-only" /> -->
       </div>
 
-      <div class="col-4_mi-12 datasets-sort-c">
+      <div class="col-4_mi-12">
         <!-- ================================================== desktop sort -->
-        <Sort
-          :options="sortOptions"
-          class="show-desktop-only" />
-        <Filters />
+        <div class="desktop-sort-c">
+          <Sort
+            :options="sortOptions"
+            class="show-desktop-only" />
+          <Filters />
+        </div>
       </div>
     </div>
 
@@ -116,7 +118,7 @@
           @filterApplied="getDatasetList({ route: $route })" />
       </div>
       <div class="col-5_md-12 flex-end">
-        <ResultsPerPage
+        <Limit
           v-if="totalPages > 1"
           :options="limitOptions"
           @filterApplied="getDatasetList({ route: $route })" />
@@ -137,7 +139,7 @@ import DatasetsCardList from '@/components/datasets-card/datasets-card-list'
 import Filters from '@/components/filters'
 import Searchbar from '@/components/searchbar'
 import PaginationControls from '@/components/pagination-controls'
-import ResultsPerPage from '@/components/results-per-page'
+import Limit from '@/components/limit'
 // import CheckboxFullyStored from '@/components/checkbox-fully-stored'
 import Sort from '@/components/sort'
 import ButtonFilters from '@/components/buttons/button-filters'
@@ -158,7 +160,7 @@ export default {
     Button,
     Searchbar,
     PaginationControls,
-    ResultsPerPage,
+    Limit,
     ButtonFilters,
     GridIcon,
     ListIcon,
@@ -173,7 +175,7 @@ export default {
         resetFormFields: [
           { id: 'search', resetTo: 'nullState' },
           { id: 'sort' },
-          { id: 'results-per-page' },
+          { id: 'limit' },
           { id: 'fully-stored' }
         ],
         searchers: ['search'],
@@ -185,10 +187,13 @@ export default {
     }
   },
 
-  async fetch ({ app, store, route, error }) {
+  async fetch ({ app, store, route, redirect }) {
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     await store.dispatch('datasets/getFiltersAndTypeahead')
-    await store.dispatch('datasets/getDatasetList', { route })
+    const response = await store.dispatch('datasets/getDatasetList', { route })
+    if (response.fail) {
+      return redirect(response.route)
+    }
   },
 
   head () {
@@ -289,7 +294,9 @@ export default {
     async deselectFilterOption (option) {
       await this.$filter(option.filterKey).for({ index: option.index, live: false })
       await this.$filter('page').for({ index: 0, live: false })
-      await this.$applyMultipleFiltersToQuery(['page', 'categories'])
+      await this.$applyMultipleFiltersToQuery({
+        filters: ['page', 'categories']
+      })
     },
     async clearAllFilters () {
       await this.$filter('page').for({ index: 0, live: false })
@@ -479,5 +486,20 @@ export default {
 
 .filter-button {
   margin-bottom: 0.5rem;
+}
+
+.desktop-sort-c {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  @include mini {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  :deep(.button-c) {
+    @include mini {
+      width: 9rem;
+    }
+  }
 }
 </style>

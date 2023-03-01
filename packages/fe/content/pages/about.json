@@ -72,7 +72,14 @@
           "push_left": "off-1_sm-1_mi-0"
         },
         "label": "Open Panda exists today because a decentralized model offers unique benefits when storing data at scale.",
-        "description": " The distributed nature of the network means that sources are for data are available in a variety of regions around the world, reducing latency and helping ensure a reliable connection for the download process. Storage Providers maintain significant hardware requirements, which typically include high bandwidth connections to the internet.<br><br>Aside from distribution, all content on the network is cryptographically hashed into a unique value called a CID, or content identifier. This means that if any data changes at all, the CID changes. For content within datasets, this adds a unique feature: immutability. Information contained in a dataset becomes tamper proof, because if anything changes, it's immediately evident from the CID being different. This is especially useful when considering the problem of safeguarding data from manipulation by biased parties.<br><br>One of Filecoin's core missions is to store humanity's most important information, and the Open Panda project is directly aligned with that mission.  At this point in time, downloading and working with the data on the platform still requires an understanding of how Filecoin works and some use of specialized software, but over time we plan to abstract those hurdles away, in the interest of a smoother and more user-friendly experience and a minimal learning curve."
+        "description": " The distributed nature of the network means that sources are for data are available in a variety of regions around the world, reducing latency and helping ensure a reliable connection for the download process. Storage Providers maintain significant hardware requirements, which typically include high bandwidth connections to the internet.<br><br>Aside from distribution, all content on the network is cryptographically hashed into a unique value called a CID, or content identifier. This means that if any data changes at all, the CID changes. For content within datasets, this adds a unique feature: immutability. Information contained in a dataset becomes tamper proof, because if anything changes, it's immediately evident from the CID being different. This is especially useful when considering the problem of safeguarding data from manipulation by biased parties.<br><br>One of Filecoin's core missions is to store humanity's most important information, and the Open Panda project is directly aligned with that mission.  At this point in time, downloading and working with the data on the platform still requires an understanding of how Filecoin works and some use of specialized software, but over time we plan to abstract those hurdles away, in the interest of a smoother and more user-friendly experience and a minimal learning curve.",
+        "ctas": [
+          {
+            "type": "solid-tear",
+            "text": "Learn more about OpenPanda Alpha",
+            "url": "/alpha"
+          }
+        ]
       },
       "col_2": {
         "type": "custom",

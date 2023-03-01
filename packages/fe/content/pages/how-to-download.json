@@ -49,7 +49,7 @@
           "push_left": "off-0_sm-1_mi-0",
           "push_right": "off-0_sm-1_mi-0"
         },
-        "src": "https://dummyimage.com/600x400/000/fff"
+        "src": "/images/how-to-download/1-select-dataset.png"
       },
       "col_2": {
         "type": "text_block",
@@ -68,7 +68,7 @@
           "push_left": "off-0_sm-1_mi-0",
           "push_right": "off-0_sm-1_mi-0"
         },
-        "src": "https://dummyimage.com/600x400/000/fff"
+        "src": "/images/how-to-download/2-cid.png"
       },
       "col_4": {
         "type": "text_block",
@@ -87,7 +87,7 @@
           "push_left": "off-0_sm-1_mi-0",
           "push_right": "off-0_sm-1_mi-0"
         },
-        "src": "https://dummyimage.com/600x400/000/fff"
+        "src": "/images/how-to-download/3-storage-provider.png"
       },
       "col_6": {
         "type": "text_block",
@@ -106,7 +106,7 @@
           "push_left": "off-0_sm-1_mi-0",
           "push_right": "off-0_sm-1_mi-0"
         },
-        "src": "https://dummyimage.com/600x400/000/fff"
+        "src": "/images/how-to-download/4-cli.png"
       },
       "col_8": {
         "type": "text_block",

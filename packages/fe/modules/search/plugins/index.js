@@ -42,7 +42,9 @@ const resetFormFields = async (items) => { // items = [{ id: '', resetTo: ''|und
 /**
  * This function only works for query-based filters
  */
-const ApplyMultipleFiltersToQuery = async (app, filters) => {
+const ApplyMultipleFiltersToQuery = async (app, payload) => {
+  const filters = payload.filters
+  const redirect = payload.redirect
   const query = CloneDeep(app.router.history.current.query)
   const queryBefore = CloneDeep(query)
   const len = filters.length
@@ -55,8 +57,13 @@ const ApplyMultipleFiltersToQuery = async (app, filters) => {
     }
   }
   if (JSON.stringify(queryBefore) !== JSON.stringify(query)) {
-    app.router.push({ query, hash: location.hash })
+    app.router.push({
+      ...(redirect && { path: redirect }),
+      query,
+      hash: location.hash
+    })
   }
+  await app.$delay(10)
 }
 
 // /////////////////////////////////////////////////////// ClearSearchAndFilters
@@ -67,8 +74,7 @@ const ClearSearchAndFilters = async (app, payload) => {
     searchers.forEach(searcher => app.$search(searcher).clear())
     filterers.forEach(filterer => app.$filter(filterer).clear())
     filterers = filterers.concat(payload.filters.override || [])
-    app.$applyMultipleFiltersToQuery(filterers)
-    await app.$delay(10)
+    app.$applyMultipleFiltersToQuery({ filters: filterers })
     if (payload.resetFormFields) {
       await resetFormFields(payload.resetFormFields)
     }
