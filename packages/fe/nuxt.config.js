@@ -93,8 +93,9 @@ export default {
   // ---------------------------------------------------------------------------
   modules: [
     '@nuxtjs/axios', // Doc: https://axios.nuxtjs.org/usage
-    'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
+    'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app
     '@nuxt/content', // Doc: https://content.nuxtjs.org
+    '@nuxtjs/gtm', // Doc: https://github.com/nuxt-community/gtm-module
     '~/modules/https',
     '~/modules/toaster',
     '~/modules/slider',
@@ -129,6 +130,13 @@ export default {
   moment: {
     timezone: true,
     defaultTimezone: 'UTC'
+  },
+  // ////////////////////////////////////////////////////////////// [Module] GTM
+  // ------------------------- Doc: https://github.com/nuxt-community/gtm-module
+  gtm: {
+    // Currently hardcoded, can be added as an environment variable instead
+    id: 'GTM-NH8TLHW',
+    pageTracking: true
   },
   // ////////////////////////////////////////////////////// [Module] GoogleFonts
   googleFonts: {
