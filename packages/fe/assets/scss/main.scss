@@ -589,10 +589,6 @@ p, .p1 {
   }
 }
 
-.sectionals {
-  overflow: hidden;
-}
-
 .tooltip {
   background-color: $rangoonGreen;
   padding: toRem(5) toRem(8) toRem(7) toRem(8);
@@ -617,4 +613,9 @@ p, .p1 {
     left: calc(50% - 2.5px);
     transform: rotate(90deg);
   }
+}
+
+// section styles
+.sectionals.home-slider {
+  overflow: hidden;
 }
