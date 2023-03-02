@@ -43,6 +43,8 @@ export default {
   },
 
   created () {
+    // check if external link
+    const external = /^((f|ht)tps?:)?\/\/(?!openpanda.io)/
     this.renderer = new Kramed.Renderer()
     // /////////////////////////////////////////////////////////////////// Links
     this.renderer.link = function (href, title, text) {
@@ -58,10 +60,10 @@ export default {
             })
           }
         } catch (e) {
-          return `<a href="${href}">${split[0]}</a>`
+          return `<a target="${external.test(href) ? '_blank' : '_self'}" href="${href}">${split[0]}</a>`
         }
       }
-      return `<a href="${href}" ${attributeString}>${split[0]}</a>`
+      return `<a target="${external.test(href) ? '_blank' : '_self'}" href="${href}" ${attributeString}>${split[0]}</a>`
     }
     // //////////////////////////////////////////////////////////////// Headings
     this.renderer.heading = function (text, level) {

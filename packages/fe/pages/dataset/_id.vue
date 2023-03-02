@@ -122,6 +122,7 @@
                               v-for="(link, i) in resources"
                               :key="`resource-${i}`"
                               :href="link"
+                              target="_blank"
                               class="link">
                               {{ link }}
                             </a>
