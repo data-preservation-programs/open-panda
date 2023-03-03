@@ -5,9 +5,10 @@ import CloneDeep from 'lodash/cloneDeep'
 import GeneralSiteData from '@/content/pages/general.json'
 
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   siteContent: {},
+  navigationOpen: false,
   staticFiles: {},
   clipboard: false
 })
@@ -16,6 +17,7 @@ const state = () => ({
 // -----------------------------------------------------------------------------
 const getters = {
   siteContent: state => state.siteContent,
+  navigationOpen: state => state.navigationOpen,
   staticFiles: state => state.staticFiles,
   clipboard: state => state.clipboard
 }
@@ -38,6 +40,15 @@ const actions = {
   // //////////////////////////////////////////////////////////// setSiteContent
   setSiteContent ({ commit }, payload) {
     commit('SET_SITE_CONTENT', payload)
+  },
+  // ///////////////////////////////////////////////////////// setNavigationOpen
+  setNavigationOpen ({ commit }, toggle) {
+    if (toggle) {
+      document.body.classList.add('no-scroll')
+    } else {
+      document.body.classList.remove('no-scroll')
+    }
+    commit('SET_NAVIGATION_OPEN', toggle)
   },
   // ///////////////////////////////////////////////////////////// getStaticFile
   async getStaticFile ({ commit, dispatch }, path) {
@@ -97,6 +108,9 @@ const mutations = {
   },
   SET_CLIPBOARD (state, text) {
     state.clipboard = text
+  },
+  SET_NAVIGATION_OPEN (state, toggle) {
+    state.navigationOpen = toggle
   }
 }
 

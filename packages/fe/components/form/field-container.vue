@@ -1,73 +1,66 @@
 <template>
-  <div class="field-container">
-    <Field v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }" class="field-wrapper">
-        <template v-if="field">
+  <FieldStandalone
+    v-slot="{ updateValue, field, type, validationMessage }"
+    v-bind="$props"
+    :class="['field-wrapper', scaffold.type]"
+    v-on="$listeners">
 
-          <label v-if="scaffold.label" :for="fieldKey" class="field-label">
-            {{ scaffold.label }}
-          </label>
+    <label v-if="scaffold.label" :for="fieldKey" class="field-label">
+      {{ scaffold.label }}
+    </label>
 
-          <div v-if="scaffold.description" class="description">
-            {{ scaffold.description }}
-          </div>
+    <div v-if="scaffold.description" class="description">
+      {{ scaffold.description }}
+    </div>
 
-          <component
-            :is="type"
-            :field="field"
-            :field-key="fieldKey"
-            @updateValue="pushValue($event, updateValue)" />
+    <component
+      :is="type"
+      :field="field"
+      :field-key="fieldKey"
+      @updateValue="updateValue"
+      v-on="$listeners" />
 
-          <slot />
+    <slot />
 
-          <div v-if="validationMessage" class="validation-message">
-            {{ validationMessage }}
-          </div>
+    <div v-if="validationMessage" class="validation-message">
+      {{ validationMessage }}
+    </div>
 
-        </template>
-      </div>
-    </Field>
-  </div>
+  </FieldStandalone>
 </template>
 
 <script>
 // ===================================================================== Imports
-import Field from '@/modules/form/components/field'
+import FieldStandalone from '@/modules/form/components/field-standalone'
 import FieldInput from '@/components/form/fields/input'
 import FieldTextarea from '@/components/form/fields/textarea'
 import FieldRange from '@/components/form/fields/range'
 import FieldCheckbox from '@/components/form/fields/checkbox'
+import FieldRadio from '@/components/form/fields/radio'
 import FieldSelect from '@/components/form/fields/select'
+import FieldTypeahead from '@/components/form/fields/typeahead'
+import FieldChiclet from '@/components/form/fields/chiclet'
 
 // ====================================================================== Export
-
-/**
- * props:
- *
- * @updateValue - triggers when field has changed
- * :value - is the value of the input
- */
 export default {
   name: 'FieldContainer',
 
   components: {
-    Field,
+    FieldStandalone,
     FieldInput,
     FieldTextarea,
     FieldRange,
     FieldCheckbox,
-    FieldSelect
+    FieldRadio,
+    FieldSelect,
+    FieldTypeahead,
+    FieldChiclet
   },
 
   props: {
     scaffold: {
       type: Object,
       required: true
-    },
-    value: {
-      type: [Object, String, Number, Boolean],
-      required: false,
-      default: false
     },
     formId: {
       type: [String, Boolean],
@@ -78,10 +71,15 @@ export default {
       type: String,
       required: true
     },
-    groupId: {
-      type: String,
+    groupIndex: {
+      type: [Number, Boolean],
       required: false,
-      default: ''
+      default: false
+    },
+    validateOnEntry: {
+      type: Boolean,
+      required: false,
+      default: false
     },
     forceDisableFields: {
       type: Boolean,
@@ -92,13 +90,17 @@ export default {
       type: Boolean,
       required: false,
       default: false
-    }
-  },
-
-  methods: {
-    pushValue (value, updateValue) {
-      updateValue(value)
-      this.$emit('updateValue', value)
+    },
+    /**
+     * On occasions where the final root element in field-conditional.vue render
+     * must be something specific. Such as when wrapping a <tbody> in a field-standalone,
+     * it cannot be a div as the wrapper. It must be <tbody> at the root to prevent
+     * SSR hydration errors.
+     */
+    rootHtmlTag: {
+      type: String,
+      required: false,
+      default: 'div'
     }
   }
 }
@@ -141,7 +143,6 @@ export default {
 // /////////////////////////////////////////////////////////////////////// Label
 ::v-deep .label {
   font-weight: 400;
-  @include fontSize_14;
   cursor: pointer;
   &.floating {
     position: absolute;
@@ -180,6 +181,20 @@ export default {
     top: -0.125rem;
     margin-right: 0.0625rem;
     font-size: 100%;
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////// Custom
+.field-wrapper {
+  &.select {
+    display: flex;
+    align-items: center;
+    .field-label {
+      margin-right: toRem(24);
+    }
+  }
+  &.checkbox {
+    @include fontSize_14;
   }
 }
 </style>

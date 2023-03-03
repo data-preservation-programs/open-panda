@@ -5,9 +5,13 @@
       :options="options"
       :aria-labelledby="modelKey || fieldKey"
       :selected-option="value"
-      handle-state="internally"
       @dropdownToggled="dropdownToggled"
-      @optionSelected="optionSelected">
+      @optionSelected="optionSelected"
+      v-on="$listeners">
+
+      <template #option-native-default-text>
+        Sort by...
+      </template>
 
       <template #option-native-text="{ option }">
         {{ getOptionDescription(option) ? `${option.label}, ${getOptionDescription(option)}` : option.label }}
@@ -120,7 +124,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$height: 4rem;
+$height: 2.5rem;
 
 // ///////////////////////////////////////////////////////////////////// General
 .field-select {
@@ -137,49 +141,46 @@ $height: 4rem;
       transform: rotate(-180deg);
     }
   }
-  &.caution {
-    ::v-deep .select {
-      border-color: darkorange;
-    }
-  }
-  &.error {
-    ::v-deep .select {
-      border-color: red;
-    }
-  }
+  // &.caution {
+  //   ::v-deep .select {
+  //     border-color: $mandysPink;
+  //   }
+  // }
+  // &.error {
+  //   ::v-deep .select {
+  //     border-color: $flamingo;
+  //   }
+  // }
 }
 
 ::v-deep .select-container {
-  &:not(.focused) {
-    .select.native {
-      color: transparent;
-    }
-  }
   &.dropdown-open {
     .select {
       border-bottom-color: transparent;
     }
   }
   .select {
-    // border-bottom: 0.1875rem solid tomato;
-    // transition: 150ms ease-out;
+    border: 2px solid $tasman;
+    border-radius: toRem(5);
+    transition: 150ms ease-out;
     &.native {
+      padding: 0 toRem(10);
       &:focus-visible {
         @include focusBoxShadow;
       }
     }
-    &.custom {
-      padding: toRem(8) toRem(5) toRem(8) toRem(10);
-      background-color: $gin;
-      border: 2px solid $tasman;
-      border-radius: toRem(5);
-    }
   }
   .dropdown {
-    max-height: $height * 5.5;
-    background-color: black;
-    border: 2px solid white;
-    border-radius: 0.3125rem;
+    top: calc(100% - 4px);
+    left: -2px;
+    width: calc(100% + 4px);
+    max-height: $height * 6.5;
+    border-bottom-left-radius: 0.3125rem;
+    border-bottom-right-radius: 0.3125rem;
+    border-right: 2px solid $tasman;
+    border-bottom: 2px solid $tasman;
+    border-left: 2px solid $tasman;
+    background-color: $gin;
   }
 }
 
@@ -188,6 +189,7 @@ $height: 4rem;
 }
 
 .selection-window {
+  padding: toRem(8) toRem(10);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -228,11 +230,8 @@ $height: 4rem;
     background-color: $grayNurse2;
   }
   &.selected {
-    background-color: rgba(white, 0.1);
-  }
-  &:hover,
-  &.highlighted {
-    text-decoration: underline;
+    background-color: $rangoonGreen;
+    color: white;
   }
 }
 </style>

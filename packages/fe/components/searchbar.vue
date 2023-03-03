@@ -4,40 +4,40 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
+    search-key="search"
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
-      slot-scope="{ value, updateValue, empty, clearSearch }"
-      :class="['searchbar', `theme__${theme}`, { focused, empty, loading }]">
+      slot-scope="{ value, applySearch, empty }"
+      :class="['searchbar', showTypeahead ? 'has-typeahead' : 'no-typeahead', `theme__${theme}`, { empty, loading }]">
 
-      <div class="input-wrapper">
+      <FieldContainer
+        field-key="typeahead"
+        :scaffold="{
+          type: 'typeahead',
+          inputType: 'text',
+          modelKey: 'typeahead',
+          placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
+          required: false,
+          autocomplete: 'off',
+          optionDisplayKey: 'name',
+          optionReturnKey: 'slug',
+          options: datasetListTypeahead,
+          defaultValue: value || '',
+          resetGroupId: 'search',
+          updateGroupId: 'search'
+        }"
+        @updateValue="applySearch({ value: $event, live: false })"
+        @handleKeydown="handleKeydown"
+        @optionSelected="goToDatasetPage" />
 
-        <input
-          ref="input"
-          :value="value"
-          :placeholder="placeholder"
-          type="text"
-          class="input"
-          @input="updateValue"
-          @focus="focused = true"
-          @blur="focused = false">
-
-        <ButtonFilters
-          v-if="!empty"
-          class="clear-button"
-          @clicked="clearSearch">
-          <IconClose />
-          <span>Clear</span>
-        </ButtonFilters>
-
-        <button
-          :class="['search-button', { loading }]"
-          @click="focusInput">
-          <Spinner />
-          <IconSearch />
-        </button>
-
-      </div>
+      <ButtonX
+        :class="['search-button', { loading }]"
+        :disabled="disableSearchButton"
+        @clicked="fetchNewData">
+        <Spinner />
+        <IconSearch />
+      </ButtonX>
 
     </div>
   </Searcher>
@@ -45,12 +45,13 @@
 
 <script>
 // ===================================================================== Imports
+import { mapGetters, mapActions } from 'vuex'
+
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
-import ButtonFilters from '@/components/buttons/button-filters'
-
+import FieldContainer from '@/components/form/field-container'
+import ButtonX from '@/components/buttons/button-x'
 import IconSearch from '@/components/icons/search'
-import IconClose from '@/components/icons/close-thick'
 
 // ====================================================================== Export
 export default {
@@ -59,9 +60,9 @@ export default {
   components: {
     Searcher,
     Spinner,
-    ButtonFilters,
     IconSearch,
-    IconClose
+    ButtonX,
+    FieldContainer
   },
 
   props: {
@@ -99,6 +100,11 @@ export default {
       type: String, // 'line' or 'solid'
       required: false,
       default: 'line'
+    },
+    showTypeahead: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 
@@ -108,15 +114,44 @@ export default {
     }
   },
 
-  watch: {
-    focused () {
-      this.$emit('inputFocused')
+  computed: {
+    ...mapGetters({
+      datasetListTypeahead: 'datasets/datasetListTypeahead'
+    }),
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
     }
   },
 
   methods: {
-    focusInput () {
-      this.$refs.input.focus()
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
+    async fetchNewData () {
+      await this.$search('search').for({
+        instance: this,
+        live: true,
+        redirect: this.$route.path !== '/' ? '/' : undefined
+      })
+      if (this.$route.path === '/') {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
+    },
+    goToDatasetPage (slug) {
+      this.$router.push({
+        path: `/dataset/${slug}`
+      })
+    },
+    handleKeydown (e) {
+      const keyCode = e.keyCode
+      const code = e.keyCode
+      const key = e.key
+      const submit = keyCode === 13 || code === 13 || key === 'Enter'
+      if (submit) {
+        this.fetchNewData()
+      }
     }
   }
 }
@@ -124,10 +159,18 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.input-wrapper {
+.no-typeahead {
+  :deep(.select-container) {
+    display: none !important;
+  }
+}
+.searchbar {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  padding-left: toRem(20);
+  flex-grow: 1;
+  :deep(.field-wrapper) {
+    flex: 1;
+  }
 }
 
 .input {
@@ -138,6 +181,7 @@ export default {
   font-weight: 500;
   transition: 150ms ease-out;
   color: $fuscousGray;
+  width: 100%;
   @include placeholder {
     color: $fuscousGray;
     opacity: 1;
@@ -179,29 +223,12 @@ export default {
   width: 1rem;
 }
 
-::v-deep .clear-button {
-  &:hover {
-    .svg-icon path {
-      transition: 150ms ease-in;
-      fill: tomato;
-    }
-  }
-  .svg-icon {
-    width: 8px;
-    margin-right: 0.25rem;
-    path {
-      transition: 150ms ease-out;
-      fill: teal;
-    }
-  }
-}
-
 // ////////////////////////////////////////////////////////////////////// Themes
 .theme__line {
   border: 2px solid $tasman;
   border-radius: toRem(30);
   .input {
-    padding: toRem(15) toRem(30);
+    padding: toRem(15) toRem(30) toRem(15) toRem(10);
   }
   .icon-container {
     align-items: flex-end;
@@ -210,10 +237,10 @@ export default {
 
 .theme__solid {
   background-color: white;
-  border-radius: toRem(30) toRem(30) toRem(30) toRem(2);
-  @include shadow3;
+  border-radius: toRem(30) 0 0 toRem(2);
   .input {
-    padding: toRem(15) toRem(15) toRem(15) toRem(22);
+    height: toRem(50);
+    padding: toRem(15) toRem(30) toRem(15) toRem(10);
   }
 }
 

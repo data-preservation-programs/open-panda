@@ -10,22 +10,32 @@
         <div class="right">
           <h3>{{ footerData.heading }}</h3>
           <div class="grid-spaceBetween-noGutter">
-            <nav class="col-6">
+            <nav class="col-5_ti-12">
               <Button
                 v-for="(link, index) in footerData.nav_1"
                 :key="index"
                 :button="{
-                  type: 'default',
+                  type: 'footerNav',
                   text: link.label,
                   url: link.href
                 }" />
             </nav>
-            <nav class="col-5">
+            <nav class="col-3_ti-12">
               <Button
                 v-for="(link, index) in footerData.nav_2"
                 :key="index"
                 :button="{
-                  type: 'default',
+                  type: 'footerNav',
+                  text: link.label,
+                  url: link.href
+                }" />
+            </nav>
+            <nav class="col-3_ti-12">
+              <Button
+                v-for="(link, index) in footerData.nav_3"
+                :key="index"
+                :button="{
+                  type: 'footerNav',
                   text: link.label,
                   url: link.href
                 }" />
@@ -36,8 +46,7 @@
     </div>
 
     <div class="grid-1-right">
-      <div class="col copyright">
-        {{ footerData.copyright }}
+      <div class="col copyright" v-html="footerData.copyright">
       </div>
     </div>
 
@@ -64,14 +73,6 @@ export default {
     footerData () {
       return this.siteContent.general.footer
     }
-  },
-
-  methods: {
-    isRouteCurrent (href) {
-      const route = this.$route
-      if (route.path === href) { return true }
-      return false
-    }
   }
 }
 </script>
@@ -82,6 +83,11 @@ footer {
 }
 .copyright {
   text-align: right;
+  :deep(a) {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 .right {
   background-color: $rangoonGreen;
@@ -97,19 +103,24 @@ footer {
     border-bottom-left-radius: toRem(50);
   }
   :deep(h3) {
-    margin-bottom: toRem(70);
+    margin-bottom: toRem(40);
     @include medium {
       margin-bottom: toRem(20);
     }
   }
   :deep(.button) {
     display: block;
-    margin-bottom: toRem(40);
+    margin-bottom: toRem(20);
     @include medium {
       margin-bottom: toRem(16);
     }
     &:last-child {
       margin-bottom: 0;
+    }
+  }
+  nav {
+    @include tiny {
+      margin-bottom: toRem(20);
     }
   }
 }

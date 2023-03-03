@@ -6,8 +6,8 @@ const env = process.env.SERVER_ENV
 
 const baseUrls = {
   development: 'https://localhost',
-  stable: '',
-  production: ''
+  stable: 'https://stable.openpanda.io',
+  production: 'https://openpanda.io'
 }
 
 const frontendPort = (function () {
@@ -47,6 +47,7 @@ module.exports = {
     { type: 'dir', path: 'cache' },
     { type: 'dir', path: 'tmp' },
     { type: 'dir', path: 'tmp/uploads' },
+    { type: 'dir', path: 'tmp/cid-files' },
     { type: 'dir', path: 'public' },
     { type: 'dir', path: 'public/uploads' },
     { type: 'dir', path: 'tmp' },

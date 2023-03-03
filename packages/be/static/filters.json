@@ -1,11 +1,9 @@
 {
   "sort": [
-    { "label": "Data Stored ↑", "value": 0 },
-    { "label": "Data Stored ↓", "value": 1 },
-    { "label": "No. of Storage Providers ↑", "value": 2 },
-    { "label": "No. of Storage Providers ↓", "value": 3 },
-    { "label": "A-Z", "value": 5 },
-    { "label": "Z-A", "value": 6 }
+    { "label": "Data Size ↑", "value": "data_size,1" },
+    { "label": "Data Size ↓", "value": "data_size,-1" },
+    { "label": "A-Z", "value": "name,1" },
+    { "label": "Z-A", "value": "name,-1" }
   ],
   "limit": [
     { "label": 12, "value": 12 },
@@ -13,61 +11,11 @@
     { "label": 36, "value": 36 }
   ],
   "filters": {
-    "fullyStored": [{
-      "label": "Show only fully stored datasets",
-      "value": true
-    }],
-    "preparation_progress": [
-      { "label": "Not started", "value": 0 },
-      { "label": "Downloading dataset", "value": 1 },
-      { "label": "CAR generation in progress", "value": 2 },
-      { "label": "CAR generation complete", "value": 3 },
-      { "label": "Awaiting first copy", "value": 4 },
-      { "label": "First copy on-chain", "value": 5 },
-      { "label": "Fully Replicated", "value": 6 }
-    ],
-    "categories": [
-      { "value": "healthcare", "label": "Healthcare", "count": 20 },
-      { "value": "genetics", "label": "Genetics", "count": 22 },
-      { "value": "tech", "label": "Tech", "count": 22 },
-      { "value": "satellite", "label": "Satellite", "count": 23 },
-      { "value": "blockchain", "label": "Blockchain", "count": 0 },
-      { "value": "anthropology", "label": "Anthropology", "count": 2 },
-      { "value": "astronomy", "label": "Astronomy", "count": 2 },
-      { "value": "geology", "label": "Geology", "count": 30 },
-      { "value": "literature", "label": "Literature", "count": 40 },
-      { "value": "multimedia", "label": "Multimedia", "count": 250 },
-      { "value": "auditory", "label": "Auditory", "count": 6 },
-      { "value": "Natural Language", "label": "Natural Language", "count": 7 },
-      { "value": "Civil Engineering", "label": "Civil Engineering", "count": 8 },
-      { "value": "Popular Culture", "label": "Popular Culture", "count": 9 }
-    ],
-    "fileType": [
-      { "value": "csv", "label": "csv" },
-      { "value": "xls", "label": "xls" },
-      { "value": "json", "label": "json" },
-      { "value": "xml", "label": "xml" },
-      { "value": "txt", "label": "txt" },
-      { "value": "tar", "label": "tar" },
-      { "value": "docx", "label": "docx" },
-      { "value": "parquet", "label": "parquet" },
-      { "value": "avro", "label": "avro" },
-      { "value": "orc", "label": "orc" },
-      { "value": "pdf", "label": "pdf" },
-      { "value": "md", "label": "md" },
-      { "value": "png", "label": "png" },
-      { "value": "jpg", "label": "jpg" },
-      { "value": "gif", "label": "gif" },
-      { "value": "tiff", "label": "tiff" },
-      { "value": "geotiff", "label": "geotiff" },
-      { "value": "g", "label": "g" },
-      { "value": "gz", "label": "gz" },
-      { "value": "tar", "label": "tar" },
-      { "value": "rar", "label": "rar" },
-      { "value": "zip", "label": "zip" },
-      { "value": "mp3", "label": "mp3" },
-      { "value": "warc", "label": "warc" },
-      { "value": "mysql", "label": "mysql" }
+    "fullyStored": [
+      {
+        "label": "Show only fully stored datasets",
+        "value": true
+      }
     ],
     "licenses": [
       { "value": "gpl", "label": "GPL" },
@@ -82,29 +30,6 @@
       { "value": "mpl", "label": "MPL" },
       { "value": "unlicensed", "label": "Unlicensed" },
       { "value": "other", "label": "Other" }
-    ],
-    "location": [
-      { "value": "ca", "label": "Canada" },
-      { "value": "in", "label": "India" },
-      { "value": "us", "label": "United States" },
-      { "value": "ru", "label": "Russia" },
-      { "value": "gb", "label": "United Kingdom" },
-      { "value": "az", "label": "Azerbaijan" },
-      { "value": "jp", "label": "Japan" },
-      { "value": "sg", "label": "Singapore" },
-      { "value": "fr", "label": "France" },
-      { "value": "cn", "label": "China" },
-      { "value": "it", "label": "Italy" },
-      { "value": "gr", "label": "Greece" },
-      { "value": "pk", "label": "Pakistan" },
-      { "value": "ir", "label": "Iran" },
-      { "value": "by", "label": "Belarus" },
-      { "value": "ph", "label": "Philippines" },
-      { "value": "my", "label": "Malaysia" },
-      { "value": "kr", "label": "Korea" },
-      { "value": "dk", "label": "Denmark" },
-      { "value": "ec", "label": "Ecuador" },
-      { "value": "do", "label": "Dominican Republic" }
     ]
   }
 }

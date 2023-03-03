@@ -1,61 +1,80 @@
 {
   "seo": {
-    "title": "OpenPanda",
-    "description": "OpenPanda"
+    "title": "Open Panda",
+    "description": "Explore the world's largest open datasets. Open Panda is a platform where you can interact with tamper-proof datasets stored on the decentralized web."
   },
   "og": {
-    "site_name": "OpenPanda",
-    "url": "",
+    "site_name": "Open Panda",
+    "url": "https://openpanda.io",
     "type": "website",
     "image": "/open-graph-image.jpg"
   },
   "header": {
     "nav": [
       {
+        "tag": "nuxt-link",
         "href": "/how-to-download",
         "label": "How to Download"
       },
       {
+        "tag": "nuxt-link",
         "href": "/about",
         "label": "About"
       },
       {
+        "tag": "nuxt-link",
         "href": "/about#faq",
         "label": "FAQ"
       },
       {
-        "href": "/add",
+        "tag": "a",
+        "href": "mailto:slingshot@protocol.ai?cc=slingshotprogram@protonmail.com&subject=Open%20Panda%20Dataset%20Request&body=Your%20organization%20or%20name%3A%0D%0ADescribe%20the%20dataset%20you%20would%20like%20to%20add%3A",
         "label": "Add a Dataset"
       },
       {
         "href": "",
-        "label": "Login"
+        "label": "Login",
+        "tooltip": "coming soon"
       }
-    ]
+    ],
+    "mobileNavFilter": {
+      "datasets": "Datasets",
+      "noResults": "There are no projects matching this search, please try again.",
+      "storage": "Storage Providers"
+    }
+  },
+  "breadcrumbs_mapping": {
+    "index": "Home",
+    "about": "About",
+    "how-to-download": "How to Download",
+    "terms": "Terms of Use",
+    "privacy": "Privacy",
+    "dataset": "Dataset",
+    "alpha": "Alpha"
   },
   "footer": {
     "heading": "Access humanity's most important data",
-    "copyright": "Lorem ipsum 2023",
+    "copyright": "2023 <a href='https://github.com/data-preservation-programs' target='_blank'>Data Preservation Programs</a>",
     "image": "/images/footer.png",
     "nav_1": [
       {
-        "href": "/add",
+        "href": "https://github.com/data-preservation-programs/slingshot/issues/new/choose",
         "label": "Add a Dataset"
       },
       {
-        "href": "/",
+        "href": "/how-to-download",
         "label": "How to Download"
       },
       {
         "href": "/about#faq",
         "label": "FAQs"
-      },
-      {
-        "href": "/about",
-        "label": "About"
       }
     ],
     "nav_2": [
+      {
+        "href": "/about",
+        "label": "About"
+      },
       {
         "href": "https://slack.com",
         "label": "Slack"
@@ -63,6 +82,12 @@
       {
         "href": "https://github.com",
         "label": "Github"
+      }
+    ],
+    "nav_3": [
+      {
+        "href": "/alpha",
+        "label": "Alpha"
       },
       {
         "href": "/terms",
@@ -74,9 +99,22 @@
       }
     ]
   },
-  "404_error_message": "404 Not Found",
+  "404_error_page": {
+    "message": {
+      "heading": "404",
+      "description": "Looks like this page doesn’t exist, try again!",
+      "ctas": [
+        {
+          "type": "solid-tear",
+          "url": "/",
+          "text": "Back to Home"
+        }
+      ]
+    }
+  },
   "filterPanel": {
     "labels": {
+      "buttonText": "Filters",
       "add": "Add Filters",
       "search": "Search",
       "clear": "Clear",
@@ -84,11 +122,9 @@
       "seeMore": "See More"
     },
     "keys": {
-      "preparation_progress": "Preparation progress",
       "categories": "Categories",
       "licenses": "Licenses",
-      "fileType": "File Type",
-      "location": "Location"
+      "fileExtensions": "File Type"
     }
   }
 }

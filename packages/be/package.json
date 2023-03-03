@@ -1,14 +1,14 @@
 {
   "name": "be",
-  "version": "1.0.0",
-  "description": "Backend",
+  "version": "0.1.0",
+  "description": "Open Panda backend",
   "main": "app.js",
   "scripts": {
     "dev": "../../node_modules/.bin/nodemon --exec 'npm run lint:staged && node app.js'",
     "lint:staged": "../../node_modules/.bin/eslint -c .eslintrc.js $(git diff HEAD --name-only --relative --diff-filter=ACMRTUXB | grep  -E \"(.js$|.ts$)\")",
     "lint:full": "../../node_modules/.bin/eslint ./ --ext .js --ext .ts",
-    "reload:production": "pm2 reload fp-be",
-    "reload:stable": "pm2 reload fp-ST-be"
+    "reload:production": "pm2 reload op-be",
+    "reload:stable": "pm2 reload op-ST-be"
   },
   "nodemonConfig": {
     "ignore": [

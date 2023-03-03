@@ -4,8 +4,8 @@ const env = process.env.SERVER_ENV
 
 const baseUrls = {
   development: 'https://localhost',
-  stable: '',
-  production: ''
+  stable: 'https://stable.openpanda.io',
+  production: 'https://openpanda.io'
 }
 
 const frontendPort = (function () {
@@ -30,7 +30,7 @@ export default {
     githubOAuthLink: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_ID}&scope=user:email`,
     serverFlag: env,
     seo: {
-      siteName: 'OpenPanda'
+      siteName: 'Open Panda'
     },
     socketOptions: {
       withCredentials: true
@@ -52,11 +52,11 @@ export default {
   // /////////////////////////////////////////////////////// Headers of the Page
   // ---------------------------------------------------------------------------
   head: {
-    title: 'OpenPanda',
+    title: 'Open Panda',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'OpenPanda' }
+      { hid: 'description', name: 'description', content: 'Open Panda' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon-96x96.png' }
@@ -93,16 +93,27 @@ export default {
   // ---------------------------------------------------------------------------
   modules: [
     '@nuxtjs/axios', // Doc: https://axios.nuxtjs.org/usage
-    'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
+    'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app
+    '@nuxt/content', // Doc: https://content.nuxtjs.org
+    '@nuxtjs/gtm', // Doc: https://github.com/nuxt-community/gtm-module
     '~/modules/https',
     '~/modules/toaster',
     '~/modules/slider',
-    // '~/modules/alert',
+    '~/modules/ls',
     '~/modules/auth',
     '~/modules/search',
     '~/modules/form',
     '~/modules/button'
   ],
+  // ///////////////////////////////////////////////////// [Module] Nuxt-content
+  // ---------------------------------------------------------------------------
+  content: {
+    markdown: {
+      prism: {
+        theme: false
+      }
+    }
+  },
   // /////////////////////////////////// Plugins to load before mounting the App
   // ---------------------------------------------------------------------------
   plugins: [
@@ -119,6 +130,13 @@ export default {
   moment: {
     timezone: true,
     defaultTimezone: 'UTC'
+  },
+  // ////////////////////////////////////////////////////////////// [Module] GTM
+  // ------------------------- Doc: https://github.com/nuxt-community/gtm-module
+  gtm: {
+    // Currently hardcoded, can be added as an environment variable instead
+    id: 'GTM-NH8TLHW',
+    pageTracking: true
   },
   // ////////////////////////////////////////////////////// [Module] GoogleFonts
   googleFonts: {

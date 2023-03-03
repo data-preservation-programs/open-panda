@@ -22,12 +22,12 @@ $gin: #EEF5F1;
 $rangoonGreen: #1B1F12;
 $emperor: #4F4F4F;
 $grayNurse: #F1F3EF;
-$lavenderGray: #C6C1DF;
 $tasman: #CED7C9;
 $fuscousGray: #51504B;
 $athensGray: #E7E9ED;
 $capeCod: #3C4748;
 $grayNurse2: #E0E7E0;
+$dodgerBlue: #3DA2FF;
 
 // ----------------------------------------------------------------- Breakpoints
 $breakpoint_Tiny: 25.9375rem; // 415px
@@ -41,6 +41,40 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 // ------------------------------------------------------------------------ Misc
 $borderRadius: 1.25rem;
 $duration: 300ms;
+
+// ------------------------ file item - gray background that looks like a button
+@mixin fileItem() {
+  display: inline-block;
+  line-height: leading(21, 14);
+  padding: 0.3125rem 0.625rem;
+  border-radius: 1.25rem;
+  background-color: #E7E9ED;
+  @include fontWeight_Medium;
+  @include fontSize_14;
+  margin-right: 0.5625rem;
+}
+
+@mixin circleBorder {
+  width: 2.1875rem;
+  height: 2.1875rem;
+  border-radius: 50%;
+  border: solid 1px #DDDFE3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 250ms;
+  path {
+    fill: $rangoonGreen;
+  }
+  &:hover {
+    background-color: $rangoonGreen;
+    path {
+      transition: 250ms;
+      fill: white;
+    }
+  }
+}
 
 // ////////////////////////////////////////////////////////////////////// Mixins
 // =============================================================================
@@ -212,6 +246,10 @@ $duration: 300ms;
   @return $remValue;
 }
 
+@function vw($px-vw, $base-vw: 1360px) {
+  @return math.div($px-vw * 100vw, $base-vw);
+}
+
 // ------------------------------------------------------------------- Animation
 @mixin animation($animate...) {
   $max: length($animate);
@@ -255,6 +293,20 @@ $duration: 300ms;
   63.26% { transform: matrix3d(2.007, 0, 0, 0, 0, 2.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
   85.49% { transform: matrix3d(1.999, 0, 0, 0, 0, 1.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
   100% { transform: matrix3d(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+}
+
+@mixin fadeIn() {
+  opacity: 1;
+  visibility: visible;
+  transition: all 200ms ease-in;
+  pointer-events: auto;
+}
+
+@mixin fadeOut() {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 200ms ease-in;
+  pointer-events: none;
 }
 
 // ///////////////////////////////////////////////////////////////////// Imports

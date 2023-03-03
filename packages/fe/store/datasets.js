@@ -1,19 +1,21 @@
-// /////////////////////////////////////////////////////////////////// Functions
-// -----------------------------------------------------------------------------
+import CloneDeep from 'lodash/cloneDeep'
+
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   datasetList: false,
+  datasetListTypeahead: false,
   metadata: {
     page: 1,
+    limit: 12,
     totalPages: 1,
     count: false
   },
   loading: false,
   basicStats: false,
   filters: false,
-  sort: false,
-  limit: false,
+  sortOptions: false,
+  limitOptions: false,
   layout: 'grid'
 })
 
@@ -21,12 +23,13 @@ const state = () => ({
 // -----------------------------------------------------------------------------
 const getters = {
   datasetList: state => state.datasetList,
+  datasetListTypeahead: state => state.datasetListTypeahead,
   metadata: state => state.metadata,
   loading: state => state.loading,
   basicStats: state => state.basicStats,
   filters: state => state.filters,
-  sort: state => state.sort,
-  limit: state => state.limit,
+  sortOptions: state => state.sortOptions,
+  limitOptions: state => state.limitOptions,
   layout: state => state.layout
 }
 
@@ -35,24 +38,26 @@ const getters = {
 const actions = {
   // //////////////////////////////////////////////////////////////// resetStore
   resetStore ({ commit, getters, dispatch }, formId) {
-    dispatch('setPage', { page: 1 })
-    commit('SET_DATASET_LIST', { datasetList: false, totalPages: 1 })
+    commit('SET_DATASET_LIST', {
+      datasetList: false,
+      page: 1,
+      totalPages: 1,
+      count: false
+    })
     commit('SET_FILTERS', false)
-    commit('SET_SORT', false)
-    commit('SET_LIMIT', false)
     commit('SET_LAYOUT', 'grid')
   },
   // //////////////////////////////////////////////////////////// getDatasetList
   async getDatasetList ({ commit, getters, dispatch }, metadata) {
     try {
-      const route = metadata.route
-      const page = getters.metadata.page
-      const query = route.query
-      const search = query.search
-      const limit = getters.limit[query.limit || 0].value
-      const sort = getters.sort[query.sort || 0].value
-      const filters = {}
       dispatch('setLoadingStatus', { status: true })
+      const route = metadata.route
+      const query = CloneDeep(route.query)
+      const page = parseInt(query.page || getters.metadata.page)
+      const search = query.search
+      const limit = query.limit || getters.metadata.limit
+      const sort = query.sort || 'data_size,1'
+      const filters = {}
       Object.keys(getters.filters).forEach((filter) => {
         if (query.hasOwnProperty(filter)) {
           filters[filter] = query[filter]
@@ -68,12 +73,33 @@ const actions = {
         }
       })
       const payload = response.data.payload
-      const datasetList = payload.results
+      const totalPages = payload.metadata.totalPages
+      if (payload.metadata.page > totalPages) {
+        query.page = totalPages
+        return {
+          fail: true,
+          route: { path: '/', query }
+        }
+      }
+      const datasetListOriginal = CloneDeep(payload.results)
+      const datasetList = datasetListOriginal
+      datasetList.forEach((item) => {
+        let imgUrl = item.slug
+        // exceptions
+        if (item.slug.includes('common-crawl')) {
+          imgUrl = 'common-crawl'
+        }
+        if (item.slug.includes('sloan-digital-sky-survey-release')) {
+          imgUrl = 'sloan-digital-sky-survey-release'
+        }
+        item.data_size = this.$formatBytes(item.data_size)
+        item.img_url = `/images/datasets/${imgUrl}.jpg`
+      })
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata
       })
-      return payload.results
+      return datasetList
     } catch (e) {
       console.log('=================== [Store Action: datasets/getDatasetList]')
       console.log(e)
@@ -81,17 +107,30 @@ const actions = {
       return false
     }
   },
-  // /////////////////////////////////////////////////////// getSortLimitFilters
-  async getSortLimitFilters ({ commit, getters, dispatch }) {
+  // //////////////////////////////////////////////////////////////// getFilters
+  async getFiltersAndTypeahead ({ commit }) {
     try {
-      const response = await this.$axiosAuth.get('/get-static-file', {
-        params: { path: 'filters.json' }
-      })
-      commit('SET_SORT', response.data.payload.sort)
-      commit('SET_LIMIT', response.data.payload.limit)
-      commit('SET_FILTERS', response.data.payload.filters)
+      const filters = await this.dispatch('general/getCachedFile', 'filters.json')
+      const typeahead = await this.dispatch('general/getCachedFile', 'typeahead-dataset-search-data.json')
+      commit('SET_SORT_OPTIONS', filters.sort)
+      commit('SET_LIMIT_OPTIONS', filters.limit)
+      commit('SET_FILTERS', filters.filters)
+      commit('SET_DATASET_LIST_TYPEAHEAD', typeahead)
     } catch (e) {
-      console.log('========================== [Store Action: datasets/getSort]')
+      console.log('======================= [Store Action: datasets/getFilters]')
+      console.log(e)
+      return false
+    }
+  },
+  // ///////////////////////////////////////////////////////////// getBasicStats
+  async getBasicStats ({ commit, getters, dispatch }) {
+    try {
+      const response = await this.$axiosAuth.get('/get-cached-file', {
+        params: { path: 'basic-stats.json' }
+      })
+      commit('SET_BASIC_STATS', response.data.payload)
+    } catch (e) {
+      console.log('==================== [Store Action: datasets/getBasicStats]')
       console.log(e)
       return false
     }
@@ -100,37 +139,13 @@ const actions = {
   setDatasetList ({ commit }, payload) {
     commit('SET_DATASET_LIST', payload)
   },
-  // ////////////////////////////////////////////////////////////////// setLimit
-  setLimit ({ commit }, payload) {
-    commit('SET_LIMIT', payload)
-  },
   // ///////////////////////////////////////////////////////////////// setLayout
   setLayout ({ commit }, payload) {
     commit('SET_LAYOUT', payload)
   },
-  // /////////////////////////////////////////////////////////////////// setPage
-  setPage ({ commit }, payload) {
-    commit('SET_PAGE', payload)
-  },
-  // ///////////////////////////////////////////////////////////// incrementPage
-  incrementPage ({ commit, dispatch }, payload) {
-    dispatch('setPage', { page: payload.page })
-    dispatch('getDatasetList', { route: payload.route })
-  },
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
-  },
-  // ///////////////////////////////////////////////////////////// getBasicStats
-  async getBasicStats ({ commit, getters, dispatch }) {
-    try {
-      const response = await this.$axiosAuth.get('/get-basic-stats')
-      commit('SET_BASIC_STATS', response.data.payload)
-    } catch (e) {
-      console.log('==================== [Store Action: datasets/getBasicStats]')
-      console.log(e)
-      return false
-    }
   }
 }
 
@@ -138,18 +153,16 @@ const actions = {
 // -----------------------------------------------------------------------------
 const mutations = {
   SET_DATASET_LIST (state, payload) {
-    const metadata = payload.metadata
     state.datasetList = payload.datasetList
+    const metadata = payload.metadata
     if (metadata) {
       state.metadata.totalPages = metadata.totalPages
       state.metadata.count = metadata.count
+      state.metadata.page = metadata.page
     }
   },
-  SET_PAGE (state, payload) {
-    state.metadata.page = payload.page
-  },
-  SET_LIMIT (state, limit) {
-    state.limit = limit
+  SET_DATASET_LIST_TYPEAHEAD (state, payload) {
+    state.datasetListTypeahead = payload
   },
   SET_LOADING_STATUS (state, payload) {
     state.loading = payload.status
@@ -160,11 +173,17 @@ const mutations = {
   SET_FILTERS (state, filters) {
     state.filters = filters
   },
-  SET_SORT (state, sort) {
-    state.sort = sort
+  SET_SORT_OPTIONS (state, options) {
+    state.sortOptions = options
+  },
+  SET_LIMIT_OPTIONS (state, options) {
+    state.limitOptions = options
   },
   SET_LAYOUT (state, layout) {
     state.layout = layout
+  },
+  SET_PAGE (state, page) {
+    state.metadata.page = page
   }
 }
 
