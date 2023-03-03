@@ -1,96 +1,28 @@
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-// import CloneDeep from 'lodash/cloneDeep'
-
-// /////////////////////////////////////////////////////////////////// Functions
-// -----------------------------------------------------------------------------
-// const getMockCids = () => {
-//   const mockCid = {
-//     title: 'Genome in a Bottle 001',
-//     hash: 'baga6ea4seaqih7gfqvkpvez3qlbajjolszk7vfqaatt5m2rdef52p3fq4jfpigi',
-//     fileExtensions: 'xml, txt, csv',
-//     size: 32000000000,
-//     expires: 'Feb 27 2023',
-//     storage_providers: [
-//       {
-//         id: 'F0123431',
-//         dealId: '1472881',
-//         location: 'GB',
-//         expiry_date: 'Feb 27 2023',
-//         retrieval_rate: '100%',
-//         retrieval_commands: [
-//           'lotus client retrieve --miner f022352 baga6ea4seaqih7gfqvkpvez3qlbajjolszk7vfqaatt5m2rdef52p3fq4jfpigi publicdomainmovies.tar.01',
-//           'pow ffs get baga6ea4seaqih7gfqvkpvez3qlbajjolszk7vfqaatt5m2rdef52p3fq4jfpigi retrieval.png'
-//         ]
-//       },
-//       {
-//         id: 'F0123123',
-//         dealId: '1438903',
-//         location: 'GB',
-//         expiry_date: 'Feb 28 2023',
-//         retrieval_rate: '100%',
-//         retrieval_commands: [
-//           'lotus client retrieve --miner f022352 b356c864441e1ca71dd4fe1fc455862350f6798c1f966a90ea3fcf60713b3548 publicdomainmovies.tar.01',
-//           'pow ffs get b356c864441e1ca71dd4fe1fc455862350f6798c1f966a90ea3fcf60713b3548 retrieval.png',
-//           'pow ffs get b356c864441e1ca71dd4fe1fc455862350f6798c1f966a90ea3fcf60713b3548 retrieval.png',
-//           'pow ffs get b356c864441e1ca71dd4fe1fc455862350f6798c1f966a90ea3fcf60713b3548 retrieval.png'
-//         ]
-//       },
-//       {
-//         id: 'F012H890',
-//         dealId: '1472892',
-//         location: 'GB',
-//         expiry_date: 'Mar 28 2023',
-//         retrieval_rate: '100%',
-//         retrieval_commands: [
-//           'lotus client retrieve --miner f022352 88a601f0915f70051a32ac1c1e4b931c348467e70a0c2f7f72086967eeb79e29 publicdomainmovies.tar.01',
-//           'pow ffs get 88a601f0915f70051a32ac1c1e4b931c348467e70a0c2f7f72086967eeb79e29 retrieval.png'
-//         ]
-//       },
-//       {
-//         id: 'F0126789',
-//         dealId: '1472890',
-//         location: 'GB',
-//         expiry_date: 'Apr 1 2023',
-//         retrieval_rate: '100%',
-//         retrieval_commands: [
-//           'lotus client retrieve --miner f022352 444d11afee588638e0479240c55abc5dc8c21ef829f519b8a96db9134b6b41f0 publicdomainmovies.tar.01',
-//           'pow ffs get 444d11afee588638e0479240c55abc5dc8c21ef829f519b8a96db9134b6b41f0 retrieval.png'
-//         ]
-//       }
-//     ],
-//     status: 'active'
-//   }
-//   const mockCids = []
-//   for (let i = 0; i < 6; i++) {
-//     const cid = CloneDeep(mockCid)
-//     cid.title = `Genome in a Bottle 00${i}`
-//     cid.hash = Math.floor(Math.random() * 9999998873867900).toString()
-//     for (let j = 0; j < 4; j++) {
-//       cid.storage_providers[j].id = Math.floor(Math.random() * 9000).toString()
-//       cid.storage_providers[j].dealId = Math.floor(Math.random() * 10000).toString()
-//     }
-//     mockCids.push(cid)
-//   }
-//   return {
-//     data: {
-//       payload: mockCids
-//     }
-//   }
-// }
+import CloneDeep from 'lodash/cloneDeep'
 
 // /////////////////////////////////////////////////////////////////////// State
 // ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
   dataset: false,
-  cidList: false
+  cidList: false,
+  metadata: {
+    page: 1,
+    limit: 12,
+    totalPages: 1,
+    count: false
+  },
+  loading: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
 // -----------------------------------------------------------------------------
 const getters = {
   dataset: state => state.dataset,
-  cidList: state => state.cidList
+  cidList: state => state.cidList,
+  metadata: state => state.metadata,
+  loading: state => state.loading
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -107,8 +39,8 @@ const actions = {
         }
       })
       const dataset = response.data.payload
-      dispatch('getCidList', { datasetId: dataset._id })
       commit('SET_DATASET', { dataset })
+      await dispatch('getCidList', metadata)
       return dataset
     } catch (e) {
       if (getters.dataset) { commit('SET_DATASET', { dataset: false }) }
@@ -119,19 +51,40 @@ const actions = {
     }
   },
   // //////////////////////////////////////////////////////////////// getCidList
-  getCidList ({ commit, getters }, metadata) {
+  async getCidList ({ commit, getters, dispatch }, metadata) {
     try {
-      // const id = metadata.dataSetId
-      // const response = await this.$axiosAuth('/get-cid-list',  { params: { id } })
-      // const response = await getMockCids()
-      // const cids = response.data.payload
-      const cids = false
-      commit('SET_CID_LIST', { cids })
+      dispatch('setCidLoadingStatus', { status: true })
+      const route = metadata.route
+      const query = CloneDeep(route.query)
+      const slug = route.params.id
+      const page = parseInt(query.page || getters.metadata.page)
+      const limit = query.limit || getters.metadata.limit
+      const response = await this.$axiosAuth('/get-cid-list', {
+        params: {
+          slug,
+          page,
+          ...(limit && { limit })
+        }
+      })
+      const payload = response.data.payload
+      dispatch('setCidList', {
+        results: payload.results,
+        metadata: payload.metadata
+      })
     } catch (e) {
       console.log('======================== [Store Action: dataset/getCidList]')
       console.log(e)
+      dispatch('setCidLoadingStatus', { status: false })
       return false
     }
+  },
+  // //////////////////////////////////////////////////////////////// setCidList
+  setCidList ({ commit }, payload) {
+    commit('SET_CID_LIST', payload)
+  },
+  // /////////////////////////////////////////////////////// setCidLoadingStatus
+  setCidLoadingStatus ({ commit }, payload) {
+    commit('SET_CID_LOADING_STATUS', payload)
   }
 }
 
@@ -142,7 +95,16 @@ const mutations = {
     state.dataset = payload.dataset
   },
   SET_CID_LIST (state, payload) {
-    state.cidList = payload.cids
+    state.cidList = payload.results
+    const metadata = payload.metadata
+    if (metadata) {
+      state.metadata.totalPages = metadata.totalPages
+      state.metadata.count = metadata.count
+      state.metadata.page = metadata.page
+    }
+  },
+  SET_CID_LOADING_STATUS (state, payload) {
+    state.loading = payload.status
   }
 }
 
