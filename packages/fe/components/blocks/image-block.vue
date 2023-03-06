@@ -14,7 +14,7 @@
 </template>
 
 <script>
-
+// ====================================================================== Export
 export default {
   name: 'ImageBlock',
 

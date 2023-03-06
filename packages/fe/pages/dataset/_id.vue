@@ -1,8 +1,8 @@
 <template>
   <div class="page page-singular">
 
-    <!-- ============================================================ HEADER -->
-    <section id="section-header">
+    <!-- ============================================================== Hero -->
+    <section id="section-hero">
       <div class="grid">
 
         <div
@@ -290,6 +290,7 @@ export default {
       return this.dataset.createdAt ? this.$moment(this.dataset.createdAt).format('YYYY') : '-'
     },
     datasetSize () {
+      console.log(this.dataset.data_size, this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-')
       return this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-'
     },
     totalDataOnNetwork () {

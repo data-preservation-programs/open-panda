@@ -19,7 +19,7 @@
       <!-- details: section 1 -->
       <div class="card-details">
         <div
-          v-for="(label, key) in labels1"
+          v-for="(label, key) in labelsTier1"
           :key="key"
           class="grid-noGutter">
           <div class="caption col-6" data-push-right="off-1">
@@ -36,7 +36,7 @@
         <div class="grid-noGutter card-details-row">
           <div class="col-12">
             <span class="caption caption-bold">
-              {{ labels2.file_extensions }}
+              {{ labelsTier2.file_extensions }}
             </span>
             <span v-if="!fileExtData" class="card-data">-</span>
             <span v-for="(item, index) in fileExtData" :key="index">
@@ -59,7 +59,7 @@
         <div class="grid-noGutter card-details-row">
           <div class="col-12">
             <span class="caption caption-bold">
-              {{ labels2.locations }}
+              {{ labelsTier2.locations }}
             </span>
 
             <span v-if="!locationsData" class="card-data">-</span>
@@ -104,24 +104,25 @@ export default {
   },
 
   props: {
-    data: {
+    card: {
       type: Object,
       required: true
     },
-    labels1: {
+    labels: {
       type: Object,
       required: true
-    },
-    labels2: {
-      type: Object,
-      required: false,
-      default: () => {}
     }
   },
 
   computed: {
+    labelsTier1 () {
+      return this.labels.tier1
+    },
+    labelsTier2 () {
+      return this.labels.tier2
+    },
     computedData () {
-      const data = cloneDeep(this.data)
+      const data = cloneDeep(this.card)
       data.limit = 1
       data.showMore = false
       return data

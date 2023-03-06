@@ -24,9 +24,11 @@
 </template>
 
 <script>
+// ====================================================================== Import
 import Button from '@/components/buttons/button'
 import MarkdownParser from '@/components/markdown-parser'
 
+// ====================================================================== Export
 export default {
   name: 'TextBlock',
 
@@ -60,6 +62,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// ///////////////////////////////////////////////////////////////////// General
 .text-block {
   position: relative;
   &.align__center {
@@ -82,6 +85,7 @@ export default {
   }
 }
 
+// ///////////////////////////////////////////////////////////////////// Buttons
 .button-row {
   margin-bottom: 0;
   .button:first-child {

@@ -92,7 +92,6 @@ const actions = {
         if (item.slug.includes('sloan-digital-sky-survey-release')) {
           imgUrl = 'sloan-digital-sky-survey-release'
         }
-        item.data_size = this.$formatBytes(item.data_size)
         item.img_url = `/images/datasets/${imgUrl}.jpg`
       })
       dispatch('setDatasetList', {

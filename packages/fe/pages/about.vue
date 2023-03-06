@@ -11,7 +11,7 @@
 import { mapGetters } from 'vuex'
 
 import AboutPageData from '@/content/pages/about.json'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 
 // ====================================================================== Export
 export default {

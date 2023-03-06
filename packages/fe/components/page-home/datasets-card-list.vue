@@ -2,29 +2,29 @@
   <div class="col card">
     <CardCutout>
       <div class="card-inner">
-        <img class="card-img" :src="data.img_url" />
+        <img class="card-img" :src="card.img_url" />
         <div class="card-details">
-          <div class="card-details-row title" :title="data.name">
-            {{ data.name }}
+          <div class="card-details-row title" :title="card.name">
+            {{ card.name }}
           </div>
 
           <div class="card-details-row">
             <span
-              v-for="(label, key) in labels1"
+              v-for="(label, key) in labelsTier1"
               :key="key"
               class="card-details-row-item">
               <span class="caption">
                 {{ label }}
               </span>
               <span class="card-data">
-                {{ data[key] || '-' }}
+                {{ card[key] || '-' }}
               </span>
             </span>
           </div>
 
-          <div v-if="labels2" class="card-details-row">
+          <div v-if="labelsTier2" class="card-details-row">
             <span
-              v-for="(label, key) in labels2"
+              v-for="(label, key) in labelsTier2"
               :key="key"
               class="">
               <span class="caption">
@@ -32,17 +32,17 @@
               </span>
               <span
                 v-if="key === 'locations'">
-                <span v-if="!data[key]" class="card-data">-</span>
+                <span v-if="!card[key]" class="card-data">-</span>
                 <span
-                  v-for="(item, index) in data[key]"
+                  v-for="(item, index) in card[key]"
                   :key="index">
                   {{ $getFlagIcon(item.country_code) }}
                 </span>
               </span>
               <span v-if="key === 'file_extensions'">
-                <span v-if="!data[key]" class="card-data">-</span>
+                <span v-if="!card[key]" class="card-data">-</span>
                 <span
-                  v-for="(item, index) in data[key]"
+                  v-for="(item, index) in card[key]"
                   :key="index">
                   <span v-if="index < 3" class="file-item">
                     {{ item }}
@@ -51,13 +51,13 @@
               </span>
             </span>
           </div>
-          
+
         </div>
         <div class="card-button">
           <Button
             :button="{
               type: 'solid',
-              url: `/dataset/${data.slug}`,
+              url: `/dataset/${card.slug}`,
               text: 'View dataset',
               icon: 'arrow'
             }" />
@@ -82,18 +82,22 @@ export default {
   },
 
   props: {
-    data: {
+    card: {
       type: Object,
       required: true
     },
-    labels1: {
+    labels: {
       type: Object,
       required: true
+    }
+  },
+
+  computed: {
+    labelsTier1 () {
+      return this.labels.tier1
     },
-    labels2: {
-      type: Object,
-      required: false,
-      default: () => {}
+    labelsTier2 () {
+      return this.labels.tier2
     }
   }
 }

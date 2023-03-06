@@ -11,7 +11,7 @@
 import { mapGetters } from 'vuex'
 
 import AlphaPageData from '@/content/pages/alpha.json'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 // ====================================================================== Export
 export default {
   name: 'AlphaPage',

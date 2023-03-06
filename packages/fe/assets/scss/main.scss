@@ -555,12 +555,6 @@ p, .p1 {
   @include circleBorder;
 }
 
-.flex-end {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
 // index page cards global for both layouts
 .card-details {
   .card-data {

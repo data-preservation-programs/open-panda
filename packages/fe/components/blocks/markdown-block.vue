@@ -5,8 +5,10 @@
 </template>
 
 <script>
+// ====================================================================== Import
 import MarkdownParser from '@/components/markdown-parser'
 
+// ====================================================================== Export
 export default {
   name: 'MarkdownBlock',
 
@@ -30,6 +32,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// ///////////////////////////////////////////////////////////////////// General
 .markdown-block {
   position: relative;
 }
