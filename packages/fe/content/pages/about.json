@@ -1,0 +1,163 @@
+{
+  "seo": {
+    "title": "About - Open Panda",
+    "description": "Learn about Open Panda, a platform for the largest open datasets in the world, stored on Filecoin, a decentralized storage network."
+  },
+  "og": {
+    "site_name": "Open Panda",
+    "url": "https://openpanda.io/about",
+    "type": "website",
+    "image": "/open-graph-image.jpg"
+  },
+  "page_content": {
+    "hero": {
+      "id": "about-hero",
+      "col_1": {
+        "type": "custom",
+        "cols": {
+          "num": "col-5_sm-8_mi-12",
+          "push_left": "off-0_sm-2_mi-0"
+        },
+        "customizations": {
+          "images-before": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/about/researcher-in-laboratory-and-textured-cutout.png"
+              }
+            }
+          },
+          "images-after": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/about/rock-over-block-shapes.png"
+              }
+            }
+          }
+        }
+      },
+      "col_2": {
+        "type": "text_block",
+        "cols": {
+          "num": "col-5_lg-6_md-5_sm-10_mi-12",
+          "push_left": "off-1_lg-1_md-1_sm-1_mi-0",
+          "push_right": "off-1_lg-0_md-1_sm-1_mi-0"
+        },
+        "heading": "Access humanity’s most important data",
+        "description": "Open Panda is a platform for data researchers, analysts, students and enthusiasts to interact with the largest open datasets in the world. Data available through our platform is stored on Filecoin, a decentralized storage network comprised of thousands of independent Storage Providers around the world.",
+        "ctas": [
+          {
+            "type": "solid-tear",
+            "text": "Start your search",
+            "url": "/"
+          }
+        ]
+      }
+    },
+    "intro-1": {
+      "id": "about-intro-1",
+      "col_0": {
+        "type": "image_block",
+        "cols": {
+          "num": "col-8_mi-12",
+          "push_left": "off-2_mi-0"
+        },
+        "src": "/images/about/spherical-helix-and-wave-propagation.png"
+      },
+      "col_1": {
+        "type": "text_block",
+        "cols": {
+          "num": "col-5_sm-10_mi-12",
+          "push_left": "off-1_sm-1_mi-0"
+        },
+        "label": "Open Panda exists today because a decentralized model offers unique benefits when storing data at scale.",
+        "description": " The distributed nature of the network means that sources are for data are available in a variety of regions around the world, reducing latency and helping ensure a reliable connection for the download process. Storage Providers maintain significant hardware requirements, which typically include high bandwidth connections to the internet.<br><br>Aside from distribution, all content on the network is cryptographically hashed into a unique value called a CID, or content identifier. This means that if any data changes at all, the CID changes. For content within datasets, this adds a unique feature: immutability. Information contained in a dataset becomes tamper proof, because if anything changes, it's immediately evident from the CID being different. This is especially useful when considering the problem of safeguarding data from manipulation by biased parties.<br><br>One of Filecoin's core missions is to store humanity's most important information, and the Open Panda project is directly aligned with that mission.  At this point in time, downloading and working with the data on the platform still requires an understanding of how Filecoin works and some use of specialized software, but over time we plan to abstract those hurdles away, in the interest of a smoother and more user-friendly experience and a minimal learning curve.",
+        "ctas": [
+          {
+            "type": "solid-tear",
+            "text": "Learn more about OpenPanda Alpha",
+            "url": "/alpha"
+          }
+        ]
+      },
+      "col_2": {
+        "type": "custom",
+        "cols": {
+          "num": "col-5_sm-10_mi-12",
+          "push_left": "off-1_sm-1_mi-0"
+        },
+        "customizations": {
+          "intro-images-before": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/about/spherical-helix-and-wave-propagation.png"
+              }
+            }
+          },
+          "intro-images-after": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/about/researcher-using-laboratory-equipment.png"
+              }
+            }
+          }
+        }
+      }
+    },
+    "faq": {
+      "id": "section-faq",
+      "slug": "faq",
+      "col_1": {
+        "type": "text_block",
+        "cols": {
+          "num": "col-5_lg-6_md-5_sm-10_mi-12",
+          "push_left": "off-1_lg-1_md-1_sm-1_mi-0",
+          "push_right": "off-6_lg-0_md-1_sm-1_mi-0"
+        },
+        "heading": "Frequently Asked Questions"
+      },
+      "col_2": {
+        "type": "card_list_block",
+        "cols": {
+          "num": "col-9_sm-10_mi-12",
+          "push_left": "off-3_sm-1_mi-0"
+        },
+        "direction": "column",
+        "card_type": "faq",
+        "cards": [
+          {
+            "title": "How does Open Panda work?",
+            "description": "Open Panda is a platform that makes open datasets that are stored on the Filecoin network accessible and available for download. Filecoin is able to support the storage of massive collections of data, but it's not obvious what data is available on the network or where it can be found. The Open Panda interface will help you discover the datasets on the network, where they're stored, and how to retrieve them."
+          },
+          {
+            "title": "Why should open datasets be decentralized?",
+            "description": "Open data is stored on a distributed network is inherently safer than the same data stored in a centralized place. A centralized location exposes the data to potential threats such as a concentration risk from a lack of redundancy, or tampering. Open Panda aims to provide 5 or more copies of each dataset stored on the network at a given time, giving users more download options while effectively eliminating these threats."
+          },
+          {
+            "title": "What kind of datasets are available?",
+            "description": "Open datasets from large global projects have been prioritized, although the eventual goal is to store all datasets. The datasets available cover a variety of categories and use cases which may be explored using the site's robust filtering system."
+          },
+          {
+            "title": "Can I submit new datasets?",
+            "description": "Currently, we're working on storing a set of large public datasets that are well known and well documented. However, if you have a dataset in mind that the community might benefit from, you can submit a new dataset for review by opening a Github issue in this repository. In the future, we'll allow direct submission of dataset suggestions via Open Panda."
+          },
+          {
+            "title": "Where are the datasets stored?",
+            "description": "Data is stored with Storage Providers in thousands of different locations around the world. When browsing a dataset or CID, you'll notice flags appear signifying a country or region. Each flag represents the location of a Storage Provider. Storage Providers are also signified by IDs that begin with f0... which you'll come across when browsing the CIDs in a specific dataset."
+          },
+          {
+            "title": "What is a CID?",
+            "description": "A CID is a Content IDentifier, which uses a unique hash to represent a file or collection of data. If the contents of a file changes, the CID changes completely. This is one of the mechanisms that ensures that the data stored is never modified without everyone on the network knowing. On Open Panda's larger datasets, data is often split across many CIDs, because a CID has a maximum size of 32 GiB. For this reason, you'll come across long lists of many CIDs when browsing particularly large datasets."
+          },
+          {
+            "title": "How do I download files?",
+            "description": "To download one or more CIDs at this time, you'll need to use a specialized tool called Lotus. However, we'll be releasing new tools soon that will simplify this process and drastically reduce the learning curve. See the how to download page for more information."
+          }
+        ]
+      }
+    }
+  }
+}

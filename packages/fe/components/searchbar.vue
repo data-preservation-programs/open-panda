@@ -4,41 +4,40 @@
     :action="action"
     :store-getter="storeGetter"
     :store-action="storeAction"
+    search-key="search"
     @searchbarUpdated="$emit('searchbarUpdated')"
     v-on="$listeners">
     <div
-      slot-scope="{ value, updateValue, empty, clearSearch }"
-      :class="['searchbar', `theme__${theme}`, `format__${format}`, { focused, empty, loading }]">
+      slot-scope="{ value, applySearch, empty }"
+      :class="['searchbar', showTypeahead ? 'has-typeahead' : 'no-typeahead', `theme__${theme}`, { empty, loading }]">
 
-      <div class="input-wrapper">
+      <FieldContainer
+        field-key="typeahead"
+        :scaffold="{
+          type: 'typeahead',
+          inputType: 'text',
+          modelKey: 'typeahead',
+          placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
+          required: false,
+          autocomplete: 'off',
+          optionDisplayKey: 'name',
+          optionReturnKey: 'slug',
+          options: datasetListTypeahead,
+          defaultValue: value || '',
+          resetGroupId: 'search',
+          updateGroupId: 'search'
+        }"
+        @updateValue="applySearch({ value: $event, live: false })"
+        @handleKeydown="handleKeydown"
+        @optionSelected="goToDatasetPage" />
 
-        <input
-          ref="input"
-          :value="value"
-          :placeholder="placeholder"
-          type="text"
-          class="input"
-          @input="updateValue"
-          @focus="focused = true"
-          @blur="focused = false">
-
-        <ButtonB
-          v-if="!empty"
-          format="tiny"
-          class="clear-button"
-          @clicked="clearSearch">
-          <IconClose />
-          <span>Clear</span>
-        </ButtonB>
-
-        <button
-          :class="['search-button', { loading }]"
-          @click="focusInput">
-          <Spinner />
-          <IconSearch />
-        </button>
-
-      </div>
+      <ButtonX
+        :class="['search-button', { loading }]"
+        :disabled="disableSearchButton"
+        @clicked="fetchNewData">
+        <Spinner />
+        <IconSearch />
+      </ButtonX>
 
     </div>
   </Searcher>
@@ -46,12 +45,13 @@
 
 <script>
 // ===================================================================== Imports
+import { mapGetters, mapActions } from 'vuex'
+
 import Searcher from '@/modules/search/components/searcher'
 import Spinner from '@/components/spinners/material-circle'
-import ButtonB from '@/components/buttons/button-b'
-
+import FieldContainer from '@/components/form/field-container'
+import ButtonX from '@/components/buttons/button-x'
 import IconSearch from '@/components/icons/search'
-import IconClose from '@/components/icons/close-thick'
 
 // ====================================================================== Export
 export default {
@@ -60,9 +60,9 @@ export default {
   components: {
     Searcher,
     Spinner,
-    ButtonB,
     IconSearch,
-    IconClose
+    ButtonX,
+    FieldContainer
   },
 
   props: {
@@ -97,14 +97,14 @@ export default {
       default: 'general/setSearchValue'
     },
     theme: {
-      type: String, // 'contained', 'line' or 'standalone'
+      type: String, // 'line' or 'solid'
       required: false,
       default: 'line'
     },
-    format: {
-      type: String, // 'regular' or 'mini'
+    showTypeahead: {
+      type: Boolean,
       required: false,
-      default: 'regular'
+      default: false
     }
   },
 
@@ -114,15 +114,44 @@ export default {
     }
   },
 
-  watch: {
-    focused () {
-      this.$emit('inputFocused')
+  computed: {
+    ...mapGetters({
+      datasetListTypeahead: 'datasets/datasetListTypeahead'
+    }),
+    disableSearchButton () {
+      const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
+      const searchExists = !this.$search('search').isEmpty()
+      return !filterSelectionsExist && !searchExists
     }
   },
 
   methods: {
-    focusInput () {
-      this.$refs.input.focus()
+    ...mapActions({
+      getDatasetList: 'datasets/getDatasetList'
+    }),
+    async fetchNewData () {
+      await this.$search('search').for({
+        instance: this,
+        live: true,
+        redirect: this.$route.path !== '/' ? '/' : undefined
+      })
+      if (this.$route.path === '/') {
+        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+      }
+    },
+    goToDatasetPage (slug) {
+      this.$router.push({
+        path: `/dataset/${slug}`
+      })
+    },
+    handleKeydown (e) {
+      const keyCode = e.keyCode
+      const code = e.keyCode
+      const key = e.key
+      const submit = keyCode === 13 || code === 13 || key === 'Enter'
+      if (submit) {
+        this.fetchNewData()
+      }
     }
   }
 }
@@ -130,10 +159,18 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.input-wrapper {
+.no-typeahead {
+  :deep(.select-container) {
+    display: none !important;
+  }
+}
+.searchbar {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  padding-left: toRem(20);
+  flex-grow: 1;
+  :deep(.field-wrapper) {
+    flex: 1;
+  }
 }
 
 .input {
@@ -143,7 +180,10 @@ export default {
   padding: 0.75rem;
   font-weight: 500;
   transition: 150ms ease-out;
+  color: $fuscousGray;
+  width: 100%;
   @include placeholder {
+    color: $fuscousGray;
     opacity: 1;
   }
 }
@@ -154,8 +194,8 @@ export default {
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 0.625rem;
-  margin-right: -0.625rem;
+  margin-right: toRem(20);
+  margin-left: toRem(10);
   cursor: pointer;
   &.loading {
     .spinner {
@@ -183,66 +223,25 @@ export default {
   width: 1rem;
 }
 
-::v-deep .clear-button {
-  &:hover {
-    .svg-icon path {
-      transition: 150ms ease-in;
-      fill: tomato;
-    }
-  }
-  .svg-icon {
-    width: 8px;
-    margin-right: 0.25rem;
-    path {
-      transition: 150ms ease-out;
-      fill: teal;
-    }
-  }
-}
-
 // ////////////////////////////////////////////////////////////////////// Themes
-.theme__contained {
-  border-radius: 1rem;
-  border: 2px solid tomato;
-  &:hover {
-    background-color: rgba(8, 16, 17, 0.5);
-  }
-  &.focused {
-    background-color: teal;
-  }
-}
-
 .theme__line {
-  border-bottom: 3px solid tomato;
+  border: 2px solid $tasman;
+  border-radius: toRem(30);
   .input {
-    padding: 0.5rem;
-    padding-left: 0;
+    padding: toRem(15) toRem(30) toRem(15) toRem(10);
   }
   .icon-container {
     align-items: flex-end;
   }
 }
 
-.theme__standalone {
-  background-color: teal;
-  border: 1px solid blue;
-  border-radius: 0.5rem;
+.theme__solid {
+  background-color: white;
+  border-radius: toRem(30) 0 0 toRem(2);
   .input {
-    padding-right: 0;
-  }
-  .search-button {
-    margin-right: 0;
+    height: toRem(50);
+    padding: toRem(15) toRem(30) toRem(15) toRem(10);
   }
 }
 
-// ///////////////////////////////////////////////////////////////////// Formats
-.format__mini {
-  .input {
-    font-size: 0.875rem;
-    padding: 0.5rem 0 0.5rem 0.75rem;
-  }
-  .search-button {
-    padding: 0.5rem;
-  }
-}
 </style>

@@ -3,11 +3,8 @@
 @use 'sass:math';
 
 // --------------------------------------------------------------------- General
-$containerWidth: 61.25rem;
-$standardGutter: 0.75rem;
-
-$siteHeaderHeight: 8.5rem;
-$siteHeaderHeightMini: 5rem;
+$containerWidth: 85rem; // 1360px
+$singleColumn: math.div($containerWidth, 12);
 
 // --------------------------------------------------------------------- Colours
 $gray50: #FAFAFA;
@@ -21,37 +18,83 @@ $gray700: #616161;
 $gray800: #424242;
 $gray900: #212121;
 
+$gin: #EEF5F1;
+$rangoonGreen: #1B1F12;
+$emperor: #4F4F4F;
+$grayNurse: #F1F3EF;
+$tasman: #CED7C9;
+$fuscousGray: #51504B;
+$athensGray: #E7E9ED;
+$capeCod: #3C4748;
+$grayNurse2: #E0E7E0;
+$dodgerBlue: #3DA2FF;
+
 // ----------------------------------------------------------------- Breakpoints
 $breakpoint_Tiny: 25.9375rem; // 415px
 $breakpoint_Mini: 40rem; // 640px
 $breakpoint_Small: 53.125rem; // 850px
 $breakpoint_Medium: 64rem; // 1024px
-$breakpoint_Large: 75rem; // 1200px
+$breakpoint_Large: 85rem; // 1360px
 $breakpoint_Xlarge: 90rem; // 1440px
 $breakpoint_UltraLarge: 140.625rem; // 2250px
+
+// ------------------------------------------------------------------------ Misc
+$borderRadius: 1.25rem;
+$duration: 300ms;
+
+// ------------------------ file item - gray background that looks like a button
+@mixin fileItem() {
+  display: inline-block;
+  line-height: leading(21, 14);
+  padding: 0.3125rem 0.625rem;
+  border-radius: 1.25rem;
+  background-color: #E7E9ED;
+  @include fontWeight_Medium;
+  @include fontSize_14;
+  margin-right: 0.5625rem;
+}
+
+@mixin circleBorder {
+  width: 2.1875rem;
+  height: 2.1875rem;
+  border-radius: 50%;
+  border: solid 1px #DDDFE3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: 250ms;
+  path {
+    fill: $rangoonGreen;
+  }
+  &:hover {
+    background-color: $rangoonGreen;
+    path {
+      transition: 250ms;
+      fill: white;
+    }
+  }
+}
 
 // ////////////////////////////////////////////////////////////////////// Mixins
 // =============================================================================
 // --------------------------------------------------------------------- Styling
-@mixin subtitle {
-	font-size: 0.75rem;
-	line-height: 0.75rem;
-	text-transform: uppercase;
-	font-weight: 700;
-}
-
 @mixin centerImage {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
-@mixin shadow1 {
-	box-shadow: 0.125rem 0px 1rem 0.3125rem rgb(black, 0.7);
+@mixin shadow1 { // nav
+	box-shadow: 0px 4px 24px rgba(81, 130, 95, 0.15);
 }
 
-@mixin shadow2 {
-  box-shadow: 0.125rem 0px 0.3125rem 0.25rem rgb(black, 0.4);
+@mixin shadow2 { // cards
+  box-shadow: 0px 4px 34px rgba(86, 106, 96, 0.25);
+}
+
+@mixin shadow3 { // searchbox
+  box-shadow: 0px 4px 34px rgba(81, 86, 130, 0.25);
 }
 
 @mixin highlight {
@@ -104,13 +147,13 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 }
 
 @mixin selection-dark {
-  ::-moz-selection { background: teal; color: tomato; }
-  ::selection { background: teal; color: tomato; }
+  ::-moz-selection { background: white; color: $rangoonGreen; }
+  ::selection { background: white; color: $rangoonGreen; }
 }
 
 @mixin selection-light {
-  ::-moz-selection { background: tomato; color: teal; }
-  ::selection { background: tomato; color: teal; }
+  ::-moz-selection { background: $rangoonGreen; color: white; }
+  ::selection { background: $rangoonGreen; color: white; }
 }
 
 // --------------------------------------------------------------------- General
@@ -153,16 +196,16 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 }
 
 // --------------------------------------------------------------- Media Queries
-@mixin tiny { @media screen and (max-width: 25.9375rem) { @content; } }
-@mixin mini { @media screen and (max-width: 40rem) { @content; } }
-@mixin small { @media screen and (max-width: 53.125rem) { @content; } }
-@mixin medium { @media screen and (max-width: 64rem) { @content; } }
-@mixin large { @media screen and (max-width: 75rem) { @content; } }
-@mixin xlarge { @media screen and (max-width: 90rem) { @content; } }
-@mixin ultraLarge { @media screen and (max-width: 140.625rem) { @content; } }
+@mixin tiny { @media screen and (max-width: $breakpoint_Tiny) { @content; } }
+@mixin mini { @media screen and (max-width: $breakpoint_Mini) { @content; } }
+@mixin small { @media screen and (max-width: $breakpoint_Small) { @content; } }
+@mixin medium { @media screen and (max-width: $breakpoint_Medium) { @content; } }
+@mixin large { @media screen and (max-width: $breakpoint_Large) { @content; } }
+@mixin xlarge { @media screen and (max-width: $breakpoint_Xlarge) { @content; } }
+@mixin ultraLarge { @media screen and (max-width: $breakpoint_UltraLarge) { @content; } }
 
-@mixin containerMaxMQ { @media screen and (max-width: 75rem) { @content; } }
-@mixin containerMinMQ { @media screen and (max-width: 75.0625rem) { @content; } }
+@mixin containerMaxMQ { @media screen and (max-width: $containerWidth) { @content; } }
+@mixin containerMinMQ { @media screen and (max-width: $containerWidthPlusOnePixel) { @content; } }
 @mixin customMaxMQ($width) { @media screen and (max-width: $width) { @content; } }
 @mixin customMinMQ($width) { @media screen and (min-width: $width) { @content; } }
 
@@ -196,6 +239,15 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 
 @mixin everythingExceptIOS {
   @supports not (-webkit-overflow-scrolling: touch) { @content; }
+}
+
+@function toRem($value) {
+  $remValue: math.div($value, 16) + rem;
+  @return $remValue;
+}
+
+@function vw($px-vw, $base-vw: 1360px) {
+  @return math.div($px-vw * 100vw, $base-vw);
 }
 
 // ------------------------------------------------------------------- Animation
@@ -241,6 +293,20 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
   63.26% { transform: matrix3d(2.007, 0, 0, 0, 0, 2.007, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
   85.49% { transform: matrix3d(1.999, 0, 0, 0, 0, 1.999, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
   100% { transform: matrix3d(2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); }
+}
+
+@mixin fadeIn() {
+  opacity: 1;
+  visibility: visible;
+  transition: all 200ms ease-in;
+  pointer-events: auto;
+}
+
+@mixin fadeOut() {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 200ms ease-in;
+  pointer-events: none;
 }
 
 // ///////////////////////////////////////////////////////////////////// Imports

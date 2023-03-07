@@ -1,46 +1,60 @@
 <template>
-  <div class="field-container">
-    <Field v-bind="$props">
-      <div slot-scope="{ updateValue, field, type, validationMessage }">
+  <FieldStandalone
+    v-slot="{ updateValue, field, type, validationMessage }"
+    v-bind="$props"
+    :class="['field-wrapper', scaffold.type]"
+    v-on="$listeners">
 
-        <component
-          :is="type"
-          :field="field"
-          @updateValue="updateValue" />
+    <label v-if="scaffold.label" :for="fieldKey" class="field-label">
+      {{ scaffold.label }}
+    </label>
 
-        <div v-if="field.description" class="description">
-          {{ field.description }}
-        </div>
+    <div v-if="scaffold.description" class="description">
+      {{ scaffold.description }}
+    </div>
 
-        <div v-if="validationMessage" class="validation-message">
-          <sup>*</sup>{{ validationMessage }}
-        </div>
+    <component
+      :is="type"
+      :field="field"
+      :field-key="fieldKey"
+      @updateValue="updateValue"
+      v-on="$listeners" />
 
-      </div>
-    </Field>
-  </div>
+    <slot />
+
+    <div v-if="validationMessage" class="validation-message">
+      {{ validationMessage }}
+    </div>
+
+  </FieldStandalone>
 </template>
 
 <script>
 // ===================================================================== Imports
-import Field from '@/modules/form/components/field'
+import FieldStandalone from '@/modules/form/components/field-standalone'
 import FieldInput from '@/components/form/fields/input'
 import FieldTextarea from '@/components/form/fields/textarea'
 import FieldRange from '@/components/form/fields/range'
 import FieldCheckbox from '@/components/form/fields/checkbox'
+import FieldRadio from '@/components/form/fields/radio'
 import FieldSelect from '@/components/form/fields/select'
+import FieldTypeahead from '@/components/form/fields/typeahead'
+import FieldChiclet from '@/components/form/fields/chiclet'
 
 // ====================================================================== Export
 export default {
   name: 'FieldContainer',
 
   components: {
-    Field,
+    FieldStandalone,
     FieldInput,
     FieldTextarea,
     FieldRange,
     FieldCheckbox,
-    FieldSelect
+    FieldRadio,
+    FieldSelect,
+    FieldTypeahead,
+    FieldChiclet
   },
 
   props: {
@@ -48,29 +62,45 @@ export default {
       type: Object,
       required: true
     },
-    value: {
-      type: [Object, String, Number, Boolean],
+    formId: {
+      type: [String, Boolean],
       required: false,
       default: false
     },
-    formId: {
+    fieldKey: {
       type: String,
       required: true
     },
-    groupId: {
-      type: String,
+    groupIndex: {
+      type: [Number, Boolean],
       required: false,
-      default: ''
+      default: false
+    },
+    validateOnEntry: {
+      type: Boolean,
+      required: false,
+      default: false
     },
     forceDisableFields: {
       type: Boolean,
       required: false,
       default: false
     },
-    deregisterFormFieldOnDestroy: {
+    deregisterOnDestroy: {
       type: Boolean,
       required: false,
       default: false
+    },
+    /**
+     * On occasions where the final root element in field-conditional.vue render
+     * must be something specific. Such as when wrapping a <tbody> in a field-standalone,
+     * it cannot be a div as the wrapper. It must be <tbody> at the root to prevent
+     * SSR hydration errors.
+     */
+    rootHtmlTag: {
+      type: String,
+      required: false,
+      default: 'div'
     }
   }
 }
@@ -112,7 +142,7 @@ export default {
 
 // /////////////////////////////////////////////////////////////////////// Label
 ::v-deep .label {
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   &.floating {
     position: absolute;
@@ -130,7 +160,7 @@ export default {
     top: -0.0625rem;
     font-size: 1.25rem;
     line-height: 1;
-    color: $redOrange;
+    color: $rangoonGreen;
     transition: 150ms ease-out;
   }
   a {
@@ -146,11 +176,25 @@ export default {
   margin-top: 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: $redOrange;
+  color: $rangoonGreen;
   sup {
     top: -0.125rem;
     margin-right: 0.0625rem;
     font-size: 100%;
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////// Custom
+.field-wrapper {
+  &.select {
+    display: flex;
+    align-items: center;
+    .field-label {
+      margin-right: toRem(24);
+    }
+  }
+  &.checkbox {
+    @include fontSize_14;
   }
 }
 </style>

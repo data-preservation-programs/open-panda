@@ -1,4 +1,4 @@
-console.log('💿 [model] sl3_uploads')
+console.log('💿 [model] op_uploads')
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
@@ -37,7 +37,7 @@ const UploadSchema = new Schema({
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: 'sl3_users',
+    ref: 'op_users',
     required: true
   }
 }, {
@@ -47,4 +47,4 @@ const UploadSchema = new Schema({
 
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-module.exports = Mongoose.model('sl3_uploads', UploadSchema)
+module.exports = Mongoose.model('op_uploads', UploadSchema)

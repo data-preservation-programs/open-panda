@@ -1,26 +1,29 @@
 <template>
   <div :class="['field field-checkbox', state]">
 
-    <div class="checkbox-container">
+    <div
+      v-for="(option, index) in options"
+      :key="index"
+      class="checkbox-wrapper">
 
-      <input
-        :id="`checkbox-${id}`"
-        :checked="value"
-        :name="`checkbox-${id}`"
-        type="checkbox"
-        class="checkbox"
-        @input="$emit('updateValue', $event.target.checked)" />
-
-      <div class="checker">
-        <IconCheckmark />
+      <div class="checkbox-container">
+        <input
+          :id="`checkbox__${id}__${index}`"
+          :checked="value === index"
+          :name="`checkbox__${id}`"
+          type="checkbox"
+          class="checkbox"
+          @input="updateValue(index)" />
+        <div class="checker">
+          <IconCheckmark />
+        </div>
       </div>
 
-    </div>
+      <label :for="`checkbox__${id}__${index}`" class="label">
+        {{ option.label }}
+      </label>
 
-    <label v-if="label" :for="`checkbox-${id}`" class="label">
-      <span class="text" v-html="label" />
-      <sup v-if="required" class="required">*</sup>
-    </label>
+    </div>
 
   </div>
 </template>
@@ -45,6 +48,9 @@ export default {
   },
 
   computed: {
+    scaffold () {
+      return this.field.scaffold
+    },
     state () {
       return this.field.state
     },
@@ -54,24 +60,29 @@ export default {
     value () {
       return this.field.value
     },
+    options () {
+      return this.scaffold.options
+    },
     label () {
-      return this.field.label
+      return this.scaffold.label
     },
     required () {
-      return this.field.required
+      return this.scaffold.required
+    }
+  },
+
+  methods: {
+    updateValue (index) {
+      let value = index
+      if (this.value === index) { value = -1 }
+      this.$emit('updateValue', value)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$dimension: 1.5rem;
-
-$borderColor: #CCCCCC;
-$focusBorderColor: black;
-
-@if variable-exists(formBorderColor) { $borderColor: $formBorderColor; }
-@if variable-exists(formBorderColorFocus) { $focusBorderColor: $formBorderColorFocus; }
+$dimension: 1.25rem;
 
 @keyframes shrink-bounce {
   0% { transform: scale(1); }
@@ -94,11 +105,31 @@ $focusBorderColor: black;
   display: flex;
   flex-direction: row;
   align-items: center;
+  &.error {
+    .checkbox + .checker {
+      border-color: red;
+    }
+  }
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    .checker {
+      transition: 150ms ease-in;
+      transform: scale(1.1);
+    }
+  }
+  &:not(:last-child) {
+    margin-right: 2.125rem;
+  }
 }
 
 .checkbox-container {
   position: relative;
-  margin-right: 2rem;
 }
 
 .checkbox {
@@ -111,11 +142,10 @@ $focusBorderColor: black;
   z-index: 10;
   &:checked {
     + .checker {
-      animation: shrink-bounce 200ms cubic-bezier(0.4, 0, 0.23, 1);
-      border-color: darkorange;
-      background-color: darkorange;
+      animation: shrink-bounce 150ms cubic-bezier(0.4, 0, 0.23, 1);
+      border-color: $tasman;
       .icon-checkmark {
-        animation: checkbox-check 125ms 250ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
+        animation: checkbox-check 75ms 200ms cubic-bezier(0.4, 0, 0.23, 1) forwards;
       }
     }
   }
@@ -136,16 +166,22 @@ $focusBorderColor: black;
   left: 0;
   width: $dimension;
   height: $dimension;
-  border: 2px solid darkorange;
-  border-radius: 0.125rem;
+  border: 2px solid $tasman;
+  border-radius: 0.25rem;
   pointer-events: none;
   z-index: 5;
-  transition: border-color 250ms, background-color 250ms;
+  transition: border-color 150ms, background-color 150ms, transform 150ms ease-out;
 }
 
 .icon-checkmark {
   display: block;
   width: 0.875rem;
   opacity: 0;
+}
+
+.label {
+  font-weight: 400;
+  cursor: pointer;
+  padding-left: toRem(13);
 }
 </style>

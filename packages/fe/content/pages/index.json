@@ -1,13 +1,130 @@
 {
   "seo": {
-    "title": "OpenPanda",
-    "description": "OpenPanda"
+    "title": "Open Panda - Explore the largest open datasets",
+    "description": "Open Panda is a platform where you can interact with the world's largest datasets, stored on the decentralized web."
   },
   "og": {
-    "site_name": "OpenPanda",
-    "url": "",
+    "site_name": "Open Panda",
+    "url": "https://openpanda.io",
     "type": "website",
     "image": "/open-graph-image.jpg"
   },
-  "page_content": {}
+  "page_content": {
+    "hero": {
+      "id": "home-hero",
+      "grid": [],
+      "col_1": {
+        "type": "custom",
+        "cols": {
+          "num": "col-5_md-12_lg-first_md-last",
+          "push_left": "",
+          "push_right": ""
+        },
+        "customizations": {
+          "ticker": {
+            "name": "CategoryTicker",
+            "props": {
+              "block": {
+                "image": "/images/index-hero-left.png",
+                "message": "Search categories like"
+              }
+            }
+          },
+          "image2": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/index-hero-left2.png"
+              }
+            }
+          }
+        }
+      },
+      "col_2": {
+        "type": "custom",
+        "cols": {
+          "num": "col-7_md-12_lg-last_md-first",
+          "push_left": "",
+          "push_right": ""
+        },
+        "customizations": {
+          "image": {
+            "name": "ImageBlock",
+            "props": {
+              "block": {
+                "src": "/images/index-hero-right.png"
+              }
+            }
+          },
+          "heading": {
+            "name": "TextBlock",
+            "props": {
+              "block": {
+                "heading": "Explore the world’s largest open datasets",
+                "description": "Interact with tamper-proof open datasets on the decentralized web",
+                "ctas": [{
+                  "type": "solid-tear",
+                  "text": "About Open Panda",
+                  "url": "/about"
+                }]
+              }
+            }
+          }
+        }
+      }
+    },
+    "slider": {
+      "id": "home-slider",
+      "grid": ["noGutter"],
+      "col_1": {
+        "type": "category_slider_block",
+        "sliderGrid": {
+          "before": {
+            "num": "col-12"
+          },
+          "after": {
+            "num": "col-10",
+            "push_left": "off-1",
+            "push_right": "off-1"
+          }
+        },
+        "cols": {
+          "num": "col-12",
+          "push_left": "",
+          "push_right": ""
+        }
+      }
+    }
+  },
+  "datasets_content": {
+    "explore": "Explore datasets",
+    "empty": "There are no projects matching this search, please try again.",
+    "clearAllFilters": "Clear all filters",
+    "gridLayout": {
+      "labels1": {
+        "cid": "CID",
+        "replication": "Replication Factor",
+        "data_size": "Dataset Size",
+        "total": "Total Data on Network",
+        "storage": "Storage Provider"
+      },
+      "labels2": {
+        "file_extensions": "File Types",
+        "locations": "Location"
+      }
+    },
+    "listLayout": {
+      "labels1": {
+        "cid": "CID",
+        "replication": "Replication Factor",
+        "data_size": "Dataset Size",
+        "locations": "Location"
+      },
+      "labels2": {
+        "storage": "Storage Provider",
+        "total": "Total Data on Network",
+        "file_extensions": "File Types"
+      }
+    }
+  }
 }

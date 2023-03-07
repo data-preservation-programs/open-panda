@@ -22,7 +22,7 @@ const registerStore = (store, next) => {
 }
 
 // /////////////////////////////////////////////////////////////////////// alert
-const alert = (store) => (alertId) => {
+const alert = store => (alertId) => {
   const alert = store.getters['alert/alerts'].find(obj => obj.id.includes(alertId))
   return {
     fetch () {

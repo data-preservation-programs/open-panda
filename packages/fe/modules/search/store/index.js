@@ -1,53 +1,73 @@
-/*
- * state.filters and state.searchValue are only used to maintain a list of all
- * registered filters and THE search term that is applied to the ?search=<VALUE>
- * query param. These records are primarily used to detect if the search and
- * filter states have changed and to present a "Clear All" type of button
- */
-
 // /////////////////////////////////////////////////////////////////////// State
-// -----------------------------------------------------------------------------
-const state = {
-  searchValue: '',
+// ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
+const state = () => ({
+  searchers: [],
   filters: []
-}
+})
 
 // ///////////////////////////////////////////////////////////////////// Getters
 // -----------------------------------------------------------------------------
 const getters = {
-  searchValue: state => state.searchValue,
+  searchers: state => state.searchers,
   filters: state => state.filters
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
 // -----------------------------------------------------------------------------
 const actions = {
-  // ///////////////////////////////////////////////////////// recordSearchValue
-  recordSearchValue ({ commit }, value) {
-    commit('RECORD_SEARCH_VALUE', value)
+  // /////////////////////////////////////////////////////////////// setSearcher
+  setSearcher ({ commit, getters }, payload) {
+    const index = getters.searchers.findIndex(searcher => searcher.searchKey === payload.searchKey)
+    commit('SET_SEARCHER', { index, searcher: payload })
   },
-  // ////////////////////////////////////////////////////////////// recordFilter
-  recordFilter ({ commit, getters }, filterKey) {
-    if (!getters.filters.includes(filterKey)) {
-      commit('RECORD_FILTER', filterKey)
-    }
+  // //////////////////////////////////////////////////////////// removeSearcher
+  removeSearcher ({ commit, getters }, searchKey) {
+    const index = getters.searchers.findIndex(searcher => searcher.searchKey === searchKey)
+    commit('REMOVE_SEARCHER', index)
   },
-  // ///////////////////////////////////////////////////////// clearFilterRecord
-  clearFilterRecord ({ commit }) {
-    commit('CLEAR_FILTER_RECORD')
+  // //////////////////////////////////////////////////////////// clearSearchers
+  clearSearchers ({ commit }) {
+    commit('CLEAR_SEARCHERS')
+  },
+  // ///////////////////////////////////////////////////////////////// setFilter
+  setFilter ({ commit, getters }, payload) {
+    const index = getters.filters.findIndex(filter => filter.filterKey === payload.filterKey)
+    commit('SET_FILTER', { index, filter: payload })
+  },
+  // /////////////////////////////////////////////////////////////////// removeFilter
+  removeFilter ({ commit, getters }, filterKey) {
+    const index = getters.filters.findIndex(filter => filter.filterKey === filterKey)
+    commit('REMOVE_FILTER', index)
+  },
+  // ////////////////////////////////////////////////////////////// clearFilters
+  clearFilters ({ commit }) {
+    commit('CLEAR_FILTERS')
   }
 }
 
 // /////////////////////////////////////////////////////////////////// Mutations
 // -----------------------------------------------------------------------------
 const mutations = {
-  RECORD_SEARCH_VALUE (state, value) {
-    state.searchValue = value
+  SET_SEARCHER (state, payload) {
+    const index = payload.index
+    const searcher = payload.searcher
+    index === -1 ? state.searchers.push(searcher) : state.searchers.splice(index, 1, searcher)
   },
-  RECORD_FILTER (state, filterKey) {
-    state.filters.push(filterKey)
+  REMOVE_SEARCHER (state, index) {
+    state.searchers.splice(index, 1)
   },
-  CLEAR_FILTER_RECORD (state) {
+  CLEAR_SEARCHERS (state) {
+    state.searchers = []
+  },
+  SET_FILTER (state, payload) {
+    const index = payload.index
+    const filter = payload.filter
+    index === -1 ? state.filters.push(filter) : state.filters.splice(index, 1, filter)
+  },
+  REMOVE_FILTER (state, index) {
+    state.filters.splice(index, 1)
+  },
+  CLEAR_FILTERS (state) {
     state.filters = []
   }
 }

@@ -21,14 +21,8 @@ const registerStore = (store, next) => {
   if (next) { return next() }
 }
 
-// /////////////////////////////////////////////////////////////////////// field
-const field = (store) => (fieldID) => {
-  return store.getters['form/fields'].find(obj => obj.id.includes(fieldID))
-}
-
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
 export default async function ({ app, store }, inject) {
   await registerStore(store)
-  inject('field', field(store))
 }

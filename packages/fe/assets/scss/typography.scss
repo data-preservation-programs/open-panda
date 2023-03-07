@@ -1,7 +1,117 @@
 // ////////////////////////////////////////////////////////////////// Typography
-// =============================================================================
+// -----------------------------------------------------------------------------
+
 // -------------------------------------------------------------------- Families
-$fontSuisseIntl: 'SuisseIntl', sans-serif, monospace;
-$fontSuisseIntlMono: 'SuisseIntlMono', sans-serif, monospace;
-$fontHelveticaNeue: 'HelveticaNeue', sans-serif, monospace;
-$fontInconsolata: 'Inconsolata', sans-serif, monospace;
+$font_Primary: 'Heebo';
+$font_Secondary: 'Manrope';
+$font_Code: 'Space Mono';
+
+// --------------------------------------------------------------------- Leading
+@function leading($lineHeight, $fontSize) {
+  @return math.div(math.round(10 * math.div($lineHeight, $fontSize)), 10);
+}
+
+// -------------------------------------------------------------- Letter Spacing
+$letterSpacing_Regular: 0.02em;
+$letterSpacing_Large: 0.03em;
+
+// ------------------------------------------------------ Typography | Font Size
+@mixin fontSize_10 { font-size: toRem(10) }
+@mixin fontSize_14 { font-size: toRem(14) }
+@mixin fontSize_16 { font-size: clamp(toRem(14), vw(16px), toRem(16)) }
+@mixin fontSize_17 { font-size: toRem(17) }
+@mixin fontSize_18 { font-size: clamp(toRem(14), vw(18px), toRem(18)) }
+@mixin fontSize_20 { font-size: clamp(toRem(14), vw(20px), toRem(20)) }
+@mixin fontSize_24 { font-size: clamp(toRem(20), vw(24px), toRem(24)) }
+@mixin fontSize_28 { font-size: clamp(toRem(20), vw(28px), toRem(28)) }
+@mixin fontSize_32 { font-size: toRem(32) }
+@mixin fontSize_45 { font-size: clamp(toRem(24), vw(45px), toRem(45)) }
+@mixin fontSize_55 { font-size: clamp(toRem(28), vw(55px), toRem(55)) }
+@mixin fontSize_65 { font-size: clamp(toRem(32), vw(65px), toRem(65)) }
+
+
+// ---------------------------------------------------- Typography | Font Weight
+@mixin fontWeight_Light{ font-weight: 300; }
+@mixin fontWeight_Regular { font-weight: 400; }
+@mixin fontWeight_Medium { font-weight: 500; }
+@mixin fontWeight_Semibold { font-weight: 600 }
+@mixin fontWeight_Bold { font-weight: 700 }
+
+// --------------------------------------------------------- Typography | Groups
+@mixin h1 {
+  @include fontWeight_Bold;
+  font-family: $font_Primary;
+  @include fontSize_65;
+  line-height: leading(75, 65);
+}
+
+@mixin h2 {
+  @include fontWeight_Semibold;
+  font-family: $font_Secondary;
+  @include fontSize_55;
+  line-height: leading(75, 55);
+}
+
+@mixin h3 {
+  @include fontWeight_Medium;
+  font-family: $font_Primary;
+  @include fontSize_45;
+  line-height: leading(56, 45);
+}
+
+@mixin h4 {
+  @include fontWeight_Medium;
+  font-family: $font_Primary;
+  @include fontSize_28;
+  line-height: leading(56, 28);
+}
+
+@mixin h5 {
+  @include fontWeight_Medium;
+  font-family: $font_Primary;
+  @include fontSize_24;
+  line-height: leading(36, 24);
+}
+
+@mixin h6 {
+  @include fontWeight_Medium;
+  font-family: $font_Primary;
+  @include fontSize_20;
+  line-height: leading(29, 20);
+}
+
+@mixin p1 {
+  @include fontWeight_Regular;
+  font-family: $font_Primary;
+  @include fontSize_20;
+  line-height: leading(30, 20);
+}
+
+@mixin p2 {
+  @include fontWeight_Regular;
+  font-family: $font_Primary;
+  @include fontSize_16;
+  line-height: leading(26, 16);
+}
+
+@mixin p2Link {
+  @include p2;
+  @include fontWeight_Medium;
+}
+
+@mixin caption {
+  @include fontWeight_Regular;
+  font-family: $font_Primary;
+  @include fontSize_14;
+  line-height: leading(21, 14);
+  @include medium {
+    @include fontSize_16;
+    line-height: leading(30, 16);
+  }
+}
+
+@mixin cardTitle {
+  font-family: $font_Secondary;
+  @include fontWeight_Semibold;
+  @include fontSize_17;
+}

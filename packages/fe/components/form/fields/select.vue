@@ -1,21 +1,16 @@
 <template>
   <div :class="['field field-select', state, { empty, 'dropdown-open': dropdownOpen }]">
 
-    <span v-if="label" :for="modelKey" class="label floating">
-      <span class="text">{{ label }}</span>
-      <sup v-if="required" class="required">*</sup>
-    </span>
-
     <Select
       :options="options"
-      :aria-labelledby="modelKey"
+      :aria-labelledby="modelKey || fieldKey"
       :selected-option="value"
-      handle-state="internally"
       @dropdownToggled="dropdownToggled"
-      @optionSelected="optionSelected">
+      @optionSelected="optionSelected"
+      v-on="$listeners">
 
       <template #option-native-default-text>
-        {{ label }}{{ required ? ', this is a required field' : '' }}
+        Sort by...
       </template>
 
       <template #option-native-text="{ option }">
@@ -51,7 +46,7 @@
 
 <script>
 // ===================================================================== Imports
-import Select from '@/components/select'
+import Select from '@/modules/form/components/select'
 
 import IconChevronDown from '@/components/icons/chevron-down'
 
@@ -79,14 +74,20 @@ export default {
   },
 
   computed: {
+    scaffold () {
+      return this.field.scaffold
+    },
     modelKey () {
-      return this.field.model_key
+      return this.scaffold.modelKey
+    },
+    fieldKey () {
+      return this.field.fieldKey
     },
     label () {
-      return this.field.label
+      return this.scaffold.label
     },
     options () {
-      return this.field.options
+      return this.scaffold.options
     },
     value () {
       return this.field.value
@@ -130,56 +131,56 @@ $height: 2.5rem;
   height: $height;
   &:hover {
     .icon-container {
-      &:before {
-        transition: 150ms ease-in;
-        border-color: tomato;
-      }
+      transition: 150ms ease-in;
+      transform: scale(1.2);
     }
   }
   &.dropdown-open {
-    &.empty > .label {
-      padding-left: 0.75rem;
-    }
     .icon-container {
-      &:before {
-        transform: scale(0.8);
-        border-color: rgba(227, 211, 192, 0.25);
-      }
-    }
-    .icon-chevron-down {
       transition: 150ms ease-in;
       transform: rotate(-180deg);
     }
   }
-  &.caution {
-    ::v-deep .select {
-      border-color: $pizazz;
-    }
-  }
-  &.error {
-    ::v-deep .select {
-      border-color: $redOrange;
-    }
-  }
+  // &.caution {
+  //   ::v-deep .select {
+  //     border-color: $mandysPink;
+  //   }
+  // }
+  // &.error {
+  //   ::v-deep .select {
+  //     border-color: $flamingo;
+  //   }
+  // }
 }
 
 ::v-deep .select-container {
+  &.dropdown-open {
+    .select {
+      border-bottom-color: transparent;
+    }
+  }
   .select {
-    border-bottom: 0.1875rem solid tomato;
+    border: 2px solid $tasman;
+    border-radius: toRem(5);
     transition: 150ms ease-out;
     &.native {
-      border-radius: 0.25rem;
+      padding: 0 toRem(10);
       &:focus-visible {
         @include focusBoxShadow;
       }
     }
-    &.custom {
-      background-color: teal;
-    }
   }
   .dropdown {
-    max-height: $height * 5.5;
-    background-color: blue;
+    top: calc(100% - 4px);
+    left: -2px;
+    width: calc(100% + 4px);
+    max-height: $height * 6.5;
+    border-bottom-left-radius: 0.3125rem;
+    border-bottom-right-radius: 0.3125rem;
+    border-right: 2px solid $tasman;
+    border-bottom: 2px solid $tasman;
+    border-left: 2px solid $tasman;
+    background-color: $gin;
   }
 }
 
@@ -188,6 +189,7 @@ $height: 2.5rem;
 }
 
 .selection-window {
+  padding: toRem(8) toRem(10);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -208,25 +210,11 @@ $height: 2.5rem;
     justify-content: center;
     align-items: center;
     position: relative;
-    width: 1.75rem;
-    height: 1.75rem;
     margin-left: auto;
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0.125rem solid transparent;
-      border-radius: 0.3125rem;
-      box-sizing: border-box;
-      transition: 150ms ease-out;
-    }
+    transition: 150ms ease-out;
   }
   .icon-chevron-down {
-    width: 0.5rem;
-    transition: 150ms ease-out;
+    width: 0.6875rem;
   }
 }
 
@@ -239,18 +227,11 @@ $height: 2.5rem;
   &:hover,
   &.highlighted {
     transition: 150ms ease-in;
-    background-color: teal;
+    background-color: $grayNurse2;
   }
   &.selected {
-    .label {
-      text-decoration: underline;
-    }
-  }
-  .description {
-    margin-top: -0.25rem;
-    font-size: 0.875rem;
-    font-weight: 400;
-    opacity: 0.4;
+    background-color: $rangoonGreen;
+    color: white;
   }
 }
 </style>

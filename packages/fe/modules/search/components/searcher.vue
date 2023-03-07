@@ -7,6 +7,10 @@ export default {
   name: 'Searcher',
 
   props: {
+    searchKey: {
+      type: String,
+      required: true
+    },
     searchValue: {
       type: String,
       required: false,
@@ -26,60 +30,91 @@ export default {
       type: String,
       required: false,
       default: 'general/setSearchValue'
+    },
+    debounceValueUpdate: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 
   data () {
-    const action = this.action
-    let value = ''
-    switch (action) {
-      case 'emit' : value = this.searchValue; break
-      case 'store' : value = this.$store.getters[this.storeGetter]; break
-      case 'query' : value = this.$route.query.search; break
-    }
     return {
-      value,
       debounce: false
     }
   },
 
   computed: {
+    searcher () {
+      return this.$search(this.searchKey).get()
+    },
     empty () {
-      return !this.value || this.value === ''
+      const searcher = this.searcher
+      return searcher ? searcher.value === '' : true
+    },
+    value () {
+      const searcher = this.searcher
+      return searcher ? searcher.value : ''
     }
   },
 
   watch: {
-    '$route' (route) {
-      if (route.query.search === undefined && this.action === 'query') {
-        this.value = ''
+    async '$route' (route) {
+      if (this.action === 'query') {
+        await this.$search(this.searchKey).refresh(route)
+        window.$nuxt.$emit('updateFormField', {
+          id: 'search',
+          value: this.$search(this.searchKey).get().value
+        })
       }
-    },
-    value () {
-      this.debounce()
+    }
+  },
+
+  async created () {
+    if (!this.searcher) {
+      await this.$search(this.searchKey).register(
+        this.searchKey,
+        this.action,
+        this.searchValue,
+        this.storeGetter,
+        this.storeAction
+      )
     }
   },
 
   mounted () {
-    this.debounce = Debounce(() => {
-      const value = this.value || ''
-      const action = this.action
-      this.$search.for({
-        instance: this,
-        action,
-        storeAction: this.storeAction,
-        value
-      })
-      this.$emit('searchbarUpdated')
+    this.debounce = Debounce((payload) => {
+      this.submitSearchTerm(payload)
     }, 200)
   },
 
+  beforeDestroy () {
+    if (this.deregisterOnDestroy) {
+      this.$search(this.searchKey).deregister()
+    }
+  },
+
   methods: {
-    clearSearch () {
-      this.value = ''
+    clear () {
+      this.$search(this.searchKey).clear(this)
+      this.$emit('searchbarUpdated')
     },
-    updateValue (e) {
-      this.value = e.target.value
+    applySearch (payload) {
+      if (this.debounceValueUpdate) {
+        return this.debounce(payload)
+      }
+      this.submitSearchTerm(payload)
+    },
+    submitSearchTerm (payload) {
+      if (!payload.hasOwnProperty('live')) {
+        throw new Error('Forgot to specify { live: true|false }')
+      }
+      this.$search(this.searchKey).for({
+        instance: this,
+        value: payload.value,
+        live: payload.live
+      })
+      this.$emit('searchbarUpdated')
     }
   },
 
@@ -87,8 +122,8 @@ export default {
     return this.$scopedSlots.default({
       value: this.value,
       empty: this.empty,
-      updateValue: this.updateValue,
-      clearSearch: this.clearSearch
+      applySearch: this.applySearch,
+      clear: this.clear
     })
   }
 }

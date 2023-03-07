@@ -4,8 +4,8 @@ const env = process.env.SERVER_ENV
 
 const baseUrls = {
   development: 'https://localhost',
-  stable: '',
-  production: ''
+  stable: 'https://stable.openpanda.io',
+  production: 'https://openpanda.io'
 }
 
 const frontendPort = (function () {
@@ -30,7 +30,7 @@ export default {
     githubOAuthLink: `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_ID}&scope=user:email`,
     serverFlag: env,
     seo: {
-      siteName: 'OpenPanda'
+      siteName: 'Open Panda'
     },
     socketOptions: {
       withCredentials: true
@@ -52,11 +52,11 @@ export default {
   // /////////////////////////////////////////////////////// Headers of the Page
   // ---------------------------------------------------------------------------
   head: {
-    title: 'OpenPanda',
+    title: 'Open Panda',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'OpenPanda' }
+      { hid: 'description', name: 'description', content: 'Open Panda' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon/favicon-96x96.png' }
@@ -84,32 +84,46 @@ export default {
     // Doc: https://github.com/nuxt-community/eslint-module
     '@nuxtjs/eslint-module',
     // Doc: https://github.com/nuxt-community/moment-module#readme
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    // https://google-fonts.nuxtjs.org/setup
+    '@nuxtjs/google-fonts',
+    '@nuxtjs/style-resources' // Doc: https://github.com/nuxt-community/style-resources-module/
   ],
   // /////////////////////////////////////////////////////////// Nuxt.js Modules
   // ---------------------------------------------------------------------------
   modules: [
-    '@nuxtjs/style-resources', // Doc: https://github.com/nuxt-community/style-resources-module/
     '@nuxtjs/axios', // Doc: https://axios.nuxtjs.org/usage
-    'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app/
+    'nuxt-socket-io', // Doc: https://nuxt-socket-io.netlify.app
+    '@nuxt/content', // Doc: https://content.nuxtjs.org
+    '@nuxtjs/gtm', // Doc: https://github.com/nuxt-community/gtm-module
     '~/modules/https',
     '~/modules/toaster',
-    // '~/modules/slider',
-    // '~/modules/alert',
-    // '~/modules/auth',
-    // '~/modules/search',
+    '~/modules/slider',
+    '~/modules/ls',
+    '~/modules/auth',
+    '~/modules/search',
     '~/modules/form',
     '~/modules/button'
   ],
+  // ///////////////////////////////////////////////////// [Module] Nuxt-content
+  // ---------------------------------------------------------------------------
+  content: {
+    markdown: {
+      prism: {
+        theme: false
+      }
+    }
+  },
   // /////////////////////////////////// Plugins to load before mounting the App
   // ---------------------------------------------------------------------------
   plugins: [
     '~/plugins/helpers',
     '~/plugins/directives',
     '~/plugins/seo',
-    '~/plugins/scroll-to'
+    '~/plugins/scroll-to',
     // '~/plugins/in-viewport',
-    // '~/plugins/uuid'
+    '~/plugins/uuid',
+    '~/plugins/nuxt-hammer'
   ],
   // ///////////////////////////////////////////////////////// [Module] MomentJS
   // ---------------------- Doc: https://github.com/nuxt-community/moment-module
@@ -117,29 +131,43 @@ export default {
     timezone: true,
     defaultTimezone: 'UTC'
   },
+  // ////////////////////////////////////////////////////////////// [Module] GTM
+  // ------------------------- Doc: https://github.com/nuxt-community/gtm-module
+  gtm: {
+    // Currently hardcoded, can be added as an environment variable instead
+    id: 'GTM-NH8TLHW',
+    pageTracking: true
+  },
+  // ////////////////////////////////////////////////////// [Module] GoogleFonts
+  googleFonts: {
+    families: {
+      Heebo: [400, 500, 700],
+      Manrope: [600, 700],
+      'Space Mono': [400]
+    },
+    preconnect: true,
+    download: false
+  },
   // ///////////////////////////////////////////////////////////// [Module] Auth
   // ---------------------------------------------------------------------------
-  // auth: {
-  //   redirectAfterLogin: {
-  //     unregistered: {
-  //       path: '/account/:key',
-  //       key: 'githubUsername'
-  //     },
-  //     registered: {
-  //       path: '/account/:key/datasets/claimed',
-  //       key: 'githubUsername'
-  //     }
-  //   },
-  //   redirectAfterLogout: '/'
-  // },
-  // ////////////////////////////////////////////////////////// [Module] Account
+  auth: {
+    redirectAfterLogin: {
+      unregistered: {
+        path: '/account/:key',
+        key: 'githubUsername'
+      },
+      registered: {
+        path: '/account/:key/datasets/claimed',
+        key: 'githubUsername'
+      }
+    },
+    redirectAfterLogout: '/'
+  },
+  // /////////////////////////////////////////////////////////////// [Module] ls
   // ---------------------------------------------------------------------------
-  // account: {
-  //   redirectAfterRegistering: {
-  //     path: '/account/:key/datasets/all',
-  //     key: 'githubUsername'
-  //   }
-  // },
+  ls: {
+    prefix: 'openpanda__'
+  },
   // //////////////////////////////////////////////////////////// [Module] Axios
   // -------------------------------------- See https://axios.nuxtjs.org/options
   axios: {},
@@ -176,6 +204,12 @@ export default {
         test: /\.md$/,
         use: 'raw-loader'
       })
+    }
+  },
+  storybook: {
+    port: 4008,
+    parameters: {
+      layout: 'fullscreen'
     }
   }
 }

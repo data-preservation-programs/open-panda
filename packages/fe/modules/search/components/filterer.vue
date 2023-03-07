@@ -1,7 +1,4 @@
 <script>
-// ===================================================================== Imports
-import { mapActions } from 'vuex'
-
 // ====================================================================== Export
 export default {
   name: 'Filterer',
@@ -16,14 +13,21 @@ export default {
       type: String,
       required: true
     },
-    filters: {
+    options: {
       type: Array,
       required: true
     },
-    multiple: { // search by multiple filters or just 1 at a time
+    // for options with boolean or single-select value
+    // ie. checkboxes or select
+    isSingleOption: {
       type: Boolean,
       required: false,
-      default: true
+      default: false
+    },
+    deregisterOnDestroy: {
+      type: Boolean,
+      required: false,
+      default: false
     }
     // storeGetter: {
     //   type: String,
@@ -37,20 +41,18 @@ export default {
     // }
   },
 
-  data () {
-    const action = this.action
-    let selected = []
-    switch (action) {
-      // case 'emit' : selected = this.filterValue; break
-      // case 'store' : selected = this.$store.getters[this.storeGetter]; break
-      case 'query' : selected = this.getCurrentFilters(this.$route); break
-    }
-    return {
-      selected
-    }
-  },
-
   computed: {
+    filter () {
+      return this.$filter(this.filterKey).get()
+    },
+    selected () {
+      const filter = this.filter
+      return filter ? filter.selected : []
+    },
+    originalSelected () {
+      const filter = this.filter
+      return filter ? filter.originalSelected : []
+    },
     empty () {
       return this.selected.length === 0
     }
@@ -58,52 +60,59 @@ export default {
 
   watch: {
     '$route' (route) {
-      this.selected = this.getCurrentFilters(route)
+      if (this.action === 'query') {
+        this.$filter(this.filterKey).refresh(route)
+        const selected = this.filter.selected
+        window.$nuxt.$emit('updateFormField', {
+          id: this.filterKey,
+          value: this.isSingleOption ? selected[0] : selected // this.$filter(this.searchKey).get().value
+        })
+      }
     }
   },
 
-  created () {
-    this.recordFilter(this.filterKey)
+  async created () {
+    if (!this.filter) {
+      await this.$filter(this.filterKey).register(
+        this.filterKey,
+        this.options,
+        this.isSingleOption,
+        this.action
+      )
+    }
+  },
+
+  beforeDestroy () {
+    this.$filter(this.filterKey).clear()
+    if (this.deregisterOnDestroy) {
+      this.$filter(this.filterKey).deregister()
+    }
   },
 
   methods: {
-    ...mapActions({
-      recordFilter: 'search/recordFilter'
-    }),
-    getCurrentFilters (route) {
-      const query = route.query[this.filterKey]
-      return query ? query.split(',') : []
-    },
-    applyFilter (index) {
-      const action = this.action
-      const value = `${this.filters[index].value}`
-      this.$filter.toggleTerm({
+    async applyFilter (payload) {
+      if (!payload.hasOwnProperty('live')) {
+        throw new Error('Forgot to specify { live: true|false }')
+      }
+      await this.$filter(this.filterKey).for({
         instance: this,
-        action,
-        storeAction: this.storeAction,
-        value,
-        filterKey: this.filterKey
+        index: payload.index,
+        live: payload.live
       })
       this.$emit('filterApplied')
-      // if (action === 'emit') {
-      //   // this.$emit('setFilterValue', value)
-      // } else if (action === 'store') {
-      //   // this.$store.dispatch(this.storeAction, value)
-      // } else {
-      //   // this.$search.applyFilter(filter)
-      // }
     },
-    isSelected (value) {
-      return this.selected.includes(`${value}`)
+    isSelected (index) {
+      return this.selected.includes(index)
     },
     clearFilters () {
-      this.$filter.clear(this.filterKey)
+      this.$filter(this.filterKey).clear()
     }
   },
 
   render () {
     return this.$scopedSlots.default({
       applyFilter: this.applyFilter,
+      originalSelected: this.originalSelected,
       selected: this.selected,
       isSelected: this.isSelected,
       clearFilters: this.clearFilters,

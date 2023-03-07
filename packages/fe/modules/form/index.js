@@ -10,31 +10,23 @@
 import Path from 'path'
 
 // ///////////////////////////////////////////////////////////////////// Plugins
-const FormPlugin = Path.resolve(__dirname, 'plugins/index.js')
-const HelpersPlugin = Path.resolve(__dirname, 'plugins/helpers.js')
+const plugins = ['index', 'form', 'field']
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // ////////////////////////////////////////////////////////////// registerPlugin
 const registerPlugin = (instance, next) => {
   return new Promise((next) => {
-    const FormPluginDst = instance.addTemplate({
-      src: FormPlugin,
-      fileName: 'form/plugin-index.js'
-    }).dst
-    const HelpersPluginDst = instance.addTemplate({
-      src: HelpersPlugin,
-      fileName: 'form/plugin-helpers.js'
-    }).dst
-    instance.options.plugins.push({
-      src: Path.join(instance.options.buildDir, FormPluginDst),
-      ssr: undefined,
-      mode: undefined
-    })
-    instance.options.plugins.push({
-      src: Path.join(instance.options.buildDir, HelpersPluginDst),
-      ssr: undefined,
-      mode: undefined
+    plugins.forEach((plugin) => {
+      const dst = instance.addTemplate({
+        src: Path.resolve(__dirname, `plugins/${plugin}.js`),
+        fileName: `form/plugin-${plugin}.js`
+      }).dst
+      instance.options.plugins.push({
+        src: Path.join(instance.options.buildDir, dst),
+        ssr: undefined,
+        mode: undefined
+      })
     })
     next()
   })

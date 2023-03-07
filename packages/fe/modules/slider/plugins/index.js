@@ -22,7 +22,7 @@ const registerStore = (store, next) => {
 }
 
 // ////////////////////////////////////////////////////////////////////// slider
-const slider = (store) => (sliderId) => {
+const slider = store => (sliderId) => {
   const slider = store.getters['slider/sliders'].find(obj => obj.id.includes(sliderId))
   return {
     fetch () {
@@ -31,8 +31,8 @@ const slider = (store) => (sliderId) => {
     getPanelCount () {
       return slider ? slider.panelCount : 0
     },
-    getCurrentPanel () {
-      return slider ? slider.currentPanel : 0
+    getPanelPositions () {
+      return slider ? slider.panelPositions : []
     },
     refreshHeight () {
       slider.refreshHeight()
