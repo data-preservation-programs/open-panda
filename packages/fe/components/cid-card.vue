@@ -94,11 +94,6 @@
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
 
-            <ButtonB
-              class="logout-button"
-              data-tooltip="logout">
-            </ButtonB>
-
             <Tooltip btn="Inspect files" :text="`You can access a preview of the files within this CID, however at this time it must be downloaded and unpacked from the zst format. <a target='_blank' href='https://${hash}.ipfs.w3s.link'>Learn more</a>`"></Tooltip>
           </div>
 
