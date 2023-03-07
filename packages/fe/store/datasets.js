@@ -81,20 +81,7 @@ const actions = {
           route: { path: '/', query }
         }
       }
-      const datasetListOriginal = CloneDeep(payload.results)
-      const datasetList = datasetListOriginal
-      datasetList.forEach((item) => {
-        let imgUrl = item.slug
-        // exceptions
-        if (item.slug.includes('common-crawl')) {
-          imgUrl = 'common-crawl'
-        }
-        if (item.slug.includes('sloan-digital-sky-survey-release')) {
-          imgUrl = 'sloan-digital-sky-survey-release'
-        }
-        item.data_size = this.$formatBytes(item.data_size)
-        item.img_url = `/images/datasets/${imgUrl}.jpg`
-      })
+      const datasetList = payload.results
       dispatch('setDatasetList', {
         datasetList,
         metadata: payload.metadata

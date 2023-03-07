@@ -1,6 +1,7 @@
 <template>
-  <div v-if="collection" class="slider-block">
+  <div v-if="collection" class="category-slider-block">
 
+    <!-- ===================================================== SVG clip path -->
     <svg
       class="clip-path-svg"
       xmlns="http://www.w3.org/2000/svg"
@@ -12,6 +13,7 @@
       </defs>
     </svg>
 
+    <!-- =================================================== Slider + Filter -->
     <Filterer
       filter-key="categories"
       :options="filters.categories">
@@ -20,8 +22,7 @@
         slider-id="category-slider"
         :start-panel-index="collection.length - 1"
         :display-options="{ default: 7, xlarge: 6, large: 5, small: 4, mini: 5 }"
-        :grid-cols="sliderGrid"
-        class="col-12">
+        :grid-cols="sliderGrid">
 
         <template #icon-previous>
           <ChevronDownIcon class="previous-icon" />
@@ -108,7 +109,7 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.slider-block {
+.category-slider-block {
   position: relative;
   @include small {
     margin-bottom: 2.5rem;

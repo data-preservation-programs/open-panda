@@ -19,7 +19,7 @@
 
 <script>
 // ====================================================================== Import
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 
 // ====================================================================== Export
 export default {

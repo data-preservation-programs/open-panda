@@ -11,7 +11,7 @@
 import { mapGetters } from 'vuex'
 
 import HowToDownloadPageData from '@/content/pages/how-to-download.json'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 // ====================================================================== Export
 export default {
   name: 'HowToDownloadPage',
