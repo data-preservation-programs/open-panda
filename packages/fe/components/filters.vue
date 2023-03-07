@@ -29,7 +29,7 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <!-- <DatasetHistogram /> -->
+        <DatasetHistogram />
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -82,7 +82,7 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
-// import DatasetHistogram from '@/components/dataset-histogram'
+import DatasetHistogram from '@/components/dataset-histogram'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import ButtonToggle from '@/components/buttons/button-toggle'
@@ -97,7 +97,7 @@ export default {
   name: 'Filters',
 
   components: {
-    // DatasetHistogram,
+    DatasetHistogram,
     Filterer,
     ButtonFilters,
     ButtonToggle,
