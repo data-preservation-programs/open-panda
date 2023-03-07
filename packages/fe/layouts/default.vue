@@ -35,7 +35,8 @@ export default {
     }
   },
 
-  async created () {
+  async fetch () {
+    await this.$store.dispatch('datasets/getFiltersAndTypeahead')
     await this.$store.dispatch('general/getBaseData', 'general')
   },
 

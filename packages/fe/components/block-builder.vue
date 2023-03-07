@@ -1,11 +1,12 @@
 <template>
-  <div class="sectionals">
+  <div class="block-builder">
 
-    <div
-      v-for="section in sections"
-      :key="section.id">
-
-      <section v-if="!section.hide" :id="section.slug" :class="['sectional', section.id]">
+    <template v-for="section in sections">
+      <section
+        v-if="!section.hide"
+        :id="section.slug"
+        :key="section.id"
+        :class="['sectional', section.id]">
         <!-- ============================================ [Section] Off Grid -->
         <div
           v-if="section.off_grid"
@@ -58,7 +59,7 @@
           </template>
         </div>
       </section>
-    </div>
+    </template>
 
   </div>
 </template>
@@ -70,8 +71,7 @@ import ImageBlock from '@/components/blocks/image-block'
 import MarkdownBlock from '@/components/blocks/markdown-block'
 import CategorySliderBlock from '@/components/blocks/category-slider-block'
 import CategoryTicker from '@/components/category-ticker'
-import CardListBlock from '@/components/blocks/card-list-block'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 
 // ====================================================================== Export
 export default {
@@ -83,8 +83,7 @@ export default {
     BlockBuilder,
     MarkdownBlock,
     CategorySliderBlock,
-    CategoryTicker,
-    CardListBlock
+    CategoryTicker
   },
 
   props: {

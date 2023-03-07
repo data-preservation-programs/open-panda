@@ -11,7 +11,7 @@
 import { mapGetters } from 'vuex'
 
 import AlphaPageData from '@/content/pages/alpha.json'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 // ====================================================================== Export
 export default {
   name: 'AlphaPage',
@@ -27,7 +27,6 @@ export default {
   },
 
   async fetch ({ store, error }) {
-    await store.dispatch('datasets/getFiltersAndTypeahead')
     await store.dispatch('general/getBaseData', { key: 'alpha', data: AlphaPageData })
   },
 

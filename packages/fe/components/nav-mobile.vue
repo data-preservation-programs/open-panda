@@ -52,7 +52,7 @@
             </div>
             <div class="col-12 data">
               <span>
-                {{ data.data_size }}
+                {{ $formatBytes(data.data_size) }}
               </span>
               <span v-if="data.storage">
                 {{ header.mobileNavFilter.storage }}

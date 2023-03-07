@@ -19,7 +19,7 @@
 
 <script>
 // ====================================================================== Import
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 
 // ====================================================================== Export
 export default {
@@ -30,7 +30,6 @@ export default {
   },
 
   async asyncData ({ $content, store }) {
-    await store.dispatch('datasets/getFiltersAndTypeahead')
     const privacyContent = await $content('markdown/privacy').fetch()
     return { privacyContent }
   },

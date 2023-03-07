@@ -42,15 +42,14 @@ $breakpoint_UltraLarge: 140.625rem; // 2250px
 $borderRadius: 1.25rem;
 $duration: 300ms;
 
-// ------------------------ file item - gray background that looks like a button
-@mixin fileItem() {
+@mixin fileItem {
+  @include fontWeight_Medium;
+  @include fontSize_14;
   display: inline-block;
   line-height: leading(21, 14);
   padding: 0.3125rem 0.625rem;
   border-radius: 1.25rem;
   background-color: #E7E9ED;
-  @include fontWeight_Medium;
-  @include fontSize_14;
   margin-right: 0.5625rem;
 }
 
@@ -64,15 +63,15 @@ $duration: 300ms;
   justify-content: center;
   align-items: center;
   transition: 250ms;
-  path {
-    fill: $rangoonGreen;
-  }
   &:hover {
     background-color: $rangoonGreen;
     path {
       transition: 250ms;
       fill: white;
     }
+  }
+  path {
+    fill: $rangoonGreen;
   }
 }
 

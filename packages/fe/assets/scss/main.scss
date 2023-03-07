@@ -181,19 +181,8 @@ span.error {
   }
 }
 
-.video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  iframe,
-  video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-  }
+*:focus-visible {
+  @include focusBoxShadow;
 }
 
 ::-webkit-file-upload-button {
@@ -265,15 +254,7 @@ p, .p1 {
   @include p2;
 }
 
-.card-title {
-  @include cardTitle;
-}
-
-.caption {
-  @include caption;
-}
-
-//////////////////////////////////////////////////////////////////////// General
+///////////////////////////////////////////////////////////////////////// Layout
 //------------------------------------------------------------------------------
 #__nuxt {
   position: relative;
@@ -326,92 +307,6 @@ p, .p1 {
   &:hover {
     transition: 250ms ease-in;
     transform: scale(1.05);
-  }
-}
-
-///////////////////////////////////////////////////////////////////// Components
-//------------------------------------------------------------------------------
-[data-tooltip] {
-  position: relative;
-  &:hover {
-    &:before,
-    &:after {
-      transition: 250ms ease-in;
-      transform: translate(-50%, 0);
-      opacity: 1;
-    }
-  }
-  &:before,
-  &:after {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0.5rem);
-    pointer-events: none;
-    opacity: 0;
-    transition: 250ms ease-out;
-  }
-  &:before {
-    content: '';
-    top: calc(100% + 2px);
-    border-left: 0.5rem solid transparent;
-    border-right: 0.5rem solid transparent;
-    border-bottom: 0.375rem solid tomato;
-  }
-  &:after {
-    content: attr(data-tooltip);
-    top: calc(100% + 0.5rem);
-    background-color: teal;
-    color: tomato;
-    font-family: inherit;
-    font-size: 0.625rem;
-    white-space: nowrap;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid tomato;
-    border-radius: 1.5rem;
-  }
-  &[data-tooltip-theme="light"] {
-    &:after {
-      color: tomato;
-      background-color: teal;
-    }
-  }
-}
-
-.chevron {
-  position: relative;
-  right: 2px;
-  width: 0.5rem;
-  height: 0.5rem;
-  border-style: solid;
-  border-width: 2px 2px 0 0;
-  border-color: black;
-  transition: 250ms ease-out;
-  &.up,
-  &.down {
-    transition: 250ms ease-in;
-  }
-  &.up {
-    transform: translateY(2px) rotate(-45deg);
-  }
-  &.down {
-    transform: translateY(-2px) rotate(135deg);
-  }
-}
-
-.toast {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  padding: 1rem;
-  border-radius: 0 toRem(30) toRem(30) toRem(30);
-  @include shadow3;
-  .icon {
-    display: none;
-  }
-  .message {
-    font-weight: 500;
   }
 }
 
@@ -542,37 +437,102 @@ p, .p1 {
   }
 }
 
-*:focus-visible {
-  @include focusBoxShadow;
+///////////////////////////////////////////////////////////////////// Components
+//------------------------------------------------------------------------------
+[data-tooltip] {
+  position: relative;
+  &:hover {
+    &:before,
+    &:after {
+      transition: 250ms ease-in;
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+  }
+  &:before,
+  &:after {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0.5rem);
+    pointer-events: none;
+    opacity: 0;
+    transition: 250ms ease-out;
+  }
+  &:before {
+    content: '';
+    top: calc(100% + 2px);
+    border-left: 0.5rem solid transparent;
+    border-right: 0.5rem solid transparent;
+    border-bottom: 0.375rem solid tomato;
+  }
+  &:after {
+    content: attr(data-tooltip);
+    top: calc(100% + 0.5rem);
+    background-color: teal;
+    color: tomato;
+    font-family: inherit;
+    font-size: 0.625rem;
+    white-space: nowrap;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid tomato;
+    border-radius: 1.5rem;
+  }
+  &[data-tooltip-theme="light"] {
+    &:after {
+      color: tomato;
+      background-color: teal;
+    }
+  }
 }
 
-// /////////////////////////////////////////////////////////////// Global styles
+.chevron {
+  position: relative;
+  right: 2px;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-style: solid;
+  border-width: 2px 2px 0 0;
+  border-color: black;
+  transition: 250ms ease-out;
+  &.up,
+  &.down {
+    transition: 250ms ease-in;
+  }
+  &.up {
+    transform: translateY(2px) rotate(-45deg);
+  }
+  &.down {
+    transform: translateY(-2px) rotate(135deg);
+  }
+}
+
+.toast {
+  @include shadow3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0 toRem(30) toRem(30) toRem(30);
+  .icon {
+    display: none;
+  }
+  .message {
+    font-weight: 500;
+  }
+}
+
 .file-item {
   @include fileItem;
 }
 
+.card-title {
+  @include cardTitle;
+}
+
 .circle-border {
   @include circleBorder;
-}
-
-.flex-end {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-// index page cards global for both layouts
-.card-details {
-  .card-data {
-    @include caption;
-    @include fontWeight_Bold;
-  }
-  .caption {
-    margin-right: toRem(12);
-    &.caption-bold {
-      @include fontWeight_Medium;
-    }
-  }
 }
 
 .show-desktop-only {
@@ -589,11 +549,8 @@ p, .p1 {
   }
 }
 
-.sectionals {
-  overflow: hidden;
-}
-
 .tooltip {
+  @include fontWeight_Medium;
   background-color: $rangoonGreen;
   padding: toRem(5) toRem(8) toRem(7) toRem(8);
   border-radius: toRem(10);
@@ -601,20 +558,24 @@ p, .p1 {
   top: 100%;
   font-size: toRem(10);
   display: none;
-  @include fontWeight_Medium;
   position: absolute;
   line-height: 1;
   width: max-content;
   &:before {
+    content: '';
     width: 0;
     height: 0;
     border-top: toRem(5) solid transparent;
     border-bottom: toRem(5) solid transparent;
     border-right: toRem(5) solid $rangoonGreen;
-    content: '';
     position: absolute;
     top: toRem(-7);
     left: calc(50% - 2.5px);
     transform: rotate(90deg);
   }
+}
+
+// section styles
+.sectional.home-slider {
+  overflow: hidden;
 }

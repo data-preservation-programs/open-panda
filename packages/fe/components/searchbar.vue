@@ -150,7 +150,7 @@ export default {
         redirect: this.$route.path !== '/' && this.redirectSearch ? '/' : undefined
       })
       if (this.$route.path === '/') {
-        this.$scrollToElement(document.getElementById('datasets'), 200, -50)
+        this.$scrollToElement(document.getElementById('toolbar'), 200, -50)
       }
     },
     goToDatasetPage (slug) {
