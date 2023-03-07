@@ -10,6 +10,19 @@
         theme="line"
         class="cids-searchbar" />
       <div class="checkboxes">
+        <FieldContainer
+          field-key="toggle_complete_data"
+          :scaffold="{
+            type: 'checkbox',
+            required: false,
+            options: checkboxes,
+            defaultValue: false,
+            resetGroupId: 'complete-data',
+            updateGroupId: 'complete-data',
+            resetTo: 'nullState',
+            isSingleOption: true
+          }"
+          class="disabled" />
       </div>
     </div>
 
@@ -58,6 +71,7 @@ import CIDCard from '@/components/cid-card'
 import PaginationControls from '@/components/pagination-controls'
 import Limit from '@/components/limit'
 import Searchbar from '@/components/searchbar'
+import FieldContainer from '@/components/form/field-container'
 
 // =================================================================== Functions
 const handleTableResize = (instance) => {
@@ -80,13 +94,18 @@ export default {
     CIDCard,
     PaginationControls,
     Limit,
-    Searchbar
+    Searchbar,
+    FieldContainer
   },
 
   data () {
     return {
       mobileTable: false,
-      resize: false
+      resize: false,
+      checkboxes: [
+        { label: 'Show only complete data', value: false },
+        { label: 'Show only available CIDs', value: false }
+      ]
     }
   },
 
@@ -95,7 +114,8 @@ export default {
       cidList: 'dataset/cidList',
       metadata: 'dataset/metadata',
       cidsLoading: 'dataset/loading',
-      limitOptions: 'datasets/limitOptions'
+      limitOptions: 'datasets/limitOptions',
+      filters: 'datasets/filters'
     }),
     totalPages () {
       return this.metadata.totalPages
@@ -175,13 +195,55 @@ export default {
   display: flex;
   justify-content: space-between;
   margin-bottom: 2rem;
+  padding-right: 0.5rem;
+  @include medium {
+    flex-direction: column;
+  }
   :deep(.searchbar) {
     flex-grow: 0;
     flex-direction: row-reverse;
     min-width: 24rem;
+    padding: 0 1.25rem;
+    @include tiny {
+      min-width: auto;
+    }
     .search-button {
       margin-left: 0.25rem;
       margin-right: 1.125rem;
+    }
+  }
+  .checkboxes {
+    display: flex;
+    margin: auto 0;
+    @include medium {
+      margin: 0;
+      margin-top: 1.5rem;
+      padding-left: 0.5rem;
+    }
+  }
+  :deep(.checkbox) {
+    &.field-wrapper.disabled {
+      .checkbox-wrapper {
+        opacity: 0.5;
+        pointer-events: none;
+        touch-action: none;
+        @include medium {
+          margin: 0;
+          &:not(:last-child) {
+            margin-bottom: 0.75rem;
+          }
+        }
+      }
+      &:hover {
+        cursor: not-allowed;
+      }
+    }
+    .field-checkbox {
+      display: flex;
+      @include medium {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   }
 }
