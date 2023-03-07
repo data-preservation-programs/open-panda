@@ -28,7 +28,6 @@ export default {
   },
 
   async fetch ({ app, store, route, error }) {
-    await store.dispatch('datasets/getFiltersAndTypeahead')
     await store.dispatch('general/getBaseData', { key: 'about', data: AboutPageData })
   },
 

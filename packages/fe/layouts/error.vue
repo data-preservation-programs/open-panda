@@ -33,10 +33,6 @@ export default {
     ImageBlock
   },
 
-  async fetch () {
-    await this.$store.dispatch('general/getBaseData', 'general')
-  },
-
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent'
