@@ -1,7 +1,7 @@
 <template>
   <div class="error-page">
     <section class="content">
-      <div class="grid">
+      <div class="grid-noGutter">
 
         <div class="col-5_sm-12_lg-first_sm-last">
           <ImageBlock :block="imageLeft" />
@@ -58,6 +58,10 @@ export default {
 .error-page {
   position: relative;
   overflow: hidden;
+
+  @include small {
+    margin-bottom: toRem(-60);
+  }
 }
 
 .content {
@@ -67,7 +71,7 @@ export default {
 :deep(.text-block) {
   margin-top: toRem(90);
   margin-left: 5rem;
-  @include medium {
+  @include small {
     margin-top: toRem(55);
     margin-bottom: toRem(55);
     margin-left: 1rem;
@@ -77,13 +81,13 @@ export default {
     @include fontWeight_Bold;
     line-height: leading(75, 80);
     font-family: $font_Secondary;
-    @include medium {
+    @include small {
       font-size: toRem(45);
       line-height: leading(45, 40);
     }
   }
   .description p {
-    @include medium {
+    @include small {
       font-size: toRem(20);
     }
   }
