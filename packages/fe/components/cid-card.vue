@@ -93,6 +93,13 @@
               @click="toggleBottomPanel">
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
+
+            <ButtonB
+              class="logout-button"
+              data-tooltip="logout">
+            </ButtonB>
+
+            <Tooltip btn="Inspect files" :text="`You can access a preview of the files within this CID, however at this time it must be downloaded and unpacked from the zst format. <a target='_blank' href='https://${hash}.ipfs.w3s.link'>Learn more</a>`"></Tooltip>
           </div>
 
           <div v-if="mobile" class="mobile-sp-section-heading">
@@ -202,6 +209,7 @@ import Accordion from '@/components/accordion/accordion'
 import AccordionSection from '@/components/accordion/accordion-section'
 import AccordionHeader from '@/components/accordion/accordion-header'
 import AccordionContent from '@/components/accordion/accordion-content'
+import Tooltip from '@/components/tooltip'
 
 // ====================================================================== Export
 export default {
@@ -212,6 +220,7 @@ export default {
     ButtonToggle,
     CopyIcon,
     CIDSlider,
+    Tooltip,
     Accordion,
     AccordionSection,
     AccordionHeader,
@@ -467,7 +476,7 @@ export default {
   .date {
     @include fontSize_16;
     @include fontWeight_Medium;
-    margin-bottom: 0.375rem;
+    margin-bottom: 0.70rem;
     @include medium {
       margin-bottom: 0;
     }
@@ -493,7 +502,7 @@ export default {
       width: 1rem;
       height: 1rem;
       top: 0.25rem;
-      background-color: #74C3B5;
+      background-color: $neptune;
       border-radius: 50%;
       margin-right: 0.875rem;
     }

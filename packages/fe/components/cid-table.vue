@@ -88,6 +88,15 @@ export default {
 }
 
 .table {
+  .card-cutout-wrapper {
+    // reversing z-index based from page render order
+    // so that tooltip for "inspect" shows in front
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        z-index: #{20 - $i};
+      }
+    }
+  }
   &.null-state {
     padding: 1.8125rem 25%;
     @include small {
