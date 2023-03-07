@@ -1,13 +1,13 @@
 <template>
   <div class="error-page">
     <section class="content">
-      <div class="grid">
+      <div class="grid-noGutter">
 
-        <div class="col-5_sm-12_sm-last">
+        <div class="col-5_sm-12_lg-first_sm-last">
           <ImageBlock :block="imageLeft" />
         </div>
 
-        <div class="col-7_sm-12">
+        <div class="col-7_sm-12_lg-last_sm-first">
           <ImageBlock class="image-right" :block="topRightImageBlock" />
           <TextBlock :block="textblock" />
         </div>
@@ -31,10 +31,6 @@ export default {
   components: {
     TextBlock,
     ImageBlock
-  },
-
-  async fetch () {
-    await this.$store.dispatch('general/getBaseData', 'general')
   },
 
   computed: {
@@ -62,18 +58,22 @@ export default {
 .error-page {
   position: relative;
   overflow: hidden;
+
+  @include small {
+    margin-bottom: toRem(-60);
+  }
 }
 
-.image-right {
-  @include tiny {
-    margin: 0 -1rem;
-  }
+.content {
+  margin-top: toRem(20);
 }
 
 :deep(.text-block) {
   margin-top: toRem(90);
   margin-left: 5rem;
-  @include mini {
+  @include small {
+    margin-top: toRem(55);
+    margin-bottom: toRem(55);
     margin-left: 1rem;
   }
   .heading {
@@ -81,13 +81,15 @@ export default {
     @include fontWeight_Bold;
     line-height: leading(75, 80);
     font-family: $font_Secondary;
-    @include mini {
+    @include small {
       font-size: toRem(45);
       line-height: leading(45, 40);
     }
   }
-  .description {
-    @include p1;
+  .description p {
+    @include small {
+      font-size: toRem(20);
+    }
   }
 }
 
