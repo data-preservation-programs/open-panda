@@ -84,7 +84,9 @@ const retrieveCidFile = async (line, retryNo = 0) => {
       console.log(`Error retrieving CID ${JSON.parse(line).cid}. Retrying retrieval...`)
       await retrieveCidFile(line, retryNo + 1)
     } else {
-      console.log(`Could not retrieve CID ${JSON.parse(line).cid}. Max retries reached.`)
+      const cid = JSON.parse(line).cid
+      console.log(`Could not retrieve CID ${cid}. Max retries reached.`)
+      await cacheFailedCID(cid)
     }
   }
 }
@@ -151,6 +153,16 @@ const writeFileMetadataToDatabase = async (retrievedFiles) => {
     return response.result
   } catch (e) {
     console.log('========================= [Function: writeCidFilesToDatabase]')
+    console.log(e)
+  }
+}
+
+// -------------------------------------------------------------- cacheFailedCid
+const cacheFailedCID = async (cid) => {
+  try {
+    await Pipeline(`${cid}\n`, Fs.createWriteStream(`${CID_TMP_DIR}/failed-cid-retrievals.txt`, { flags: 'a' }))
+  } catch (e) {
+    console.log('================================= [Function: cacheFailedCID ]')
     console.log(e)
   }
 }
