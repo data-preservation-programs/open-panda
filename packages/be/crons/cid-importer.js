@@ -55,8 +55,11 @@ const { GetFileFromDisk, SecondsToHms } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------------ retrieveCidFiles
-const retrieveCidFile = async (line) => {
+const retrieveCidFile = async (line, retryNo = 0) => {
   try {
+    if (retryNo > 0) {
+      console.log(`Retry number ${retryNo}`)
+    }
     const upload = JSON.parse(line)
     // fetch file using upload cid
     const response = await Axios.get(`https://${upload.cid}.ipfs.w3s.link/`, {
@@ -77,7 +80,14 @@ const retrieveCidFile = async (line) => {
   } catch (e) {
     console.log('====================================== [Function: unpackCids]')
     console.log(e)
-    process.exit(0)
+    if (retryNo < 10) {
+      console.log(`Error retrieving CID ${JSON.parse(line).cid}. Retrying retrieval...`)
+      await retrieveCidFile(line, retryNo + 1)
+    } else {
+      const cid = JSON.parse(line).cid
+      console.log(`Could not retrieve CID ${cid}. Max retries reached.`)
+      await cacheFailedCID(cid)
+    }
   }
 }
 
@@ -121,7 +131,6 @@ const unpackRetrievedFile = async (file) => {
   } catch (e) {
     console.log('============================ [Function: unpackRetrievedFiles]')
     console.log(e)
-    process.exit(0)
   }
 }
 
@@ -141,12 +150,20 @@ const writeFileMetadataToDatabase = async (retrievedFiles) => {
       })
     }
     const response = await MC.model.Cid.bulkWrite(operations, { ordered: false })
-    const result = response.result
-    console.log(`${len} CIDs imported/updated | New: ${result.nUpserted} | Updated: ${result.nModified}`)
+    return response.result
   } catch (e) {
     console.log('========================= [Function: writeCidFilesToDatabase]')
     console.log(e)
-    process.exit(0)
+  }
+}
+
+// -------------------------------------------------------------- cacheFailedCid
+const cacheFailedCID = async (cid) => {
+  try {
+    await Pipeline(`${cid}\n`, Fs.createWriteStream(`${CID_TMP_DIR}/failed-cid-retrievals.txt`, { flags: 'a' }))
+  } catch (e) {
+    console.log('================================= [Function: cacheFailedCID ]')
+    console.log(e)
   }
 }
 
@@ -159,7 +176,6 @@ const deleteTemporaryFile = async (filename) => {
   } catch (e) {
     console.log('============================ [Function: deleteTemporaryFile ]')
     console.log(e)
-    process.exit(0)
   }
 }
 
@@ -172,23 +188,41 @@ const getCidFilesFromManifestList = async (importMax) => {
         input: manifest,
         crlfDelay: Infinity
       })
-      let i = 1
-      const retrievedFiles = []
+      // import all lines from the manifest to an array
+      const manifestCidLines = []
       for await (const line of rl) {
-        if (i <= importMax) {
-          console.log(`Retrieving file ${i} from the CID manifest list.`)
-          retrievedFiles.push(await retrieveCidFile(line))
-          i++
+        manifestCidLines.push(line)
+      }
+      // reverse the array to import oldest CIDs first
+      // begin writing to the database in batches
+      manifestCidLines.reverse()
+      let retrievedFiles = []
+      let total = 0
+      const batchSize = argv.pagesize || 1000
+      const len = manifestCidLines.length
+      for (let i = 0; i < len; i++) {
+        if (i < importMax) {
+          const line = manifestCidLines[i]
+          console.log(`Retrieving file ${i + 1} from the CID manifest list.`)
+          const retrieved = await retrieveCidFile(line)
+          if (retrieved) { retrievedFiles.push(retrieved) }
+          // write retrieved file data to the database in batches of 1000
+          if ((i + 1) % batchSize === 0) {
+            const result = await writeFileMetadataToDatabase(retrievedFiles)
+            total = total + result.nUpserted + result.nModified
+            console.log(`${result.nUpserted} new CIDs imported in this batch | ${result.nModified} CIDs updated in this batch | A total of ${total} CIDs imported/updated so far.`)
+            retrievedFiles = []
+          }
         } else {
           break
         }
       }
-      await writeFileMetadataToDatabase(retrievedFiles)
+      const result = await writeFileMetadataToDatabase(retrievedFiles)
+      console.log(`${result.nUpserted} new CIDs imported in this batch | ${result.nModified} CIDs updated in this batch | A total of ${total + result.nUpserted + result.nModified} CIDs were imported/updated to the database.`)
     }
   } catch (e) {
     console.log('===================== [Function: getCidFilesFromManifestList]')
     console.log(e)
-    process.exit(0)
   }
 }
 
@@ -232,7 +266,7 @@ const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSav
   } catch (e) {
     console.log('=============== [Function: createManifestFromWeb3StorageCids]')
     console.log(e)
-    if (e.response.status === 500) {
+    if (e.response && e.response.status === 500) {
       await createManifestFromWeb3StorageCids(searchParams, maxPages, lastSavedDate, count)
       console.log(`Retrying fetching uploads on page ${searchParams.page}`)
     }
@@ -241,15 +275,16 @@ const createManifestFromWeb3StorageCids = async (searchParams, maxPages, lastSav
 
 // ///////////////////////////////////////////////////////////////// CidImporter
 const CidImporter = async () => {
-  console.log('📖 CID import started')
   try {
-    // begin
     const start = process.hrtime()[0]
     const limit = argv.pagesize || 1000
     const maxPages = argv.maxpages || Infinity
+    console.log(`📖 CID import started | page size of ${limit} and page maximum ${maxPages}.`)
     // Get the latest upload entry from the database
     const mostRecentCid = await MC.model.Cid.find().sort({ web3storageCreatedAt: -1 }).limit(1)
     const mostRecentDocument = mostRecentCid[0]
+    console.log('Most recent CID imported:')
+    console.log(mostRecentDocument)
     const lastSavedDate = mostRecentDocument ? new Date(mostRecentDocument.web3storageCreatedAt).getTime() : 0
     // Delete the outdated manifest file if it exists
     await deleteTemporaryFile('cid-manifest.txt')

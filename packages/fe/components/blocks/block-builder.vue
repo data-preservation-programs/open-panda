@@ -64,6 +64,7 @@
 </template>
 
 <script>
+// ===================================================================== Imports
 import TextBlock from '@/components/blocks/text-block'
 import ImageBlock from '@/components/blocks/image-block'
 import MarkdownBlock from '@/components/blocks/markdown-block'
@@ -72,6 +73,7 @@ import CategoryTicker from '@/components/category-ticker'
 import CardListBlock from '@/components/blocks/card-list-block'
 import BlockBuilder from '@/components/blocks/block-builder'
 
+// ====================================================================== Export
 export default {
   name: 'BlockBuilder',
 

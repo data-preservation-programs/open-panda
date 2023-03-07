@@ -9,6 +9,10 @@
       @optionSelected="optionSelected"
       v-on="$listeners">
 
+      <template #option-native-default-text>
+        Sort by...
+      </template>
+
       <template #option-native-text="{ option }">
         {{ getOptionDescription(option) ? `${option.label}, ${getOptionDescription(option)}` : option.label }}
       </template>
@@ -137,33 +141,30 @@ $height: 2.5rem;
       transform: rotate(-180deg);
     }
   }
-  &.caution {
-    ::v-deep .select {
-      border-color: darkorange;
-    }
-  }
-  &.error {
-    ::v-deep .select {
-      border-color: red;
-    }
-  }
+  // &.caution {
+  //   ::v-deep .select {
+  //     border-color: $mandysPink;
+  //   }
+  // }
+  // &.error {
+  //   ::v-deep .select {
+  //     border-color: $flamingo;
+  //   }
+  // }
 }
 
 ::v-deep .select-container {
-  &:not(.focused) {
-    .select.native {
-      color: transparent;
-    }
-  }
   &.dropdown-open {
     .select {
       border-bottom-color: transparent;
     }
   }
   .select {
-    // border-bottom: 0.1875rem solid tomato;
-    // transition: 150ms ease-out;
+    border: 2px solid $tasman;
+    border-radius: toRem(5);
+    transition: 150ms ease-out;
     &.native {
+      padding: 0 toRem(10);
       &:focus-visible {
         @include focusBoxShadow;
       }
@@ -171,9 +172,11 @@ $height: 2.5rem;
   }
   .dropdown {
     top: calc(100% - 4px);
+    left: -2px;
+    width: calc(100% + 4px);
+    max-height: $height * 6.5;
     border-bottom-left-radius: 0.3125rem;
     border-bottom-right-radius: 0.3125rem;
-    max-height: $height * 6.5;
     border-right: 2px solid $tasman;
     border-bottom: 2px solid $tasman;
     border-left: 2px solid $tasman;
@@ -187,8 +190,6 @@ $height: 2.5rem;
 
 .selection-window {
   padding: toRem(8) toRem(10);
-  border: 2px solid $tasman;
-  border-radius: toRem(5);
   display: flex;
   flex-direction: row;
   justify-content: space-between;

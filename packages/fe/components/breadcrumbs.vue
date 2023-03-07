@@ -124,6 +124,7 @@ export default {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: 1.75rem;
   padding-bottom: 1.25rem;
 }
 
