@@ -1,96 +1,97 @@
 <template>
-  <div class="col card">
-    <CardCutout :background-image="computedData.img_url">
-      <div
-        class="card-img-wrapper">
+  <div class="card">
+    <CardCutout :background-image="getImageUrl(dataset)">
+
+      <!-- =========================================================== Image -->
+      <div class="image-wrapper">
         <div
-          class="card-img"
-          :style="{ 'background-image': `url('${computedData.img_url}')` }">
+          class="image"
+          :style="{ 'background-image': `url('${getImageUrl(dataset)}')` }">
         </div>
       </div>
 
-      <!-- heading -->
-      <div class="card-heading grid-noGutter">
-        <div class="col-12 title" :title="computedData.name">
-          {{ computedData.name }}
+      <!-- ========================================================= Heading -->
+      <div class="heading" :title="dataset.name">
+        <div class="name">
+          {{ dataset.name }}
         </div>
       </div>
 
-      <!-- details: section 1 -->
-      <div class="card-details">
+      <!-- =============================================== [Metadata] Tier 1 -->
+      <div class="metadata tier-1">
         <div
           v-for="(label, key) in labelsTier1"
           :key="key"
-          class="grid-noGutter">
-          <div class="caption col-6" data-push-right="off-1">
-            {{ label }}
-          </div>
-          <div class="card-data col-5">
-            {{ computedData[key] || '-' }}
-          </div>
+          class="metadata-row">
+          <!-- ...................................................... common -->
+          <span class="label">{{ label }}</span>
+          <span :class="['value', key]">
+            <template v-if="!dataset[key]">-</template>
+            <!-- ................................................. data size -->
+            <template v-else-if="key === 'data_size'">
+              {{ $formatBytes(dataset.data_size) }}
+            </template>
+            <!-- ........................................... everything else -->
+            <template v-else-if="dataset[key]">
+              {{ dataset[key] }}
+            </template>
+          </span>
         </div>
       </div>
 
-      <!-- details: section 2 file ext -->
-      <div class="card-details">
-        <div class="grid-noGutter card-details-row">
-          <div class="col-12">
-            <span class="caption caption-bold">
-              {{ labelsTier2.file_extensions }}
+      <!-- =============================================== [Metadata] Tier 2 -->
+      <div class="metadata tier-2">
+        <!-- ............................................... file extensions -->
+        <div class="metadata-entry">
+          <span class="label bold">
+            {{ labelsTier2.file_extensions }}
+          </span>
+          <span v-if="!fileExtData" class="value">-</span>
+          <template v-for="(item, index) in fileExtData">
+            <span
+              v-if="index < fileExtDisplayLimit"
+              :key="index"
+              class="file-item">
+              {{ item }}
             </span>
-            <span v-if="!fileExtData" class="card-data">-</span>
-            <span v-for="(item, index) in fileExtData" :key="index">
-              <span v-if="index < computedData.limit" class="file-item">
-                {{ item }}
-              </span>
-            </span>
-            <span>
-              <button
-                v-if="fileExtData.length > 1"
-                class="file-item"
-                @click="toggleLimit()">
-                {{ computedData.showMore ? `-` : `+` }} {{ fileExtData.length - 1 }}
-              </button>
-            </span>
-          </div>
+          </template>
+          <button
+            v-if="fileExtData.length > 1"
+            class="file-item"
+            @click="toggleFileExtDisplayLimit()">
+            {{ fileExtShowMore ? `-` : `+` }} {{ fileExtData.length - 1 }}
+          </button>
         </div>
 
-        <!-- details: section 2 locations -->
-        <div class="grid-noGutter card-details-row">
-          <div class="col-12">
-            <span class="caption caption-bold">
-              {{ labelsTier2.locations }}
+        <!-- ..................................................... locations -->
+        <div class="metadata-entry">
+          <span class="label bold">
+            {{ labelsTier2.locations }}
+          </span>
+          <span v-if="!locationsData" class="value">-</span>
+          <template v-for="(item, index) in locationsData">
+            <span v-if="index < 6" :key="index">
+              {{ $getFlagIcon(item.country_code) }}
             </span>
-
-            <span v-if="!locationsData" class="card-data">-</span>
-            <span v-for="(item, index) in locationsData" :key="index">
-              <span v-if="index < 6">
-                {{ $getFlagIcon(item.country_code) }}
-              </span>
-            </span>
-
-          </div>
+          </template>
         </div>
       </div>
 
-      <!-- button -->
-      <div class="card-button grid-noGutter-right">
-        <Button
-          :button="{
-            type: 'solid',
-            url: `/dataset/${computedData.slug}`,
-            text: 'View dataset',
-            icon: 'arrow'
-          }">
-        </Button>
-      </div>
+      <!-- ========================================================== Button -->
+      <Button
+        :button="{
+          type: 'solid',
+          url: `/dataset/${dataset.slug}`,
+          text: 'View dataset',
+          icon: 'arrow'
+        }">
+      </Button>
     </CardCutout>
   </div>
 </template>
 
 <script>
 // ===================================================================== Imports
-import { cloneDeep } from 'lodash'
 import Button from '@/components/buttons/button'
 import CardCutout from '@/components/card-cutout'
 
@@ -104,13 +105,20 @@ export default {
   },
 
   props: {
-    card: {
+    dataset: {
       type: Object,
       required: true
     },
     labels: {
       type: Object,
       required: true
+    }
+  },
+
+  data () {
+    return {
+      fileExtDisplayLimit: 1,
+      fileExtShowMore: false
     }
   },
 
@@ -121,41 +129,63 @@ export default {
     labelsTier2 () {
       return this.labels.tier2
     },
-    computedData () {
-      const data = cloneDeep(this.card)
-      data.limit = 1
-      data.showMore = false
-      return data
-    },
     fileExtData () {
-      return this.computedData.file_extensions
+      return this.dataset.file_extensions
     },
     locationsData () {
-      return this.computedData.locations
+      return this.dataset.locations
     }
   },
 
   methods: {
-    toggleLimit () {
-      this.computedData.limit = this.computedData.showMore ? 1 : this.fileExtData.length
-      this.computedData.showMore = !this.computedData.showMore
-      this.$forceUpdate()
+    toggleFileExtDisplayLimit () {
+      this.fileExtDisplayLimit = this.fileExtShowMore ? 1 : this.fileExtData.length
+      this.fileExtShowMore = !this.fileExtShowMore
+    },
+    getImageUrl (dataset) {
+      let slug = dataset.slug
+      if (slug.includes('common-crawl')) {
+        slug = 'common-crawl'
+      }
+      if (slug.includes('sloan-digital-sky-survey-release')) {
+        slug = 'sloan-digital-sky-survey-release'
+      }
+      return `/images/datasets/${slug}.jpg`
     }
   }
-
 }
 </script>
 
 <style lang="scss" scoped>
+// ///////////////////////////////////////////////////////////////////// General
 .card {
   margin-bottom: toRem(10);
 }
-.card-img-wrapper {
+
+:deep(.card-cutout-wrapper) {
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.card-contents) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.heading,
+.metadata {
+  padding: toRem(20);
+}
+
+// /////////////////////////////////////////////////////////////////////// Image
+.image-wrapper {
   height: toRem(113);
   overflow: hidden;
   border-top-right-radius: toRem(10);
 }
-.card-img {
+
+.image {
   background-color: $tasman;
   height: toRem(122);
   object-fit: cover;
@@ -168,16 +198,11 @@ export default {
     transform: translateY(-4.5px);
   }
 }
-.card-heading,
-.card-details {
-  padding: toRem(20);
-}
-.card-button {
-  padding: toRem(10) toRem(20);
-}
-.card-heading {
+
+// ///////////////////////////////////////////////////////////////////// Heading
+.heading {
   min-height: toRem(116.5);
-  .title {
+  .name {
     line-height: leading(26, 17);
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -185,13 +210,51 @@ export default {
     overflow: hidden;
   }
 }
-.card-details {
+
+// //////////////////////////////////////////////////////////////////// Metadata
+.metadata {
   border-top: 1px solid $athensGray;
-  .card-details-row {
-    margin-bottom: toRem(12);
+  &.tier-1 {
+    .label,
+    .value {
+      flex: 1;
+    }
   }
-  .file-item {
-    margin-bottom: toRem(9);
+  .label {
+    @include caption;
+    margin-right: toRem(12);
+    &.bold {
+      @include fontWeight_Medium;
+    }
   }
+  .value {
+    @include caption;
+    @include fontWeight_Bold;
+  }
+}
+
+.metadata-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.metadata-entry {
+  margin-bottom: toRem(12);
+}
+
+.label {
+  margin-right: 1rem;
+}
+
+.file-item {
+  margin-bottom: 0.5625rem;
+}
+
+.button {
+  align-self: flex-end;
+  margin-top: auto;
+  margin-right: toRem(20);
+  margin-bottom: toRem(20);
+  padding: toRem(10) toRem(20);
 }
 </style>

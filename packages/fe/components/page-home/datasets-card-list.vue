@@ -1,68 +1,86 @@
 <template>
-  <div class="col card">
+  <div class="card">
     <CardCutout>
-      <div class="card-inner">
-        <img class="card-img" :src="card.img_url" />
-        <div class="card-details">
-          <div class="card-details-row title" :title="card.name">
-            {{ card.name }}
-          </div>
+      <!-- =========================================================== Image -->
+      <img class="image" :src="getImageUrl(dataset)" />
 
-          <div class="card-details-row">
-            <span
-              v-for="(label, key) in labelsTier1"
-              :key="key"
-              class="card-details-row-item">
-              <span class="caption">
-                {{ label }}
-              </span>
-              <span class="card-data">
-                {{ card[key] || '-' }}
-              </span>
-            </span>
-          </div>
+      <!-- ======================================================== Metadata -->
+      <div class="metadata-wrapper">
 
-          <div v-if="labelsTier2" class="card-details-row">
-            <span
-              v-for="(label, key) in labelsTier2"
-              :key="key"
-              class="">
-              <span class="caption">
-                {{ label }}
-              </span>
-              <span
-                v-if="key === 'locations'">
-                <span v-if="!card[key]" class="card-data">-</span>
+        <!-- /////////////////////////////////////////////////////// heading -->
+        <div class="name" :title="dataset.name">
+          {{ dataset.name }}
+        </div>
+
+        <!-- ///////////////////////////////////////////// [Metadata] Tier 1 -->
+        <div class="metadata tier-1">
+          <div
+            v-for="(label, key) in labelsTier1"
+            :key="key"
+            class="metadata-row">
+            <!-- .................................................... common -->
+            <span class="label">{{ label }}</span>
+            <span :class="['value', key]">
+              <template v-if="!dataset[key]">-</template>
+              <!-- ............................................... data size -->
+              <template v-else-if="key === 'data_size'">
+                {{ $formatBytes(dataset.data_size) }}
+              </template>
+              <!-- ............................................... locations -->
+              <template v-else-if="key === 'locations'">
                 <span
-                  v-for="(item, index) in card[key]"
+                  v-for="(item, index) in dataset[key]"
                   :key="index">
                   {{ $getFlagIcon(item.country_code) }}
                 </span>
-              </span>
-              <span v-if="key === 'file_extensions'">
-                <span v-if="!card[key]" class="card-data">-</span>
+              </template>
+              <!-- ......................................... everything else -->
+              <template v-else-if="dataset[key]">
+                {{ dataset[key] }}
+              </template>
+            </span>
+          </div>
+        </div>
+
+        <!-- ///////////////////////////////////////////// [Metadata] Tier 2 -->
+        <div class="metadata tier-2">
+          <div
+            v-for="(label, key) in labelsTier2"
+            :key="key"
+            class="metadata-row">
+            <!-- .................................................... common -->
+            <span class="label">{{ label }}</span>
+            <span :class="['value', key]">
+              <template v-if="!dataset[key]">-</template>
+              <!-- ......................................... file extensions -->
+              <template v-else-if="key === 'file_extensions'">
                 <span
-                  v-for="(item, index) in card[key]"
+                  v-for="(item, index) in dataset[key]"
                   :key="index">
                   <span v-if="index < 3" class="file-item">
                     {{ item }}
                   </span>
                 </span>
-              </span>
+              </template>
+              <!-- ......................................... everything else -->
+              <template v-else-if="dataset[key]">
+                {{ dataset[key] }}
+              </template>
             </span>
           </div>
+        </div>
 
-        </div>
-        <div class="card-button">
-          <Button
-            :button="{
-              type: 'solid',
-              url: `/dataset/${card.slug}`,
-              text: 'View dataset',
-              icon: 'arrow'
-            }" />
-        </div>
       </div>
+
+      <!-- ========================================================== Button -->
+      <Button
+        :button="{
+          type: 'solid',
+          url: `/dataset/${dataset.slug}`,
+          text: 'View dataset',
+          icon: 'arrow'
+        }">
+      </Button>
     </CardCutout>
   </div>
 </template>
@@ -82,7 +100,7 @@ export default {
   },
 
   props: {
-    card: {
+    dataset: {
       type: Object,
       required: true
     },
@@ -99,44 +117,94 @@ export default {
     labelsTier2 () {
       return this.labels.tier2
     }
+  },
+
+  methods: {
+    getImageUrl (dataset) {
+      let slug = dataset.slug
+      if (slug.includes('common-crawl')) {
+        slug = 'common-crawl'
+      }
+      if (slug.includes('sloan-digital-sky-survey-release')) {
+        slug = 'sloan-digital-sky-survey-release'
+      }
+      return `/images/datasets/${slug}.jpg`
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+// ///////////////////////////////////////////////////////////////////// General
 .card {
   margin-bottom: toRem(10);
 }
-.card-inner {
+
+:deep(.card-contents) {
   padding: toRem(25);
   display: flex;
   align-items: center;
-  .card-img {
-    background-color: $tasman;
-    height: toRem(100);
-    width: toRem(100);
-    border-radius: toRem(2);
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-  .card-details {
-    padding-left: toRem(60);
-    padding-right: toRem(20);
-    flex-grow: 1;
-    .title {
-      @include fontSize_20;
-      line-height: leading(30, 20);
+}
+
+// /////////////////////////////////////////////////////////////////////// Image
+.image {
+  background-color: $tasman;
+  height: toRem(100);
+  width: toRem(100);
+  border-radius: toRem(2);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.name {
+  @include fontSize_20;
+  margin-bottom: toRem(10);
+  line-height: leading(30, 20);
+}
+
+// //////////////////////////////////////////////////////////////////// Metadata
+.metadata-wrapper {
+  flex: 1;
+  padding-left: toRem(60);
+  padding-right: toRem(20);
+}
+
+.metadata,
+.metadata-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.metadata {
+  &.tier-1 {
+    margin-bottom: toRem(10);
+    .label,
+    .value {
+      flex: 1;
     }
-    .card-details-row {
-      margin-bottom: toRem(10);
-      &:last-child {
-        margin-bottom: 0;
-      }
+  }
+  .label {
+    @include caption;
+    margin-right: toRem(12);
+    white-space: nowrap;
+    &.bold {
+      @include fontWeight_Medium;
     }
   }
-  .card-button {
-    flex-shrink: 0;
-    margin-top: auto;
+  .value {
+    @include caption;
+    @include fontWeight_Bold;
   }
+}
+
+.metadata-row {
+  &:not(:last-child) {
+    margin-right: 1rem;
+  }
+}
+
+.button {
+  margin-top: auto;
 }
 </style>

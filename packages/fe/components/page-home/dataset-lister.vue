@@ -1,20 +1,18 @@
 <template>
-  <div :class="['dataset-lister', `selected-layout-${layout}`]">
+  <div :class="['dataset-lister', `layout__${layout}`]">
 
-    <div class="grid-4-equalHeight_lg-3_md-2_sm-1 layout-grid">
-      <CardGrid
-        v-for="(card, index) in datasetList"
-        :key="`card-grid-${index}`"
-        :card="card"
-        :labels="pageContent.layouts.grid.labels" />
-    </div>
-
-    <div class="grid-1-equalHeight layout-list">
-      <CardList
-        v-for="(card, index) in datasetList"
-        :key="`card-list-${index}`"
-        :card="card"
-        :labels="pageContent.layouts.list.labels" />
+    <div :class="gridClasses">
+      <div
+        v-for="(dataset, index) in datasetList"
+        :key="`dataset-${layout}-${index}`"
+        :asd="`dataset-${layout}-${index}`"
+        class="col">
+        <component
+          :is="cardType"
+          :dataset="dataset"
+          :labels="pageContent.layouts[layout].labels"
+          :class="`layout__${layout}`" />
+      </div>
     </div>
 
   </div>
@@ -50,30 +48,23 @@ export default {
   computed: {
     ...mapGetters({
       datasetList: 'datasets/datasetList'
-    })
+    }),
+    gridClasses () {
+      return this.layout === 'grid' ? 'grid-4-equalHeight_lg-3_md-2_sm-1' : 'grid-1'
+    },
+    cardType () {
+      return this.layout === 'grid' ? 'CardGrid' : 'CardList'
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-// ///////////////////////////////////////////////////////////////////// Layouts
-.dataset-lister {
-  &.selected-layout-list {
-    .layout-list {
-      display: flex;
-      @include medium {
-        display: none;
-      }
-    }
-    .layout-grid {
-      display: none;
-      @include medium {
-        display: flex;
-      }
-    }
-  }
-  .layout-list {
-    display: none;
+// ///////////////////////////////////////////////////////////////////// General
+:deep(.card) {
+  height: calc(100% - #{toRem(9)});
+  .card-cutout-wrapper {
+    height: 100%;
   }
 }
 </style>

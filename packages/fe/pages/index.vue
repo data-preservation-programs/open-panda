@@ -83,7 +83,7 @@ export default {
   data () {
     return {
       tag: 'index',
-      layout: (this.$ls && this.$ls.get('layout')) ? this.$ls.get('layout') : 'grid'
+      layout: 'grid'
     }
   },
 
@@ -140,6 +140,9 @@ export default {
   mounted () {
     this.stopLoading()
     this.scrollToResultList()
+    this.$nextTick(() => {
+      this.layout = this.$ls.get('layout')
+    })
   },
 
   methods: {
