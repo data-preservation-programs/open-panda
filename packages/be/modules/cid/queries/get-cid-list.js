@@ -1,12 +1,27 @@
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-module.exports = (dataset, page = 1, limit = 10) => {
+module.exports = (dataset, search = '', page = 1, limit = 10) => {
   const skip = (page - 1) * limit
   return [
 
     {
       $match: {
         dataset_slug: dataset
+      }
+    },
+
+    {
+      $match: {
+        $expr: {
+          $and: [
+            {
+              $or: [
+                { $regexMatch: { input: '$filename', regex: search, options: 'i' } },
+                { $regexMatch: { input: '$payload_cid', regex: search, options: 'i' } }
+              ]
+            }
+          ]
+        }
       }
     },
 

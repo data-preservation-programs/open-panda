@@ -2,6 +2,15 @@
   <div class="cid-table">
 
     <div class="toolbar">
+      <Searchbar
+        placeholder="Search for a file or storage provider"
+        :loading="cidsLoading"
+        :redirect-search="false"
+        field-key="cid-search"
+        theme="line"
+        class="cids-searchbar" />
+      <div class="checkboxes">
+      </div>
     </div>
 
     <div :class="['table', { 'null-state': !cidList || !cidList.length }]">
@@ -32,12 +41,8 @@
         @filterApplied="getCidList({ route: $route })" />
 
       <Limit
-        v-if="totalPages > 1"
-        :options="[
-          { label: 12, value: 12 },
-          { label: 24, value: 24 },
-          { label: 36, value: 36 }
-        ]"
+        v-if="totalPages > 1 && limitOptions"
+        :options="limitOptions"
         @filterApplied="getCidList({ route: $route })" />
 
     </div>
@@ -52,6 +57,7 @@ import { mapGetters, mapActions } from 'vuex'
 import CIDCard from '@/components/cid-card'
 import PaginationControls from '@/components/pagination-controls'
 import Limit from '@/components/limit'
+import Searchbar from '@/components/searchbar'
 
 // =================================================================== Functions
 const handleTableResize = (instance) => {
@@ -73,14 +79,14 @@ export default {
   components: {
     CIDCard,
     PaginationControls,
-    Limit
+    Limit,
+    Searchbar
   },
 
   data () {
     return {
       mobileTable: false,
       resize: false
-      // cidList: false
     }
   },
 
@@ -88,7 +94,8 @@ export default {
     ...mapGetters({
       cidList: 'dataset/cidList',
       metadata: 'dataset/metadata',
-      cidsLoading: 'dataset/loading'
+      cidsLoading: 'dataset/loading',
+      limitOptions: 'datasets/limitOptions'
     }),
     totalPages () {
       return this.metadata.totalPages
@@ -164,9 +171,23 @@ export default {
   }
 }
 
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  :deep(.searchbar) {
+    flex-grow: 0;
+    flex-direction: row-reverse;
+    min-width: 24rem;
+    .search-button {
+      margin-left: 0.25rem;
+      margin-right: 1.125rem;
+    }
+  }
+}
+
 .pagination {
   display: flex;
-  // flex-wrap: wrap;
   justify-content: space-between;
   padding: 0 1.5625rem;
   @include medium {

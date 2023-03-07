@@ -59,11 +59,13 @@ const actions = {
       const slug = route.params.id
       const page = parseInt(query.page || getters.metadata.page)
       const limit = query.limit || getters.metadata.limit
+      const search = query.search
       const response = await this.$axiosAuth('/get-cid-list', {
         params: {
           slug,
           page,
-          ...(limit && { limit })
+          ...(limit && { limit }),
+          ...(search && { search })
         }
       })
       const payload = response.data.payload

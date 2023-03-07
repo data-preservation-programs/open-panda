@@ -2,7 +2,7 @@ console.log('💡 [endpoint] /get-cid-list')
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-const { SendData } = require('@Module_Utilities')
+const { SendData, ParseQuerySearch } = require('@Module_Utilities')
 const GetCidListQuery = require('@Module_Cid/queries/get-cid-list')
 const MC = require('@Root/config')
 
@@ -29,10 +29,10 @@ const process = async (data) => {
 }
 
 // -------------------------------------------------------------------- findCids
-const findCids = async (dataset, page = 1, limit = 10) => {
+const findCids = async (dataset, search = '', page = 1, limit = 10) => {
   try {
     return process(
-      await MC.model.Cid.aggregate(GetCidListQuery(dataset, page, limit))
+      await MC.model.Cid.aggregate(GetCidListQuery(dataset, search, page, limit))
     )
   } catch (e) {
     console.log('======================================== [Function: findCids]')
@@ -47,11 +47,10 @@ MC.app.get('/get-cid-list', async (req, res) => {
   try {
     const query = req.query
     const dataset = query.slug
+    const search = await ParseQuerySearch(query.search)
     const page = await parseNumber(query.page)
     const limit = await parseNumber(query.limit)
-    // console.log(query)
-    const payload = await findCids(dataset, page, limit)
-    // console.log(payload)
+    const payload = await findCids(dataset, search, page, limit)
     SendData(res, 200, 'Cids retrieved succesfully', payload)
   } catch (e) {
     console.log('=================================== [Endpoint: /get-cid-list]')
