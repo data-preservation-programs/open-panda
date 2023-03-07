@@ -2,7 +2,7 @@
   <div class="tooltip-c">
     <div class="tooltip-btn">
       <TerminalIcon class="icon" />
-      <span>{{btn}}</span>
+      <span>{{ btn }}</span>
     </div>
     <div class="tooltip-box" v-html="text"></div>
   </div>
