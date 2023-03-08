@@ -72,8 +72,8 @@
           </div>
 
           <div class="expiry-date mobile-row">
-            <span class="more label">{{ mobile ? 'Available Until' : 'Avail. Until' }}</span>
-            <span class="date">{{ expiryDate }}</span>
+            <span class="date label">{{ expiryDate }}</span>
+            <span class="more">{{ mobile ? 'Available Until' : 'Avail. Until' }}</span>
           </div>
 
           <div class="mobile-row">
@@ -191,7 +191,9 @@
       </div>
 
       <!-- mobile -->
-      <Tooltip v-if="mobile" class="inspect-file-mobile" :btn="tooltipBtn" :text="tooltipText" align="right"></Tooltip>
+      <div class="inspect-file-mobile">
+        <Tooltip v-if="mobile" class="inspect-file-mobile" :btn="tooltipBtn" :text="tooltipText" align="right"></Tooltip>
+      </div>
 
     </div>
   </CardCutout>
@@ -348,7 +350,7 @@ export default {
 
 .bottom-content {
   @include medium {
-    padding-top: 1.125rem;
+    padding-top: toRem(10);
     padding-bottom: 0;
   }
 }
@@ -368,13 +370,18 @@ export default {
 .label {
   @include medium {
     width: 40%;
+    min-width: toRem(120);
+    flex-shrink: 0;
   }
 }
 
 .inspect-file-mobile {
-  display: flex;
-  justify-content: right;
-  padding-right: 1.875rem;
+  padding-bottom: toRem(10);
+  .tooltip-c {
+    display: flex;
+    justify-content: right;
+    padding-right: 1.875rem;
+  }
 }
 
 // //////////////////////////////////////////////////////////////////// CID INFO
@@ -493,11 +500,19 @@ export default {
     margin-bottom: 0.70rem;
     @include medium {
       margin-bottom: 0;
+      order: 2;
     }
   }
   .more {
     @include fontSize_14;
     @include fontWeight_Regular;
+    @include medium {
+      margin-bottom: 0;
+      order: 1;
+      width: 40%;
+      min-width: toRem(120);
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -507,6 +522,7 @@ export default {
   margin-bottom: auto;
   @include medium {
     margin-top: 0;
+    @include fontSize_14;
   }
   &.active {
     &:before {
@@ -562,7 +578,7 @@ export default {
       width: 11px;
       height: 7px;
       top: calc(50% - 3.5px);
-      right: 1rem;
+      right: 0;
       transform: rotate(180deg);
       transition: transform 250ms ease;
       background-repeat: no-repeat;
