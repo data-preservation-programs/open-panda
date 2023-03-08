@@ -29,7 +29,7 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <DatasetHistogram v-if="datasetList && datasetList.length" />
+        <DatasetHistogram v-if="histogramData" />
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -160,7 +160,7 @@ export default {
       siteContent: 'general/siteContent',
       selectedFilters: 'search/filters',
       datasetListTypeahead: 'datasets/datasetListTypeahead',
-      datasetList: 'datasets/datasetList'
+      histogramData: 'datasets/histogramData'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
@@ -301,18 +301,21 @@ export default {
 
 // //////////////////////////////////////////////////////////////// Filter Panel
 .filter-panel {
-  display: none;
+  display: block;
+  visibility: hidden;
   position: absolute;
   width: 70vw;
   max-width: toRem(800);
   right: 0;
   top: 120%;
   z-index: 100;
+  opacity: 0;
   @include medium {
     width: 88vw;
   }
   &.open {
-    display: block;
+    visibility: visible;
+    opacity: 1;
   }
   .direction-right & {
     left: 0;

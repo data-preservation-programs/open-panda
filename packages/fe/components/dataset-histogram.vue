@@ -1,7 +1,5 @@
 <template>
-  <div
-    :key="`dataset-histogram-${key}`" 
-    :class="['dataset-histogram', { dragging }]">
+  <div :class="['dataset-histogram', { dragging }]">
     <div class="chart">
 
       <div
@@ -46,16 +44,10 @@ import { mapGetters } from 'vuex'
 
 // =================================================================== Functions
 const calculateChartStepWidth = (instance) => {
-  if (instance.$refs.segmentRow && instance.steps.length) {
+  if (instance.$refs.segmentRow && instance.segments && instance.segments.length) {
     const chartWidth = instance.$refs.segmentRow.getBoundingClientRect().width
-    instance.stepWidth = chartWidth / instance.steps.length
+    instance.stepWidth = chartWidth / instance.segments.length
   }
-}
-
-const exponentialThroughMax = (x, max, start) => {
-  const a = start || 1000000000
-  const b = Math.exp(Math.log(max / a) / max)
-  return a * Math.pow(b, x)
 }
 
 // ====================================================================== Export
@@ -69,60 +61,46 @@ export default {
       upperBoundIndex: 0,
       stepWidth: 0,
       resize: false,
-      dragging: false,
-      key: 0
+      dragging: false
     }
   },
 
   computed: {
     ...mapGetters({
-      datasetList: 'datasets/datasetList'
+      datasetList: 'datasets/datasetList',
+      histogramData: 'datasets/histogramData'
     }),
-    steps () {
-      const steps = []
-      const datasetSizes = this.datasetList.map(dataset => dataset.data_size)
-      const maxDatasetSize = Math.max(...datasetSizes) * 1.5
-      const stepSize = maxDatasetSize / this.bars
-      for (let i = 0; i < 40; i++) {
-        steps.push({
-          min: exponentialThroughMax(i * stepSize, maxDatasetSize),
-          max: exponentialThroughMax((i + 1) * stepSize, maxDatasetSize)
-        })
-      }
-      steps.unshift({
-        min: 0,
-        max: exponentialThroughMax(0, maxDatasetSize)
-      })
-      return steps
-    },
     segments () {
-      const segments = []
-      this.steps.forEach((step) => {
-        const datasetsInStepRange = this.datasetList.filter(dataset => dataset.data_size >= step.min && dataset.data_size < step.max)
-        segments.push(datasetsInStepRange)
-      })
-      return segments
+      return this.histogramData ? this.histogramData.segments : false
     },
     normalizedSegments () {
-      const lengths = this.segments.map(segment => segment.length)
-      const maxLength = Math.max(...lengths)
-      return lengths.map(l => Math.round((l / maxLength) * 100 * 100) / 100)
+      const counts = this.segments.map(segment => segment.count)
+      const maxLength = Math.max(...counts)
+      return counts.map(x => Math.round((x / maxLength) * 100 * 100) / 100)
     },
     lowerBoundText () {
-      if (this.steps.length) {
-        const formatted = this.$formatBytes(this.steps[this.lowerBoundIndex].min, false)
+      if (this.segments && this.segments.length) {
+        const formatted = this.$formatBytes(this.segments[this.lowerBoundIndex].min, false)
         return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
       }
       return '-'
     },
     upperBoundText () {
-      if (this.steps.length) {
+      if (this.segments && this.segments.length) {
         const index = Math.max(0, this.upperBoundIndex - 1)
-        const step = this.steps[index]
-        const formatted = this.$formatBytes(step.max, false)
+        const formatted = this.$formatBytes(this.segments[index].max, false)
         return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
       }
       return '-'
+    }
+  },
+
+  watch: {
+    segments () {
+      this.$nextTick(() => {
+        this.upperBoundIndex = this.segments.length
+        calculateChartStepWidth(this)
+      })
     }
   },
 
@@ -174,7 +152,9 @@ export default {
       this.lowerBoundIndex = Math.max(Math.min(index, this.upperBoundIndex - 1), 0)
     },
     setUpperBound (index) {
-      this.upperBoundIndex = Math.min(Math.max(index, this.lowerBoundIndex + 1), this.steps.length)
+      if (this.segments && this.segments.length) {
+        this.upperBoundIndex = Math.min(Math.max(index, this.lowerBoundIndex + 1), this.segments.length)
+      }
     }
   }
 }

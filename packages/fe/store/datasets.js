@@ -16,7 +16,8 @@ const state = () => ({
   filters: false,
   sortOptions: false,
   limitOptions: false,
-  layout: 'grid'
+  layout: 'grid',
+  histogramData: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -30,7 +31,8 @@ const getters = {
   filters: state => state.filters,
   sortOptions: state => state.sortOptions,
   limitOptions: state => state.limitOptions,
-  layout: state => state.layout
+  layout: state => state.layout,
+  histogramData: state => state.histogramData
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -103,6 +105,7 @@ const actions = {
       commit('SET_LIMIT_OPTIONS', filters.limit)
       commit('SET_FILTERS', filters.filters)
       commit('SET_DATASET_LIST_TYPEAHEAD', typeahead)
+      commit('SET_HISTOGRAM_DATA', filters.histogram)
     } catch (e) {
       console.log('======================= [Store Action: datasets/getFilters]')
       console.log(e)
@@ -171,6 +174,9 @@ const mutations = {
   },
   SET_PAGE (state, page) {
     state.metadata.page = page
+  },
+  SET_HISTOGRAM_DATA (state, data) {
+    state.histogramData = data
   }
 }
 

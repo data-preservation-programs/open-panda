@@ -7,6 +7,7 @@ const MC = require('@Root/config')
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 // /////////////////////////////////////////////////////////// processCategories
+// -----------------------------------------------------------------------------
 const processCategories = async (datasets) => {
   const nonUniqueCategories = datasets.map(dataset => dataset.categories).flat()
   const categories = [...new Set(nonUniqueCategories)].map(category => ({
@@ -28,6 +29,7 @@ const processCategories = async (datasets) => {
 }
 
 // /////////////////////////////////////////////////////// processFileExtensions
+// -----------------------------------------------------------------------------
 const processFileExtensions = async (datasets) => {
   const extensions = datasets.map(dataset => dataset.file_extensions)
     .flat()
@@ -39,6 +41,39 @@ const processFileExtensions = async (datasets) => {
   }))
 }
 
+// /////////////////////////////////////////////////////// exponentialThroughMax
+// -----------------------------------------------------------------------------
+const exponentialThroughMax = (x, max, start) => {
+  const a = start || 1000000000
+  const b = Math.exp(Math.log(max / a) / max)
+  return a * Math.pow(b, x)
+}
+
+// ////////////////////////////////////////////////// processHistogramSizeRanges
+// -----------------------------------------------------------------------------
+// the second argument, bars, determines the number of segments in the histogram graph
+const processHistogramSizeRanges = async (datasets, bars) => {
+  const segments = []
+  const datasetSizes = datasets.map(dataset => dataset.data_size)
+  const maxDatasetSize = Math.max(...datasetSizes) * 1.5
+  const stepSize = maxDatasetSize / bars
+  for (let i = 0; i < bars; i++) {
+    segments.push({
+      min: exponentialThroughMax(i * stepSize, maxDatasetSize),
+      max: exponentialThroughMax((i + 1) * stepSize, maxDatasetSize)
+    })
+  }
+  segments.unshift({
+    min: 0,
+    max: exponentialThroughMax(0, maxDatasetSize)
+  })
+  segments.forEach((segment) => {
+    const datasetsInSegment = datasets.filter(dataset => dataset.data_size >= segment.min && dataset.data_size < segment.max)
+    segment.count = datasetsInSegment.length
+  })
+  return { segments }
+}
+
 // //////////////////////////////////////////////////////////////////// Endpoint
 // -----------------------------------------------------------------------------
 module.exports = async () => {
@@ -46,14 +81,15 @@ module.exports = async () => {
     const staticFilters = await GetFileFromDisk(`${MC.staticRoot}/filters.json`, true)
     const datasets = await MC.model.Dataset
       .find({})
-      .select('categories file_extensions license location')
+      .select('categories file_extensions license location data_size')
     return {
       sort: staticFilters.sort,
       limit: staticFilters.limit,
       filters: Object.assign({
         categories: await processCategories(datasets),
         fileExtensions: await processFileExtensions(datasets)
-      }, staticFilters.filters)
+      }, staticFilters.filters),
+      histogram: await processHistogramSizeRanges(datasets, 40)
     }
   } catch (e) {
     console.log('========================================= [Logic: GetFilters]')
