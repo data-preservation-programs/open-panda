@@ -81,6 +81,9 @@ export default {
   :deep(a) {
     color: $neptune;
     @include fontWeight_Semibold;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 </style>
