@@ -136,7 +136,7 @@ export default {
         redirect: this.$route.path !== '/' ? '/' : undefined
       })
       if (this.$route.path === '/') {
-        this.$scrollToElement(document.getElementById('toolbar'), 200, -50)
+        this.$scrollToElement(document.getElementById('section-toolbar'), 200, -50)
       }
     },
     goToDatasetPage (slug) {
