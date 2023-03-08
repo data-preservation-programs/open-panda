@@ -70,6 +70,7 @@ import TextBlock from '@/components/blocks/text-block'
 import ImageBlock from '@/components/blocks/image-block'
 import MarkdownBlock from '@/components/blocks/markdown-block'
 import CategorySliderBlock from '@/components/blocks/category-slider-block'
+import CardListBlock from '@/components/blocks/card-list-block'
 import CategoryTicker from '@/components/category-ticker'
 import BlockBuilder from '@/components/block-builder'
 
@@ -83,7 +84,8 @@ export default {
     BlockBuilder,
     MarkdownBlock,
     CategorySliderBlock,
-    CategoryTicker
+    CategoryTicker,
+    CardListBlock
   },
 
   props: {
