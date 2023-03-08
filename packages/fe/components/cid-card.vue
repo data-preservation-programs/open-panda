@@ -299,10 +299,10 @@ export default {
 // ///////////////////////////////////////////////////////////////////// General
 .panel-top {
   transition: border 200ms ease;
-  border-bottom: solid 1px rgba(#DDDFE3, 0);
+  border-bottom: solid 1px rgba($iron, 0);
   &.open,
   &.mobile {
-    border-bottom: solid 1px rgba(#DDDFE3, 1);
+    border-bottom: solid 1px rgba($iron, 1);
   }
   &:not(.mobile) {
     .mobile-row,
@@ -350,8 +350,7 @@ export default {
 
 .bottom-content {
   @include medium {
-    padding-top: toRem(10);
-    padding-bottom: 0;
+    padding: 0;
   }
 }
 
@@ -451,6 +450,10 @@ export default {
     &:not(:last-child) {
       margin-right: 0.375rem;
     }
+    @include medium {
+      @include fontSize_14;
+      @include fontWeight_Bold;
+    }
   }
 }
 
@@ -460,6 +463,7 @@ export default {
   margin-top: 0.4375rem;
   @include medium {
     margin-top: 0;
+    @include fontWeight_Bold;
   }
 }
 
@@ -501,6 +505,7 @@ export default {
     @include medium {
       margin-bottom: 0;
       order: 2;
+      @include fontWeight_Bold;
     }
   }
   .more {
@@ -523,6 +528,7 @@ export default {
   @include medium {
     margin-top: 0;
     @include fontSize_14;
+    @include fontWeight_Bold;
   }
   &.active {
     &:before {
@@ -535,6 +541,9 @@ export default {
       background-color: $neptune;
       border-radius: 50%;
       margin-right: 0.875rem;
+      @include medium {
+        margin-right: 0.5rem;
+      }
     }
   }
 }
@@ -586,6 +595,14 @@ export default {
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M11 6.5L6 1.5L1 6.5' stroke='%231B1F12' stroke-width='2' stroke-linecap='round'/%3e%3c/svg%3e ");
     }
   }
+  @include medium {
+    border-bottom: 1px solid $iron;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
   &.open {
     .accordion-header {
       &:after {
@@ -611,6 +628,9 @@ export default {
 
 .cell {
   @include fontWeight_Medium;
+  @include medium {
+    @include fontWeight_Bold;
+  }
 }
 
 .retrieval-title,

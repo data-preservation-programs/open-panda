@@ -30,6 +30,7 @@ $grayNurse2: #E0E7E0;
 $dodgerBlue: #3DA2FF;
 $blue: #001AFF;
 $neptune: #74C3B5;
+$iron: #DDDFE3;
 
 
 // ----------------------------------------------------------------- Breakpoints
@@ -60,7 +61,7 @@ $duration: 300ms;
   width: 2.1875rem;
   height: 2.1875rem;
   border-radius: 50%;
-  border: solid 1px #DDDFE3;
+  border: solid 1px $iron;
   display: flex;
   flex-direction: column;
   justify-content: center;
