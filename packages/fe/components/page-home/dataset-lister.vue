@@ -50,7 +50,7 @@ export default {
       datasetList: 'datasets/datasetList'
     }),
     gridClasses () {
-      return this.layout === 'grid' ? 'grid-4-equalHeight_lg-3_md-2_sm-1' : 'grid-1'
+      return this.layout === 'grid' ? 'grid-4_lg-3_md-2_sm-1' : 'grid-1'
     },
     cardType () {
       return this.layout === 'grid' ? 'CardGrid' : 'CardList'

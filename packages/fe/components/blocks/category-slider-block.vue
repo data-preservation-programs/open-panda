@@ -152,7 +152,7 @@ export default {
 }
 
 // ////////////////////////////////////////////////////////////// CircularSlider
-:deep(.panel-before) {
+:deep(.circular-slider .panel-before) {
   min-height: 0 !important;
   z-index: 1;
   @include small {
@@ -162,7 +162,7 @@ export default {
   }
 }
 
-:deep(.panel-after) {
+:deep(.circular-slider .panel-after) {
   @include medium {
     margin: 0 -2.5rem;
     width: calc(100% + 5rem);
