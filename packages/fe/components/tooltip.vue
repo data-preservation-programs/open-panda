@@ -1,5 +1,5 @@
 <template>
-  <div class="tooltip-c">
+  <div :class="`tooltip-c align-${align}`">
     <div class="tooltip-btn">
       <TerminalIcon class="icon" />
       <span>{{ btn }}</span>
@@ -28,15 +28,12 @@ export default {
     btn: {
       type: String,
       required: true
+    },
+    align: {
+      type: String,
+      required: false,
+      default: 'center'
     }
-  },
-
-  computed: {
-
-  },
-
-  methods: {
-
   }
 }
 </script>
@@ -53,6 +50,20 @@ export default {
     }
     .tooltip-box {
       @include fadeIn;
+    }
+  }
+  &.align-right {
+    .tooltip-box {
+      right: 0;
+      left: auto;
+      transform: none;
+    }
+  }
+  &.align-left {
+    .tooltip-box {
+      left: 0;
+      right: auto;
+      transform: none;
     }
   }
 }

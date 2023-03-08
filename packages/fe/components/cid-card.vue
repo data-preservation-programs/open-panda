@@ -72,8 +72,8 @@
           </div>
 
           <div class="expiry-date mobile-row">
-            <span class="date label">{{ expiryDate }}</span>
-            <span class="more">{{ mobile ? 'Available Until' : 'Avail. Until' }}</span>
+            <span class="more label">{{ mobile ? 'Available Until' : 'Avail. Until' }}</span>
+            <span class="date">{{ expiryDate }}</span>
           </div>
 
           <div class="mobile-row">
@@ -93,8 +93,8 @@
               @click="toggleBottomPanel">
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
-
-            <Tooltip btn="Inspect files" :text="`You can access a preview of the files within this CID, however at this time it must be downloaded and unpacked from the zst format. <a target='_blank' href='https://${hash}.ipfs.w3s.link'>Learn more</a>`"></Tooltip>
+            <!-- desktop -->
+            <Tooltip :btn="tooltipBtn" :text="tooltipText"></Tooltip>
           </div>
 
           <div v-if="mobile" class="mobile-sp-section-heading">
@@ -190,6 +190,9 @@
         </div>
       </div>
 
+      <!-- mobile -->
+      <Tooltip v-if="mobile" class="inspect-file-mobile" :btn="tooltipBtn" :text="tooltipText" align="right"></Tooltip>
+
     </div>
   </CardCutout>
 </template>
@@ -263,6 +266,12 @@ export default {
     },
     storageProviders () {
       return this.cidData.storage_providers
+    },
+    tooltipText () {
+      return `You can access a preview of the files within this CID, however at this time it must be downloaded and unpacked from the zst format. <a target='_blank' href='https://${this.hash}.ipfs.w3s.link'>Learn more</a>`
+    },
+    tooltipBtn () {
+      return 'Inspect files'
     }
   },
 
@@ -340,6 +349,7 @@ export default {
 .bottom-content {
   @include medium {
     padding-top: 1.125rem;
+    padding-bottom: 0;
   }
 }
 
@@ -359,6 +369,12 @@ export default {
   @include medium {
     width: 40%;
   }
+}
+
+.inspect-file-mobile {
+  display: flex;
+  justify-content: right;
+  padding-right: 1.875rem;
 }
 
 // //////////////////////////////////////////////////////////////////// CID INFO
@@ -442,6 +458,9 @@ export default {
 
 .replica-list {
   margin: 0.875rem 0;
+  @include medium {
+    margin: 0;
+  }
 }
 .replica {
   width: 0.8125rem;
@@ -507,7 +526,7 @@ export default {
 // ///////////////////////////////////////////////////// STORAGE PROVIDERS PANEL
 .mobile-sp-section-heading {
   .heading {
-    @include fontSize_20;
+    @include fontSize_24;
     @include fontWeight_Medium;
     line-height: leading(24, 20);
     margin: 0.625rem 0;
