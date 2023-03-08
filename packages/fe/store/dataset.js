@@ -2,6 +2,9 @@
 // -----------------------------------------------------------------------------
 import CloneDeep from 'lodash/cloneDeep'
 
+// toggle this to use mock dataset
+const useMock = false
+
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
 const getMockCids = () => {
@@ -120,11 +123,15 @@ const actions = {
   // //////////////////////////////////////////////////////////////// getCidList
   async getCidList ({ commit, getters }, metadata) {
     try {
-      // const id = metadata.dataSetId
-      // const response = await this.$axiosAuth('/get-cid-list',  { params: { id } })
-      const response = await getMockCids()
-      const cids = response.data.payload
-      // const cids = false
+      let cids = false
+      let response
+      if (useMock) {
+        response = await getMockCids()
+      } else {
+        const id = metadata.dataSetId
+        response = await this.$axiosAuth('/get-cid-list', { params: { id } })
+      }
+      cids = response.data.payload
       commit('SET_CID_LIST', { cids })
     } catch (e) {
       console.log('======================== [Store Action: dataset/getCidList]')
