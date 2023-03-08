@@ -1,8 +1,8 @@
 <template>
   <div class="page page-singular">
 
-    <!-- ============================================================ HEADER -->
-    <section id="section-header">
+    <!-- ============================================================== Hero -->
+    <section id="section-hero">
       <div class="grid">
 
         <div
@@ -122,6 +122,7 @@
                               v-for="(link, i) in resources"
                               :key="`resource-${i}`"
                               :href="link"
+                              target="_blank"
                               class="link">
                               {{ link }}
                             </a>
@@ -234,7 +235,6 @@ export default {
   },
 
   async asyncData ({ store, route, error }) {
-    await store.dispatch('datasets/getFiltersAndTypeahead')
     const datasetExists = await store.dispatch('dataset/getDataset', { route })
     if (!datasetExists) { return error('Dataset could not be found.') }
     return { datasetExists }
@@ -290,6 +290,7 @@ export default {
       return this.dataset.createdAt ? this.$moment(this.dataset.createdAt).format('YYYY') : '-'
     },
     datasetSize () {
+      console.log(this.dataset.data_size, this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-')
       return this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-'
     },
     totalDataOnNetwork () {

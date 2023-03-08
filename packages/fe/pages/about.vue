@@ -11,7 +11,7 @@
 import { mapGetters } from 'vuex'
 
 import AboutPageData from '@/content/pages/about.json'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 
 // ====================================================================== Export
 export default {
@@ -28,7 +28,6 @@ export default {
   },
 
   async fetch ({ app, store, route, error }) {
-    await store.dispatch('datasets/getFiltersAndTypeahead')
     await store.dispatch('general/getBaseData', { key: 'about', data: AboutPageData })
   },
 

@@ -45,7 +45,8 @@ export default {
   created () {
     this.renderer = new Kramed.Renderer()
     // /////////////////////////////////////////////////////////////////// Links
-    this.renderer.link = function (href, title, text) {
+    this.renderer.link = (href, title, text) => {
+      const target = href.includes(this.$config.frontendUrl) ? '_self' : '_blank'
       const split = text.split('||')
       const len = split.length
       let attributeString = ''
@@ -58,13 +59,13 @@ export default {
             })
           }
         } catch (e) {
-          return `<a href="${href}">${split[0]}</a>`
+          return `<a target="${target}" href="${href}">${split[0]}</a>`
         }
       }
-      return `<a href="${href}" ${attributeString}>${split[0]}</a>`
+      return `<a target="${target}" href="${href}" ${attributeString}>${split[0]}</a>`
     }
     // //////////////////////////////////////////////////////////////// Headings
-    this.renderer.heading = function (text, level) {
+    this.renderer.heading = (text, level) => {
       const escapedText = text.toLowerCase()
         .replace(/[^\w]+/g, '-')
         .replace(/--+/g, '-') // Replace multiple - with single -

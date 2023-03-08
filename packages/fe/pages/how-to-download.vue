@@ -11,7 +11,7 @@
 import { mapGetters } from 'vuex'
 
 import HowToDownloadPageData from '@/content/pages/how-to-download.json'
-import BlockBuilder from '@/components/blocks/block-builder'
+import BlockBuilder from '@/components/block-builder'
 // ====================================================================== Export
 export default {
   name: 'HowToDownloadPage',
@@ -27,7 +27,6 @@ export default {
   },
 
   async fetch ({ store, error }) {
-    await store.dispatch('datasets/getFiltersAndTypeahead')
     await store.dispatch('general/getBaseData', { key: 'how-to-download', data: HowToDownloadPageData })
   },
 
