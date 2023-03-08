@@ -154,6 +154,10 @@ export default {
       margin-right: 0;
     }
   }
+  :deep(.tooltip) {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 @include large {
