@@ -29,7 +29,7 @@ const process = async (data) => {
 }
 
 // -------------------------------------------------------------------- findCids
-const findCids = async (dataset, search = '', page = 1, limit = 10) => {
+const findCids = async (dataset, search = '', page = 1, limit = 12) => {
   try {
     return process(
       await MC.model.Cid.aggregate(GetCidListQuery(dataset, search, page, limit))

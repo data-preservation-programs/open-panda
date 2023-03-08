@@ -1,9 +1,11 @@
 <template>
   <div class="cid-table">
-
-    <div class="toolbar">
+    <!-- =========================================================== Toolbar -->
+    <div
+      v-if="cidList && cidList.length"
+      class="toolbar">
       <Searchbar
-        placeholder="Search for a file or storage provider"
+        placeholder="Search by filename or CID"
         :loading="cidsLoading"
         :redirect-search="false"
         field-key="cid-search"
@@ -22,10 +24,18 @@
             resetTo: 'nullState',
             isSingleOption: true
           }"
-          class="disabled" />
+          class="disabled"
+          data-tooltip="Coming soon" />
       </div>
     </div>
 
+    <div class="search-results-count">
+      <div v-if="resultsCount" class="count">
+        {{ `${resultsCount} Search Results` }}
+      </div>
+    </div>
+
+    <!-- ============================================================= Table -->
     <div :class="['table', { 'null-state': !cidList || !cidList.length }]">
 
       <template v-if="cidList && cidList.length">
@@ -37,13 +47,21 @@
       </template>
 
       <template v-else>
-        <h3 class="heading">
-          This dataset hasn’t been onboarded to the network yet
-        </h3>
+        <div class="table-messages">
+          <h3
+            v-if="initialFetchFinished && !cidsLoading"
+            class="heading">
+            This dataset hasn’t been onboarded to the network yet
+          </h3>
+          <Spinner
+            v-if="cidsLoading"
+            theme="dark" />
+        </div>
       </template>
 
     </div>
 
+    <!-- ======================================================== Pagination -->
     <div class="pagination">
 
       <PaginationControls
@@ -72,6 +90,7 @@ import PaginationControls from '@/components/pagination-controls'
 import Limit from '@/components/limit'
 import Searchbar from '@/components/searchbar'
 import FieldContainer from '@/components/form/field-container'
+import Spinner from '@/components/spinners/triple-dot'
 
 // =================================================================== Functions
 const handleTableResize = (instance) => {
@@ -95,13 +114,15 @@ export default {
     PaginationControls,
     Limit,
     Searchbar,
-    FieldContainer
+    FieldContainer,
+    Spinner
   },
 
   data () {
     return {
       mobileTable: false,
       resize: false,
+      initialFetchFinished: false,
       checkboxes: [
         { label: 'Show only complete data', value: false },
         { label: 'Show only available CIDs', value: false }
@@ -111,9 +132,9 @@ export default {
 
   computed: {
     ...mapGetters({
-      cidList: 'dataset/cidList',
-      metadata: 'dataset/metadata',
-      cidsLoading: 'dataset/loading',
+      cidList: 'cid/cidList',
+      metadata: 'cid/metadata',
+      cidsLoading: 'cid/loading',
       limitOptions: 'datasets/limitOptions',
       filters: 'datasets/filters'
     }),
@@ -122,6 +143,9 @@ export default {
     },
     page () {
       return this.metadata.page
+    },
+    resultsCount () {
+      return this.metadata.count
     }
   },
 
@@ -136,10 +160,12 @@ export default {
     }
   },
 
-  mounted () {
+  async mounted () {
     handleTableResize(this)
     this.resize = () => { handleTableResize(this) }
     window.addEventListener('resize', this.resize)
+    await this.getCidList({ route: this.$route })
+    this.initialFetchFinished = true
   },
 
   beforeDestroy () {
@@ -148,8 +174,8 @@ export default {
 
   methods: {
     ...mapActions({
-      getCidList: 'dataset/getCidList',
-      setCidLoadingStatus: 'dataset/setCidLoadingStatus'
+      getCidList: 'cid/getCidList',
+      setCidLoadingStatus: 'cid/setCidLoadingStatus'
     }),
     stopLoading () {
       this.$nextTick(() => {
@@ -194,7 +220,7 @@ export default {
 .toolbar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 1.375rem;
   padding-right: 0.5rem;
   @include medium {
     flex-direction: column;
@@ -246,6 +272,13 @@ export default {
       }
     }
   }
+}
+
+.count {
+  @include fontSize_16;
+  @include fontWeight_Medium;
+  padding-left: 1.75rem;
+  margin-bottom: 3.125rem;
 }
 
 .pagination {

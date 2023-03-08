@@ -91,7 +91,6 @@ export default {
 
   computed: {
     field () {
-      // console.log(this.$field(this.id).get())
       return this.$field(this.id).get()
     },
     value () {
