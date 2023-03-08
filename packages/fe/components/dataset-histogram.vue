@@ -1,5 +1,7 @@
 <template>
-  <div :class="['dataset-histogram', { dragging }]">
+  <div
+    :key="`dataset-histogram-${key}`" 
+    :class="['dataset-histogram', { dragging }]">
     <div class="chart">
 
       <div
@@ -67,7 +69,8 @@ export default {
       upperBoundIndex: 0,
       stepWidth: 0,
       resize: false,
-      dragging: false
+      dragging: false,
+      key: 0
     }
   },
 
@@ -124,10 +127,12 @@ export default {
   },
 
   mounted () {
-    this.upperBoundIndex = this.segments.length
-    calculateChartStepWidth(this)
-    this.resize = () => { calculateChartStepWidth(this) }
-    window.addEventListener('resize', this.resize)
+    this.$nextTick(() => {
+      this.upperBoundIndex = this.segments.length
+      calculateChartStepWidth(this)
+      this.resize = () => { calculateChartStepWidth(this) }
+      window.addEventListener('resize', this.resize)
+    })
   },
 
   beforeDestroy () {

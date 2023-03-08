@@ -29,7 +29,7 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <DatasetHistogram />
+        <DatasetHistogram v-if="datasetList && datasetList.length" />
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -159,7 +159,8 @@ export default {
       filters: 'datasets/filters',
       siteContent: 'general/siteContent',
       selectedFilters: 'search/filters',
-      datasetListTypeahead: 'datasets/datasetListTypeahead'
+      datasetListTypeahead: 'datasets/datasetListTypeahead',
+      datasetList: 'datasets/datasetList'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
