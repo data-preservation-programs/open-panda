@@ -186,7 +186,7 @@
           data-push-left="off-1_xlg-0_md-1_sm-0"
           data-push-right="off-1_xlg-0_md-1_sm-0">
 
-          <CIDTable />
+          <CIDTable :copy="pageContent.cidTable" />
 
         </div>
       </div>
@@ -199,6 +199,7 @@
 // ====================================================================== Import
 import { mapGetters } from 'vuex'
 
+import DatasetPageData from '@/content/pages/dataset-single.json'
 import TextBlock from '@/components/blocks/text-block'
 import CardCutout from '@/components/card-cutout'
 import CIDTable from '@/components/cid-table'
@@ -243,10 +244,15 @@ export default {
   data () {
     const id = this.$route.params.id
     return {
+      pageTag: 'datasetSingle',
       id,
       resize: false,
       mobile: false
     }
+  },
+
+  async fetch ({ app, store }) {
+    await store.dispatch('general/getBaseData', { key: 'datasetSingle', data: DatasetPageData })
   },
 
   // head () {
@@ -258,6 +264,9 @@ export default {
       siteContent: 'general/siteContent',
       dataset: 'dataset/dataset'
     }),
+    pageContent () {
+      return this.siteContent[this.pageTag].page_content
+    },
     slug () {
       return this.dataset.slug
     },
@@ -290,7 +299,6 @@ export default {
       return this.dataset.createdAt ? this.$moment(this.dataset.createdAt).format('YYYY') : '-'
     },
     datasetSize () {
-      console.log(this.dataset.data_size, this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-')
       return this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-'
     },
     totalDataOnNetwork () {

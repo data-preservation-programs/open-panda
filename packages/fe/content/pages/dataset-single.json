@@ -1,0 +1,22 @@
+{
+    "page_content": {
+        "cidTable": {
+            "notOnboarded": "This dataset hasn’t been onboarded to the network yet",
+            "cidCard": {
+              "tooltipText": "You can access a preview of the files within this CID, however at this time it must be downloaded and unpacked from the zst format. <a href='/how-to-download'>Learn more</a>",
+              "tooltipBtnText": "Inspect files",
+              "cid": "CID",
+              "size": "Size",
+              "type": "Type",
+              "replicas": "No. Replicas",
+              "status": "Status",
+              "storageProviders": "Storage Providers",
+              "storageProvidersSubHeading": "Select a storage provider to view retrieval commands",
+              "dealID": "dealID",
+              "availUntil": "Available Until",
+              "retrievalRate": "Retrieval Rate",
+              "retrievalCommands": "Retrieval Commands"
+            }
+        }
+    }
+  }

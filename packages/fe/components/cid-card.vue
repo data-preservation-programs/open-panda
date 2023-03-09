@@ -13,7 +13,7 @@
 
           <div class="cid-title mobile-row">
             <div v-if="mobile" class="label">
-              CID
+              {{ copy.cid }}
             </div>
             <div v-if="!mobile" class="title">
               {{ title }}
@@ -30,7 +30,7 @@
 
           <div v-if="mobile" class="mobile-row">
             <div class="label">
-              Size
+              {{ copy.size }}
             </div>
             <div class="size">
               {{ size }}
@@ -39,7 +39,7 @@
 
           <div class="mobile-row">
             <div v-if="mobile" class="label">
-              Type
+              {{ copy.type }}
             </div>
             <div class="file-types">
               <div
@@ -57,7 +57,7 @@
 
           <div class="replicas mobile-row">
             <div v-if="mobile" class="label">
-              No. Replicas
+              {{ copy.replicas }}
             </div>
             <div class="replica-list">
               <div
@@ -78,7 +78,7 @@
 
           <div class="mobile-row">
             <div v-if="mobile" class="label">
-              Status
+              {{ copy.status }}
             </div>
             <div
               :class="['status', status]">
@@ -94,15 +94,15 @@
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
             <!-- desktop -->
-            <Tooltip :btn="tooltipBtn" :text="tooltipText"></Tooltip>
+            <Tooltip :btn="copy.tooltipBtnText" :text="copy.tooltipText" />
           </div>
 
           <div v-if="mobile" class="mobile-sp-section-heading">
             <div class="heading">
-              Storage Providers
+              {{ copy.storageProviders }}
             </div>
             <div class="subheading">
-              Select a storage provider to view retrieval commands
+              {{ copy.storageProvidersSubHeading }}
             </div>
           </div>
 
@@ -140,7 +140,7 @@
                   <div class="info">
                     <div class="info-row">
                       <div class="label">
-                        Deal ID
+                        {{ copy.dealID}}
                       </div>
                       <div class="cell deal-id">
                         {{ sp.dealId }}
@@ -148,7 +148,7 @@
                     </div>
                     <div class="info-row">
                       <div class="label">
-                        Available Until
+                        {{ copy.availUntil }}
                       </div>
                       <div class="cell deal-expiry">
                         {{ sp.expiry_date }}
@@ -156,7 +156,7 @@
                     </div>
                     <div class="info-row">
                       <div class="label">
-                        Retrieval Rate
+                        {{ copy.retrievalRate }}
                       </div>
                       <div class="cell retrieval">
                         {{ sp.retrieval_rate }}
@@ -164,7 +164,7 @@
                     </div>
                   </div>
                   <div class="retrieval-title">
-                    Retrieval Commands
+                    {{ copy.retrievalCommands }}
                   </div>
                   <div class="retrieval-commands">
                     <div
@@ -192,7 +192,7 @@
 
       <!-- mobile -->
       <div class="inspect-file-mobile">
-        <Tooltip v-if="mobile" class="inspect-file-mobile" :btn="tooltipBtn" :text="tooltipText" align="right"></Tooltip>
+        <Tooltip v-if="mobile" :btn="copy.tooltipBtnText" :text="copy.tooltipText" align="right" />
       </div>
 
     </div>
@@ -229,6 +229,11 @@ export default {
 
   props: {
     cidData: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    },
+    copy: {
       type: Object,
       required: true,
       default: () => ({})
@@ -501,7 +506,7 @@ export default {
   .date {
     @include fontSize_16;
     @include fontWeight_Medium;
-    margin-bottom: 0.70rem;
+    margin-bottom: toRem(11);
     @include medium {
       margin-bottom: 0;
       order: 2;

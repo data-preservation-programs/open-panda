@@ -12,11 +12,13 @@
           v-for="(cid, i) in cidList"
           :key="`cid-${i}`"
           :cid-data="cid"
-          :mobile="mobileTable" />
+          :mobile="mobileTable"
+          :copy="copy.cidCard"
+          :style="{ zIndex: cidList.length - i}" />
       </template>
       <template v-else>
         <h3 class="heading">
-          This dataset hasn’t been onboarded to the network yet
+          {{ copy.notOnboarded }}
         </h3>
       </template>
     </div>
@@ -56,6 +58,14 @@ export default {
     CIDCard
   },
 
+  props: {
+    copy: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    }
+  },
+
   data () {
     return {
       mobileTable: false,
@@ -88,15 +98,6 @@ export default {
 }
 
 .table {
-  .card-cutout-wrapper {
-    // reversing z-index based from page render order
-    // so that tooltip for "inspect" shows in front
-    @for $i from 1 through 20 {
-      &:nth-child(#{$i}) {
-        z-index: #{20 - $i};
-      }
-    }
-  }
   &.null-state {
     padding: 1.8125rem 25%;
     @include small {
