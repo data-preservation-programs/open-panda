@@ -7,6 +7,23 @@
 const GetSeo = store => (identifier = 'general', key) => {
   const siteContent = store.getters['general/siteContent']
   const language = store.getters['general/language']
+  if (identifier === 'singular') {
+    const general = siteContent.general
+    const dataset = store.getters['dataset/dataset']
+    const seo = general.seo
+    const og = general.og
+    return {
+      language,
+      title: `${dataset.name} - Dataset on Open Panda`,
+      description: dataset.description_short,
+      structured_data: seo.structured_data,
+      og_site_name: `${dataset.name} - Dataset on Open Panda`,
+      og_url: `${og.url}/dataset/${dataset.slug}`,
+      og_type: og.type,
+      og_image: `/images/datasets/${dataset.slug}.jpg`,
+      key
+    }
+  }
   let data = siteContent[identifier]
   if (!data) { data = siteContent.general }
   const seo = data.seo

@@ -249,9 +249,9 @@ export default {
     }
   },
 
-  // head () {
-  //   return this.$compileSeo(this.$getSeo(this.tag))
-  // },
+  head () {
+    return this.$compileSeo(this.$getSeo('singular'))
+  },
 
   computed: {
     ...mapGetters({
@@ -290,7 +290,6 @@ export default {
       return this.dataset.createdAt ? this.$moment(this.dataset.createdAt).format('YYYY') : '-'
     },
     datasetSize () {
-      console.log(this.dataset.data_size, this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-')
       return this.dataset.data_size ? this.$formatBytes(this.dataset.data_size) : '-'
     },
     totalDataOnNetwork () {
