@@ -29,7 +29,9 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <DatasetHistogram v-if="histogramData" />
+        <DatasetHistogram
+          v-if="histogramData"
+          @range-changed="updateHistogramRange" />
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -134,6 +136,7 @@ export default {
   data () {
     return {
       open: false,
+      histogramRange: false,
       filterSelectionsExist: false,
       filterGroups: [{
         id: 'categories',
@@ -212,6 +215,9 @@ export default {
       this.closePanel()
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
+    },
+    updateHistogramRange (val) {
+      this.histogramRange = val
     }
   }
 }

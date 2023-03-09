@@ -119,7 +119,7 @@ export default {
 
   methods: {
     mousedown (handle) {
-      document.onmousemove = this.$throttle((e) => { this.drag(e, handle) })
+      document.onmousemove = this.$throttle((e) => { this.drag(e, handle) }, 50)
       document.onmouseup = this.mouseup
       this.dragging = true
     },
@@ -150,11 +150,19 @@ export default {
     },
     setLowerBound (index) {
       this.lowerBoundIndex = Math.max(Math.min(index, this.upperBoundIndex - 1), 0)
+      this.emitUpdatedBounds()
     },
     setUpperBound (index) {
       if (this.segments && this.segments.length) {
         this.upperBoundIndex = Math.min(Math.max(index, this.lowerBoundIndex + 1), this.segments.length)
+        this.emitUpdatedBounds()
       }
+    },
+    emitUpdatedBounds () {
+      this.$emit('range-changed', {
+        lowerBound: this.segments[this.lowerBoundIndex].min,
+        upperBound: this.segments[this.upperBoundIndex - 1].max
+      })
     }
   }
 }
