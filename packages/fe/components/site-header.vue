@@ -176,6 +176,7 @@ export default {
 }
 
 .logo-link {
+  display: inherit;
   z-index: 101;
   svg {
     display: block;
