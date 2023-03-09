@@ -140,7 +140,7 @@ export default {
     this.stopLoading()
     this.scrollToResultList()
     this.$nextTick(() => {
-      this.layout = this.$ls.get('layout')
+      this.layout = this.$ls.get('layout') || 'grid'
     })
   },
 
