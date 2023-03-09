@@ -1,34 +1,23 @@
 <template>
   <div :class="`tooltip-c align-${align}`">
-    <div class="tooltip-btn">
-      <TerminalIcon class="icon" />
-      <span>{{ btn }}</span>
+
+    <div class="tooltip-btn-wrapper">
+      <slot name="tooltip-btn" />
     </div>
-    <div class="tooltip-box" v-html="text"></div>
+
+    <div class="tooltip-box-wrapper">
+      <slot name="tooltip-box" />
+    </div>
+
   </div>
 </template>
 
 <script>
-// ===================================================================== Imports
-import TerminalIcon from '@/components/icons/terminal'
-
 // ====================================================================== Export
 export default {
   name: 'Tooltip',
 
-  components: {
-    TerminalIcon
-  },
-
   props: {
-    text: {
-      type: String,
-      required: true
-    },
-    btn: {
-      type: String,
-      required: true
-    },
     align: {
       type: String,
       required: false,
@@ -48,26 +37,26 @@ export default {
     .tooltip-btn {
       color: $rangoonGreen;
     }
-    .tooltip-box {
+    .tooltip-box-wrapper {
       @include fadeIn;
     }
   }
   &.align-right {
-    .tooltip-box {
+    .tooltip-box-wrapper {
       right: 0;
       left: auto;
       transform: none;
     }
   }
   &.align-left {
-    .tooltip-box {
+    .tooltip-box-wrapper {
       left: 0;
       right: auto;
       transform: none;
     }
   }
 }
-.tooltip-btn {
+.tooltip-btn-wrapper {
   cursor: pointer;
   align-items: center;
   display: flex;
@@ -78,7 +67,7 @@ export default {
     margin-right: toRem(7);
   }
 }
-.tooltip-box {
+.tooltip-box-wrapper {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);

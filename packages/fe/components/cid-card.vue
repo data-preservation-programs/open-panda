@@ -94,7 +94,16 @@
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
             <!-- desktop -->
-            <Tooltip :btn="copy.tooltipBtnText" :text="copy.tooltipText" />
+            <Tooltip>
+              <template #tooltip-btn>
+                <TerminalIcon class="icon" />
+                <a :href="zstLink" target="_blank">
+                  {{ copy.tooltipBtnText }}</a>
+              </template>
+              <template #tooltip-box>
+                <div v-html="copy.tooltipText"></div>
+              </template>
+            </Tooltip>
           </div>
 
           <div v-if="mobile" class="mobile-sp-section-heading">
@@ -140,7 +149,7 @@
                   <div class="info">
                     <div class="info-row">
                       <div class="label">
-                        {{ copy.dealID}}
+                        {{ copy.dealID }}
                       </div>
                       <div class="cell deal-id">
                         {{ sp.dealId }}
@@ -191,8 +200,16 @@
       </div>
 
       <!-- mobile -->
-      <div class="inspect-file-mobile">
-        <Tooltip v-if="mobile" :btn="copy.tooltipBtnText" :text="copy.tooltipText" align="right" />
+      <div v-if="mobile" class="inspect-file-mobile">
+        <Tooltip align="right">
+          <template #tooltip-btn>
+            <TerminalIcon class="icon" />
+            <span>{{ copy.tooltipBtnText }}</span>
+          </template>
+          <template #tooltip-box>
+            <div v-html="copy.tooltipText"></div>
+          </template>
+        </Tooltip>
       </div>
 
     </div>
@@ -210,6 +227,7 @@ import AccordionSection from '@/components/accordion/accordion-section'
 import AccordionHeader from '@/components/accordion/accordion-header'
 import AccordionContent from '@/components/accordion/accordion-content'
 import Tooltip from '@/components/tooltip'
+import TerminalIcon from '@/components/icons/terminal'
 
 // ====================================================================== Export
 export default {
@@ -224,7 +242,8 @@ export default {
     Accordion,
     AccordionSection,
     AccordionHeader,
-    AccordionContent
+    AccordionContent,
+    TerminalIcon
   },
 
   props: {
@@ -259,6 +278,9 @@ export default {
     hash () {
       return this.cidData.hash
     },
+    zstLink () {
+      return `https://${this.cidData.hash}.ipfs.w3s.link`
+    },
     fileExtensions () {
       return this.cidData.fileExtensions.split(',').map(ext => ext.replaceAll(' ', ''))
     },
@@ -273,12 +295,6 @@ export default {
     },
     storageProviders () {
       return this.cidData.storage_providers
-    },
-    tooltipText () {
-      return `You can access a preview of the files within this CID, however at this time it must be downloaded and unpacked from the zst format. <a target='_blank' href='https://${this.hash}.ipfs.w3s.link'>Learn more</a>`
-    },
-    tooltipBtn () {
-      return 'Inspect files'
     }
   },
 
@@ -379,9 +395,13 @@ export default {
   }
 }
 
+:deep(.tooltip-c .tooltip-box-wrapper) {
+  transform: translateX(-60%);
+}
+
 .inspect-file-mobile {
   padding-bottom: toRem(10);
-  .tooltip-c {
+  :deep(.tooltip-c) {
     display: flex;
     justify-content: right;
     padding-right: 1.875rem;
