@@ -175,12 +175,12 @@ export default {
   methods: {
     ...mapActions({
       getCidList: 'cid/getCidList',
-      setCidLoadingStatus: 'cid/setCidLoadingStatus'
+      setLoadingStatus: 'cid/setLoadingStatus'
     }),
     stopLoading () {
       this.$nextTick(() => {
         if (typeof this.cidList !== 'boolean') {
-          this.setCidLoadingStatus({ status: false })
+          this.setLoadingStatus({ status: false })
         }
       })
     }

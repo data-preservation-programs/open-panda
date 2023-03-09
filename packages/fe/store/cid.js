@@ -29,7 +29,7 @@ const actions = {
   // //////////////////////////////////////////////////////////////// getCidList
   async getCidList ({ commit, getters, dispatch }, metadata) {
     try {
-      dispatch('setCidLoadingStatus', { status: true })
+      dispatch('setLoadingStatus', { status: true })
       const route = metadata.route
       const query = CloneDeep(route.query)
       const slug = route.params.id
@@ -52,7 +52,7 @@ const actions = {
     } catch (e) {
       console.log('======================== [Store Action: dataset/getCidList]')
       console.log(e)
-      dispatch('setCidLoadingStatus', { status: false })
+      dispatch('setLoadingStatus', { status: false })
       return false
     }
   },
@@ -60,8 +60,8 @@ const actions = {
   setCidList ({ commit }, payload) {
     commit('SET_CID_LIST', payload)
   },
-  // /////////////////////////////////////////////////////// setCidLoadingStatus
-  setCidLoadingStatus ({ commit }, payload) {
+  // /////////////////////////////////////////////////////// setLoadingStatus
+  setLoadingStatus ({ commit }, payload) {
     commit('SET_CID_LOADING_STATUS', payload)
   }
 }
