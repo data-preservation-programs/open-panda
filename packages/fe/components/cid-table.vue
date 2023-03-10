@@ -46,18 +46,16 @@
           :mobile="mobileTable" />
       </template>
 
-      <template v-else>
-        <div class="table-messages">
-          <h3
-            v-if="initialFetchFinished && !cidsLoading"
-            class="heading">
-            This dataset hasn’t been onboarded to the network yet
-          </h3>
-          <Spinner
-            v-if="cidsLoading"
-            theme="dark" />
-        </div>
-      </template>
+      <div class="table-messages">
+        <h3
+          v-if="Array.isArray(cidList) && !cidList.length && !cidsLoading"
+          class="heading">
+          This dataset hasn’t been onboarded to the network yet
+        </h3>
+        <Spinner
+          v-if="cidsLoading"
+          theme="dark" />
+      </div>
 
     </div>
 
@@ -83,7 +81,7 @@
 
 <script>
 // ====================================================================== Import
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import CIDCard from '@/components/cid-card'
 import PaginationControls from '@/components/pagination-controls'
@@ -122,7 +120,6 @@ export default {
     return {
       mobileTable: false,
       resize: false,
-      initialFetchFinished: false,
       checkboxes: [
         { label: 'Show only complete data', value: false },
         { label: 'Show only available CIDs', value: false }
@@ -149,41 +146,14 @@ export default {
     }
   },
 
-  watch: {
-    '$route' () {
-      this.$nextTick(() => {
-        this.getCidList({ route: this.$route })
-      })
-    },
-    cidList () {
-      this.stopLoading()
-    }
-  },
-
-  async mounted () {
+  mounted () {
     handleTableResize(this)
     this.resize = () => { handleTableResize(this) }
     window.addEventListener('resize', this.resize)
-    await this.getCidList({ route: this.$route })
-    this.initialFetchFinished = true
   },
 
   beforeDestroy () {
     if (this.resize) { window.removeEventListener('resize', this.resize) }
-  },
-
-  methods: {
-    ...mapActions({
-      getCidList: 'cid/getCidList',
-      setLoadingStatus: 'cid/setLoadingStatus'
-    }),
-    stopLoading () {
-      this.$nextTick(() => {
-        if (typeof this.cidList !== 'boolean') {
-          this.setLoadingStatus({ status: false })
-        }
-      })
-    }
   }
 }
 </script>
