@@ -220,6 +220,7 @@ h6, .h6 {
   line-height: 1.3;
   font-weight: 500;
   text-transform: none;
+  margin-bottom: toRem(18);
 }
 
 h1, .h1 {
@@ -319,35 +320,10 @@ p, .p1 {
 }
 
 .markdown {
-  h1, h2, h3, p, ul, ol, pre {
-    + h2, + h3 {
-      margin-top: 3.75rem;
-    }
-  }
-  h1, h2, h3 {
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
-    + ul, + ol {
-      margin-top: 2rem;
-    }
-  }
-  p {
-    &:not(:last-child) {
-      margin-bottom: 1rem;
-    }
-  }
-  a {
-    color: darkorange;
-    font-weight: 600;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
   pre,
   code {
     font-family: $font_Code;
-    background-color: tomato;
+    background-color: $rangoonGreen;
     color: teal;
     padding: 0.3125rem 0.625rem;
     border-radius: 0.25rem;
@@ -361,8 +337,8 @@ p, .p1 {
     word-break: break-all;
     white-space: break-spaces;
     border-radius: 0;
-    &::-moz-selection { background: teal; color: tomato; }
-    &::selection { background: teal; color: tomato; }
+    &::-moz-selection { background: teal; color: $rangoonGreen; }
+    &::selection { background: teal; color: $rangoonGreen; }
   }
   ul, ol {
     li {

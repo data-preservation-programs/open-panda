@@ -13,7 +13,7 @@
 
           <div class="cid-title mobile-row">
             <div v-if="mobile" class="label">
-              {{ copy.cid }}
+              {{ content.cidLabel }}
             </div>
             <div v-if="!mobile" class="title">
               {{ title }}
@@ -30,7 +30,7 @@
 
           <div v-if="mobile" class="mobile-row">
             <div class="label">
-              {{ copy.size }}
+              {{ content.sizeLabel }}
             </div>
             <div class="size">
               {{ size }}
@@ -39,7 +39,7 @@
 
           <div class="mobile-row">
             <div v-if="mobile" class="label">
-              {{ copy.type }}
+              {{ content.typeLabel }}
             </div>
             <div class="file-types">
               <div
@@ -57,7 +57,7 @@
 
           <div class="replicas mobile-row">
             <div v-if="mobile" class="label">
-              {{ copy.replicas }}
+              {{ content.replicasLabel }}
             </div>
             <div class="replica-list">
               <div
@@ -78,7 +78,7 @@
 
           <div class="mobile-row">
             <div v-if="mobile" class="label">
-              {{ copy.status }}
+              {{ content.statusLabel }}
             </div>
             <div
               :class="['status', status]">
@@ -98,20 +98,20 @@
               <template #tooltip-btn>
                 <TerminalIcon class="icon" />
                 <a :href="zstLink" target="_blank">
-                  {{ copy.tooltipBtnText }}</a>
+                  {{ content.tooltipBtnText }}</a>
               </template>
               <template #tooltip-box>
-                <div v-html="copy.tooltipText"></div>
+                <div v-html="content.tooltipText"></div>
               </template>
             </Tooltip>
           </div>
 
           <div v-if="mobile" class="mobile-sp-section-heading">
             <div class="heading">
-              {{ copy.storageProviders }}
+              {{ content.storageProvidersLabel }}
             </div>
             <div class="subheading">
-              {{ copy.storageProvidersSubHeading }}
+              {{ content.storageProvidersSubLabel }}
             </div>
           </div>
 
@@ -149,7 +149,7 @@
                   <div class="info">
                     <div class="info-row">
                       <div class="label">
-                        {{ copy.dealID }}
+                        {{ content.dealIDLabel }}
                       </div>
                       <div class="cell deal-id">
                         {{ sp.dealId }}
@@ -157,7 +157,7 @@
                     </div>
                     <div class="info-row">
                       <div class="label">
-                        {{ copy.availUntil }}
+                        {{ content.availUntilLabel }}
                       </div>
                       <div class="cell deal-expiry">
                         {{ sp.expiry_date }}
@@ -165,7 +165,7 @@
                     </div>
                     <div class="info-row">
                       <div class="label">
-                        {{ copy.retrievalRate }}
+                        {{ content.retrievalRateLabel }}
                       </div>
                       <div class="cell retrieval">
                         {{ sp.retrieval_rate }}
@@ -173,7 +173,7 @@
                     </div>
                   </div>
                   <div class="retrieval-title">
-                    {{ copy.retrievalCommands }}
+                    {{ content.retrievalCommandsLabel }}
                   </div>
                   <div class="retrieval-commands">
                     <div
@@ -204,10 +204,10 @@
         <Tooltip align="right">
           <template #tooltip-btn>
             <TerminalIcon class="icon" />
-            <span>{{ copy.tooltipBtnText }}</span>
+            <span>{{ content.tooltipBtnText }}</span>
           </template>
           <template #tooltip-box>
-            <div v-html="copy.tooltipText"></div>
+            <div v-html="content.tooltipText"></div>
           </template>
         </Tooltip>
       </div>
@@ -252,7 +252,7 @@ export default {
       required: true,
       default: () => ({})
     },
-    copy: {
+    content: {
       type: Object,
       required: true,
       default: () => ({})

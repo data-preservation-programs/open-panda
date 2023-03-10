@@ -162,9 +162,6 @@ export default {
       }
     }
   }
-  .markdown h5 {
-    margin-bottom: 1.125rem;
-  }
 }
 
 :deep(.section-faq) {

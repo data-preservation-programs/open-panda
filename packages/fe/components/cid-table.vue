@@ -13,12 +13,12 @@
           :key="`cid-${i}`"
           :cid-data="cid"
           :mobile="mobileTable"
-          :copy="copy.cidCard"
+          :content="content.cidCard"
           :style="{ zIndex: cidList.length - i}" />
       </template>
       <template v-else>
         <h3 class="heading">
-          {{ copy.notOnboarded }}
+          {{ content.notOnboarded }}
         </h3>
       </template>
     </div>
@@ -59,7 +59,7 @@ export default {
   },
 
   props: {
-    copy: {
+    content: {
       type: Object,
       required: true,
       default: () => ({})

@@ -186,7 +186,7 @@
           data-push-left="off-1_xlg-0_md-1_sm-0"
           data-push-right="off-1_xlg-0_md-1_sm-0">
 
-          <CIDTable :copy="pageContent.cidTable" />
+          <CIDTable :content="pageContent.cidTable" />
 
         </div>
       </div>
