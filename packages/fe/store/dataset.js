@@ -3,7 +3,7 @@
 import CloneDeep from 'lodash/cloneDeep'
 
 // toggle this to use mock dataset
-const useMock = true
+const useMock = false
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------

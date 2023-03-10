@@ -1,7 +1,6 @@
 <template>
   <Button
     v-bind="$props"
-    class="button-x"
     v-on="$listeners">
     <div class="button-content">
 
@@ -73,7 +72,7 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.button {
+:deep(.button) {
   display: inline-flex;
   flex-direction: row;
   position: relative;

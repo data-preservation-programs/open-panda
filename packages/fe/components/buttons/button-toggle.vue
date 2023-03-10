@@ -17,7 +17,7 @@
 <script>
 // ====================================================================== Export
 export default {
-  name: 'ButtonX',
+  name: 'ButtonToggle',
 
   props: {
     theme: {

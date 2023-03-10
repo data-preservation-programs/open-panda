@@ -56,7 +56,7 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.button {
+:deep(.button) {
   position: relative;
   padding: toRem(7) toRem(15);
   border: 1px solid $rangoonGreen;
@@ -95,39 +95,36 @@ export default {
       }
     }
   }
-}
-
-.triple-dot-loader,
-.button-content {
-  width: 100%;
-  height: 100%;
-}
-
-::v-deep .triple-dot-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  &.show {
-    opacity: 1;
+  .triple-dot-loader,
+  .button-content {
+    width: 100%;
+    height: 100%;
   }
-  .dot {
-    transition: background-color 150 ease-in-out;
-  }
-}
-
-.button-content {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  font-family: $font_Primary;
-  @include fontWeight_Medium;
-  @include fontSize_16;
-  line-height: leading(24, 16);
-  &.hide {
+  .triple-dot-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
     opacity: 0;
+    &.show {
+      opacity: 1;
+    }
+    .dot {
+      transition: background-color 150 ease-in-out;
+    }
+  }
+  
+  .button-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-family: $font_Primary;
+    @include fontWeight_Medium;
+    @include fontSize_16;
+    line-height: leading(24, 16);
+    &.hide {
+      opacity: 0;
+    }
   }
 }
-
 </style>

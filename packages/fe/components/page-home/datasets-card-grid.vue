@@ -253,8 +253,6 @@ export default {
 .button {
   align-self: flex-end;
   margin-top: auto;
-  margin-right: toRem(20);
-  margin-bottom: toRem(20);
   padding: toRem(10) toRem(20);
 }
 </style>

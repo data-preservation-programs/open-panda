@@ -1,16 +1,30 @@
 <template>
-  <component
-    :is="tag"
-    :to="tag === 'nuxt-link' ? to : false"
-    :href="tag === 'a' ? to : false"
-    :disabled="disabled || loading"
-    :target="target"
-    :class="['button', { selected }]"
-    @click="clickHandler($event)">
-
-    <slot :loading="loading" />
-
-  </component>
+  <span class="button-wrapper">
+    <!-- have to duplicate the component and add a v-if to ensure :focus-visible is properly showing. nuxt gets confused when we have :to and :href as props and end up not showing href for <a> tags -->
+    <component
+      :is="tag"
+      v-if="tag === 'a'"
+      :to="tag === 'nuxt-link' ? to : false"
+      :href="tag === 'a' ? to : false"
+      :disabled="disabled || loading"
+      :target="target"
+      :class="['button', { selected }]"
+      tabindex="0"
+      role="link"
+      @click="clickHandler($event)">
+      <slot :loading="loading" />
+    </component>
+    <component
+      :is="tag"
+      v-if="tag !== 'a'"
+      :to="tag === 'nuxt-link' ? to : false"
+      :disabled="disabled || loading"
+      :class="['button', { selected }]"
+      tabindex="0"
+      @click="clickHandler($event)">
+      <slot :loading="loading" />
+    </component>
+  </span>
 </template>
 
 <script>

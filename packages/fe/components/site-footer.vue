@@ -92,7 +92,7 @@ footer {
 .right {
   background-color: $rangoonGreen;
   color: $grayNurse;
-  padding: 13% 15% 11%;
+  padding: 13% 15% 9% 15%;
   border-top-left-radius: toRem(100);
   border-top-right-radius: toRem(100);
   border-bottom-left-radius: toRem(100);
@@ -113,9 +113,6 @@ footer {
     margin-bottom: toRem(20);
     @include medium {
       margin-bottom: toRem(16);
-    }
-    &:last-child {
-      margin-bottom: 0;
     }
   }
   nav {
