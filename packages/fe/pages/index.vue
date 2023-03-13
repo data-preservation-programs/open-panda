@@ -27,16 +27,14 @@
             v-if="totalPages > 1"
             :page="page"
             :total-pages="totalPages"
-            :loading="dataLoading"
-            @filterApplied="getDatasetList({ route: $route })" />
+            :loading="dataLoading" />
         </div>
 
         <div class="col-5_md-12">
           <div class="limit">
             <Limit
               v-if="totalPages > 1"
-              :options="limitOptions"
-              @filterApplied="getDatasetList({ route: $route })" />
+              :options="limitOptions" />
           </div>
         </div>
 

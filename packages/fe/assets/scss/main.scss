@@ -347,8 +347,8 @@ p, .p1 {
   pre,
   code {
     font-family: $font_Code;
-    background-color: tomato;
-    color: teal;
+    background-color: $rangoonGreen;
+    color: white;
     padding: 0.3125rem 0.625rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
@@ -361,8 +361,8 @@ p, .p1 {
     word-break: break-all;
     white-space: break-spaces;
     border-radius: 0;
-    &::-moz-selection { background: teal; color: tomato; }
-    &::selection { background: teal; color: tomato; }
+    &::-moz-selection { background: $grayNurse; color: $rangoonGreen; }
+    &::selection { background: $grayNurse; color: $rangoonGreen; }
   }
   ul, ol {
     li {
@@ -386,12 +386,12 @@ p, .p1 {
         height: 7px;
         margin-left: -9px;
         border-radius: 50%;
-        background-color: darkorange;
+        background-color: $rangoonGreen;
       }
       li {
         &:before {
           background-color: transparent;
-          border: 1px solid darkorange;
+          border: 1px solid $rangoonGreen;
         }
       }
     }
@@ -457,30 +457,33 @@ p, .p1 {
     pointer-events: none;
     opacity: 0;
     transition: 250ms ease-out;
+    z-index: 100000;
   }
   &:before {
     content: '';
     top: calc(100% + 2px);
     border-left: 0.5rem solid transparent;
     border-right: 0.5rem solid transparent;
-    border-bottom: 0.375rem solid tomato;
+    border-bottom: 0.375rem solid $rangoonGreen;
   }
   &:after {
+    @include fontSize_14;
     content: attr(data-tooltip);
     top: calc(100% + 0.5rem);
-    background-color: teal;
-    color: tomato;
+    background-color: $rangoonGreen;
+    color: white;
     font-family: inherit;
-    font-size: 0.625rem;
     white-space: nowrap;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid tomato;
-    border-radius: 1.5rem;
+    padding: 0.9375rem;
+    border-radius: 0.625rem;
   }
   &[data-tooltip-theme="light"] {
+    &:before {
+      border-bottom: 0.375rem solid $grayNurse;
+    }
     &:after {
-      color: tomato;
-      background-color: teal;
+      color: $rangoonGreen;
+      background-color: $grayNurse;
     }
   }
 }
@@ -507,7 +510,6 @@ p, .p1 {
 }
 
 .toast {
-  @include shadow3;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -515,6 +517,7 @@ p, .p1 {
   background-color: white;
   padding: 1rem;
   border-radius: 0 toRem(30) toRem(30) toRem(30);
+  @include shadow3;
   .icon {
     display: none;
   }

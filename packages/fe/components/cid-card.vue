@@ -19,7 +19,7 @@
               {{ title }}
             </div>
             <div class="hash">
-              {{ shortenHashString(hash) }}
+              {{ shortenString(hash, 16) }}
               <button
                 class="copy-button"
                 @click="$addTextToClipboard(hash)">
@@ -81,16 +81,18 @@
               Status
             </div>
             <div
+              v-if="status"
               :class="['status', status]">
-              {{ status.charAt(0).toUpperCase() + status.slice(1) }}
+              {{ status }}
             </div>
           </div>
 
           <div v-if="!mobile" class="accordion-toggle">
             <ButtonToggle
-              theme="light"
-              :class="[{ active: open }]"
-              @click="toggleBottomPanel">
+              :theme="!storageProviders.length ? 'grey' : 'light'"
+              :disabled="!storageProviders.length"
+              :class="[{ active: open }, { 'toggle-disabled': !storageProviders.length }]"
+              @click="storageProviders.length ? toggleBottomPanel : null">
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
           </div>
@@ -240,25 +242,25 @@ export default {
 
   computed: {
     title () {
-      return this.cidData.title
+      return this.cidData.filename
     },
     hash () {
-      return this.cidData.hash
+      return this.cidData.payload_cid
     },
     fileExtensions () {
-      return this.cidData.fileExtensions.split(',').map(ext => ext.replaceAll(' ', ''))
+      return [] // this.cidData.fileExtensions.split(',').map(ext => ext.replaceAll(' ', ''))
     },
     size () {
-      return this.$formatBytes(this.cidData.size)
+      return this.$formatBytes(this.cidData.raw_car_file_size)
     },
     expiryDate () {
-      return this.cidData.expires
+      return this.cidData.expiry_date || ''
     },
     status () {
-      return this.cidData.status
+      return typeof this.cidData.status === 'string' ? status.charAt(0).toUpperCase() + status.slice(1) : false
     },
     storageProviders () {
-      return this.cidData.storage_providers
+      return [] // this.cidData.storage_providers
     }
   },
 
@@ -269,10 +271,11 @@ export default {
     changeBottomPanelHeight (height) {
       this.bottomPanelHeight = height + 100
     },
-    shortenHashString (string) {
+    shortenString (string, limit) {
       const len = string.length
-      if (len > 16) {
-        return `${string.substring(0, 8)}...${string.substring(len - 8, len)}`
+      if (len > limit) {
+        const chars = Math.floor(limit / 2)
+        return `${string.substring(0, chars)}...${string.substring(len - chars, len)}`
       }
       return string
     }
@@ -363,15 +366,18 @@ export default {
   line-height: leading(29, 22);
   @include fontWeight_Medium;
   margin-bottom: 1.25rem;
+  overflow-wrap: break-word;
 }
 
 .cid-title {
+  max-width: 50%;
   .title {
     font-family: $font_Primary;
     font-size: 1.125rem;
     @include fontWeight_Medium;
     line-height: leading(29, 18);
     margin-bottom: 0.3125rem;
+    overflow-wrap: break-word;
   }
   .hash {
     display: flex;
@@ -496,6 +502,17 @@ export default {
       background-color: #74C3B5;
       border-radius: 50%;
       margin-right: 0.875rem;
+    }
+  }
+}
+
+.accordion-toggle {
+  :deep(.button-toggle) {
+    &.toggle-disabled {
+      background-color: #51504B;
+      .button-content {
+        color: #F1F3EF;
+      }
     }
   }
 }

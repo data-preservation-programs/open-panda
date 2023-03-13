@@ -12,12 +12,12 @@
       :class="['searchbar', showTypeahead ? 'has-typeahead' : 'no-typeahead', `theme__${theme}`, { empty, loading }]">
 
       <FieldContainer
-        field-key="typeahead"
+        :field-key="fieldKey"
         :scaffold="{
           type: 'typeahead',
           inputType: 'text',
           modelKey: 'typeahead',
-          placeholder: `Search ${datasetListTypeahead.length || '...'} datasets`,
+          placeholder: inputPlaceholder,
           required: false,
           autocomplete: 'off',
           optionDisplayKey: 'name',
@@ -69,7 +69,7 @@ export default {
     placeholder: {
       type: String,
       required: false,
-      default: 'Enter a search term'
+      default: ''
     },
     loading: {
       type: Boolean,
@@ -105,6 +105,16 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    redirectSearch: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
+    fieldKey: {
+      type: String,
+      required: false,
+      default: 'typeahead'
     }
   },
 
@@ -122,6 +132,10 @@ export default {
       const filterSelectionsExist = this.$checkIfFilterSelectionsExist(['categories', 'licenses', 'fileExtensions'])
       const searchExists = !this.$search('search').isEmpty()
       return !filterSelectionsExist && !searchExists
+    },
+    inputPlaceholder () {
+      if (this.placeholder) { return this.placeholder }
+      return `Search ${this.datasetListTypeahead.length || '...'} datasets`
     }
   },
 
@@ -133,7 +147,7 @@ export default {
       await this.$search('search').for({
         instance: this,
         live: true,
-        redirect: this.$route.path !== '/' ? '/' : undefined
+        redirect: this.$route.path !== '/' && this.redirectSearch ? '/' : undefined
       })
       if (this.$route.path === '/') {
         this.$scrollToElement(document.getElementById('section-toolbar'), 200, -50)
