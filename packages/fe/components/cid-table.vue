@@ -66,13 +66,11 @@
         v-if="totalPages > 1"
         :page="page"
         :total-pages="totalPages"
-        :loading="cidsLoading"
-        @filterApplied="getCidList({ route: $route })" />
+        :loading="cidsLoading" />
 
       <Limit
         v-if="totalPages > 1 && limitOptions"
-        :options="limitOptions"
-        @filterApplied="getCidList({ route: $route })" />
+        :options="limitOptions" />
 
     </div>
 
