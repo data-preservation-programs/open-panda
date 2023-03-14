@@ -95,6 +95,7 @@ export default {
       }
     }
   }
+
   .triple-dot-loader,
   .button-content {
     width: 100%;
@@ -112,7 +113,7 @@ export default {
       transition: background-color 150 ease-in-out;
     }
   }
-  
+
   .button-content {
     display: flex;
     flex-direction: row;

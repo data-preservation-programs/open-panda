@@ -79,6 +79,10 @@ export default {
       justify-content: flex-end;
     }
   }
+  > * {
+    margin-bottom: toRem(18);
+    position: relative;
+  }
 }
 
 // ///////////////////////////////////////////////////////////////////// Buttons

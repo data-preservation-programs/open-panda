@@ -96,16 +96,7 @@
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
             <!-- desktop -->
-            <Tooltip>
-              <template #tooltip-btn>
-                <TerminalIcon class="icon" />
-                <a :href="zstLink" target="_blank">
-                  {{ content.tooltipBtnText }}</a>
-              </template>
-              <template #tooltip-box>
-                <div v-html="content.tooltipText"></div>
-              </template>
-            </Tooltip>
+            <CidInspectTooltip :link="zstLink" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
           </div>
 
           <div v-if="mobile" class="mobile-sp-section-heading">
@@ -203,15 +194,7 @@
 
       <!-- mobile -->
       <div v-if="mobile" class="inspect-file-mobile">
-        <Tooltip align="right">
-          <template #tooltip-btn>
-            <TerminalIcon class="icon" />
-            <span>{{ content.tooltipBtnText }}</span>
-          </template>
-          <template #tooltip-box>
-            <div v-html="content.tooltipText"></div>
-          </template>
-        </Tooltip>
+        <Tooltip align="right" :link="zstLink" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
       </div>
 
     </div>
@@ -228,8 +211,7 @@ import Accordion from '@/components/accordion/accordion'
 import AccordionSection from '@/components/accordion/accordion-section'
 import AccordionHeader from '@/components/accordion/accordion-header'
 import AccordionContent from '@/components/accordion/accordion-content'
-import Tooltip from '@/components/tooltip'
-import TerminalIcon from '@/components/icons/terminal'
+import CidInspectTooltip from '@/components/cid-inspect-tooltip'
 
 // ====================================================================== Export
 export default {
@@ -240,12 +222,11 @@ export default {
     ButtonToggle,
     CopyIcon,
     CIDSlider,
-    Tooltip,
+    CidInspectTooltip,
     Accordion,
     AccordionSection,
     AccordionHeader,
-    AccordionContent,
-    TerminalIcon
+    AccordionContent
   },
 
   props: {

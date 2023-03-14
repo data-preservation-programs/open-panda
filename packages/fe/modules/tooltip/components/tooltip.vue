@@ -34,7 +34,11 @@ export default {
   z-index: 1000;
   &:hover {
     .tooltip-box-wrapper {
-      @include fadeIn;
+      // fade in
+      opacity: 1;
+      visibility: visible;
+      transition: all 200ms ease-in;
+      pointer-events: auto;
     }
   }
   &.align-right {
@@ -58,6 +62,10 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   top: 100%;
-  @include fadeOut;
+  // fade out
+  opacity: 0;
+  visibility: hidden;
+  transition: all 200ms ease-in;
+  pointer-events: none;
 }
 </style>
