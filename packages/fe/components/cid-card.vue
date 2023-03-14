@@ -281,7 +281,7 @@ export default {
       return this.cidData.payload_cid
     },
     zstLink () {
-      return `https://${this.cidData.hash}.ipfs.w3s.link`
+      return `https://${this.hash}.ipfs.w3s.link/${this.title}`
     },
     fileExtensions () {
       return [] // this.cidData.fileExtensions.split(',').map(ext => ext.replaceAll(' ', ''))
