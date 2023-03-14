@@ -197,7 +197,7 @@
 
 <script>
 // ====================================================================== Import
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import DatasetPageData from '@/content/pages/dataset-single.json'
 import TextBlock from '@/components/blocks/text-block'
@@ -236,6 +236,7 @@ export default {
   },
 
   async asyncData ({ store, route, error }) {
+    store.dispatch('cid/setLoadingStatus', { status: true })
     const datasetExists = await store.dispatch('dataset/getDataset', { route })
     if (!datasetExists) { return error('Dataset could not be found.') }
     return { datasetExists }
@@ -262,7 +263,8 @@ export default {
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent',
-      dataset: 'dataset/dataset'
+      dataset: 'dataset/dataset',
+      cidList: 'cid/cidList'
     }),
     pageContent () {
       return this.siteContent[this.pageTag].page_content
@@ -340,14 +342,40 @@ export default {
     }
   },
 
-  mounted () {
+  watch: {
+    '$route' () {
+      this.$nextTick(() => {
+        this.getCidList({ route: this.$route })
+      })
+    },
+    cidList () {
+      this.stopLoading()
+    }
+  },
+
+  async mounted () {
     handlePageResize(this)
     this.resize = () => { handlePageResize(this) }
     window.addEventListener('resize', this.resize)
+    await this.getCidList({ route: this.$route })
   },
 
   beforeDestroy () {
     if (this.resize) { window.removeEventListener('resize', this.resize) }
+  },
+
+  methods: {
+    ...mapActions({
+      getCidList: 'cid/getCidList',
+      setLoadingStatus: 'cid/setLoadingStatus'
+    }),
+    stopLoading () {
+      this.$nextTick(() => {
+        if (typeof this.cidList !== 'boolean') {
+          this.setLoadingStatus({ status: false })
+        }
+      })
+    }
   }
 }
 </script>

@@ -74,3 +74,20 @@ const loopDatasets = async () => { /* eslint-disable-line */
 //   }
 // }
 // dropCidDatabaseCollection()
+
+// const logCidFromDatabase = async () => {
+//   const datasets = await MC.model.Cid.collection.distinct('dataset_slug')
+//   const len = datasets.length
+//   const datasetCounts = []
+//   for (let i = 0; i < len; i++) {
+//     const slug = datasets[i]
+//     const count = await MC.model.Cid.collection.find({ dataset_slug: slug }).count()
+//     datasetCounts.push({
+//       dataset: slug,
+//       count
+//     })
+//   }
+//   console.log(datasetCounts)
+// }
+
+// logCidFromDatabase()

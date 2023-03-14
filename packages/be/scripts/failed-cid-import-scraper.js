@@ -55,8 +55,4 @@ const ParseLogsForFailedCidRetrievals = async () => {
     console.log(e)
     process.exit(0)
   }
-}
-
-// ////////////////////////////////////////////////////////////////// Initialize
-// -----------------------------------------------------------------------------
-ParseLogsForFailedCidRetrievals ()
+}; ParseLogsForFailedCidRetrievals()

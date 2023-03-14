@@ -39,12 +39,12 @@ export default {
   align-items: center;
   &.theme-light {
     .dot {
-      background-color: tomato;
+      background-color: $grayNurse;
     }
   }
   &.theme-dark {
     .dot {
-      background-color: teal;
+      background-color: $rangoonGreen;
     }
   }
 }
