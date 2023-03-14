@@ -16,7 +16,8 @@ const state = () => ({
   filters: false,
   sortOptions: false,
   limitOptions: false,
-  layout: 'grid'
+  layout: 'grid',
+  mostRecentSearch: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -30,7 +31,8 @@ const getters = {
   filters: state => state.filters,
   sortOptions: state => state.sortOptions,
   limitOptions: state => state.limitOptions,
-  layout: state => state.layout
+  layout: state => state.layout,
+  mostRecentSearch: state => state.mostRecentSearch
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -52,6 +54,7 @@ const actions = {
     try {
       dispatch('setLoadingStatus', { status: true })
       const route = metadata.route
+      dispatch('setMostRecentSearch', { fullPath: route.fullPath })
       const query = CloneDeep(route.query)
       const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
@@ -133,6 +136,10 @@ const actions = {
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
+  },
+  // /////////////////////////////////////////////////////// setMostRecentSearch
+  setMostRecentSearch ({ commit }, payload) {
+    commit('SET_MOST_RECENT_SEARCH', payload)
   }
 }
 
@@ -171,6 +178,9 @@ const mutations = {
   },
   SET_PAGE (state, page) {
     state.metadata.page = page
+  },
+  SET_MOST_RECENT_SEARCH (state, payload) {
+    state.mostRecentSearch = payload.fullPath
   }
 }
 

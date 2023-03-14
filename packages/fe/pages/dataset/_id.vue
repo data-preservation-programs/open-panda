@@ -3,7 +3,16 @@
 
     <!-- ============================================================== Hero -->
     <section id="section-hero">
+
       <div class="grid">
+        <div class="col-12">
+          <div :class="['back-button-container', { 'no-previous-search': !mostRecentSearch }]">
+            <Button
+              v-if="mostRecentSearch"
+              :button="backButton"
+              class="back-button" />
+          </div>
+        </div>
 
         <div
           class="col-3_mi-4_ti-3"
@@ -199,6 +208,7 @@
 // ====================================================================== Import
 import { mapGetters, mapActions } from 'vuex'
 
+import Button from '@/components/buttons/button'
 import TextBlock from '@/components/blocks/text-block'
 import CardCutout from '@/components/card-cutout'
 import CIDTable from '@/components/cid-table'
@@ -225,6 +235,7 @@ export default {
   name: 'SingularPage',
 
   components: {
+    Button,
     TextBlock,
     CardCutout,
     CIDTable,
@@ -258,7 +269,8 @@ export default {
     ...mapGetters({
       siteContent: 'general/siteContent',
       dataset: 'dataset/dataset',
-      cidList: 'cid/cidList'
+      cidList: 'cid/cidList',
+      mostRecentSearch: 'datasets/mostRecentSearch'
     }),
     slug () {
       return this.dataset.slug
@@ -330,6 +342,15 @@ export default {
         { label: 'Storage Providers', value: this.storageProviderCount },
         { label: 'Locations', value: this.locations }
       ]
+    },
+    backButton () {
+      const url = this.mostRecentSearch
+      return {
+        url,
+        text: 'Back',
+        type: 'light',
+        icon: 'arrow'
+      }
     }
   },
 
@@ -374,6 +395,41 @@ export default {
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// SECTION
 // ---------------------------------------------------------------------[HEADER]
+.back-button-container {
+  padding-bottom: 5rem;
+  &.no-previous-search {
+    padding-bottom: 7.375rem;
+    @include mini {
+      padding-bottom: 0;
+    }
+  }
+  @include mini {
+    padding-bottom: 0;
+  }
+}
+
+.back-button {
+  flex-direction: row-reverse;
+  @include mini {
+    position: absolute;
+    transform: translateY(-3rem);
+  }
+  @include tiny {
+    padding: 0.4375rem 1rem;
+    transform: translate(-0.5rem, -3rem);
+  }
+  :deep(.arrow-icon) {
+    margin-left: 0;
+    margin-right: toRem(15);
+    transform: translateX(2px) rotate(180deg) scale(0.85) !important;
+  }
+  &:hover {
+    :deep(.arrow-icon) {
+      transform: translateX(-4px) rotate(180deg) scale(0.85) !important;
+    }
+  }
+}
+
 .image-wrapper {
   height: 100%;
   display: flex;
