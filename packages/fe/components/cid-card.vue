@@ -25,8 +25,10 @@
                 @click="handleCopyButtonClick(hash)">
                 <CopyCheckmarkIcon />
               </button>
-              <span :class="['copy-feedback', { copied }]">
-                copied! 
+              <span
+                v-if="!mobile"
+                :class="['copy-feedback', { copied }]">
+                copied!
               </span>
             </div>
           </div>
@@ -380,6 +382,9 @@ export default {
 
 .cid-title {
   max-width: 50%;
+  @include medium {
+    max-width: unset;
+  }
   .title {
     font-family: $font_Primary;
     font-size: 1.125rem;
