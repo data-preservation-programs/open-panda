@@ -45,9 +45,9 @@
                 :style="{ 'background-image': `url('/images/categories/${slide.label.replaceAll(' ', '-')}.jpg')` }">
               </div>
               <div class="category">
-                <div class="text">
+                <button class="text">
                   {{ `${slide.label} (${slide.count})` }}
-                </div>
+                </button>
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 <template>
-  <div
+  <button
     v-bind="$props"
     :class="['button-toggle', `theme__${theme}`]"
     tabindex="0"
@@ -11,7 +11,7 @@
       <slot />
     </div>
 
-  </div>
+  </button>
 </template>
 
 <script>
