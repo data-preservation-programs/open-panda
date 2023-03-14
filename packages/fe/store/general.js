@@ -94,6 +94,21 @@ const actions = {
   setClipboard ({ commit }, text) {
     this.$addTextToClipboard(text)
     commit('SET_CLIPBOARD', text)
+  },
+  // ////////////////////////////////////////////////////////// execRemoteScript
+  async execRemoteScript ({ commit, getters }, payload) {
+    try {
+      const endpoint = payload.endpoint
+      const params = payload.params
+      const response = await this.$axiosAuth.get(endpoint, { params })
+      const data = response.data.payload
+      console.log(response.data)
+      return data
+    } catch (e) {
+      console.log('================== [Store Action: general/execRemoteScript]')
+      console.log(e)
+      return false
+    }
   }
 }
 
