@@ -250,16 +250,15 @@ export default {
   },
 
   head () {
-    const generalSeo = this.$getSeo()
     const dataset = this.dataset
-    const datasetSeo = {
+    const siteUrl = this.siteContent.general.og.url
+    return this.$compileSeo(this.$getSeo(this.id, null, {
       title: `${dataset.name} - Dataset on Open Panda`,
       description: dataset.description_short,
       og_site_name: `${dataset.name} - Dataset on Open Panda`,
-      og_url: `${generalSeo.og_url}/dataset/${dataset.slug}`,
+      og_url: `${siteUrl}/dataset/${dataset.slug}`,
       og_image: `/images/datasets/${dataset.slug}.jpg`
-    }
-    return this.$compileSeo(Object.assign(generalSeo, datasetSeo))
+    }))
   },
 
   computed: {
