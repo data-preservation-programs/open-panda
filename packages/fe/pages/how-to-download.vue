@@ -30,6 +30,10 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'how-to-download', data: HowToDownloadPageData })
   },
 
+  head () {
+    return this.$compileSeo(this.$getSeo(this.tag))
+  },
+
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent'

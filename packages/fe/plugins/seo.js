@@ -4,14 +4,14 @@
 // -----------------------------------------------------------------------------
 // ///////////////////////////////////////////////// Get SEO and Open Graph data
 // ----------------------------- Return global SEO if no identifier is specified
-const GetSeo = store => (identifier = 'general', key) => {
+const GetSeo = store => (identifier = 'general', key, override) => {
   const siteContent = store.getters['general/siteContent']
   const language = store.getters['general/language']
   let data = siteContent[identifier]
   if (!data) { data = siteContent.general }
   const seo = data.seo
   const og = data.og
-  return {
+  const metadata = {
     language,
     title: seo.title,
     description: seo.description,
@@ -22,6 +22,7 @@ const GetSeo = store => (identifier = 'general', key) => {
     og_image: og.image,
     key
   }
+  return Object.assign(metadata, override)
 }
 
 // ///////////////////////////////////////////////// Convert SEO to final output

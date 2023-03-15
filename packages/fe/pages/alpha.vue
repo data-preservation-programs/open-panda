@@ -30,6 +30,10 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'alpha', data: AlphaPageData })
   },
 
+  head () {
+    return this.$compileSeo(this.$getSeo(this.tag))
+  },
+
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent'
