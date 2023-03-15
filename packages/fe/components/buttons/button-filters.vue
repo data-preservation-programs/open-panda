@@ -9,9 +9,7 @@
 
       <div :class="['button-content', { hide: loadingForced || loading }]">
         <slot />
-        <span v-if="selected">
-          <IconClose class="close" />
-        </span>
+        <IconClose v-if="selected" class="close" />
       </div>
 
     </div>
@@ -77,11 +75,11 @@ export default {
   &.selected {
     background-color: $rangoonGreen;
     color: white;
-  }
-  :deep(.close) {
-    margin-left: toRem(10);
-    path {
-      fill: white;
+    .close {
+      padding-left: 8px;
+      path {
+        fill: white;
+      }
     }
   }
   &:not(.selected):hover {
