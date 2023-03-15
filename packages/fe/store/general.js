@@ -102,7 +102,6 @@ const actions = {
       const params = payload.params
       const response = await this.$axiosAuth.get(endpoint, { params })
       const data = response.data.payload
-      console.log(response.data)
       return data
     } catch (e) {
       console.log('================== [Store Action: general/execRemoteScript]')

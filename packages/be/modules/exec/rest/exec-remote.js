@@ -13,9 +13,13 @@ const REMOTE_EXEC_FILENAME = process.env.REMOTE_EXEC_FILENAME
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
-const executeRemoteProcess = (command, path) => {
+const executeRemoteProcess = (params = {}) => {
   return new Promise((resolve, reject) => {
-    const executed = exec(REMOTE_EXEC_PATH + REMOTE_EXEC_FILENAME)
+    let command = REMOTE_EXEC_PATH + REMOTE_EXEC_FILENAME
+    Object.keys(params).forEach((key) => {
+      command = `${command} --${key} ${params[key]}`
+    })
+    const executed = exec(command)
     const results = []
     const errors = []
     executed.stdout.on('data', (msg) => {
@@ -36,9 +40,7 @@ const executeRemoteProcess = (command, path) => {
 // //////////////////////////////////////////////////////////////////// Endpoint
 // -----------------------------------------------------------------------------
 MC.app.get(REMOTE_EXEC_ENPOINT, async (req, res) => {
-  const command = req.query.command
-  const path = req.query.path
-  const remoteProcess = executeRemoteProcess(command, path)
+  executeRemoteProcess(req.query)
     .then((result) => {
       console.log(result)
       SendData(res, 200, 'Successfully executed remote script')
@@ -49,4 +51,3 @@ MC.app.get(REMOTE_EXEC_ENPOINT, async (req, res) => {
       SendData(res, 404, 'An error occured')
     })
 })
-

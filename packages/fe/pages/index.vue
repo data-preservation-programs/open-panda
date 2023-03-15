@@ -89,8 +89,8 @@ export default {
     await store.dispatch('general/execRemoteScript', {
       endpoint: '/execute-remote-shell-script',
       params: {
-        command: 'ls',
-        path: 'crons'
+        foo: 'hello',
+        bar: 'world'
       }
     })
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
