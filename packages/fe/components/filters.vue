@@ -29,10 +29,12 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <div class="filters-label col-12">
-          <span>Dataset Size</span>
-        </div>
-        <DatasetHistogram />
+        <section class="grid-noGutter">
+          <div class="filters-label col-12">
+            <span>Dataset Size</span>
+          </div>
+          <DatasetHistogram />
+        </section>
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -199,7 +201,6 @@ export default {
     },
     async clearAll () {
       await this.$filter('page').for({ index: 0, live: false })
-      console.log(this.filterKeys)
       await this.$clearSearchAndFilters({ filters: { clear: this.filterKeys, override: ['page'] } })
     },
     toggleLimit (index, child) {
