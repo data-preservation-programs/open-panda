@@ -17,7 +17,7 @@ const state = () => ({
   sortOptions: false,
   limitOptions: false,
   layout: 'grid',
-  capturedSearchPath: false
+  returnToSearchButton: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -32,7 +32,7 @@ const getters = {
   sortOptions: state => state.sortOptions,
   limitOptions: state => state.limitOptions,
   layout: state => state.layout,
-  capturedSearchPath: state => state.capturedSearchPath
+  returnToSearchButton: state => state.returnToSearchButton
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -88,9 +88,6 @@ const actions = {
         datasetList,
         metadata: payload.metadata
       })
-      if (getters.capturedSearchPath) {
-        dispatch('setCapturedSearchPath', { fullPath: route.fullPath })
-      }
       return datasetList
     } catch (e) {
       console.log('=================== [Store Action: datasets/getDatasetList]')
@@ -139,9 +136,9 @@ const actions = {
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
   },
-  // /////////////////////////////////////////////////////// setcapturedSearchPath
-  setCapturedSearchPath ({ commit }, payload) {
-    commit('SET_CAPTURED_SEARCH_PATH', payload)
+  // /////////////////////////////////////////////////// setReturnToSearchButton
+  setReturnToSearchButton ({ commit }, payload) {
+    commit('SET_RETURN_TO_SEARCH_BUTTON', payload)
   }
 }
 
@@ -181,8 +178,8 @@ const mutations = {
   SET_PAGE (state, page) {
     state.metadata.page = page
   },
-  SET_CAPTURED_SEARCH_PATH (state, payload) {
-    state.capturedSearchPath = payload.fullPath
+  SET_RETURN_TO_SEARCH_BUTTON (state, payload) {
+    state.returnToSearchButton = payload.button
   }
 }
 

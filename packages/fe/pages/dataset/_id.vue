@@ -6,11 +6,12 @@
 
       <div class="grid">
         <div class="col-12">
-          <div :class="['back-button-container', { 'no-previous-search': !capturedSearchPath }]">
+          <div :class="['back-button-container', { 'no-previous-search': !returnToSearchButton }]">
             <Button
-              v-if="capturedSearchPath"
-              :button="backButton"
-              class="back-button" />
+              v-if="returnToSearchButton"
+              :button="returnToSearchButton"
+              class="back-button"
+              @clicked="returnToSearch" />
           </div>
         </div>
 
@@ -270,7 +271,7 @@ export default {
       siteContent: 'general/siteContent',
       dataset: 'dataset/dataset',
       cidList: 'cid/cidList',
-      capturedSearchPath: 'datasets/capturedSearchPath'
+      returnToSearchButton: 'datasets/returnToSearchButton'
     }),
     slug () {
       return this.dataset.slug
@@ -342,14 +343,6 @@ export default {
         { label: 'Storage Providers', value: this.storageProviderCount },
         { label: 'Locations', value: this.locations }
       ]
-    },
-    backButton () {
-      return {
-        url: this.capturedSearchPath,
-        text: 'Back',
-        type: 'light',
-        icon: 'arrow'
-      }
     }
   },
 
@@ -386,6 +379,9 @@ export default {
           this.setLoadingStatus({ status: false })
         }
       })
+    },
+    returnToSearch () {
+      this.$router.go(-1)
     }
   }
 }

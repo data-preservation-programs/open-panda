@@ -139,7 +139,13 @@ export default {
     this.scrollToResultList()
     this.$nextTick(() => {
       this.layout = this.$ls.get('layout') || 'grid'
-      this.setCapturedSearchPath({ fullPath: this.$route.fullPath })
+      this.setReturnToSearchButton({
+        button: {
+          text: 'Back',
+          type: 'light',
+          icon: 'arrow'
+        }
+      })
     })
   },
 
@@ -148,7 +154,7 @@ export default {
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
       getDatasetList: 'datasets/getDatasetList',
-      setCapturedSearchPath: 'datasets/setCapturedSearchPath'
+      setReturnToSearchButton: 'datasets/setReturnToSearchButton'
     }),
     stopLoading () {
       this.$nextTick(() => {
