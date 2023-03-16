@@ -29,9 +29,10 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <DatasetHistogram
-          v-if="histogramData"
-          @range-changed="updateHistogramRange" />
+        <div class="filters-label col-12">
+          <span>Dataset Size</span>
+        </div>
+        <DatasetHistogram />
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -66,7 +67,10 @@
           </section>
         </Filterer>
         <section class="grid-noGutter-right filter-button">
-          <Button class="btn-clear" :button="{type: 'default'}" @click.native="clearAll">
+          <Button
+            class="btn-clear"
+            :button="{type: 'default'}"
+            @click.native="clearAll">
             {{ filterPanelData.labels.clear }}
           </Button>
           <Button
@@ -136,7 +140,6 @@ export default {
   data () {
     return {
       open: false,
-      histogramRange: false,
       filterSelectionsExist: false,
       filterGroups: [{
         id: 'categories',
@@ -162,14 +165,13 @@ export default {
       filters: 'datasets/filters',
       siteContent: 'general/siteContent',
       selectedFilters: 'search/filters',
-      datasetListTypeahead: 'datasets/datasetListTypeahead',
-      histogramData: 'datasets/histogramData'
+      datasetListTypeahead: 'datasets/datasetListTypeahead'
     }),
     filterPanelData () {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
     },
     filterKeys () {
-      return this.filterGroups.map(group => (group.id))
+      return this.filterGroups.map(group => (group.id)).concat(['page', 'datasetSizeMin', 'datasetSizeMax'])
     },
     disableSearchButton () {
       const filterSelectionsExist = this.$checkIfFilterSelectionsExist(this.filterKeys)
@@ -197,6 +199,7 @@ export default {
     },
     async clearAll () {
       await this.$filter('page').for({ index: 0, live: false })
+      console.log(this.filterKeys)
       await this.$clearSearchAndFilters({ filters: { clear: this.filterKeys, override: ['page'] } })
     },
     toggleLimit (index, child) {
@@ -209,15 +212,12 @@ export default {
     async fetchNewData () {
       await this.$filter('page').for({ index: 0, live: false })
       await this.$applyMultipleFiltersToQuery({
-        filters: this.filterKeys.concat('page'),
+        filters: this.filterKeys.concat(['page']),
         redirect: this.$route.path !== '/' ? '/' : undefined
       })
       this.closePanel()
       // need to emit this to close the modal
       this.$emit('filterPanelOnSearch')
-    },
-    updateHistogramRange (val) {
-      this.histogramRange = val
     }
   }
 }

@@ -71,7 +71,7 @@ const processHistogramSizeRanges = async (datasets, bars) => {
     const datasetsInSegment = datasets.filter(dataset => dataset.data_size >= segment.min && dataset.data_size < segment.max)
     segment.count = datasetsInSegment.length
   })
-  return { segments }
+  return segments
 }
 
 // //////////////////////////////////////////////////////////////////// Endpoint
@@ -87,9 +87,9 @@ module.exports = async () => {
       limit: staticFilters.limit,
       filters: Object.assign({
         categories: await processCategories(datasets),
-        fileExtensions: await processFileExtensions(datasets)
-      }, staticFilters.filters),
-      histogram: await processHistogramSizeRanges(datasets, 40)
+        fileExtensions: await processFileExtensions(datasets),
+        histogram: await processHistogramSizeRanges(datasets, 40)
+      }, staticFilters.filters)
     }
   } catch (e) {
     console.log('========================================= [Logic: GetFilters]')

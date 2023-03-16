@@ -1,9 +1,9 @@
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-// ///////////////////////////////////////////////////// conditionalMatchFilters
-const conditionalMatchFilters = (categories, fileExtensions, licenses) => {
+// /////////////////////////////////////////////////// matchFilterIfFilterExists
+const matchFilterIfFilterExists = (categories, fileExtensions, licenses, datasetSizeMin, datasetSizeMax) => {
   const $match = {
-    ...((categories || fileExtensions || licenses) && { $expr: { $or: [] } })
+    ...((categories || fileExtensions || licenses || datasetSizeMin || datasetSizeMax) && { $expr: { $or: [] } })
   }
   if (categories) {
     $match.$expr.$or.push({ $eq: ['$category_matched', true] })
@@ -13,6 +13,14 @@ const conditionalMatchFilters = (categories, fileExtensions, licenses) => {
   }
   if (licenses) {
     $match.$expr.$or.push({ $eq: ['$license_tag_matched', true] })
+  }
+  if (datasetSizeMin !== undefined && datasetSizeMax !== undefined) {
+    $match.$expr.$or.push({
+      $and: [
+        { $gte: ['$data_size', datasetSizeMin] },
+        { $lte: ['$data_size', datasetSizeMax] }
+      ]
+    })
   }
   return { $match }
 }
@@ -24,6 +32,8 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
   const categories = filters.categories
   const fileExtensions = filters.fileExtensions
   const licenses = filters.licenses
+  const datasetSizeMin = filters.datasetSizeMin
+  const datasetSizeMax = filters.datasetSizeMax
   return [
 
     {
@@ -182,7 +192,7 @@ module.exports = (search = '', page = 1, limit = 10, sort = {}, filters = {}) =>
       }
     },
 
-    conditionalMatchFilters(categories, fileExtensions, licenses),
+    matchFilterIfFilterExists(categories, fileExtensions, licenses, datasetSizeMin, datasetSizeMax),
 
     {
       $project: {

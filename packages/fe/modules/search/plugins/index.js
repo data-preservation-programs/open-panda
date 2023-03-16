@@ -95,11 +95,40 @@ const CheckIfFilterSelectionsExist = async (app, filters) => {
   return selelectionsExist
 }
 
+// ///////////////////////////////////////////// ExportSearchAndFiltersFromQuery
+const ExportSearchAndFiltersFromQuery = async (app, filters) => {
+  const query = app.router.history.current.query
+  const compiled = {}
+  filters.forEach((filter) => {
+    const filterQueryKey = filter.queryKey
+    const compileKey = filter.key
+    const compileGroup = filter.group
+    const defaultValue = filter.default
+    let value = query[filterQueryKey] || defaultValue
+    if (value && filter.type === 'number') {
+      value = parseInt(value)
+    }
+    if (value !== undefined) { // only compile filters that exist in URL query or have a manually set default
+      if (compileKey) { // compile as a string, (ex: page: '1')
+        compiled[compileKey] = value
+      } else if (compileGroup) { // compile as an object, (ex: filters: { categories: '', licenses: '' })
+        if (!compiled.hasOwnProperty(compileGroup)) {
+          compiled[compileGroup] = { [filterQueryKey]: value }
+        } else {
+          compiled[compileGroup][filterQueryKey] = value
+        }
+      }
+    }
+  })
+  return { compiled, query }
+}
+
 // ////////////////////////////////////////////////////////////////////// Export
 // -----------------------------------------------------------------------------
-export default async function ({ app, store, route }, inject) {
+export default async function ({ app, store }, inject) {
   await registerStore(store)
   inject('applyMultipleFiltersToQuery', (filters) => ApplyMultipleFiltersToQuery(app, filters))
   inject('clearSearchAndFilters', (filters) => ClearSearchAndFilters(app, filters))
   inject('checkIfFilterSelectionsExist', (filters) => CheckIfFilterSelectionsExist(app, filters))
+  inject('exportSearchAndFiltersFromQuery', (filters) => ExportSearchAndFiltersFromQuery(app, filters))
 }
