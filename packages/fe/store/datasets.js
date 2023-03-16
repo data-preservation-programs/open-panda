@@ -17,7 +17,7 @@ const state = () => ({
   sortOptions: false,
   limitOptions: false,
   layout: 'grid',
-  mostRecentSearch: false
+  capturedSearchPath: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -32,7 +32,7 @@ const getters = {
   sortOptions: state => state.sortOptions,
   limitOptions: state => state.limitOptions,
   layout: state => state.layout,
-  mostRecentSearch: state => state.mostRecentSearch
+  capturedSearchPath: state => state.capturedSearchPath
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -54,7 +54,6 @@ const actions = {
     try {
       dispatch('setLoadingStatus', { status: true })
       const route = metadata.route
-      dispatch('setMostRecentSearch', { fullPath: route.fullPath })
       const query = CloneDeep(route.query)
       const page = parseInt(query.page || getters.metadata.page)
       const search = query.search
@@ -89,6 +88,9 @@ const actions = {
         datasetList,
         metadata: payload.metadata
       })
+      if (getters.capturedSearchPath) {
+        dispatch('setCapturedSearchPath', { fullPath: route.fullPath })
+      }
       return datasetList
     } catch (e) {
       console.log('=================== [Store Action: datasets/getDatasetList]')
@@ -137,9 +139,9 @@ const actions = {
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
   },
-  // /////////////////////////////////////////////////////// setMostRecentSearch
-  setMostRecentSearch ({ commit }, payload) {
-    commit('SET_MOST_RECENT_SEARCH', payload)
+  // /////////////////////////////////////////////////////// setcapturedSearchPath
+  setCapturedSearchPath ({ commit }, payload) {
+    commit('SET_CAPTURED_SEARCH_PATH', payload)
   }
 }
 
@@ -179,8 +181,8 @@ const mutations = {
   SET_PAGE (state, page) {
     state.metadata.page = page
   },
-  SET_MOST_RECENT_SEARCH (state, payload) {
-    state.mostRecentSearch = payload.fullPath
+  SET_CAPTURED_SEARCH_PATH (state, payload) {
+    state.capturedSearchPath = payload.fullPath
   }
 }
 

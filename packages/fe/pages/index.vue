@@ -139,6 +139,7 @@ export default {
     this.scrollToResultList()
     this.$nextTick(() => {
       this.layout = this.$ls.get('layout') || 'grid'
+      this.setCapturedSearchPath({ fullPath: this.$route.fullPath })
     })
   },
 
@@ -146,7 +147,8 @@ export default {
     ...mapActions({
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
-      getDatasetList: 'datasets/getDatasetList'
+      getDatasetList: 'datasets/getDatasetList',
+      setCapturedSearchPath: 'datasets/setCapturedSearchPath'
     }),
     stopLoading () {
       this.$nextTick(() => {

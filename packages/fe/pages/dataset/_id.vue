@@ -6,9 +6,9 @@
 
       <div class="grid">
         <div class="col-12">
-          <div :class="['back-button-container', { 'no-previous-search': !mostRecentSearch }]">
+          <div :class="['back-button-container', { 'no-previous-search': !capturedSearchPath }]">
             <Button
-              v-if="mostRecentSearch"
+              v-if="capturedSearchPath"
               :button="backButton"
               class="back-button" />
           </div>
@@ -270,7 +270,7 @@ export default {
       siteContent: 'general/siteContent',
       dataset: 'dataset/dataset',
       cidList: 'cid/cidList',
-      mostRecentSearch: 'datasets/mostRecentSearch'
+      capturedSearchPath: 'datasets/capturedSearchPath'
     }),
     slug () {
       return this.dataset.slug
@@ -344,9 +344,8 @@ export default {
       ]
     },
     backButton () {
-      const url = this.mostRecentSearch
       return {
-        url,
+        url: this.capturedSearchPath,
         text: 'Back',
         type: 'light',
         icon: 'arrow'
