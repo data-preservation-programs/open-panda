@@ -256,9 +256,17 @@ export default {
     await store.dispatch('general/getBaseData', { key: 'datasetSingle', data: DatasetPageData })
   },
 
-  // head () {
-  //   return this.$compileSeo(this.$getSeo(this.tag))
-  // },
+  head () {
+    const dataset = this.dataset
+    const siteUrl = this.siteContent.general.og.url
+    return this.$compileSeo(this.$getSeo(this.id, null, {
+      title: `${dataset.name} - Dataset on Open Panda`,
+      description: dataset.description_short,
+      og_site_name: `${dataset.name} - Dataset on Open Panda`,
+      og_url: `${siteUrl}/dataset/${dataset.slug}`,
+      og_image: `/images/datasets/${dataset.slug}.jpg`
+    }))
+  },
 
   computed: {
     ...mapGetters({
