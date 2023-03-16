@@ -20,16 +20,7 @@
             </div>
             <div class="hash">
               {{ shortenString(hash, 16) }}
-              <button
-                :class="['copy-button', { copied }]"
-                @click="handleCopyButtonClick(hash)">
-                <CopyCheckmarkIcon />
-              </button>
-              <span
-                v-if="!mobile"
-                :class="['copy-feedback', { copied }]">
-                copied!
-              </span>
+              <CopyButton :value="hash" />
             </div>
           </div>
 
@@ -179,11 +170,7 @@
                       <code>
                         {{ command }}
                       </code>
-                      <button
-                        class="copy-button"
-                        @click="$addTextToClipboard(command)">
-                        <CopyIcon class="copy-icon" />
-                      </button>
+                      <CopyButton :value="command" />
                     </div>
                   </div>
                 </div>
@@ -203,7 +190,7 @@
 // ====================================================================== Import
 import CardCutout from '@/components/card-cutout'
 import ButtonToggle from '@/components/buttons/button-toggle'
-import CopyCheckmarkIcon from '@/components/icons/copy-checkmark'
+import CopyButton from '@/components/copy-button'
 import CIDSlider from '@/components/cid-slider'
 import Accordion from '@/components/accordion/accordion'
 import AccordionSection from '@/components/accordion/accordion-section'
@@ -217,7 +204,7 @@ export default {
   components: {
     CardCutout,
     ButtonToggle,
-    CopyCheckmarkIcon,
+    CopyButton,
     CIDSlider,
     Accordion,
     AccordionSection,
@@ -241,8 +228,7 @@ export default {
   data () {
     return {
       open: false,
-      bottomPanelHeight: 0,
-      copied: false
+      bottomPanelHeight: 0
     }
   },
 
@@ -284,11 +270,6 @@ export default {
         return `${string.substring(0, chars)}...${string.substring(len - chars, len)}`
       }
       return string
-    },
-    handleCopyButtonClick (hash) {
-      this.$addTextToClipboard(hash)
-      this.copied = true
-      setTimeout(() => { this.copied = false }, 2000)
     }
   }
 }
@@ -402,61 +383,12 @@ export default {
       flex-direction: row-reverse;
     }
   }
-  .copy-button {
+  :deep(.copy-button) {
     display: flex;
     margin-left: 0.75rem;
     @include medium {
       margin-left: 0;
       margin-right: 0.5rem;
-    }
-    :deep(svg) {
-      .boxes {
-        transition: fill 200ms ease;
-        fill: rgba(#1B1F12, 0.25);
-      }
-      .checkmark {
-        fill: none;
-        transition: opacity 1000ms linear;
-        opacity: 0;
-      }
-    }
-    &:hover {
-      :deep(svg) {
-        .boxes {
-          fill: rgba(#1B1F12, 1);
-        }
-      }
-    }
-    &.copied {
-      :deep(svg) {
-        .boxes {
-          fill: #74C3B5;
-          transition: none;
-        }
-        .checkmark {
-          transition: none;
-          opacity: 1;
-        }
-      }
-      &:hover {
-        :deep(svg) {
-          .boxes {
-            fill: #74C3B5;
-            transition: opacity 1000ms linear;
-          }
-        }
-      }
-    }
-  }
-  .copy-feedback {
-    opacity: 0;
-    transition: opacity 1000ms linear;
-    color: $gray700;
-    margin-left: 0.375rem;
-    font-size: 0.8125rem;
-    &.copied {
-      transition: none;
-      opacity: 1;
     }
   }
 }
@@ -666,15 +598,11 @@ export default {
     font-size: 0.8125rem;
     line-height: leading(24, 13);
   }
-  .copy-button {
+  :deep(.copy-button) {
     position: absolute;
     top: 1rem;
     right: 1rem;
   }
 }
 
-.copy-icon {
-  display: block;
-  fill: $grayNurse;
-}
 </style>

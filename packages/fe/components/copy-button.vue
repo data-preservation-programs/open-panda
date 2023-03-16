@@ -5,7 +5,7 @@
 
     <IconFile class="icon file" />
 
-    <IconFilePlus class="icon file-plus" />
+    <IconFile class="icon file-plus" />
 
     <IconFileCheckmark class="icon file-checkmark" />
 
@@ -16,9 +16,8 @@
 // ===================================================================== Imports
 import { mapGetters, mapActions } from 'vuex'
 
-import IconFile from '@/components/icons/file'
-import IconFilePlus from '@/components/icons/file-plus'
-import IconFileCheckmark from '@/components/icons/file-checkmark'
+import IconFile from '@/components/icons/copy'
+import IconFileCheckmark from '@/components/icons/copy-checkmark'
 
 // ====================================================================== Export
 export default {
@@ -26,7 +25,6 @@ export default {
 
   components: {
     IconFile,
-    IconFilePlus,
     IconFileCheckmark
   },
 
@@ -87,6 +85,21 @@ export default {
   }
 }
 
+.file {
+  fill: rgba(#1B1F12, 0.25);
+}
+
+.file-plus {
+  fill: rgba(#1B1F12, 1);
+}
+
+.file-checkmark {
+  fill: #74C3B5;
+  :deep(.checkmark) {
+    fill: transparent;
+  }
+}
+
 .icon {
   display: block;
   width: 0.875rem;
@@ -98,10 +111,6 @@ export default {
     left: 0;
     width: 100%;
     opacity: 0;
-  }
-  &.file-plus {
-    width: 0.8125rem; // 13px
-    left: 1px;
   }
 }
 
