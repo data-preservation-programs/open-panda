@@ -55,9 +55,10 @@ const exponentialThroughMax = (x, max, start) => {
 const processHistogramSizeRanges = async (datasets, bars) => {
   const segments = []
   const datasetSizes = datasets.map(dataset => dataset.data_size)
-  const maxDatasetSize = Math.max(...datasetSizes) * 1.5
-  const stepSize = maxDatasetSize / bars
-  for (let i = 0; i < bars; i++) {
+  const maxDatasetSize = Math.max(...datasetSizes)
+  const len = bars - 2
+  const stepSize = maxDatasetSize / len
+  for (let i = 0; i < len + 1; i++) {
     segments.push({
       min: exponentialThroughMax(i * stepSize, maxDatasetSize),
       max: exponentialThroughMax((i + 1) * stepSize, maxDatasetSize)
