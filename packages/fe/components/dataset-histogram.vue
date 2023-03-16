@@ -132,7 +132,7 @@ export default {
   methods: {
     async setBoundsFromFieldValue () {
       this.lowerBoundIndex = await this.$filter('datasetSizeMin').get().selected[0] || 0
-      this.upperBoundIndex = await this.$filter('datasetSizeMax').get().selected[0] || 0
+      this.upperBoundIndex = await this.$filter('datasetSizeMax').get().selected[0] || this.segments.length
     },
     mousedown (handle) {
       document.onmousemove = this.$throttle((e) => { this.drag(e, handle) }, 50)
