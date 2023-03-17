@@ -1,6 +1,6 @@
 <template>
   <div
-    v-click-outside="closePanel"
+    v-mousedown-outside="closePanel"
     :class="['filters', { open }, `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
