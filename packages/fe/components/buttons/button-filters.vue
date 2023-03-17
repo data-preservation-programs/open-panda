@@ -9,7 +9,9 @@
 
       <div :class="['button-content', { hide: loadingForced || loading }]">
         <slot />
-        <IconClose v-if="selected" class="close" />
+        <span class="close">
+          <IconClose v-if="selected" />
+        </span>
       </div>
 
     </div>
@@ -76,9 +78,26 @@ export default {
     background-color: $rangoonGreen;
     color: white;
     .close {
-      padding-left: 8px;
+      @include fadeOut;
+      position: absolute;
+      right: 0;
+      border-radius: toRem(20);
+      background: linear-gradient(90deg, rgba(27,31,18,0) 0%, rgba(27,31,18,1) 85%);
+      padding-right: toRem(16);
+      width: 100%;
+      height: 100%;
+      text-align: right;
+      svg {
+        top: toRem(6);
+        position: relative;
+      }
       path {
         fill: white;
+      }
+    }
+    &:hover {
+      .close {
+        @include fadeIn;
       }
     }
   }
