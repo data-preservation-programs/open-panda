@@ -9,8 +9,8 @@
 
       <div :class="['button-content', { hide: loadingForced || loading }]">
         <slot />
-        <span class="close">
-          <IconClose v-if="selected" />
+        <span v-if="selected" class="close">
+          <IconClose />
         </span>
       </div>
 

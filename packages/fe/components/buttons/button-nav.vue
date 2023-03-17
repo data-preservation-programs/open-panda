@@ -88,6 +88,11 @@ export default {
   border-bottom-right-radius: toRem(5);
   position: relative;
   cursor: pointer;
+  &:focus-visible {
+    .top-notch {
+      display: none;
+    }
+  }
   &:hover {
     .tooltip {
       display: block;

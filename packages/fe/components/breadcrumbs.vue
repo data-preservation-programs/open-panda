@@ -130,11 +130,6 @@ export default {
 
 .breadcrumb {
   white-space: nowrap;
-  &.link {
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 }
 
 .link,
