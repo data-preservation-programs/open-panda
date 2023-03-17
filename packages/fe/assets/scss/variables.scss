@@ -253,6 +253,13 @@ $duration: 300ms;
   @return math.div($px-vw * 100vw, $base-vw);
 }
 
+@mixin truncate($rowCount) {
+  display: -webkit-box;
+  -webkit-line-clamp: $rowCount;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 // ------------------------------------------------------------------- Animation
 @mixin animation($animate...) {
   $max: length($animate);

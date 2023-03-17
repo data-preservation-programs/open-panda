@@ -204,10 +204,7 @@ export default {
   min-height: toRem(116.5);
   .name {
     line-height: leading(26, 17);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    @include truncate(3);
   }
 }
 
