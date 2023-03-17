@@ -7,7 +7,6 @@
         v-if="link.url"
         :key="`link-${index}`"
         :button="link"
-        tabindex="0"
         class="breadcrumb link">
       </Button>
 
@@ -46,7 +45,8 @@ export default {
 
   data () {
     return {
-      links: false
+      links: false,
+      hidden: false
     }
   },
 
@@ -60,9 +60,6 @@ export default {
         return this.siteContent.general.breadcrumbs_mapping
       }
       return false
-    },
-    hidden () {
-      return this.links.length < 2
     }
   },
 
@@ -90,9 +87,11 @@ export default {
           url: '/',
           text: breadcrumbs.index
         }]
+        this.hidden = true
         items.forEach((item, i) => {
           const routeName = items.slice(0, i + 1).join('-')
           if (breadcrumbs.hasOwnProperty(routeName)) {
+            this.hidden = false
             const url = `/${items.slice(0, i + 1).join('/')}`
             if (i !== items.length - 1 && routeName !== 'dataset') {
               links.push({ type: 'default', url, text: breadcrumbs[routeName] })
@@ -101,6 +100,7 @@ export default {
             }
           } else {
             if (this.dataset) {
+              // single dataset
               links.push({ text: this.dataset.name })
             }
           }
@@ -130,11 +130,6 @@ export default {
 
 .breadcrumb {
   white-space: nowrap;
-  &.link {
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 }
 
 .link,

@@ -9,8 +9,8 @@
 
       <div :class="['button-content', { hide: loadingForced || loading }]">
         <slot />
-        <span v-if="selected">
-          <IconClose class="close" />
+        <span v-if="selected" class="close">
+          <IconClose />
         </span>
       </div>
 
@@ -56,7 +56,7 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.button {
+:deep(.button) {
   position: relative;
   padding: toRem(7) toRem(15);
   border: 1px solid $rangoonGreen;
@@ -77,11 +77,28 @@ export default {
   &.selected {
     background-color: $rangoonGreen;
     color: white;
-  }
-  :deep(.close) {
-    margin-left: toRem(10);
-    path {
-      fill: white;
+    .close {
+      @include fadeOut;
+      position: absolute;
+      right: 0;
+      border-radius: toRem(20);
+      background: linear-gradient(90deg, rgba(27,31,18,0) 0%, rgba(27,31,18,1) 85%);
+      padding-right: toRem(16);
+      width: 100%;
+      height: 100%;
+      text-align: right;
+      svg {
+        top: toRem(6);
+        position: relative;
+      }
+      path {
+        fill: white;
+      }
+    }
+    &:hover {
+      .close {
+        @include fadeIn;
+      }
     }
   }
   &:not(.selected):hover {
@@ -95,39 +112,37 @@ export default {
       }
     }
   }
-}
 
-.triple-dot-loader,
-.button-content {
-  width: 100%;
-  height: 100%;
-}
-
-::v-deep .triple-dot-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  &.show {
-    opacity: 1;
+  .triple-dot-loader,
+  .button-content {
+    width: 100%;
+    height: 100%;
   }
-  .dot {
-    transition: background-color 150 ease-in-out;
-  }
-}
-
-.button-content {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  font-family: $font_Primary;
-  @include fontWeight_Medium;
-  @include fontSize_16;
-  line-height: leading(24, 16);
-  &.hide {
+  .triple-dot-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
     opacity: 0;
+    &.show {
+      opacity: 1;
+    }
+    .dot {
+      transition: background-color 150 ease-in-out;
+    }
+  }
+
+  .button-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-family: $font_Primary;
+    @include fontWeight_Medium;
+    @include fontSize_16;
+    line-height: leading(24, 16);
+    &.hide {
+      opacity: 0;
+    }
   }
 }
-
 </style>

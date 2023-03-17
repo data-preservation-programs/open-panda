@@ -314,9 +314,6 @@ $height: 3.125rem;
     cursor: no-drop;
     border-bottom-color: rgba(227, 211, 192, 0.25);
   }
-  &:focus {
-    box-shadow: none;
-  }
 }
 
 // //////////////////////////////////////////////////////////////////// Dropdown

@@ -154,6 +154,10 @@ export default {
       margin-right: 0;
     }
   }
+  :deep(.tooltip) {
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 @include large {
@@ -172,6 +176,7 @@ export default {
 }
 
 .logo-link {
+  display: inherit;
   z-index: 101;
   svg {
     display: block;

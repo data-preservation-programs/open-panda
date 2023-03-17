@@ -1,5 +1,5 @@
 <template>
-  <div
+  <button
     v-bind="$props"
     :class="['button-toggle', `theme__${theme}`]"
     tabindex="0"
@@ -11,13 +11,13 @@
       <slot />
     </div>
 
-  </div>
+  </button>
 </template>
 
 <script>
 // ====================================================================== Export
 export default {
-  name: 'ButtonX',
+  name: 'ButtonToggle',
 
   props: {
     theme: {

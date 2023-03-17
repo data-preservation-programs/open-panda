@@ -43,14 +43,16 @@
           v-for="(cid, i) in cidList"
           :key="`cid-${i}`"
           :cid-data="cid"
-          :mobile="mobileTable" />
+          :mobile="mobileTable"
+          :content="content.cidCard"
+          :style="{ zIndex: cidList.length - i}" />
       </template>
 
       <div class="table-messages">
         <h3
           v-if="Array.isArray(cidList) && !cidList.length && !cidsLoading"
           class="heading">
-          This dataset hasn’t been onboarded to the network yet
+          {{ content.notOnboarded }}
         </h3>
         <Spinner
           v-if="cidsLoading"
@@ -112,6 +114,14 @@ export default {
     Searchbar,
     FieldContainer,
     Spinner
+  },
+
+  props: {
+    content: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    }
   },
 
   data () {

@@ -1,18 +1,35 @@
 <template>
-  <component
-    :is="tag"
-    :to="to"
-    :href="href"
-    :target="target"
-    :class="['button', `type__${button.type || ''}`, button.selected ? 'selected' : '', button.icon ? 'has-icon' : '']"
-    :disabled="button.disabled"
-    @click="$emit('clicked')">
-    <span v-if="button.text" class="text">{{ button.text }}</span>
-    <slot />
-    <div v-if="button.tooltip" class="tooltip">
-      {{ button.tooltip }}</div>
-    <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
-  </component>
+  <span class="button">
+    <!-- have to duplicate the component and add a v-if to ensure :focus-visible is properly showing. nuxt gets confused when we have :to and :href as props and end up not showing href for <a> tags -->
+    <component
+      :is="tag"
+      v-if="tag === 'a'"
+      :to="to"
+      :href="href"
+      :target="target"
+      :class="[`type__${button.type || ''}`, button.selected ? 'selected' : '', button.icon ? 'has-icon' : '']"
+      :disabled="button.disabled"
+      @click="$emit('clicked')">
+      <span v-if="button.text" class="text">{{ button.text }}</span>
+      <slot />
+      <div v-if="button.tooltip" class="tooltip">
+        {{ button.tooltip }}</div>
+      <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
+    </component>
+    <component
+      :is="tag"
+      v-if="tag !== 'a'"
+      :to="to"
+      :class="[`type__${button.type || ''}`, button.selected ? 'selected' : '', button.icon ? 'has-icon' : '']"
+      :disabled="button.disabled"
+      @click="$emit('clicked')">
+      <span v-if="button.text" class="text">{{ button.text }}</span>
+      <slot />
+      <div v-if="button.tooltip" class="tooltip">
+        {{ button.tooltip }}</div>
+      <ArrowRightIcon v-if="button.icon === 'arrow'" class="arrow-icon icon" />
+    </component>
+  </span>
 </template>
 
 <script>

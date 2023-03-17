@@ -204,10 +204,7 @@ export default {
   min-height: toRem(116.5);
   .name {
     line-height: leading(26, 17);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    @include truncate(3);
   }
 }
 
@@ -253,8 +250,6 @@ export default {
 .button {
   align-self: flex-end;
   margin-top: auto;
-  margin-right: toRem(20);
-  margin-bottom: toRem(20);
   padding: toRem(10) toRem(20);
 }
 </style>

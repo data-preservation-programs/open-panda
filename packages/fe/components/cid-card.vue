@@ -13,7 +13,7 @@
 
           <div class="cid-title mobile-row">
             <div v-if="mobile" class="label">
-              CID
+              {{ content.cidLabel }}
             </div>
             <div v-if="!mobile" class="title">
               {{ title }}
@@ -30,34 +30,39 @@
 
           <div v-if="mobile" class="mobile-row">
             <div class="label">
-              Size
+              {{ content.sizeLabel }}
             </div>
             <div class="size">
-              {{ size }}
+              {{ size ? size : '-' }}
             </div>
           </div>
 
           <div class="mobile-row">
             <div v-if="mobile" class="label">
-              Type
+              {{ content.typeLabel }}
             </div>
             <div class="file-types">
-              <div
-                v-for="fileExtension in fileExtensions"
-                :key="fileExtension"
-                class="file-extension">
-                {{ fileExtension }}
-              </div>
+              <template v-if="fileExtensions.length == 0">
+                <span class="show-mobile-only">-</span>
+              </template>
+              <template v-else>
+                <div
+                  v-for="fileExtension in fileExtensions"
+                  :key="fileExtension"
+                  class="file-extension">
+                  {{ fileExtension }}
+                </div>
+              </template>
             </div>
           </div>
 
           <div v-if="!mobile" class="size">
-            {{ size }}
+            {{ size ? size : '-' }}
           </div>
 
           <div class="replicas mobile-row">
             <div v-if="mobile" class="label">
-              No. Replicas
+              {{ content.replicasLabel }}
             </div>
             <div class="replica-list">
               <div
@@ -72,18 +77,22 @@
           </div>
 
           <div class="expiry-date mobile-row">
-            <span class="date label">{{ expiryDate }}</span>
-            <span class="more">{{ mobile ? 'Available Until' : 'Avail. Until' }}</span>
+            <span class="date label">{{ expiryDate ? expiryDate : '-' }}</span>
+            <span class="more">{{ mobile ? content.availUntilLabel : content.availUntilMobileLabel }}</span>
           </div>
 
           <div class="mobile-row">
             <div v-if="mobile" class="label">
-              Status
+              {{ content.statusLabel }}
             </div>
             <div
-              v-if="status"
               :class="['status', status]">
-              {{ status }}
+              <template v-if="!status">
+                <span class="show-mobile-only">-</span>
+              </template>
+              <template v-else>
+                {{ status }}
+              </template>
             </div>
           </div>
 
@@ -95,14 +104,16 @@
               @click="storageProviders.length ? toggleBottomPanel : null">
               {{ open ? 'Less' : 'More' }}
             </ButtonToggle>
+            <!-- desktop -->
+            <CidInspectTooltip :link="zstLink" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
           </div>
 
-          <div v-if="mobile" class="mobile-sp-section-heading">
+          <div v-if="mobile && storageProviders.length" class="mobile-sp-section-heading">
             <div class="heading">
-              Storage Providers
+              {{ content.storageProvidersLabel }}
             </div>
             <div class="subheading">
-              Select a storage provider to view retrieval commands
+              {{ content.storageProvidersSubLabel }}
             </div>
           </div>
 
@@ -140,7 +151,7 @@
                   <div class="info">
                     <div class="info-row">
                       <div class="label">
-                        Deal ID
+                        {{ content.dealIDLabel }}
                       </div>
                       <div class="cell deal-id">
                         {{ sp.dealId }}
@@ -148,7 +159,7 @@
                     </div>
                     <div class="info-row">
                       <div class="label">
-                        Available Until
+                        {{ content.availUntilLabel }}
                       </div>
                       <div class="cell deal-expiry">
                         {{ sp.expiry_date }}
@@ -156,7 +167,7 @@
                     </div>
                     <div class="info-row">
                       <div class="label">
-                        Retrieval Rate
+                        {{ content.retrievalRateLabel }}
                       </div>
                       <div class="cell retrieval">
                         {{ sp.retrieval_rate }}
@@ -164,7 +175,7 @@
                     </div>
                   </div>
                   <div class="retrieval-title">
-                    Retrieval Commands
+                    {{ content.retrievalCommandsLabel }}
                   </div>
                   <div class="retrieval-commands">
                     <div
@@ -190,6 +201,11 @@
         </div>
       </div>
 
+      <!-- mobile -->
+      <div v-if="mobile" class="inspect-file-mobile">
+        <Tooltip align="right" :link="zstLink" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
+      </div>
+
     </div>
   </CardCutout>
 </template>
@@ -204,6 +220,7 @@ import Accordion from '@/components/accordion/accordion'
 import AccordionSection from '@/components/accordion/accordion-section'
 import AccordionHeader from '@/components/accordion/accordion-header'
 import AccordionContent from '@/components/accordion/accordion-content'
+import CidInspectTooltip from '@/components/cid-inspect-tooltip'
 
 // ====================================================================== Export
 export default {
@@ -214,6 +231,7 @@ export default {
     ButtonToggle,
     CopyIcon,
     CIDSlider,
+    CidInspectTooltip,
     Accordion,
     AccordionSection,
     AccordionHeader,
@@ -222,6 +240,11 @@ export default {
 
   props: {
     cidData: {
+      type: Object,
+      required: true,
+      default: () => ({})
+    },
+    content: {
       type: Object,
       required: true,
       default: () => ({})
@@ -246,6 +269,9 @@ export default {
     },
     hash () {
       return this.cidData.payload_cid
+    },
+    zstLink () {
+      return `https://${this.hash}.ipfs.w3s.link/${this.title}`
     },
     fileExtensions () {
       return [] // this.cidData.fileExtensions.split(',').map(ext => ext.replaceAll(' ', ''))
@@ -287,10 +313,10 @@ export default {
 // ///////////////////////////////////////////////////////////////////// General
 .panel-top {
   transition: border 200ms ease;
-  border-bottom: solid 1px rgba(#DDDFE3, 0);
+  border-bottom: solid 1px rgba($iron, 0);
   &.open,
   &.mobile {
-    border-bottom: solid 1px rgba(#DDDFE3, 1);
+    border-bottom: solid 1px rgba($iron, 1);
   }
   &:not(.mobile) {
     .mobile-row,
@@ -338,7 +364,7 @@ export default {
 
 .bottom-content {
   @include medium {
-    padding-top: 1.125rem;
+    padding: 0;
   }
 }
 
@@ -357,6 +383,21 @@ export default {
 .label {
   @include medium {
     width: 40%;
+    min-width: toRem(120);
+    flex-shrink: 0;
+  }
+}
+
+:deep(.tooltip-c .tooltip-box-wrapper) {
+  transform: translateX(-60%);
+}
+
+.inspect-file-mobile {
+  padding-bottom: toRem(10);
+  :deep(.tooltip-c) {
+    display: flex;
+    justify-content: right;
+    padding-right: 1.875rem;
   }
 }
 
@@ -371,6 +412,9 @@ export default {
 
 .cid-title {
   max-width: 50%;
+  @include medium {
+    max-width: 100%;
+  }
   .title {
     font-family: $font_Primary;
     font-size: 1.125rem;
@@ -430,6 +474,10 @@ export default {
     &:not(:last-child) {
       margin-right: 0.375rem;
     }
+    @include medium {
+      @include fontSize_14;
+      @include fontWeight_Bold;
+    }
   }
 }
 
@@ -439,11 +487,15 @@ export default {
   margin-top: 0.4375rem;
   @include medium {
     margin-top: 0;
+    @include fontWeight_Bold;
   }
 }
 
 .replica-list {
   margin: 0.875rem 0;
+  @include medium {
+    margin: 0;
+  }
 }
 .replica {
   width: 0.8125rem;
@@ -473,14 +525,23 @@ export default {
   .date {
     @include fontSize_16;
     @include fontWeight_Medium;
-    margin-bottom: 0.375rem;
+    margin-bottom: toRem(11);
     @include medium {
       margin-bottom: 0;
+      order: 2;
+      @include fontWeight_Bold;
     }
   }
   .more {
     @include fontSize_14;
     @include fontWeight_Regular;
+    @include medium {
+      margin-bottom: 0;
+      order: 1;
+      width: 40%;
+      min-width: toRem(120);
+      flex-shrink: 0;
+    }
   }
 }
 
@@ -490,6 +551,8 @@ export default {
   margin-bottom: auto;
   @include medium {
     margin-top: 0;
+    @include fontSize_14;
+    @include fontWeight_Bold;
   }
   &.active {
     &:before {
@@ -499,9 +562,12 @@ export default {
       width: 1rem;
       height: 1rem;
       top: 0.25rem;
-      background-color: #74C3B5;
+      background-color: $neptune;
       border-radius: 50%;
       margin-right: 0.875rem;
+      @include medium {
+        margin-right: 0.5rem;
+      }
     }
   }
 }
@@ -520,7 +586,7 @@ export default {
 // ///////////////////////////////////////////////////// STORAGE PROVIDERS PANEL
 .mobile-sp-section-heading {
   .heading {
-    @include fontSize_20;
+    @include fontSize_24;
     @include fontWeight_Medium;
     line-height: leading(24, 20);
     margin: 0.625rem 0;
@@ -556,12 +622,20 @@ export default {
       width: 11px;
       height: 7px;
       top: calc(50% - 3.5px);
-      right: 1rem;
+      right: 0;
       transform: rotate(180deg);
       transition: transform 250ms ease;
       background-repeat: no-repeat;
       background-size: contain;
       background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M11 6.5L6 1.5L1 6.5' stroke='%231B1F12' stroke-width='2' stroke-linecap='round'/%3e%3c/svg%3e ");
+    }
+  }
+  @include medium {
+    border-bottom: 1px solid $iron;
+    padding-left: 1.875rem;
+    padding-right: 1.875rem;
+    &:last-child {
+      border-bottom: 0;
     }
   }
   &.open {
@@ -589,6 +663,9 @@ export default {
 
 .cell {
   @include fontWeight_Medium;
+  @include medium {
+    @include fontWeight_Bold;
+  }
 }
 
 .retrieval-title,

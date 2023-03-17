@@ -186,7 +186,7 @@
           data-push-left="off-1_xlg-0_md-1_sm-0"
           data-push-right="off-1_xlg-0_md-1_sm-0">
 
-          <CIDTable />
+          <CIDTable :content="pageContent.cidTable" />
 
         </div>
       </div>
@@ -199,6 +199,7 @@
 // ====================================================================== Import
 import { mapGetters, mapActions } from 'vuex'
 
+import DatasetPageData from '@/content/pages/dataset-single.json'
 import TextBlock from '@/components/blocks/text-block'
 import CardCutout from '@/components/card-cutout'
 import CIDTable from '@/components/cid-table'
@@ -244,10 +245,15 @@ export default {
   data () {
     const id = this.$route.params.id
     return {
+      pageTag: 'datasetSingle',
       id,
       resize: false,
       mobile: false
     }
+  },
+
+  async fetch ({ app, store }) {
+    await store.dispatch('general/getBaseData', { key: 'datasetSingle', data: DatasetPageData })
   },
 
   head () {
@@ -268,6 +274,9 @@ export default {
       dataset: 'dataset/dataset',
       cidList: 'cid/cidList'
     }),
+    pageContent () {
+      return this.siteContent[this.pageTag].page_content
+    },
     slug () {
       return this.dataset.slug
     },

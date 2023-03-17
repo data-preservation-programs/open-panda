@@ -55,7 +55,7 @@ export default {
 
 <style lang="scss" scoped>
 // ///////////////////////////////////////////////////////////////////// General
-.button {
+:deep(.button) {
   white-space: nowrap;
   cursor: pointer;
   &:not([disabled]) {
