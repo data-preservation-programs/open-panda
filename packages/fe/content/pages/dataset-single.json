@@ -14,6 +14,7 @@
               "storageProvidersSubLabel": "Select a storage provider to view retrieval commands",
               "dealIDLabel": "dealID",
               "availUntilLabel": "Available Until",
+              "availUntilMobileLabel": "Avail. Until",
               "retrievalRateLabel": "Retrieval Rate",
               "retrievalCommandsLabel": "Retrieval Commands"
             }

@@ -33,7 +33,7 @@
               {{ content.sizeLabel }}
             </div>
             <div class="size">
-              {{ size }}
+              {{ size ? size : '-' }}
             </div>
           </div>
 
@@ -42,17 +42,22 @@
               {{ content.typeLabel }}
             </div>
             <div class="file-types">
-              <div
-                v-for="fileExtension in fileExtensions"
-                :key="fileExtension"
-                class="file-extension">
-                {{ fileExtension }}
-              </div>
+              <template v-if="fileExtensions.length == 0">
+                <span class="show-mobile-only">-</span>
+              </template>
+              <template v-else>
+                <div
+                  v-for="fileExtension in fileExtensions"
+                  :key="fileExtension"
+                  class="file-extension">
+                  {{ fileExtension }}
+                </div>
+              </template>
             </div>
           </div>
 
           <div v-if="!mobile" class="size">
-            {{ size }}
+            {{ size ? size : '-' }}
           </div>
 
           <div class="replicas mobile-row">
@@ -72,8 +77,8 @@
           </div>
 
           <div class="expiry-date mobile-row">
-            <span class="date label">{{ expiryDate }}</span>
-            <span class="more">{{ mobile ? 'Available Until' : 'Avail. Until' }}</span>
+            <span class="date label">{{ expiryDate ? expiryDate : '-' }}</span>
+            <span class="more">{{ mobile ? content.availUntilLabel : content.availUntilMobileLabel }}</span>
           </div>
 
           <div class="mobile-row">
@@ -81,9 +86,13 @@
               {{ content.statusLabel }}
             </div>
             <div
-              v-if="status"
               :class="['status', status]">
-              {{ status }}
+              <template v-if="!status">
+                <span class="show-mobile-only">-</span>
+              </template>
+              <template v-else>
+                {{ status }}
+              </template>
             </div>
           </div>
 
@@ -99,7 +108,7 @@
             <CidInspectTooltip :link="zstLink" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
           </div>
 
-          <div v-if="mobile" class="mobile-sp-section-heading">
+          <div v-if="mobile && storageProviders.length" class="mobile-sp-section-heading">
             <div class="heading">
               {{ content.storageProvidersLabel }}
             </div>
@@ -403,6 +412,9 @@ export default {
 
 .cid-title {
   max-width: 50%;
+  @include medium {
+    max-width: 100%;
+  }
   .title {
     font-family: $font_Primary;
     font-size: 1.125rem;
