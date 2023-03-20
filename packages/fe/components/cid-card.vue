@@ -20,11 +20,7 @@
             </div>
             <div class="hash">
               {{ shortenString(hash, 16) }}
-              <button
-                class="copy-button"
-                @click="$addTextToClipboard(hash)">
-                <CopyIcon />
-              </button>
+              <CopyButton :value="hash" />
             </div>
           </div>
 
@@ -174,11 +170,7 @@
                       <code>
                         {{ command }}
                       </code>
-                      <button
-                        class="copy-button"
-                        @click="$addTextToClipboard(command)">
-                        <CopyIcon class="copy-icon" />
-                      </button>
+                      <CopyButton :value="command" />
                     </div>
                   </div>
                 </div>
@@ -198,7 +190,7 @@
 // ====================================================================== Import
 import CardCutout from '@/components/card-cutout'
 import ButtonToggle from '@/components/buttons/button-toggle'
-import CopyIcon from '@/components/icons/copy'
+import CopyButton from '@/components/copy-button'
 import CIDSlider from '@/components/cid-slider'
 import Accordion from '@/components/accordion/accordion'
 import AccordionSection from '@/components/accordion/accordion-section'
@@ -212,7 +204,7 @@ export default {
   components: {
     CardCutout,
     ButtonToggle,
-    CopyIcon,
+    CopyButton,
     CIDSlider,
     Accordion,
     AccordionSection,
@@ -371,6 +363,9 @@ export default {
 
 .cid-title {
   max-width: 50%;
+  @include medium {
+    max-width: unset;
+  }
   .title {
     font-family: $font_Primary;
     font-size: 1.125rem;
@@ -388,26 +383,12 @@ export default {
       flex-direction: row-reverse;
     }
   }
-  .copy-button {
+  :deep(.copy-button) {
     display: flex;
     margin-left: 0.75rem;
     @include medium {
       margin-left: 0;
       margin-right: 0.5rem;
-    }
-    :deep(svg) {
-      path {
-        transition: opacity 200ms ease;
-        opacity: 0.25;
-        fill: #1B1F12;
-      }
-    }
-    &:hover {
-      :deep(svg) {
-        path {
-          opacity: 1;
-        }
-      }
     }
   }
 }
@@ -617,15 +598,11 @@ export default {
     font-size: 0.8125rem;
     line-height: leading(24, 13);
   }
-  .copy-button {
+  :deep(.copy-button) {
     position: absolute;
     top: 1rem;
     right: 1rem;
   }
 }
 
-.copy-icon {
-  display: block;
-  fill: $grayNurse;
-}
 </style>
