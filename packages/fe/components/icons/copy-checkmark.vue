@@ -6,6 +6,7 @@
 </template>
 
 <script>
+// ====================================================================== Export
 export default {
   name: 'CopyCheckmarkIcon'
 }

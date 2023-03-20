@@ -86,15 +86,15 @@ export default {
 }
 
 .file {
-  fill: rgba(#1B1F12, 0.25);
+  fill: rgba($rangoonGreen, 0.25);
 }
 
 .file-plus {
-  fill: rgba(#1B1F12, 1);
+  fill: rgba($rangoonGreen, 1);
 }
 
 .file-checkmark {
-  fill: #74C3B5;
+  fill: $neptune;
   :deep(.checkmark) {
     fill: transparent;
   }
