@@ -1,5 +1,3 @@
-import CloneDeep from 'lodash/cloneDeep'
-
 // /////////////////////////////////////////////////////////////////////// State
 // ---------------------- https://vuex.vuejs.org/guide/modules.html#module-reuse
 const state = () => ({
@@ -48,30 +46,21 @@ const actions = {
     commit('SET_LAYOUT', 'grid')
   },
   // //////////////////////////////////////////////////////////// getDatasetList
-  async getDatasetList ({ commit, getters, dispatch }, metadata) {
+  async getDatasetList ({ commit, getters, dispatch }) {
     try {
       dispatch('setLoadingStatus', { status: true })
-      const route = metadata.route
-      const query = CloneDeep(route.query)
-      const page = parseInt(query.page || getters.metadata.page)
-      const search = query.search
-      const limit = query.limit || getters.metadata.limit
-      const sort = query.sort || 'data_size,1'
-      const filters = {}
-      Object.keys(getters.filters).forEach((filter) => {
-        if (query.hasOwnProperty(filter)) {
-          filters[filter] = query[filter]
-        }
-      })
-      const response = await this.$axiosAuth.get('/get-dataset-list', {
-        params: {
-          page,
-          ...(search && { search }),
-          ...(limit && { limit }),
-          ...(filters && { filter: filters }),
-          ...(sort && { sort })
-        }
-      })
+      const { compiled: params, query } = await this.$exportSearchAndFiltersFromQuery([
+        { queryKey: 'page', key: 'page', type: 'number', default: getters.metadata.page },
+        { queryKey: 'limit', key: 'limit', type: 'number', default: getters.metadata.limit },
+        { queryKey: 'sort', key: 'sort', default: 'data_size,1' },
+        { queryKey: 'search', key: 'search' },
+        { queryKey: 'datasetSizeMin', group: 'filters', type: 'number' },
+        { queryKey: 'datasetSizeMax', group: 'filters', type: 'number' },
+        { queryKey: 'categories', group: 'filters' },
+        { queryKey: 'fileExtensions', group: 'filters' },
+        { queryKey: 'licenses', group: 'filters' }
+      ])
+      const response = await this.$axiosAuth.get('/get-dataset-list', { params })
       const payload = response.data.payload
       const totalPages = payload.metadata.totalPages
       if (payload.metadata.page > totalPages) {

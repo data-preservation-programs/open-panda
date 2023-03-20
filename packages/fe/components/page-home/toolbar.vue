@@ -138,7 +138,7 @@ export default {
         ],
         searchers: ['search'],
         filters: {
-          clear: ['categories', 'licenses', 'fileExtensions', 'sort', 'limit', 'fullyStored'],
+          clear: ['categories', 'licenses', 'fileExtensions', 'sort', 'limit', 'fullyStored', 'datasetSizeMin', 'datasetSizeMax'],
           override: ['page']
         }
       }

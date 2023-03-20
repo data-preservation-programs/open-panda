@@ -1,6 +1,6 @@
 <template>
   <div
-    v-click-outside="closePanel"
+    v-mousedown-outside="closePanel"
     :class="['filters', { open }, `direction-${openDirection}`, showSearch || showTypeahead ? 'has-search' : 'no-search', `theme-${theme}`]">
 
     <div class="button-c">
@@ -29,7 +29,12 @@
             <IconClose :width="13" :height="13" />
           </button>
         </section>
-        <!-- <DatasetHistogram /> -->
+        <section class="grid-noGutter">
+          <div class="filters-label col-12">
+            <span>Dataset Size</span>
+          </div>
+          <DatasetHistogram />
+        </section>
         <Filterer
           v-for="(filterGroup, parentIndex) in filterGroups"
           :key="filterGroup.id"
@@ -64,7 +69,10 @@
           </section>
         </Filterer>
         <section class="grid-noGutter-right filter-button">
-          <Button class="btn-clear" :button="{type: 'default'}" @click.native="clearAll">
+          <Button
+            class="btn-clear"
+            :button="{type: 'default'}"
+            @click.native="clearAll">
             {{ filterPanelData.labels.clear }}
           </Button>
           <Button
@@ -82,7 +90,7 @@
 // ===================================================================== Imports
 import { mapGetters } from 'vuex'
 
-// import DatasetHistogram from '@/components/dataset-histogram'
+import DatasetHistogram from '@/components/dataset-histogram'
 import Filterer from '@/modules/search/components/filterer'
 import ButtonFilters from '@/components/buttons/button-filters'
 import ButtonToggle from '@/components/buttons/button-toggle'
@@ -97,7 +105,7 @@ export default {
   name: 'Filters',
 
   components: {
-    // DatasetHistogram,
+    DatasetHistogram,
     Filterer,
     ButtonFilters,
     ButtonToggle,
@@ -165,7 +173,7 @@ export default {
       return this.siteContent.general ? this.siteContent.general.filterPanel : false
     },
     filterKeys () {
-      return this.filterGroups.map(group => (group.id))
+      return this.filterGroups.map(group => (group.id)).concat(['page', 'datasetSizeMin', 'datasetSizeMax'])
     },
     disableSearchButton () {
       const filterSelectionsExist = this.$checkIfFilterSelectionsExist(this.filterKeys)
@@ -205,7 +213,7 @@ export default {
     async fetchNewData () {
       await this.$filter('page').for({ index: 0, live: false })
       await this.$applyMultipleFiltersToQuery({
-        filters: this.filterKeys.concat('page'),
+        filters: this.filterKeys.concat(['page']),
         redirect: this.$route.path !== '/' ? '/' : undefined
       })
       this.closePanel()
@@ -300,18 +308,21 @@ export default {
 
 // //////////////////////////////////////////////////////////////// Filter Panel
 .filter-panel {
-  display: none;
+  display: block;
+  visibility: hidden;
   position: absolute;
   width: 70vw;
   max-width: toRem(800);
   right: 0;
   top: 120%;
   z-index: 100;
+  opacity: 0;
   @include medium {
     width: 88vw;
   }
   &.open {
-    display: block;
+    visibility: visible;
+    opacity: 1;
   }
   .direction-right & {
     left: 0;

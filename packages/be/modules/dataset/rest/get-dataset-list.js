@@ -2,21 +2,13 @@ console.log('💡 [endpoint] /get-dataset-list')
 
 // ///////////////////////////////////////////////////////////////////// Imports
 // -----------------------------------------------------------------------------
-const { SendData, ParseQuerySearch, ParseQuerySort, ParseQueryFilters } = require('@Module_Utilities')
+const { SendData, ParseQuerySearch, ParseNumber, ParseQuerySort, ParseQueryFilters } = require('@Module_Utilities')
 const GetDatasetListQuery = require('@Module_Dataset/queries/get-dataset-list')
 
 const MC = require('@Root/config')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // -----------------------------------------------------------------------------
-// ----------------------------------------------------------------- parseNumber
-const parseNumber = (page) => {
-  return new Promise((resolve) => {
-    const parsed = parseInt(page)
-    resolve(isNaN(parsed) ? 1 : parsed)
-  })
-}
-
 // --------------------------------------------------------------------- process
 const process = async (data) => {
   const response = data[0]
@@ -30,7 +22,7 @@ const process = async (data) => {
 }
 
 // ---------------------------------------------------------------- findDatasets
-const findDatasets = async (search = '', page = 1, limit = 10, sort = {}, filters = {}) => {
+const findDatasets = async (search = '', page = 1, limit = 12, sort = {}, filters = {}) => {
   try {
     return process(
       await MC.model.Dataset.aggregate(
@@ -50,10 +42,10 @@ MC.app.get('/get-dataset-list', async (req, res) => {
   try {
     const query = req.query
     const search = await ParseQuerySearch(query.search)
-    const page = await parseNumber(query.page)
-    const limit = await parseNumber(query.limit)
+    const page = await ParseNumber(query.page)
+    const limit = await ParseNumber(query.limit)
     const sort = await ParseQuerySort(query.sort)
-    const filters = await ParseQueryFilters(query.filter, true)
+    const filters = await ParseQueryFilters(query.filters, true)
     const payload = await findDatasets(search, page, limit, sort, filters)
     SendData(res, 200, 'Datasets retrieved succesfully', payload)
   } catch (e) {

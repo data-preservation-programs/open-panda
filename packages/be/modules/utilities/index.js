@@ -137,6 +137,15 @@ const GetFileFromDisk = async (path = false, parseJson = false) => {
   }
 }
 
+// ///////////////////////////////////////////////////////////////// ParseNumber
+const ParseNumber = (number) => {
+  return new Promise((resolve) => {
+    if (!number || number === '') { resolve(undefined) }
+    const parsed = parseInt(number)
+    resolve(isNaN(parsed) ? undefined : parsed)
+  })
+}
+
 // //////////////////////////////////////////////////////////// ParseQuerySearch
 const ParseQuerySearch = (search = '') => {
   return new Promise((resolve) => {
@@ -160,7 +169,10 @@ const ParseQueryFilters = (filters, split = false) => {
     filters = JSON.parse(filters)
     if (split) {
       Object.keys(filters).forEach((filterKey) => {
-        filters[filterKey] = filters[filterKey].split(',')
+        const filter = filters[filterKey]
+        if (typeof filter === 'string') {
+          filters[filterKey] = filter.split(',')
+        }
       })
     }
     resolve(filters)
@@ -250,6 +262,7 @@ module.exports = {
   CopyFiles,
   SecondsToHms,
   GetFileFromDisk,
+  ParseNumber,
   ParseQuerySearch,
   ParseQuerySort,
   ParseQueryFilters,

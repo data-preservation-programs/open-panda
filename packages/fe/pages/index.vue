@@ -125,7 +125,7 @@ export default {
   watch: {
     '$route' () {
       this.$nextTick(() => {
-        this.getDatasetList({ route: this.$route })
+        this.getDatasetList()
         this.scrollToResultList()
       })
     },

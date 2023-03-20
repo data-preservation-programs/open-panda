@@ -1,5 +1,5 @@
 <template>
-  <div :class="['dataset-histogram', { dragging }]">
+  <div v-if="filters" :class="['dataset-histogram', { dragging }]">
     <div class="chart">
 
       <div
@@ -14,8 +14,7 @@
         </div>
       </div>
 
-      <div
-        class="controls">
+      <div class="controls">
         <div
           class="handle lower"
           :style="{ transform: `translateX(${lowerBoundIndex * stepWidth}px)`}"
@@ -44,16 +43,10 @@ import { mapGetters } from 'vuex'
 
 // =================================================================== Functions
 const calculateChartStepWidth = (instance) => {
-  if (instance.$refs.segmentRow && instance.steps.length) {
+  if (instance.$refs.segmentRow) {
     const chartWidth = instance.$refs.segmentRow.getBoundingClientRect().width
-    instance.stepWidth = chartWidth / instance.steps.length
+    instance.stepWidth = chartWidth / instance.segments.length
   }
-}
-
-const exponentialThroughMax = (x, max, start) => {
-  const a = start || 1000000000
-  const b = Math.exp(Math.log(max / a) / max)
-  return a * Math.pow(b, x)
 }
 
 // ====================================================================== Export
@@ -73,61 +66,63 @@ export default {
 
   computed: {
     ...mapGetters({
-      datasetList: 'datasets/datasetList'
+      datasetList: 'datasets/datasetList',
+      filters: 'datasets/filters'
     }),
-    steps () {
-      const steps = []
-      const datasetSizes = this.datasetList.map(dataset => dataset.data_size)
-      const maxDatasetSize = Math.max(...datasetSizes) * 1.5
-      const stepSize = maxDatasetSize / this.bars
-      for (let i = 0; i < 40; i++) {
-        steps.push({
-          min: exponentialThroughMax(i * stepSize, maxDatasetSize),
-          max: exponentialThroughMax((i + 1) * stepSize, maxDatasetSize)
-        })
-      }
-      steps.unshift({
-        min: 0,
-        max: exponentialThroughMax(0, maxDatasetSize)
-      })
-      return steps
-    },
     segments () {
-      const segments = []
-      this.steps.forEach((step) => {
-        const datasetsInStepRange = this.datasetList.filter(dataset => dataset.data_size >= step.min && dataset.data_size < step.max)
-        segments.push(datasetsInStepRange)
-      })
-      return segments
+      return this.filters.histogram
     },
     normalizedSegments () {
-      const lengths = this.segments.map(segment => segment.length)
-      const maxLength = Math.max(...lengths)
-      return lengths.map(l => Math.round((l / maxLength) * 100 * 100) / 100)
+      const counts = this.segments.map(segment => segment.count)
+      const maxLength = Math.max(...counts)
+      return counts.map(x => Math.round((x / maxLength) * 100 * 100) / 100)
     },
     lowerBoundText () {
-      if (this.steps.length) {
-        const formatted = this.$formatBytes(this.steps[this.lowerBoundIndex].min, false)
-        return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
-      }
-      return '-'
+      const formatted = this.$formatBytes(this.segments[this.lowerBoundIndex].min, false)
+      return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
     },
     upperBoundText () {
-      if (this.steps.length) {
-        const index = Math.max(0, this.upperBoundIndex - 1)
-        const step = this.steps[index]
-        const formatted = this.$formatBytes(step.max, false)
-        return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
-      }
-      return '-'
+      const index = Math.max(0, this.upperBoundIndex - 1)
+      const formatted = this.$formatBytes(this.segments[index].max, false)
+      return `${Math.round(parseFloat(formatted.value))} ${formatted.unit}`
     }
   },
 
+  watch: {
+    '$route' () {
+      this.setBoundsFromFieldValue()
+    },
+    segments () {
+      this.$nextTick(() => {
+        this.upperBoundIndex = this.segments.length
+        calculateChartStepWidth(this)
+      })
+    }
+  },
+
+  async created () {
+    await this.$filter('datasetSizeMin').register(
+      'datasetSizeMin', // filterKey
+      this.segments.map(segment => ({ value: segment.min })), // options
+      true, // isSingleOption
+      'query' // action
+    )
+    await this.$filter('datasetSizeMax').register(
+      'datasetSizeMax', // filterKey
+      this.segments.map(segment => ({ value: segment.max })), // options
+      true, // isSingleOption
+      'query' // action
+    )
+    this.setBoundsFromFieldValue()
+  },
+
   mounted () {
-    this.upperBoundIndex = this.segments.length
-    calculateChartStepWidth(this)
-    this.resize = () => { calculateChartStepWidth(this) }
-    window.addEventListener('resize', this.resize)
+    this.$nextTick(() => {
+      this.upperBoundIndex = this.segments.length
+      calculateChartStepWidth(this)
+      this.resize = () => { calculateChartStepWidth(this) }
+      window.addEventListener('resize', this.resize)
+    })
   },
 
   beforeDestroy () {
@@ -135,8 +130,12 @@ export default {
   },
 
   methods: {
+    async setBoundsFromFieldValue () {
+      this.lowerBoundIndex = await this.$filter('datasetSizeMin').get().selected[0] || 0
+      this.upperBoundIndex = await this.$filter('datasetSizeMax').get().selected[0] || this.segments.length
+    },
     mousedown (handle) {
-      document.onmousemove = this.$throttle((e) => { this.drag(e, handle) })
+      document.onmousemove = this.$throttle((e) => { this.drag(e, handle) }, 50)
       document.onmouseup = this.mouseup
       this.dragging = true
     },
@@ -145,14 +144,18 @@ export default {
         const chart = this.$refs.segmentRow.getBoundingClientRect()
         const x = e.clientX - chart.left + (this.stepWidth / 2)
         const y = e.clientY - chart.top
+        let index
         // -50 & 50 is horizontal padding around chart, and -24 & 24 is vertical padding
         if (x >= -50 && x <= chart.width + 50 && y >= -24 && y <= chart.height + 24) {
           if (handle === 'lower') {
-            this.setLowerBound(Math.floor(x / this.stepWidth))
+            index = Math.floor(x / this.stepWidth)
+            this.lowerBoundIndex = Math.max(Math.min(index, this.upperBoundIndex - 1), 0)
           }
           if (handle === 'upper') {
-            this.setUpperBound(Math.floor(x / this.stepWidth))
+            index = Math.floor(x / this.stepWidth)
+            this.upperBoundIndex = Math.min(Math.max(index, this.lowerBoundIndex + 1), this.segments.length)
           }
+          this.updateBounds()
         } else {
           this.mouseup()
         }
@@ -165,11 +168,19 @@ export default {
       document.onmouseup = null
       this.dragging = false
     },
-    setLowerBound (index) {
-      this.lowerBoundIndex = Math.max(Math.min(index, this.upperBoundIndex - 1), 0)
-    },
-    setUpperBound (index) {
-      this.upperBoundIndex = Math.min(Math.max(index, this.lowerBoundIndex + 1), this.steps.length)
+    updateBounds () {
+      const upperBoundIndex = this.upperBoundIndex
+      const segmentCount = this.segments.length
+      this.$filter('datasetSizeMin').for({
+        instance: this,
+        index: this.lowerBoundIndex,
+        live: false
+      })
+      this.$filter('datasetSizeMax').for({
+        instance: this,
+        index: upperBoundIndex >= segmentCount ? upperBoundIndex - 1 : upperBoundIndex,
+        live: false
+      })
     }
   }
 }
