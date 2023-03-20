@@ -203,7 +203,7 @@
 
       <!-- mobile -->
       <div v-if="mobile" class="inspect-file-mobile">
-        <Tooltip align="right" :link="zstLink" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
+        <CidInspectTooltip align="right" :btn-text="content.tooltipBtnText" :tooltip-text="content.tooltipText" />
       </div>
 
     </div>
