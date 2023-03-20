@@ -16,7 +16,7 @@
         :key="`text-${index}`"
         class="breadcrumb text">
         <span class="slug">{{ limitChars(50, link.text) }}</span>
-        <span class="mobile-slug">{{ limitChars(20, link.text) }}</span>
+        <span class="mobile-slug">{{ limitChars(12, link.text) }}</span>
       </div>
 
       <div
@@ -126,6 +126,10 @@ export default {
   align-items: center;
   margin-top: 1.75rem;
   padding-bottom: 1.25rem;
+  @include mini {
+    justify-content: flex-end;
+    padding-bottom: 0.375rem;
+  }
 }
 
 .breadcrumb {
@@ -144,6 +148,9 @@ export default {
   @include fontWeight_Regular;
   line-height: leading(21, 14);
   margin-right: 0.25rem;
+  @include tiny {
+    font-size: 0.8125rem;
+  }
 }
 
 .divider {

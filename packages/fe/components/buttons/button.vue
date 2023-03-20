@@ -33,7 +33,7 @@ export default {
     button: {
       /**
        * text
-       * type: solid, solid-tear, default, outline
+       * type: solid, solid-tear, default, outline, light
        * disabled: Bool
        */
       type: Object,
@@ -155,6 +155,43 @@ export default {
   &:hover {
     background-color: $rangoonGreen;
     color: white;
+  }
+}
+
+.type__light {
+  background-color: white;
+  padding: toRem(7) toRem(20);
+  border-radius: $borderRadius;
+  font-family: $font_Primary;
+  @include fontWeight_Medium;
+  @include fontSize_16;
+  line-height: leading(24, 16);
+  color: $rangoonGreen;
+  &:not([disabled]) {
+    &:not(.has-icon):hover {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
+    }
+  }
+  &[disabled] {
+    opacity: 0.5;
+    cursor: no-drop;
+  }
+  :deep(.arrow-icon) {
+    path {
+      transition: 100ms ease;
+      fill: $rangoonGreen;
+    }
+  }
+  &:hover {
+    background-color: $rangoonGreen;
+    color: white;
+    :deep(.arrow-icon) {
+      path {
+        fill: white;
+      }
+    }
   }
 }
 </style>

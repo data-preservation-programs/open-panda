@@ -1,11 +1,11 @@
 <template>
-  <div id="site-header">
+  <div id="site-header" :class="[{ 'has-breadcrumbs': hasBreadcrumbs }, { 'singular-page': singular }]">
 
     <!-- ======================================================== Mobile nav -->
     <NavMobile :header="headerData" :class="['mobile-nav', {'mobile-nav-open': navigationOpen}]" />
 
     <!-- ============================================================ Header -->
-    <header :class="['grid-middle-center-spaceBetween-noGutter', { 'has-breadcrumbs': hasBreadcrumbs }]">
+    <header class="grid-middle-center-spaceBetween-noGutter">
       <Filters class="show-desktop-only" open-direction="right" :show-typeahead="true" />
 
       <div class="logo-container">
@@ -89,13 +89,17 @@ export default {
   computed: {
     ...mapGetters({
       siteContent: 'general/siteContent',
-      navigationOpen: 'general/navigationOpen'
+      navigationOpen: 'general/navigationOpen',
+      dataset: 'dataset/dataset'
     }),
     headerData () {
       return this.siteContent.general.header
     },
     navLinks () {
       return this.headerData.nav
+    },
+    singular () {
+      return this.dataset && !['about', 'alpha', 'how-to-download', '/', 'privacy', 'terms'].includes(this.$route.path)
     }
   },
 
@@ -137,10 +141,10 @@ export default {
   padding-bottom: toRem(70);
   @include medium {
     padding-top: toRem(10);
-    padding-bottom: toRem(10);
+    padding-bottom: toRem(27);
   }
-  &.has-breadcrumbs {
-    padding-bottom: 0.875rem;
+  &.singular-page {
+    padding-bottom: 0;
   }
 }
 

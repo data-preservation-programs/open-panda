@@ -139,6 +139,13 @@ export default {
     this.scrollToResultList()
     this.$nextTick(() => {
       this.layout = this.$ls.get('layout') || 'grid'
+      this.setReturnToSearchButton({
+        button: {
+          text: 'Back',
+          type: 'light',
+          icon: 'arrow'
+        }
+      })
     })
   },
 
@@ -146,7 +153,8 @@ export default {
     ...mapActions({
       resetStore: 'datasets/resetStore',
       setLoadingStatus: 'datasets/setLoadingStatus',
-      getDatasetList: 'datasets/getDatasetList'
+      getDatasetList: 'datasets/getDatasetList',
+      setReturnToSearchButton: 'datasets/setReturnToSearchButton'
     }),
     stopLoading () {
       this.$nextTick(() => {

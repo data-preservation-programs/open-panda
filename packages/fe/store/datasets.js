@@ -14,7 +14,8 @@ const state = () => ({
   filters: false,
   sortOptions: false,
   limitOptions: false,
-  layout: 'grid'
+  layout: 'grid',
+  returnToSearchButton: false
 })
 
 // ///////////////////////////////////////////////////////////////////// Getters
@@ -28,7 +29,8 @@ const getters = {
   filters: state => state.filters,
   sortOptions: state => state.sortOptions,
   limitOptions: state => state.limitOptions,
-  layout: state => state.layout
+  layout: state => state.layout,
+  returnToSearchButton: state => state.returnToSearchButton
 }
 
 // ///////////////////////////////////////////////////////////////////// Actions
@@ -122,6 +124,10 @@ const actions = {
   // ////////////////////////////////////////////////////////// setLoadingStatus
   setLoadingStatus ({ commit }, payload) {
     commit('SET_LOADING_STATUS', payload)
+  },
+  // /////////////////////////////////////////////////// setReturnToSearchButton
+  setReturnToSearchButton ({ commit }, payload) {
+    commit('SET_RETURN_TO_SEARCH_BUTTON', payload)
   }
 }
 
@@ -160,6 +166,9 @@ const mutations = {
   },
   SET_PAGE (state, page) {
     state.metadata.page = page
+  },
+  SET_RETURN_TO_SEARCH_BUTTON (state, payload) {
+    state.returnToSearchButton = payload.button
   }
 }
 
