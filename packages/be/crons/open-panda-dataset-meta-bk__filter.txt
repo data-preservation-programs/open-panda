@@ -1,0 +1,5 @@
+# Filtering rules (Arrange the order of filter rules with the most restrictive first and work down.)
++ *.zst
+
+# Exclude everything else
+- **

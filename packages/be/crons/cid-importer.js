@@ -31,8 +31,8 @@ const Pool = WorkerPool.pool(Path.resolve(__dirname, './cid-batch-import.js'), {
   maxWorkers: numThreads,
   workerType: 'thread'
 })
-
 let startTime
+let manifestLength = 0
 
 // ////////////////////////////////////////////////////////////////// Initialize
 MC.app = Express()
@@ -63,42 +63,70 @@ require('@Module_Cidtemp')
 const { SecondsToHms } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
+// ------------------------------------------------------- getCurrentImportTotal
+const getCurrentImportTotal = (results) => {
+  const len = results.length
+  let dbTotalImported = 0
+  let dbTotalModified = 0
+  for (let i = 0; i < len; i++) {
+    const result = results[i]
+    if (result && result.databaseWriteResult) {
+      const newlyImported = result.databaseWriteResult.nUpserted || 0
+      const newlyModified = result.databaseWriteResult.nModified || 0
+      dbTotalImported = dbTotalImported + newlyImported
+      dbTotalModified = dbTotalModified + newlyModified
+    }
+  }
+  return {
+    imported: dbTotalImported,
+    modified: dbTotalModified,
+    total: dbTotalImported + dbTotalModified
+  }
+}
+
 // --------------------------------------------------- performCidBatchOperations
-const performCidBatchOperations = (manifest, batchNo, tasks, results) => {
+const performCidBatchOperations = (manifest, batchNo, tasks, results, retryQueue, inRetryLoop) => {
   try {
+    if (inRetryLoop) {
+      console.log('The following batch previously failed and is being retried:')
+    }
     const batchSize = argv.pagesize || 1000
     const batch = manifest.slice(0, batchSize)
     tasks.push(
-      Pool.exec('processManifestBatch', [batch, batchNo]).then((result) => {
+      Pool.exec('processManifestBatch', [batch, batchNo]).then(async (result) => {
+        if (!result || !result.databaseWriteResult || !result.batchBackupResult) {
+          throw new Error(`An issue occured with batch ${batchNo}`)
+        }
         results.push(result)
-        imported = result.databaseWriteResult.nUpserted + result.databaseWriteResult.nModified
-        console.log(`Batch ${result.batch} finished | ${imported} CIDs were imported to the database in this batch`)
-      }).catch((err) => {
+        const imported = `${result.databaseWriteResult.nUpserted + result.databaseWriteResult.nModified} CIDs were imported to the db in this batch`
+        const activeTasks = `${Pool.stats().activeTasks} batches currently being processed`
+        const pendingTasks = `${Pool.stats().pendingTasks} pending batches remaining`
+        const currentTotals = await getCurrentImportTotal(results)
+        console.log(`Batch ${result.batchNo} finished | ${imported} | ${result.batchBackupResult.message} | ${activeTasks} | ${pendingTasks} | ${currentTotals.total} of ${manifestLength} CIDs completed`)
+      }).catch((e) => {
+        retryQueue.push(batch)
         console.log('================================ Error returned by worker')
-        console.error(err)
+        console.error(e)
       })
     )
     manifest.splice(0, batchSize)
     if (manifest.length) {
-      performCidBatchOperations(manifest, ++batchNo, tasks, results)
+      performCidBatchOperations(manifest, ++batchNo, tasks, results, retryQueue, inRetryLoop)
+    } else if (retryQueue.length) {
+      performCidBatchOperations(retryQueue, 1, tasks, results, [], true)
     } else {
       Promise.all(tasks).catch((e) => {
         console.log('=========================== Error returned by worker pool')
         console.log(e)
-      }).then(() => {
-        Pool.terminate()
+        process.exit(0)
+      }).then(async () => {
         const len = results.length
-        console.log(results)
-        let dbTotalImported = 0
-        let dbTotalModified = 0
-        for (let i = 0; i < len; i++) {
-          const result = results[i]
-          dbTotalImported = dbTotalImported + result.databaseWriteResult.nUpserted
-          dbTotalModified = dbTotalModified + result.databaseWriteResult.nModified
-        }
         const endTime = process.hrtime()[0]
+        const finalResults = await getCurrentImportTotal(results)
         console.log(`📒 CID import finished | took ${SecondsToHms(endTime - startTime)}`)
-        console.log(`A total of ${dbTotalImported + dbTotalModified} CIDs were processed by the database | ${dbTotalImported} imported | ${dbTotalModified} modified`)
+        console.log(`A total of ${finalResults.total} CIDs were processed by the database | ${finalResults.imported} imported | ${finalResults.modified} modified` | `${finalResults.total} total CIDs successfully backed up`)
+        console.log(`${manifestLength - finalResults.total} CIDs either already existed in the database or could not be retrieved and have been cached for the next import.`)
+        Pool.terminate()
         process.exit(0)
       })
     }
@@ -123,8 +151,9 @@ const getCidFilesFromManifestList = async () => {
     }
     // reverse the array to import oldest CIDs first
     manifest.reverse()
+    manifestLength = manifest.length
     // pass manifest on to the worker pool
-    performCidBatchOperations(manifest, 1, [], [])
+    performCidBatchOperations(manifest, 1, [], [], [], false)
   } catch (e) {
     console.log('===================== [Function: getCidFilesFromManifestList]')
     console.log(e)
@@ -184,36 +213,40 @@ const CidImporter = async () => {
     startTime = process.hrtime()[0]
     const limit = argv.pagesize || 1000
     const maxPages = argv.maxpages || Infinity
-    // console.log(`📖 CID import started | page size of ${limit} and page maximum ${maxPages}.`)
-    // // Get the latest upload entry from the database
-    // // const mostRecentCid = await MC.model.Cidtemp.find().sort({ web3storageCreatedAt: -1 }).limit(1) // TODO : uncomment line and replace with override option
-    // const mostRecentDocument = false // mostRecentCid[0]
-    // console.log('Most recent CID imported:')
-    // console.log(mostRecentDocument)
-    // const lastSavedDate = mostRecentDocument ? new Date(mostRecentDocument.web3storageCreatedAt).getTime() : 0
-    // // Delete the outdated manifest file if it exists
-    // // await deleteTemporaryFile('cid-manifest.txt')
-    // if (Fs.existsSync(`${CID_TMP_DIR}/cid-manifest.txt`)) {
-    //   Fs.unlinkSync(`${CID_TMP_DIR}/cid-manifest.txt`)
-    // }
-    // /**
-    //  * Build a manifest list of all cids not yet uploaded to the database:
-    //  * args:
-    //  *  params passed to the initial api upload list request
-    //  *  limit number of pages retrieved. Set to Infinity to retrieve all CIDs since the most recently uploaded saved in the db
-    //  *  the most recent upload saved to our database (so as to request only more newer uploads)
-    //  */
-    // await createManifestFromWeb3StorageCids({
-    //   size: limit,
-    //   page: 1,
-    //   sortBy: 'Date',
-    //   sortOrder: 'Desc'
-    // }, maxPages, lastSavedDate)
-    // /**
-    //  * Retrieve and unpack files one by one from the manifest list and bulkWrite contents to the database
-    //  * args:
-    //  *  limit number of entries to the database (this will only be used for test)
-    //  */
+    console.log(`📖 CID import started | page size of ${limit} and page maximum ${maxPages}.`)
+    // Get the latest upload entry from the database
+    const mostRecentCid = await MC.model.Cidtemp.find().sort({ web3storageCreatedAt: -1 }).limit(1)
+    let mostRecentDocument = mostRecentCid[0]
+    if (argv.all) { 
+      mostRecentDocument = false 
+    } else {
+      console.log('Most recent CID imported:')
+      console.log(mostRecentDocument)
+    }
+    const lastSavedDate = mostRecentDocument ? new Date(mostRecentDocument.web3storageCreatedAt).getTime() : 0
+    // Delete the outdated manifest file if it exists
+    // await deleteTemporaryFile('cid-manifest.txt')
+    if (Fs.existsSync(`${CID_TMP_DIR}/cid-manifest.txt`)) {
+      Fs.unlinkSync(`${CID_TMP_DIR}/cid-manifest.txt`)
+    }
+    /**
+     * Build a manifest list of all cids not yet uploaded to the database:
+     * args:
+     *  params passed to the initial api upload list request
+     *  limit number of pages retrieved. Set to Infinity to retrieve all CIDs since the most recently uploaded saved in the db
+     *  the most recent upload saved to our database (so as to request only more newer uploads)
+     */
+    await createManifestFromWeb3StorageCids({
+      size: limit,
+      page: 1,
+      sortBy: 'Date',
+      sortOrder: 'Desc'
+    }, maxPages, lastSavedDate)
+    /**
+     * Retrieve and unpack files one by one from the manifest list and bulkWrite contents to the database
+     * args:
+     *  limit number of entries to the database (this will only be used for test)
+     */
     await getCidFilesFromManifestList()
   } catch (e) {
     console.log('===================================== [Function: CidImporter]')

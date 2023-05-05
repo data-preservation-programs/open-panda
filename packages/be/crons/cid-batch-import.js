@@ -46,10 +46,11 @@ try {
 // ///////////////////////////////////////////////////////////////////// Modules
 require('@Module_Database')
 require('@Module_Cidtemp')
+const { GetFileFromDisk } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------------ retrieveCidFiles
-const retrieveCidFile = async (line, retryNo = 0) => {
+const retrieveCidFile = async (line, batchNo, retryNo = 0) => {
   try {
     if (retryNo > 0) {
       console.log(`Retry number ${retryNo}`)
@@ -61,34 +62,34 @@ const retrieveCidFile = async (line, retryNo = 0) => {
     })
     // if a file already exists with this name in the temp folder,
     // delete it to make way for an updated version
-    await deleteTemporaryFile(CID_TMP_DIR, upload.name)
+    await deleteTemporaryFile(`batch_${batchNo}/${upload.name}`)
     // write file data to new zst file in the temp folder
-    await Pipeline(response.data, Fs.createWriteStream(`${CID_TMP_DIR}/${upload.name}`))
+    await Pipeline(response.data, Fs.createWriteStream(`${CID_TMP_DIR}/batch_${batchNo}/${upload.name}`))
     // unpack the zst and return the inner json
-    return await unpackRetrievedFile(CID_TMP_DIR, {
+    return await unpackRetrievedFile({
       cid: upload.cid,
       name: upload.name,
       updated: upload.updated,
       created: upload.created
-    })
+    }, batchNo)
   } catch (e) {
-    console.log('====================================== [Function: unpackCids]')
-    console.log(e)
     if (retryNo < 10) {
       console.log(`Error retrieving CID ${JSON.parse(line).cid}. Retrying retrieval...`)
-      await retrieveCidFile(CID_TMP_DIR, line, retryNo + 1)
+      await retrieveCidFile(line, batchNo, retryNo + 1)
     } else {
       const cid = JSON.parse(line).cid
+      await cacheFailedCID(cid)
+      console.log('==================================== [Function: unpackCids]')
       console.log(`Could not retrieve CID ${cid}. Max retries reached.`)
-      await cacheFailedCID(CID_TMP_DIR, cid)
+      console.log(e)
     }
   }
 }
 
 // --------------------------------------------------------------- unpackZstFile
-const unpackZstFile = (file) => {
+const unpackZstFile = (file, batchNo) => {
   return new Promise((resolve, reject) => {
-    const unzstd = Spawn('unzstd', [`../tmp/cid-files/${file.name}`])
+    const unzstd = Spawn('unzstd', [`../tmp/cid-files/batch_${batchNo}/${file.name}`])
     const errors = []
     unzstd.stderr.on('data', (msg) => {
       errors.push(`Error unpacking ${file.name}: ${msg.toString()}`)
@@ -104,13 +105,11 @@ const unpackZstFile = (file) => {
 }
 
 // --------------------------------------------------------- unpackRetrievedFile
-const unpackRetrievedFile = async (file) => {
+const unpackRetrievedFile = async (file, batchNo) => {
   try {
     const jsonFilename = file.name.substring(0, file.name.length - 4)
-    await deleteTemporaryFile(jsonFilename)
-    await unpackZstFile(file)
-    // await deleteTemporaryFile(file.name) // TODO : don't delete zst file in tmp directory
-    const json = await GetFileFromDisk(`${CID_TMP_DIR}/${jsonFilename}`, true)
+    await unpackZstFile(file, batchNo)
+    const json = await GetFileFromDisk(`${CID_TMP_DIR}/batch_${batchNo}/${jsonFilename}`, true)
     const fileMetadata = {
       piece_cid: json.piece_cid,
       payload_cid: json.payload_cid,
@@ -120,7 +119,7 @@ const unpackRetrievedFile = async (file) => {
       web3storageCreatedAt: file.created,
       web3storageUpdatedAt: file.updated
     }
-    await deleteTemporaryFile(jsonFilename) // TODO : do delete unpacked json file in tmp directory
+    await deleteTemporaryFile(`batch_${batchNo}/${jsonFilename}`)
     return fileMetadata
   } catch (e) {
     console.log('============================ [Function: unpackRetrievedFiles]')
@@ -139,10 +138,10 @@ const cacheFailedCID = async (cid) => {
 }
 
 // --------------------------------------------------------- deleteTemporaryFile
-const deleteTemporaryFile = async (filename) => {
+const deleteTemporaryFile = async (path) => {
   try {
-    if (Fs.existsSync(`${CID_TMP_DIR}/${filename}`)) {
-      Fs.unlinkSync(`${CID_TMP_DIR}/${filename}`)
+    if (Fs.existsSync(`${CID_TMP_DIR}/${path}`)) {
+      Fs.unlinkSync(`${CID_TMP_DIR}/${path}`)
     }
   } catch (e) {
     console.log('============================ [Function: deleteTemporaryFile ]')
@@ -173,12 +172,35 @@ const writeBatchMetadataToDatabase = async (retrievedFiles) => {
   }
 }
 
-// ------------------------------------------------ backupFilesToBackblazeBucket
-const backupFilesToBackblazeBucket = async (retrievedFiles) => {
+// ------------------------------------------------- backupCidsToBackblazeBucket
+const backupCidsToBackblazeBucket = async (batchNo) => {
   try {
-    console.log('backup started')
+    const rclone = Spawn('rclone', [
+      'copy',
+      `${MC.tmpRoot}/cid-files/batch_${batchNo}`,
+      process.env.B2_OPENPANDA_BUCKET,
+      '--filter-from',
+      `${MC.packageRoot}/crons/open-panda-dataset-meta-bk__filter.txt`
+      // process.env.B2_OPENPANDA_FILTER
+    ])
+    const errors = []
+    for await (const msg of rclone.stderr) {
+      errors.push(msg.toString())
+    }
+    return await new Promise((resolve, reject) => {
+      rclone.on('exit', (code) => {
+        const err = errors.length > 0 && code !== 0
+        err ? reject({
+          success: false,
+          message: errors.join('\n\n')
+        }) : resolve({
+          success: true,
+          message: `✓ CID batch ${batchNo} backup successful`
+        })
+      })
+    })
   } catch (e) {
-    console.log('==================== [Function: backupFilesToBackblazeBucket]')
+    console.log('===================== [Function: backupCidsToBackblazeBucket]')
     console.log(e)
   }
 }
@@ -187,31 +209,45 @@ const backupFilesToBackblazeBucket = async (retrievedFiles) => {
 // -------------------------------------------------------- processManifestBatch
 const processManifestBatch = async (batch, batchNo) => {
   try {
+    // make a temporary subdirectory for this batch
+    if (!Fs.existsSync(`${CID_TMP_DIR}/batch_${batchNo}`)) {
+      Fs.mkdirSync(`${CID_TMP_DIR}/batch_${batchNo}`)
+    }
+    // individually download each CID file in the batch
+    // save zst to a temp/cid-files/batch_x folder, extract and return metadata
+    // to the retrieved array
     const len = batch.length
-    const uploaded = Math.floor(Math.random() * len)
-    const modified = len - uploaded
-    console.log(len, uploaded, modified)
-    // const retrievedFiles = []
-    // for (let i = 0; i < len; i++) {
-    //   const cidManifestItem = batch[i] 
-    //   const retrieved = await retrieveCidFile(cidManifestItem)
-    //   if (retrieved) { retrievedFiles.push(retrieved) }
-    // }
-    // console.log(retrievedFiles)
-    // const databaseWriteResult = await writeBatchMetadataToDatabase(retrievedFiles)
-    // const batchBackupResult = await backupFilesToBackblazeBucket(retrievedFiles)
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const result = new WorkerPool.Transfer({ 
-          batch: batchNo, 
-          databaseWriteResult: {
-            nUpserted: uploaded,
-            nModified: modified
-          }, 
-          batchBackupResult: false 
+    const retrievedFiles = []
+    for (let i = 0; i < len; i++) {
+      const cidManifestItem = batch[i] 
+      const retrieved = await retrieveCidFile(cidManifestItem, batchNo)
+      if (retrieved) { retrievedFiles.push(retrieved) }
+    }
+    if (!retrievedFiles.length) {
+      throw new Error('No CIDs could be retrieved from this batch')
+    }
+    // save batch metadata to the database
+    const databaseWriteResult = await writeBatchMetadataToDatabase(retrievedFiles)
+    // backup zst files in the corresponding temp/cid-files/batch_x folder to backblaze
+    const batchBackupResult = await backupCidsToBackblazeBucket(batchNo)
+    // if the backup is successful clean up temp folder by deleting batch
+    if (batchBackupResult && batchBackupResult.success) {
+      if (Fs.existsSync(`${CID_TMP_DIR}/batch_${batchNo}`)) {
+        Fs.rm(`${CID_TMP_DIR}/batch_${batchNo}`, { recursive: true, force: true })
+      }
+    }
+    // return results to the main thread
+    return await new Promise((resolve, reject) => {
+      if (!databaseWriteResult || !batchBackupResult) {
+        reject()
+      } else {
+        const result = new WorkerPool.Transfer({
+          batchNo: batchNo, 
+          databaseWriteResult: databaseWriteResult,
+          batchBackupResult: batchBackupResult
         })
         resolve(result)
-      }, 3000)
+      }
     })
   } catch (e) {
     console.log('============================ [Function: processManifestBatch]')
