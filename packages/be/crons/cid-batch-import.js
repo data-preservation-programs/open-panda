@@ -235,17 +235,20 @@ const processManifestBatch = async (batch, batchNo) => {
         Fs.rm(`${CID_TMP_DIR}/batch_${batchNo}`, { recursive: true, force: true })
       }
     }
+    let result = undefined
+    if (databaseWriteResult && batchBackupResult) {
+      result = {
+        batchNo: batchNo, 
+        databaseWriteResult: databaseWriteResult,
+        batchBackupResult: batchBackupResult
+      }
+    }
     // return results to the main thread
     return await new Promise((resolve, reject) => {
-      if (!databaseWriteResult || !batchBackupResult) {
-        reject()
+      if (result) {
+        resolve(new WorkerPool.Transfer(result))
       } else {
-        const result = new WorkerPool.Transfer({
-          batchNo: batchNo, 
-          databaseWriteResult: databaseWriteResult,
-          batchBackupResult: batchBackupResult
-        })
-        resolve(result)
+        reject()
       }
     })
   } catch (e) {

@@ -1,5 +1,6 @@
 // ///////////////////////////////////////////////////// Imports + general setup
 // -----------------------------------------------------------------------------
+const Fs = require('fs-extra')
 const WorkerPool = require('workerpool')
 
 let startTime
@@ -18,10 +19,10 @@ const SecondsToHms = (seconds) => {
 }
 
 // ---------------------------------------------------------------- LogPoolStats
-const logPoolStatus = (batchNo) => {
+const logPoolStatus = (Pool, num) => {
   const activeTasks = `${Pool.stats().activeTasks} batches currently being processed`
   const pendingTasks = `${Pool.stats().pendingTasks} pending batches remaining`
-  console.log(`Batch ${batchNo} finished | ${activeTasks} | ${pendingTasks}`)
+  console.log(`Batch ${num} finished | ${activeTasks} | ${pendingTasks}`)
 }
 
 // ----------------------------------------------------- ScheduleBatchOperations
@@ -42,19 +43,20 @@ const scheduleBatchOperation = (
     }
     const batchSize = options.batchSize || 10
     const batch = manifest.slice(0, batchSize)
+    const num = batchNo
     tasks.push(
-      Pool.exec(operation, [batch, batchNo]).then(async (result) => {
+      Pool.exec(operation, [batch, num]).then(async (result) => {
         if (!result) {
-          throw new Error(`An issue occured with batch ${batchNo}`)
+          throw new Error(`An issue occured with batch ${num}`)
         }
         results.push(result)
-        logPoolStatus(batchNo)
-        if (typeof options.onBatchComplete === 'function') {
-          options.onBatchComplete(result, batchNo, results)
+        logPoolStatus(Pool, num)
+        if (typeof options.onBatchResult === 'function') {
+          options.onBatchResult(result, num, results)
         }
       }).catch((e) => {
-        errors.push({ batchNo, batch, error: e })
-        console.log(`Error returned by worker: Could not process batch ${batchNo}.`)
+        errors.push({ num, batch, error: e })
+        console.log(`Error returned by worker: Could not process batch ${num}.`)
         console.error(e)
       })
     )
@@ -99,6 +101,7 @@ const CreateWorkerPool = async (pathToScript, operation, manifest, options) => {
   }
 }
 
+// --------------------------------------------------------------------- Exports
 module.exports = {
   CreateWorkerPool
 }

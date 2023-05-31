@@ -18,7 +18,6 @@ const Stream = require('stream')
 const Pipeline = Util.promisify(Stream.pipeline)
 const readline = require('node:readline')
 const argv = require('minimist')(process.argv.slice(2))
-
 const { CreateWorkerPool } = require('./worker-pool-batch-processor.js')
 
 require('dotenv').config({ path: Path.resolve(__dirname, '../.env') })
@@ -85,12 +84,12 @@ const logCurrentImportTotals = (currentResult, batchNo, resultsToDate) => {
 const logFinalImportResults = (results, errors) => {
   console.log(`📒 CID import & backup finished | ${results.length} total batches processed`)
   const len = errors.length
-  failedCids = []
+  failedBatches = []
   for (let i = 0; i < len; i++) {
     const error = errors[i]
-    failedCids.push(error.batch)
+    failedBatches.push(error.batch)
   }
-  failedCids.flat()
+  const failedCids = failedBatches.flat()
   if (failedCids.length) {
     console.log(`${failedCids.length} CID imports/backups were unsuccessful:`)
     console.log(failedCids)
@@ -117,7 +116,7 @@ const getCidFilesFromManifestList = async () => {
     const options = {
       threads: argv.threads,
       batchSize: argv.pagesize || 1000,
-      onBatchComplete: logCurrentImportTotals,
+      onBatchResult: logCurrentImportTotals,
       onWorkerPoolComplete: logFinalImportResults
     }
     CreateWorkerPool(Path.resolve(__dirname, './cid-batch-import.js'), 'processManifestBatch', manifest, options)
