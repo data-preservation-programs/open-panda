@@ -205,7 +205,6 @@ const backupCidsToBackblazeBucket = async (batchNo) => {
   }
 }
 
-// ////////////////////////////////////////////////////////////////////// Worker
 // -------------------------------------------------------- processManifestBatch
 const processManifestBatch = async (batch, batchNo) => {
   try {
@@ -255,7 +254,7 @@ const processManifestBatch = async (batch, batchNo) => {
   }
 }
 
-// ////////////////////////////////////////////////////////////////// Initialize
+// /////////////////////////////////////////////////////////// Initialize Worker
 // -----------------------------------------------------------------------------
 WorkerPool.worker({
   processManifestBatch: processManifestBatch

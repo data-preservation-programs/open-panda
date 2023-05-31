@@ -18,7 +18,8 @@ const Stream = require('stream')
 const Pipeline = Util.promisify(Stream.pipeline)
 const readline = require('node:readline')
 const argv = require('minimist')(process.argv.slice(2))
-const WorkerPool = require('workerpool')
+
+const { CreateWorkerPool } = require('./worker-pool-batch-processor.js')
 
 require('dotenv').config({ path: Path.resolve(__dirname, '../.env') })
 
@@ -26,12 +27,6 @@ const MC = require('../config')
 
 const CID_TMP_DIR = Path.resolve(`${MC.packageRoot}/tmp/cid-files`)
 
-const numThreads = argv.threads || 16
-const Pool = WorkerPool.pool(Path.resolve(__dirname, './cid-batch-import.js'), { 
-  maxWorkers: numThreads,
-  workerType: 'thread'
-})
-let startTime
 let manifestLength = 0
 
 // ////////////////////////////////////////////////////////////////// Initialize
@@ -63,78 +58,44 @@ require('@Module_Cidtemp')
 const { SecondsToHms } = require('@Module_Utilities')
 
 // /////////////////////////////////////////////////////////////////// Functions
-// ------------------------------------------------------- getCurrentImportTotal
-// const getCurrentImportTotal = (results) => {
-//   const len = results.length
-//   let dbTotalImported = 0
-//   let dbTotalModified = 0
-//   for (let i = 0; i < len; i++) {
-//     const result = results[i]
-//     if (result && result.databaseWriteResult) {
-//       const newlyImported = result.databaseWriteResult.nUpserted || 0
-//       const newlyModified = result.databaseWriteResult.nModified || 0
-//       dbTotalImported = dbTotalImported + newlyImported
-//       dbTotalModified = dbTotalModified + newlyModified
-//     }
-//   }
-//   return {
-//     imported: dbTotalImported,
-//     modified: dbTotalModified,
-//     total: dbTotalImported + dbTotalModified
-//   }
-// }
+// ------------------------------------------------------ logCurrentImportTotals
+const logCurrentImportTotals = (currentResult, batchNo, resultsToDate) => {
+  const len = resultsToDate.length
+  let dbTotalImported = 0
+  let dbTotalModified = 0
+  for (let i = 0; i < len; i++) {
+    const result = resultsToDate[i]
+    if (result && result.databaseWriteResult) {
+      const newlyImported = result.databaseWriteResult.nUpserted || 0
+      const newlyModified = result.databaseWriteResult.nModified || 0
+      dbTotalImported = dbTotalImported + newlyImported
+      dbTotalModified = dbTotalModified + newlyModified
+    }
+  }
+  if (
+    typeof currentResult === 'object' &&
+    typeof currentResult.databaseWriteResult === 'object' &&
+    typeof currentResult.batchBackupResult === 'object'
+  ) {
+    const currentImportStats = `${currentResult.databaseWriteResult.nUpserted + currentResult.databaseWriteResult.nModified} CIDs were imported to the db in this batch`
+    console.log(` ${currentImportStats} | ${currentResult.batchBackupResult.message} | ${dbTotalImported + dbTotalModified} of ${manifestLength} CIDs completed`)
+  }
+}
 
-// --------------------------------------------------- performCidBatchOperations
-// const performCidBatchOperations = (manifest, batchNo, tasks, results, retryQueue, inRetryLoop) => {
-//   try {
-//     if (inRetryLoop) {
-//       console.log('The following batch previously failed and is being retried:')
-//     }
-//     const batchSize = argv.pagesize || 1000
-//     const batch = manifest.slice(0, batchSize)
-//     tasks.push(
-//       Pool.exec('processManifestBatch', [batch, batchNo]).then(async (result) => {
-//         if (!result || !result.databaseWriteResult || !result.batchBackupResult) {
-//           throw new Error(`An issue occured with batch ${batchNo}`)
-//         }
-//         results.push(result)
-//         const imported = `${result.databaseWriteResult.nUpserted + result.databaseWriteResult.nModified} CIDs were imported to the db in this batch`
-//         const activeTasks = `${Pool.stats().activeTasks} batches currently being processed`
-//         const pendingTasks = `${Pool.stats().pendingTasks} pending batches remaining`
-//         const currentTotals = await getCurrentImportTotal(results)
-//         console.log(`Batch ${result.batchNo} finished | ${imported} | ${result.batchBackupResult.message} | ${activeTasks} | ${pendingTasks} | ${currentTotals.total} of ${manifestLength} CIDs completed`)
-//       }).catch((e) => {
-//         retryQueue.push(batch)
-//         console.log('================================ Error returned by worker')
-//         console.error(e)
-//       })
-//     )
-//     manifest.splice(0, batchSize)
-//     if (manifest.length) {
-//       performCidBatchOperations(manifest, ++batchNo, tasks, results, retryQueue, inRetryLoop)
-//     } else if (retryQueue.length) {
-//       performCidBatchOperations(retryQueue, 1, tasks, results, [], true)
-//     } else {
-//       Promise.all(tasks).catch((e) => {
-//         console.log('=========================== Error returned by worker pool')
-//         console.log(e)
-//         process.exit(0)
-//       }).then(async () => {
-//         const len = results.length
-//         const endTime = process.hrtime()[0]
-//         const finalResults = await getCurrentImportTotal(results)
-//         console.log(`📒 CID import finished | took ${SecondsToHms(endTime - startTime)}`)
-//         console.log(`A total of ${finalResults.total} CIDs were processed by the database | ${finalResults.imported} imported | ${finalResults.modified} modified` | `${finalResults.total} total CIDs successfully backed up`)
-//         console.log(`${manifestLength - finalResults.total} CIDs either already existed in the database or could not be retrieved and have been cached for the next import.`)
-//         Pool.terminate()
-//         process.exit(0)
-//       })
-//     }
-//   } catch (e) {
-//     console.log('======================= [Function: performCidBatchOperations]')
-//     console.log(e)
-//   }
-// }
+const logFinalImportResults = (results, errors) => {
+  console.log(`📒 CID import & backup finished | ${results.length} total batches processed`)
+  const len = errors.length
+  failedCids = []
+  for (let i = 0; i < len; i++) {
+    const error = errors[i]
+    failedCids.push(error.batch)
+  }
+  failedCids.flat()
+  if (failedCids.length) {
+    console.log(`${failedCids.length} CID imports/backups were unsuccessful:`)
+    console.log(failedCids)
+  }
+}
 
 // ------------------------------------------------- getCidFilesFromManifestList
 const getCidFilesFromManifestList = async () => {
@@ -153,7 +114,13 @@ const getCidFilesFromManifestList = async () => {
     manifest.reverse()
     manifestLength = manifest.length
     // pass manifest on to the worker pool
-    performCidBatchOperations(manifest, 1, [], [], [], false)
+    const options = {
+      threads: argv.threads,
+      batchSize: argv.pagesize || 1000,
+      onBatchComplete: logCurrentImportTotals,
+      onWorkerPoolComplete: logFinalImportResults
+    }
+    CreateWorkerPool(Path.resolve(__dirname, './cid-batch-import.js'), 'processManifestBatch', manifest, options)
   } catch (e) {
     console.log('===================== [Function: getCidFilesFromManifestList]')
     console.log(e)
@@ -248,6 +215,8 @@ const CidImporter = async () => {
      *  limit number of entries to the database (this will only be used for test)
      */
     await getCidFilesFromManifestList()
+    const endTime = process.hrtime()[0]
+    console.log(`CID manifest took ${SecondsToHms(endTime - startTime)}`)
   } catch (e) {
     console.log('===================================== [Function: CidImporter]')
     console.log(e)
