@@ -9,7 +9,6 @@ const Util = require('util')
 const Stream = require('stream')
 const Pipeline = Util.promisify(Stream.pipeline)
 const Spawn = require('child_process').spawn
-const WorkerPool = require('workerpool')
 const Mongoose = require('mongoose')
 const MongooseSlugUpdater = require('mongoose-slug-updater')
 
@@ -47,6 +46,7 @@ try {
 require('@Module_Database')
 require('@Module_Cidtemp')
 const { GetFileFromDisk } = require('@Module_Utilities')
+const { InitializeWorker } = require('@Root/scripts/worker-pool-batch-processor.js')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------------ retrieveCidFiles
@@ -180,8 +180,7 @@ const backupCidsToBackblazeBucket = async (batchNo) => {
       `${MC.tmpRoot}/cid-files/batch_${batchNo}`,
       process.env.B2_OPENPANDA_BUCKET,
       '--filter-from',
-      `${MC.packageRoot}/crons/open-panda-dataset-meta-bk__filter.txt`
-      // process.env.B2_OPENPANDA_FILTER
+      process.env.B2_OPENPANDA_FILTER
     ])
     const errors = []
     for await (const msg of rclone.stderr) {
@@ -246,7 +245,7 @@ const processManifestBatch = async (batch, batchNo) => {
     // return results to the main thread
     return await new Promise((resolve, reject) => {
       if (result) {
-        resolve(new WorkerPool.Transfer(result))
+        resolve(result)
       } else {
         reject()
       }
@@ -259,6 +258,4 @@ const processManifestBatch = async (batch, batchNo) => {
 
 // /////////////////////////////////////////////////////////// Initialize Worker
 // -----------------------------------------------------------------------------
-WorkerPool.worker({
-  processManifestBatch: processManifestBatch
-})
+InitializeWorker(processManifestBatch)

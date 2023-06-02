@@ -18,7 +18,6 @@ const Stream = require('stream')
 const Pipeline = Util.promisify(Stream.pipeline)
 const readline = require('node:readline')
 const argv = require('minimist')(process.argv.slice(2))
-const { CreateWorkerPool } = require('./worker-pool-batch-processor.js')
 
 require('dotenv').config({ path: Path.resolve(__dirname, '../.env') })
 
@@ -55,6 +54,7 @@ try {
 require('@Module_Database')
 require('@Module_Cidtemp')
 const { SecondsToHms } = require('@Module_Utilities')
+const { CreateWorkerPool } = require('@Root/scripts/worker-pool-batch-processor.js')
 
 // /////////////////////////////////////////////////////////////////// Functions
 // ------------------------------------------------------ logCurrentImportTotals
@@ -191,7 +191,6 @@ const CidImporter = async () => {
     }
     const lastSavedDate = mostRecentDocument ? new Date(mostRecentDocument.web3storageCreatedAt).getTime() : 0
     // Delete the outdated manifest file if it exists
-    // await deleteTemporaryFile('cid-manifest.txt')
     if (Fs.existsSync(`${CID_TMP_DIR}/cid-manifest.txt`)) {
       Fs.unlinkSync(`${CID_TMP_DIR}/cid-manifest.txt`)
     }

@@ -1,8 +1,6 @@
 // ///////////////////////////////////////////////////// Imports + general setup
 // -----------------------------------------------------------------------------
-const Fs = require('fs-extra')
 const WorkerPool = require('workerpool')
-
 let startTime
 
 // /////////////////////////////////////////////////////////////////// Functions
@@ -101,7 +99,15 @@ const CreateWorkerPool = async (pathToScript, operation, manifest, options) => {
   }
 }
 
+// ------------------------------------------------------------ InitializeWorker
+const InitializeWorker = (operation) => {
+  const initOperation = {}
+  initOperation[operation.name] = operation
+  WorkerPool.worker(initOperation)
+}
+
 // --------------------------------------------------------------------- Exports
 module.exports = {
-  CreateWorkerPool
+  CreateWorkerPool,
+  InitializeWorker
 }
