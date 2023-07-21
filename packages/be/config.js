@@ -55,14 +55,20 @@ module.exports = {
   ],
   serveStaticDirectories: [],
   // ================================================================== Database
-  databaseUrl: process.env.DATABASE_URL,
+  databaseUrl: process.env.DATABASE_URL, // for x509 auth, use process.env.DATABASE_URL_X509
   mongoConnectionOptions: {
-    ssl: true,
-    sslValidate: true,
-    sslCA: Path.resolve(process.env.DPP_CA_PATH),
-    sslKey: Path.resolve(process.env.MONGODB_CLIENT_PEM),
-    sslCert: Path.resolve(process.env.MONGODB_CLIENT_PEM),
-    authMechanism: 'MONGODB-X509'
+    // Authenticate with username/password
+    auth: {
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD
+    }
+    // Authenticate using x509 certificates
+    // ssl: true,
+    // sslValidate: true,
+    // sslCA: Path.resolve(process.env.DPP_CA_PATH),
+    // sslKey: Path.resolve(process.env.MONGODB_CLIENT_PEM),
+    // sslCert: Path.resolve(process.env.MONGODB_CLIENT_PEM),
+    // authMechanism: 'MONGODB-X509'
   },
   mongooseConnection: false,
   model: {},
