@@ -86,6 +86,13 @@ export default {
   },
 
   async fetch ({ app, store, route, redirect }) {
+    await store.dispatch('general/execRemoteScript', {
+      endpoint: '/execute-remote-shell-script',
+      params: {
+        foo: 'hello',
+        bar: 'world'
+      }
+    })
     await store.dispatch('general/getBaseData', { key: 'index', data: IndexPageData })
     const response = await store.dispatch('datasets/getDatasetList', { route })
     if (response.fail) {

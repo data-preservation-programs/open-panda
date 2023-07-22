@@ -107,3 +107,6 @@ sw.*
 # Storybook
 .nuxt-storybook
 storybook-static
+
+# test remote build script
+remote-build.sh
