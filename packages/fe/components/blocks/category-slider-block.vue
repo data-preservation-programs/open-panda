@@ -182,9 +182,10 @@ export default {
 }
 
 :deep(.slider-controls) {
-  position: absolute;
+  // position: absolute;
   width: 100%;
-  transform: translateY(74px);
+  margin-top: -1rem;
+  // transform: translateY(74px);
   @include small {
     transform: none;
     display: flex;

@@ -194,7 +194,7 @@ export default {
       margin-top: toRem(90);
       @include medium {
         margin-left: 0;
-        margin-top: toRem(20);
+        margin-top: toRem(35);
       }
     }
   }
@@ -208,6 +208,19 @@ export default {
       display: none;
     }
   }
+  .image-block {
+    &.desktop-only {
+      @include tiny {
+        display: none;
+      }
+    }
+    &.mobile-only {
+      display: none;
+      @include tiny {
+        display: block;
+      }
+    }
+  }
 }
 
 :deep(.home-slider) {
@@ -217,6 +230,9 @@ export default {
 // ///////////////////////////////////////////////////////////////////// Toolbar
 #section-toolbar {
   margin-bottom: toRem(55);
+  @include tiny {
+    margin-bottom: toRem(24);
+  }
 }
 
 // ////////////////////////////////////////////////////////////////// No results

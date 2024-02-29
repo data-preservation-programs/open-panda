@@ -230,7 +230,7 @@ export default {
     max-width: none;
   }
   @include mini {
-    margin-bottom: toRem(10);
+    // margin-bottom: toRem(10);
   }
 }
 

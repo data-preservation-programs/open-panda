@@ -54,7 +54,17 @@
               "props": {
                 "block": {
                   "src": "/images/index-hero-right.png"
-                }
+                },
+                "class": "desktop-only"
+              }
+            },
+            "image2": {
+              "name": "ImageBlock",
+              "props": {
+                "block": {
+                  "src": "/images/index-hero-right-mobile.png"
+                },
+                "class": "mobile-only"
               }
             },
             "heading": {
