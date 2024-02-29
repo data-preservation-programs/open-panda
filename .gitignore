@@ -107,3 +107,6 @@ sw.*
 # Storybook
 .nuxt-storybook
 storybook-static
+
+# rclone filter rules
+open-panda-dataset-meta-bk__filter.txt

@@ -118,6 +118,9 @@ export default {
 // ///////////////////////////////////////////////////////////////////// General
 :deep(.filters) {
   margin-bottom: toRem(20);
+  @include tiny {
+    margin-bottom: toRem(39);
+  }
 }
 
 .inner-content {
@@ -134,7 +137,7 @@ export default {
 .text-wrapper {
   display: flex;
   position: absolute;
-  bottom: 20%;
+  bottom: 25%;
 }
 
 .ticker {

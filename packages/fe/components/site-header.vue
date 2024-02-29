@@ -140,7 +140,7 @@ export default {
   padding-top: toRem(50);
   padding-bottom: toRem(70);
   @include medium {
-    padding-top: toRem(10);
+    padding-top: toRem(31);
     padding-bottom: toRem(27);
   }
   &.singular-page {
@@ -197,7 +197,7 @@ export default {
       display: none;
     }
     @include medium {
-      width: toRem(121);
+      width: toRem(137);
       display: inline-block;
     }
   }
@@ -211,8 +211,8 @@ export default {
     right: -3px;
   }
   @include medium {
-    right: 0.4vw;
-    top: calc(100% - 7px);
+    right: 5px;
+    top: calc(100% - 10px);
   }
   &:hover {
     transform: scale(1.1);
@@ -220,7 +220,7 @@ export default {
 }
 
 .alpha-tag {
-  width: toRem(55);
+  width: toRem(40);
 }
 
 .hamburger-c {
@@ -241,7 +241,7 @@ export default {
   height: 18px;
   top: -3px;
   transition-duration: 150ms;
-  margin-left: toRem(15);
+  margin-left: toRem(19);
   position: relative;
 
   .hamburger-icon {

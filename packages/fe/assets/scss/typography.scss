@@ -20,7 +20,7 @@ $letterSpacing_Large: 0.03em;
 @mixin fontSize_16 { font-size: clamp(toRem(14), vw(16px), toRem(16)) }
 @mixin fontSize_17 { font-size: toRem(17) }
 @mixin fontSize_18 { font-size: clamp(toRem(14), vw(18px), toRem(18)) }
-@mixin fontSize_20 { font-size: clamp(toRem(14), vw(20px), toRem(20)) }
+@mixin fontSize_20 { font-size: clamp(toRem(16), vw(20px), toRem(20)) }
 @mixin fontSize_24 { font-size: clamp(toRem(20), vw(24px), toRem(24)) }
 @mixin fontSize_28 { font-size: clamp(toRem(20), vw(28px), toRem(28)) }
 @mixin fontSize_32 { font-size: toRem(32) }
@@ -41,7 +41,8 @@ $letterSpacing_Large: 0.03em;
   @include fontWeight_Bold;
   font-family: $font_Primary;
   @include fontSize_65;
-  line-height: leading(75, 65);
+  // line-height: leading(75, 65);
+  line-height: 150%;
 }
 
 @mixin h2 {
@@ -83,7 +84,8 @@ $letterSpacing_Large: 0.03em;
   @include fontWeight_Regular;
   font-family: $font_Primary;
   @include fontSize_20;
-  line-height: leading(30, 20);
+  // line-height: leading(30, 20);
+  line-height: 150%;
 }
 
 @mixin p2 {
